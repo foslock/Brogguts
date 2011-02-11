@@ -1,0 +1,404 @@
+// This is where are changable constants are, but they are permenant at runtime.
+
+//
+// Device Specific Information
+//
+
+#define kPadScreenLandscapeWidth 1024
+#define kPadScreenLandscapeHeight 768 // Without status bar
+
+//
+// Testing Definitions
+//  - Comment out a line to remove that functionality from the game
+//
+
+// #define MULTIPLAYER
+#define STARS
+#define COLLISIONS
+#define GRID
+// #define BOUNDING_DEBUG
+#define BROGGUTS
+
+// Font information
+enum FontIDs {
+	kFontGothicID,
+};
+
+// Stars information
+
+#define MAXIMUM_STAR_UPDATE_RATE 15.0f
+
+enum StarValues {
+	kStarBrightnessMin = 10, // Percent out of 100 of how bright the star is
+	kStarBrightnessMax = 60,
+	kStarBrightnessRateMin = 0, // The rate it changes its brightness
+	kStarBrightnessRateMax = 5,
+	kStarSizeMin = 2, // Size of the star
+	kStarSizeMax = 16,
+	kStarBottomLayerID = 0,
+	kStarBottomLayerSizeMax = 6,
+	kStarMiddleLayerID = 1,
+	kStarMiddleLayerSizeMax = 12,
+	kStarTopLayerID = 2,
+	kStarTopLayerSizeMax = 16,
+};
+
+//
+// ObjectIDs
+//
+
+enum ObjectIDs { // How objects are indentified
+	kObjectTextID,
+	kObjectBroggutSmallID,
+	kObjectBroggutMediumID,
+	kObjectBroggutLargeID,
+	kObjectCraftAntID,
+	kObjectCraftMothID,
+	kObjectCraftBeetleID,
+	kObjectCraftMonarchID,
+	kObjectCraftCamelID,
+	kObjectCraftRatID,
+	kObjectCraftSpiderID,
+	kObjectCraftEagleID,
+	kObjectStructureBlockID,
+	kObjectStructureRefineryID,
+	kObjectStructureCraftUpgradesID,
+	kObjectStructureStructureUpgradesID,
+	kObjectStructureTurretID,
+	kObjectStructureRadarID,
+	kObjectStructureFixerID,
+};
+
+// 
+// Craft Specific Information
+// 
+// Format => kCraft<name><attribute> 
+
+enum TheAntValues {
+	kCraftAntBoundingBoxWidth = 100, // pixels
+	kCraftAntBoundingBoxHeight = 50,
+	kCraftAntUnlockYears = 0,
+	kCraftAntUpgradeUnlockYears = 1,
+	kCraftAntUpgradeCost = 100, // brogguts
+	kCraftAntUpgradeTime = 20, // seconds
+	kCraftAntCostBrogguts = 100,
+	kCraftAntCostMetal = 0,
+	kCraftAntEngines = 3,
+	kCraftAntWeapons = 1,
+	kCraftAntAttackRange = 128, // pixels
+	kCraftAntAttackRate = 30, // attacks per minute
+	kCraftAntHull = 30,
+	// Special Values
+	kCraftAntCargoSpace = 200, // brogguts
+	kCraftAntCargoSpaceBonus = 100,
+	kCraftAntEnginesBonus = 1,
+	kCraftAntMiningSpeed = 3, // (seconds / 100 brogguts)
+};
+
+enum TheMothValues {
+	kCraftMothBoundingBoxWidth = 50, // pixels
+	kCraftMothBoundingBoxHeight = 50,
+	kCraftMothUnlockYears = 0,
+	kCraftMothUpgradeUnlockYears = 1,
+	kCraftMothUpgradeCost = 100, // brogguts
+	kCraftMothUpgradeTime = 20, // seconds
+	kCraftMothCostBrogguts = 100,
+	kCraftMothCostMetal = 10,
+	kCraftMothEngines = 5,
+	kCraftMothWeapons = 1,
+	kCraftMothAttackRange = 128, // pixels
+	kCraftMothAttackRate = 60, // attacks per minute
+	kCraftMothHull = 20,
+	// Special Values
+	kCraftMothEvadeTime = 4, // seconds
+};
+
+enum TheBeetleValues {
+	kCraftBeetleBoundingBoxWidth = 64, // pixels
+	kCraftBeetleBoundingBoxHeight = 80,
+	kCraftBeetleUnlockYears = 0,
+	kCraftBeetleUpgradeUnlockYears = 1,
+	kCraftBeetleUpgradeCost = 100, // brogguts
+	kCraftBeetleUpgradeTime = 20, // seconds
+	kCraftBeetleCostBrogguts = 200,
+	kCraftBeetleCostMetal = 20,
+	kCraftBeetleEngines = 2,
+	kCraftBeetleWeapons = 3,
+	kCraftBeetleAttackRange = 200, // pixels
+	kCraftBeetleAttackRate = 40, // attacks per minute
+	kCraftBeetleHull = 30,
+	// Special Values
+	kCraftBeetleSelfRepairSpeed = 1, // HP / seconds
+};
+
+enum TheMonarchValues {
+	kCraftMonarchBoundingBoxWidth = 64, // pixels
+	kCraftMonarchBoundingBoxHeight = 64,
+	kCraftMonarchUnlockYears = 1,
+	kCraftMonarchUpgradeUnlockYears = 2,
+	kCraftMonarchUpgradeCost = 100, // brogguts
+	kCraftMonarchUpgradeTime = 20, // seconds
+	kCraftMonarchCostBrogguts = 300,
+	kCraftMonarchCostMetal = 30,
+	kCraftMonarchEngines = 3,
+	kCraftMonarchWeapons = 0,
+	kCraftMonarchAttackRange = 0, // pixels
+	kCraftMonarchAttackRate = 0, // attacks per minute
+	kCraftMonarchHull = 30,
+	// Special Values
+	kCraftMonarchSquadRangeLimit = 256,
+	kCraftMonarchSquadEngines = 3,
+	kCraftMonarchSquadNumberLimit = 4, // Number of additional units allowed in squad
+};
+
+// Advanced Craft
+
+enum TheCamelValues {
+	kCraftCamelBoundingBoxWidth = 128, // pixels
+	kCraftCamelBoundingBoxHeight = 64,
+	kCraftCamelUnlockYears = 2,
+	kCraftCamelUpgradeUnlockYears = 3,
+	kCraftCamelUpgradeCost = 100, // brogguts
+	kCraftCamelUpgradeTime = 30, // seconds
+	kCraftCamelCostBrogguts = 400,
+	kCraftCamelCostMetal = 40,
+	kCraftCamelEngines = 3,
+	kCraftCamelWeapons = 2,
+	kCraftCamelAttackRange = 128, // pixels
+	kCraftCamelAttackRate = 40, // attacks per minute
+	kCraftCamelHull = 60,
+	// Special Values
+	kCraftCamelCargoSpace = 500, // brogguts
+	kCraftCamelMiningSpeed = 2, // (seconds / 100 brogguts)
+	kCraftCamelTunnelingTime = 3, // seconds
+};
+
+enum TheRatValues {
+	kCraftRatBoundingBoxWidth = 80, // pixels
+	kCraftRatBoundingBoxHeight = 64,
+	kCraftRatUnlockYears = 3,
+	kCraftRatUpgradeUnlockYears = 4,
+	kCraftRatUpgradeCost = 100, // brogguts
+	kCraftRatUpgradeTime = 40, // seconds
+	kCraftRatCostBrogguts = 500,
+	kCraftRatCostMetal = 50,
+	kCraftRatEngines = 5,
+	kCraftRatWeapons = 3,
+	kCraftRatAttackRange = 100, // pixels
+	kCraftRatAttackRate = 80, // attacks per minute
+	kCraftRatHull = 20,
+	// Special Values
+	kCraftRatEMPRadius = 256, // pixels
+	kCraftRatEMPLastingTime = 5, // seconds
+};
+
+enum TheSpiderValues {
+	kCraftSpiderBoundingBoxWidth = 160, // pixels
+	kCraftSpiderBoundingBoxHeight = 160,
+	kCraftSpiderUnlockYears = 4,
+	kCraftSpiderUpgradeUnlockYears = 5, // increases movement speed
+	kCraftSpiderUpgradeCost = 100, // brogguts
+	kCraftSpiderUpgradeTime = 50, // seconds
+	kCraftSpiderCostBrogguts = 600,
+	kCraftSpiderCostMetal = 60,
+	kCraftSpiderEngines = 1,
+	kCraftSpiderWeapons = 0,
+	kCraftSpiderAttackRange = 512, // pixels
+	kCraftSpiderAttackRate = 0, // attacks per minute
+	kCraftSpiderHull = 50,
+	// Special Values
+	kCraftSpiderEnginesBonus = 2,
+};
+
+enum TheSpiderDroneValues {
+	kCraftSpiderDroneBoundingBoxWidth = 24, // pixels
+	kCraftSpiderDroneBoundingBoxHeight = 24,
+	kCraftSpiderDroneUnlockYears = 4,
+	kCraftSpiderDroneUpgradeUnlockYears = 0, // No upgrade
+	kCraftSpiderDroneUpgradeCost = 0, // brogguts
+	kCraftSpiderDroneUpgradeTime = 0, // seconds
+	kCraftSpiderDroneCostBrogguts = 100,
+	kCraftSpiderDroneCostMetal = 10,
+	kCraftSpiderDroneEngines = 5,
+	kCraftSpiderDroneWeapons = 1,
+	kCraftSpiderDroneAttackRange = 64, // pixels
+	kCraftSpiderDroneAttackRate = 15, // attacks per minute
+	kCraftSpiderDroneHull = 10,
+	// Special Values
+	kCraftSpiderDroneRebuildTime = 6, // seconds
+};
+
+enum TheEagleValues {
+	kCraftEagleBoundingBoxWidth = 160, // pixels
+	kCraftEagleBoundingBoxHeight = 80,
+	kCraftEagleUnlockYears = 5,
+	kCraftEagleUpgradeUnlockYears = 6, // increases explode damage
+	kCraftEagleUpgradeCost = 100, // brogguts
+	kCraftEagleUpgradeTime = 20, // seconds
+	kCraftEagleCostBrogguts = 600,
+	kCraftEagleCostMetal = 60,
+	kCraftEagleEngines = 6,
+	kCraftEagleWeapons = 5,
+	kCraftEagleAttackRange = 360, // pixels
+	kCraftEagleAttackRate = 30, // attacks per minute
+	kCraftEagleHull = 40,
+	// Special Values
+	kCraftEagleExplodeRadius = 256, // pixels
+	kCraftEagleExplodeDamage = 30,
+};
+
+//
+// Structure Specific Information
+//
+// Format => kStructure<name><attribute> 
+
+enum TheBlockValues {
+	kStructureBlockBoundingBoxWidth = 64, // pixels
+	kStructureBlockBoundingBoxHeight = 64,
+	kStructureBlockUnlockYears = 0,
+	kStructureBlockUpgradeUnlockYears = 0, // No upgrade
+	kStructureBlockUpgradeCost = 0, // brogguts
+	kStructureBlockUpgradeTime = 0, // seconds
+	kStructureBlockCostBrogguts = 100,
+	kStructureBlockCostMetal = 0,
+	kStructureBlockMovingTime = 8, // seconds to move to active spot
+	kStructureBlockHull = 60,
+	// Special Values
+};
+
+enum TheRefineryValues {
+	kStructureRefineryBoundingBoxWidth = 80, // pixels
+	kStructureRefineryBoundingBoxHeight = 80,
+	kStructureRefineryUnlockYears = 1,
+	kStructureRefineryUpgradeUnlockYears = 2,
+	kStructureRefineryUpgradeCost = 100, // brogguts
+	kStructureRefineryUpgradeTime = 20, // seconds
+	kStructureRefineryCostBrogguts = 300,
+	kStructureRefineryCostMetal = 0,
+	kStructureRefineryMovingTime = 4, // seconds to move to active spot
+	kStructureRefineryHull = 40,
+	// Special Values
+	kStructureRefineryBroggutConvertTimeBonus = -2,
+	kStructureRefineryBroggutConversionRate = 10, // number of metal for 100 bogguts
+	kStructureRefineryBroggutConvertTime = 5, // seconds for 100 brogguts -> metal
+};
+
+enum TheCraftUpgradesValues {
+	kStructureCraftUpgradesBoundingBoxWidth = 80, // pixels
+	kStructureCraftUpgradesBoundingBoxHeight = 80,
+	kStructureCraftUpgradesUnlockYears = 2,
+	kStructureCraftUpgradesUpgradeUnlockYears = 0, // No upgrade
+	kStructureCraftUpgradesUpgradeCost = 0, // brogguts
+	kStructureCraftUpgradesUpgradeTime = 0, // seconds
+	kStructureCraftUpgradesCostBrogguts = 400,
+	kStructureCraftUpgradesCostMetal = 0,
+	kStructureCraftUpgradesMovingTime = 4, // seconds to move to active spot
+	kStructureCraftUpgradesHull = 40,
+	// Special Values
+};
+
+enum TheStructureUpgradesValues {
+	kStructureStructureUpgradesBoundingBoxWidth = 80, // pixels
+	kStructureStructureUpgradesBoundingBoxHeight = 80,
+	kStructureStructureUpgradesUnlockYears = 2,
+	kStructureStructureUpgradesUpgradeUnlockYears = 0, // No upgrade
+	kStructureStructureUpgradesUpgradeCost = 0, // brogguts
+	kStructureStructureUpgradesUpgradeTime = 0, // seconds
+	kStructureStructureUpgradesCostBrogguts = 400,
+	kStructureStructureUpgradesCostMetal = 0,
+	kStructureStructureUpgradesMovingTime = 4, // seconds to move to active spot
+	kStructureStructureUpgradesHull = 40,
+	// Special Values
+};
+
+enum TheTurretValues {
+	kStructureTurretBoundingBoxWidth = 128, // pixels
+	kStructureTurretBoundingBoxHeight = 128,
+	kStructureTurretUnlockYears = 0,
+	kStructureTurretUpgradeUnlockYears = 1,
+	kStructureTurretUpgradeCost = 100, // brogguts
+	kStructureTurretUpgradeTime = 50, // seconds
+	kStructureTurretCostBrogguts = 300,
+	kStructureTurretCostMetal = 30,
+	kStructureTurretMovingTime = 6, // seconds to move to active spot
+	kStructureTurretHull = 30,
+	// Special Values
+	kStructureTurretEnemyTargetLimit = 1,
+	kStructureTurretEnemyTargetLimitBonus = 1,
+};
+
+enum TheRadarValues {
+	kStructureRadarBoundingBoxWidth = 64, // pixels
+	kStructureRadarBoundingBoxHeight = 64,
+	kStructureRadarUnlockYears = 1,
+	kStructureRadarUpgradeUnlockYears = 2,
+	kStructureRadarUpgradeCost = 100, // brogguts
+	kStructureRadarUpgradeTime = 50, // seconds
+	kStructureRadarCostBrogguts = 300,
+	kStructureRadarCostMetal = 30,
+	kStructureRadarMovingTime = 8, // seconds to move to active spot
+	kStructureRadarHull = 40,
+	// Special Values
+	kStructureRadarRadius = 512,
+	kStructureRadarRadiusBonus = 512,
+};
+
+enum TheFixerValues {
+	kStructureFixerBoundingBoxWidth = 128, // pixels
+	kStructureFixerBoundingBoxHeight = 128,
+	kStructureFixerUnlockYears = 0,
+	kStructureFixerUpgradeUnlockYears = 1,
+	kStructureFixerUpgradeCost = 100, // brogguts
+	kStructureFixerUpgradeTime = 50, // seconds
+	kStructureFixerCostBrogguts = 400,
+	kStructureFixerCostMetal = 40,
+	kStructureFixerMovingTime = 6, // seconds to move to active spot
+	kStructureFixerHull = 20,
+	// Special Values
+	kStructureFixerFriendlyTargetLimit = 1,
+	kStructureFixerFriendlyTargetLimitBonus = 1,
+};
+
+//
+// Gameplay Specific Information
+//
+
+enum BroggutDataValues {
+	kBroggutRarityBase = 1000, // What below percents are divided into
+	kBroggutYoungRarity = 900, // Percent out of brogguts generated
+	kBroggutOldRarity = 95,
+	kBroggutAncientRarity = 5,
+	kBroggutSmallMaxRotationSpeed = 1,
+	kBroggutSmallMinDiameter = 32,
+	kBroggutSmallMaxDiameter = 48,
+	kBroggutSmallMinVelocity = 0,
+	kBroggutSmallMaxVelocity = 50, // Out of 100
+	kBroggutMediumMinRotationSpeed = 2,
+	kBroggutMediumMaxRotationSpeed = 4,
+	kBroggutMediumMinDiameter = 100,
+	kBroggutMediumMaxDiameter = 128,
+	kBroggutYoungSmallMinValue = 50,
+	kBroggutYoungSmallMaxValue = 150,
+	kBroggutOldSmallMinValue = 200,
+	kBroggutOldSmallMaxValue = 400,
+	kBroggutAncientSmallMinValue = 800,
+	kBroggutAncientSmallMaxValue = 1200,
+	kBroggutYoungMediumMinValue = 2000,
+	kBroggutYoungMediumMaxValue = 5000,
+	kBroggutOldMediumMinValue = 4000,
+	kBroggutOldMediumMaxValue = 6000,
+	kBroggutAncientMediumMinValue = 10000,
+	kBroggutAncientMediumMaxValue = 20000,
+};
+
+
+//
+// Friendly AI Specific Information
+//
+
+
+
+//
+// Enemy AI Specific Information
+//
+
