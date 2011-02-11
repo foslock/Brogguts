@@ -1,0 +1,30 @@
+
+<particleEmitterConfig>
+    <texture name="defaultTexture.png"></texture>
+    <sourcePosition x="164.00" y="234.00"></sourcePosition>
+    <sourcePosition x="164.00" y="234.00"></sourcePosition>
+    <sourcePositionVariance x="0.00" y="0.00"></sourcePositionVariance>
+    <speed value="0.00"></speed>
+    <speedVariance value="0.00"></speedVariance>
+    <particleLifeSpan value="2.0000"></particleLifeSpan>
+    <particleLifespanVariance value="1.0000"></particleLifespanVariance>
+    <angle value="0.00"></angle>
+    <angleVariance value="360.00"></angleVariance>
+    <gravity x="0.00" y="0.00"></gravity>
+    <startColor red="0.00" green="1.00" blue="0.00" alpha="1.00"></startColor>
+    <startColorVariance red="0.00" green="0.00" blue="0.00" alpha="0.00"></startColorVariance>
+    <finishColor red="0.00" green="0.25" blue="0.00" alpha="1.00"></finishColor>
+    <finishColorVariance red="0.00" green="0.00" blue="0.00" alpha="0.00"></finishColorVariance>
+    <maxParticles value="150"></maxParticles>
+    <startParticleSize value="20.00"></startParticleSize>
+    <startParticleSizeVariance value="0.00"></startParticleSizeVariance>
+    <finishParticleSize value="5.00"></finishParticleSize>
+    <FinishParticleSizeVariance value="0.00"></FinishParticleSizeVariance>
+    <duration value="-1.00"></duration>
+    <blendAdditive value="0"></blendAdditive>
+    <maxRadius value="20.00"></maxRadius>
+    <maxRadiusVariance value="0.00"></maxRadiusVariance>
+    <minRadius value="0.00"></minRadius>
+    <rotatePerSecond value="90.00"></rotatePerSecond>
+    <rotatePerSecondVariance value="0.00"></rotatePerSecondVariance>
+</particleEmitterConfig>
