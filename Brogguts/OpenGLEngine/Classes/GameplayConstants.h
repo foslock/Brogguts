@@ -13,28 +13,32 @@
 //
 
 // #define MULTIPLAYER
+// #define BOUNDING_DEBUG
 #define STARS
 #define COLLISIONS
 #define GRID
-// #define BOUNDING_DEBUG
 #define BROGGUTS
 
+//
 // Font information
+//
+
 enum FontIDs {
 	kFontGothicID,
+	kFontBlairID,
 };
 
+//
 // Stars information
-
-#define MAXIMUM_STAR_UPDATE_RATE 15.0f
+//
 
 enum StarValues {
-	kStarBrightnessMin = 10, // Percent out of 100 of how bright the star is
+	kStarBrightnessMin = 20, // Percent out of 100 of how bright the star is
 	kStarBrightnessMax = 60,
 	kStarBrightnessRateMin = 0, // The rate it changes its brightness
 	kStarBrightnessRateMax = 5,
 	kStarSizeMin = 2, // Size of the star
-	kStarSizeMax = 16,
+	kStarSizeMax = 12,
 	kStarBottomLayerID = 0,
 	kStarBottomLayerSizeMax = 6,
 	kStarMiddleLayerID = 1,
@@ -46,6 +50,18 @@ enum StarValues {
 //
 // ObjectIDs
 //
+
+enum AllianceIDs { // When loading a scene, used for deciding enemy or friendly alliances
+	kAllianceFriendly,
+	kAllianceEnemy,
+	kAllianceNeutral,
+};
+
+enum ObjectTypeIDs { // When loading a scene, used for parsing
+	kObjectTypeBroggut,
+	kObjectTypeCraft,
+	kObjectTypeStructure,	
+};
 
 enum ObjectIDs { // How objects are indentified
 	kObjectTextID,
@@ -60,6 +76,7 @@ enum ObjectIDs { // How objects are indentified
 	kObjectCraftRatID,
 	kObjectCraftSpiderID,
 	kObjectCraftEagleID,
+	kObjectStructureBaseStationID,
 	kObjectStructureBlockID,
 	kObjectStructureRefineryID,
 	kObjectStructureCraftUpgradesID,
@@ -252,6 +269,19 @@ enum TheEagleValues {
 //
 // Format => kStructure<name><attribute> 
 
+enum kObjectStructureBaseStation {
+	kStructureBaseStationBoundingBoxWidth = 64, // pixels
+	kStructureBaseStationBoundingBoxHeight = 64,
+	kStructureBaseStationUnlockYears = 0,
+	kStructureBaseStationUpgradeUnlockYears = 0, // No upgrade
+	kStructureBaseStationUpgradeCost = 0, // brogguts
+	kStructureBaseStationUpgradeTime = 0, // seconds
+	kStructureBaseStationCostBrogguts = 0,
+	kStructureBaseStationCostMetal = 0,
+	kStructureBaseStationMovingTime = 0, // seconds to move to active spot
+	kStructureBaseStationHull = 500,
+};
+
 enum TheBlockValues {
 	kStructureBlockBoundingBoxWidth = 64, // pixels
 	kStructureBlockBoundingBoxHeight = 64,
@@ -365,7 +395,7 @@ enum TheFixerValues {
 
 enum BroggutDataValues {
 	kBroggutRarityBase = 1000, // What below percents are divided into
-	kBroggutYoungRarity = 900, // Percent out of brogguts generated
+	kBroggutYoungRarity = 900, // 
 	kBroggutOldRarity = 95,
 	kBroggutAncientRarity = 5,
 	kBroggutSmallMaxRotationSpeed = 1,
@@ -377,12 +407,12 @@ enum BroggutDataValues {
 	kBroggutMediumMaxRotationSpeed = 4,
 	kBroggutMediumMinDiameter = 100,
 	kBroggutMediumMaxDiameter = 128,
-	kBroggutYoungSmallMinValue = 50,
-	kBroggutYoungSmallMaxValue = 150,
-	kBroggutOldSmallMinValue = 200,
-	kBroggutOldSmallMaxValue = 400,
-	kBroggutAncientSmallMinValue = 800,
-	kBroggutAncientSmallMaxValue = 1200,
+	kBroggutYoungSmallMinValue = 2,
+	kBroggutYoungSmallMaxValue = 8,
+	kBroggutOldSmallMinValue = 8,
+	kBroggutOldSmallMaxValue = 20,
+	kBroggutAncientSmallMinValue = 80,
+	kBroggutAncientSmallMaxValue = 100,
 	kBroggutYoungMediumMinValue = 2000,
 	kBroggutYoungMediumMaxValue = 5000,
 	kBroggutOldMediumMinValue = 4000,

@@ -10,10 +10,19 @@
 #import "TouchableObject.h"
 
 @interface ControllableObject : TouchableObject {
-
+	BOOL isBeingControlled;
+	BOOL isBeingDragged;
+	float rotationAcceleration;
+	float maxVelocity;
+	CGPoint dragLocation;
 }
 
+@property (nonatomic, assign) BOOL isBeingControlled;
+
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
+
+- (void)accelerateTowardsLocation:(CGPoint)location;
+- (void)decelerate;
 
 
 @end

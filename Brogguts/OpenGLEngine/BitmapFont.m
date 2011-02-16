@@ -8,7 +8,7 @@
 
 #import "BitmapFont.h"
 #import "GameController.h"
-#import "AbstractScene.h"
+#import "BroggutScene.h"
 #import "Image.h"
 #import "TextObject.h"
 

@@ -8,12 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "EAGLView.h"
-#import "AbstractScene.h"
+#import "BroggutScene.h"
 #import "BaseCampScene.h"
 #import "Global.h"
 
-@class AbstractScene;
+@class BroggutScene;
 @class EAGLView;
+@class PlayerProfile;
+
+#define COLLISION_CELL_WIDTH 128.0f
+#define COLLISION_CELL_HEIGHT 128.0f
 
 // Class responsible for passing touch and game events to the correct game
 // scene.  A game scene is an object which is responsible for a specific
@@ -23,17 +27,20 @@
 //
 @interface GameController : NSObject {
 	
+	// Player profile
+	PlayerProfile* currentPlayerProfile;
+	
 	///////////////////// Views and orientation
 	EAGLView *eaglView;						// Reference to the EAGLView
 	UIInterfaceOrientation interfaceOrientation;	// Devices interface orientation
-	AbstractScene* currentScene;
+	BroggutScene* currentScene;
 	
     ///////////////////// Game controller iVars	
     NSDictionary *gameScenes;				// Dictionary of the different game scenes
 }
 
-
-@property (nonatomic, retain) AbstractScene *currentScene;
+@property (retain) PlayerProfile* currentPlayerProfile;
+@property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
@@ -41,6 +48,15 @@
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class
 + (GameController*)sharedGameController;
+
+// Deal with loading and saving the player data
+- (void)loadPlayerProfile;
+- (void)savePlayerProfile;
+
+- (NSString*)documentsPathWithFilename:(NSString*)filename;
+
+- (void)createBaseCampLevel;
+- (BroggutScene*)sceneFromLevelWithFilename:(NSString*)filename;
 
 // Updates the logic within the current scene
 - (void)updateCurrentSceneWithDelta:(float)aDelta;

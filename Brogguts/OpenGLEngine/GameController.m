@@ -8,8 +8,12 @@
 
 #import "GameController.h"
 #import "OpenGLEngineAppDelegate.h"
-#import "AbstractScene.h"
+#import "BroggutScene.h"
 #import "BaseCampScene.h"
+#import "CollisionManager.h"
+#import "PlayerProfile.h"
+#import "StructureObject.h"
+#import "CraftObject.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -24,6 +28,7 @@ static GameController* sharedGameController = nil;
 
 @implementation GameController
 
+@synthesize currentPlayerProfile;
 @synthesize currentScene;
 @synthesize gameScenes;
 @synthesize eaglView;
@@ -100,10 +105,181 @@ static GameController* sharedGameController = nil;
     return self;
 }
 
+- (void)loadPlayerProfile {
+	NSLog(@"INFO - GameController: Loading previous player profile.");
+	NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
+	NSDictionary* rootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:path];    
+	[self setCurrentPlayerProfile:[rootObject valueForKey:@"Profile"]];
+	if (!currentPlayerProfile) {
+		NSLog(@"INFO - GameController: No previous player profile, creating a brand new profile.");
+		currentPlayerProfile = [[PlayerProfile alloc] init];
+	}
+}
+
+- (void)savePlayerProfile {
+	NSLog(@"INFO - GameController: Saving current player profile.");
+	NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
+	NSMutableDictionary* rootObject = [NSMutableDictionary dictionary];
+	[rootObject setValue:currentPlayerProfile forKey:@"Profile"];
+	if (![NSKeyedArchiver archiveRootObject:rootObject toFile:path]){
+		NSLog(@"INFO - GameController: Saving failed.");
+	}
+}
+
+- (NSString*)documentsPathWithFilename:(NSString*)filename {
+	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString* documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+	NSString* filePath = [documentsDirectory stringByAppendingPathComponent:filename];
+	return [filePath retain];
+}
+
+- (void)createBaseCampLevel {
+	int width = 80;
+	int height = 60;
+	
+	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
+	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
+	[plistArray insertObject:[NSNumber numberWithBool:YES] atIndex:1];
+	[plistArray insertObject:[NSNumber numberWithInt:width] atIndex:2];
+	[plistArray insertObject:[NSNumber numberWithInt:height] atIndex:3];
+	[plistArray insertObject:[NSNumber numberWithInt:500] atIndex:4];
+	
+	for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+			int straightIndex = i + (j * width);
+			NSMutableArray* cellArray = [[NSMutableArray alloc] init];
+			
+			if (i == 1 && j == 1) { // Add the initial craft
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
+			} else if (i == 1 && j == 2) { // Add the initial craft
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
+			} else if (i == 0 && j == 0) { // Add the initial structure
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+			} else if ((j > 10 && j < 50) && (i > 10 && i < 70)) { // Create some medium brogguts
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:(int)(RANDOM_0_TO_1() * 200) + 200] atIndex:2];
+			} else {
+				[cellArray insertObject:[NSNumber numberWithInt:-1] atIndex:0];
+			}
+			
+			[plistArray insertObject:cellArray atIndex:straightIndex + 5];
+			[cellArray release];
+		}
+	}
+	
+	NSString* filePath = [self documentsPathWithFilename:@"BaseCampSaved.plist"];
+	if (![plistArray writeToFile:filePath atomically:YES]) {
+		NSLog(@"Cannot save the new level!");
+	};
+	[plistArray release];
+}
+
+- (BroggutScene*)sceneFromLevelWithFilename:(NSString*)filename {
+	NSString* filePath = [self documentsPathWithFilename:filename];
+	if (!filePath) {
+		NSLog(@"Scene '%@.plist' not found", filename);
+		return nil;
+	}
+	NSArray* array = [[NSArray alloc] initWithContentsOfFile:filePath];
+	BroggutScene* newScene;
+	
+	// First four objects in the array are as follows:
+	NSString* sceneName = [array objectAtIndex:0];					// 0: NSString - Name of the scene/level
+	BOOL baseCamp = [[array objectAtIndex:1] boolValue];			// 1: BOOL - BaseCamp
+	int cellsWide = [[array objectAtIndex:2] intValue];				// 2: int - Width (in cells) of the map
+	int cellsHigh = [[array objectAtIndex:3] intValue];				// 3: int - Height (in cells) of the map
+	int numberOfSmallBrogguts = [[array objectAtIndex:4] intValue];	// 4: int - Number of small brogguts to be created
+	
+	CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
+	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
+	
+	if (baseCamp) {
+		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
+	}
+	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
+	
+	for (int j = 0; j < cellsHigh; j++) {
+		for (int i = 0; i < cellsWide; i++) {
+			NSMutableArray* pointArray = [[NSMutableArray alloc] init];
+			float currentX = (i * COLLISION_CELL_WIDTH) + (COLLISION_CELL_WIDTH / 2);
+			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
+			CGPoint currentPoint = CGPointMake(currentX, currentY);
+			int straightIndex = i + (j * cellsWide);
+			
+			NSArray* currentArray = [array objectAtIndex:straightIndex + 5];
+			int idOfObject = [[currentArray objectAtIndex:0] intValue];
+			int objectType = 0;
+			// Make the potential pointers outside of switch
+			MediumBroggut* broggut; 
+			switch (idOfObject) {
+				case (-1):
+					// Nothing located in that cell
+					broggut = [[newScene collisionManager] broggutCellForLocation:currentPoint];
+					broggut->broggutValue = [[currentArray objectAtIndex:0] intValue];
+					[pointArray addObject:[NSNumber numberWithFloat:currentX]];
+					[pointArray addObject:[NSNumber numberWithFloat:currentY]];
+					[locationArray addObject:pointArray];
+					break;
+				case kObjectTypeBroggut:
+					// Change the broggut at that location to what's saved
+					broggut = [[newScene collisionManager] broggutCellForLocation:currentPoint];
+					broggut->broggutAge = [[currentArray objectAtIndex:1] intValue];
+					broggut->broggutValue = [[currentArray objectAtIndex:2] intValue];
+					if (broggut->broggutValue != -1) {
+						[[newScene collisionManager] addMediumBroggut];
+					}
+					break;
+				case kObjectTypeCraft:
+					// Create a craft at that location with the appropriate type and rotation
+					objectType = [[currentArray objectAtIndex:1] intValue];
+					CraftObject* newCraft = [[CraftObject alloc]
+											 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
+					[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+					[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+					[newScene addTouchableObject:newCraft withColliding:NO];
+					if ([[currentArray objectAtIndex:3] boolValue]) {
+						[newScene setControllingShip:newCraft];
+					}
+					break;
+				case kObjectTypeStructure:
+					// Create a structure at that location with the appropriate type
+					objectType = [[currentArray objectAtIndex:1] intValue];
+					StructureObject* newStructure = [[StructureObject alloc]
+													 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
+					[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+					[newScene addTouchableObject:newStructure withColliding:YES];
+					break;
+				default:
+					break;
+			}
+			[pointArray release];
+		}
+	}
+	
+	[newScene addSmallBrogguts:numberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
+	[[newScene collisionManager] remakeGenerator];
+	[[newScene collisionManager] updateAllMediumBroggutsEdges];
+	[locationArray release];
+	[array release];
+	return [newScene autorelease];
+}
+
 #pragma mark -
 #pragma mark Update & Render
 
 - (void)updateCurrentSceneWithDelta:(float)aDelta {
+	[currentPlayerProfile updateProfile];
     [currentScene updateSceneWithDelta:aDelta];
 }
 
@@ -147,16 +323,16 @@ static GameController* sharedGameController = nil;
 	
     NSLog(@"INFO - GameController: Starting game initialization.");
 	
+	[self loadPlayerProfile];
+	
 	interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
-	CGRect fullMapRect = CGRectMake(0, 0, kPadScreenLandscapeWidth * 4, kPadScreenLandscapeHeight * 4);
-	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
+	
+	[self createBaseCampLevel];
 	
 	// Load the game scenes
     gameScenes = [[NSMutableDictionary alloc] init];
-	AbstractScene *scene = [[BaseCampScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect];
-	
+	BroggutScene *scene = [self sceneFromLevelWithFilename:@"BaseCampSaved.plist"];
 	[gameScenes setValue:scene forKey:@"BaseCamp"];
-	[scene release];
     
     // Set the starting scene for the game
     currentScene = [gameScenes objectForKey:@"BaseCamp"];

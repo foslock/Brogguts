@@ -14,6 +14,52 @@
 #import "Transform2D.h"
 
 #pragma mark -
+#pragma mark Objects filenames interface
+/*
+ kObjectBroggutSmallID,
+ kObjectBroggutMediumID,
+ kObjectBroggutLargeID,
+ kObjectCraftAntID,
+ kObjectCraftMothID,
+ kObjectCraftBeetleID,
+ kObjectCraftMonarchID,
+ kObjectCraftCamelID,
+ kObjectCraftRatID,
+ kObjectCraftSpiderID,
+ kObjectCraftEagleID,
+ kObjectStructureBaseStationID,
+ kObjectStructureBlockID,
+ kObjectStructureRefineryID,
+ kObjectStructureCraftUpgradesID,
+ kObjectStructureStructureUpgradesID,
+ kObjectStructureTurretID,
+ kObjectStructureRadarID,
+ kObjectStructureFixerID,
+ */
+
+NSString* kObjectBroggutSmallSprite = @"smallbroggut.png";
+NSString* kObjectBroggutMediumSprite = @"mediumbroggut.png";
+
+NSString* kObjectCraftAntSprite = @"craftant.png";
+NSString* kObjectCraftMothSprite = @"craftmoth.png";
+NSString* kObjectCraftBeetleSprite = @"craftbeetle.png";
+NSString* kObjectCraftMonarchSprite = @"craftmonarch.png";
+
+NSString* kObjectCraftCamelSprite = @"craftcamel.png";
+NSString* kObjectCraftRatSprite = @"craftrat.png";
+NSString* kObjectCraftSpiderSprite = @"craftspider.png";
+NSString* kObjectCraftEagleSprite = @"crafteagle.png";
+
+NSString* kObjectStructureBaseStationSprite = @"structurebasestation.png";
+NSString* kObjectStructureBlockSprite = @"structureblock.png";
+NSString* kObjectStructureRefinerySprite = @"structurerefinery.png";
+NSString* kObjectStructureCraftUpgradesSprite = @"structurecraftupgrades.png";
+NSString* kObjectStructureStructureUpgradesSprite = @"structurestructureupgrades.png";
+NSString* kObjectStructureTurretSprite = @"structureturret.png";
+NSString* kObjectStructureRadarSprite = @"structureradar.png";
+NSString* kObjectStructureFixerSprite = @"structurefixer.png";
+
+#pragma mark -
 #pragma mark Private interface
 
 @interface Image (Private)

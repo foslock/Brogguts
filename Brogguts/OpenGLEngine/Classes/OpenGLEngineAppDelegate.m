@@ -8,6 +8,7 @@
 
 #import "OpenGLEngineAppDelegate.h"
 #import "EAGLView.h"
+#import "GameController.h"
 
 @implementation OpenGLEngineAppDelegate
 
@@ -31,6 +32,8 @@
 	} else {
 		[[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:NO];
 	}
+	
+	sharedGameController = [GameController sharedGameController];
 		
 	// Creates and tries to authenticate the local player
 	sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
@@ -42,6 +45,7 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+	[sharedGameController savePlayerProfile];
     [glView stopAnimation];
 }
 
@@ -52,6 +56,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+	[sharedGameController savePlayerProfile];
     [glView stopAnimation];
 	[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }

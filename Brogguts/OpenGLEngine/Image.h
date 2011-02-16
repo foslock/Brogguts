@@ -8,6 +8,28 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString* kObjectBroggutSmallSprite;
+extern NSString* kObjectBroggutMediumSprite;
+
+extern NSString* kObjectCraftAntSprite;
+extern NSString* kObjectCraftMothSprite;
+extern NSString* kObjectCraftBeetleSprite;
+extern NSString* kObjectCraftMonarchSprite;
+
+extern NSString* kObjectCraftCamelSprite;
+extern NSString* kObjectCraftRatSprite;
+extern NSString* kObjectCraftSpiderSprite;
+extern NSString* kObjectCraftEagleSprite;
+
+extern NSString* kObjectStructureBaseStationSprite;
+extern NSString* kObjectStructureBlockSprite;
+extern NSString* kObjectStructureRefinerySprite;
+extern NSString* kObjectStructureCraftUpgradesSprite;
+extern NSString* kObjectStructureStructureUpgradesSprite;
+extern NSString* kObjectStructureTurretSprite;
+extern NSString* kObjectStructureRadarSprite;
+extern NSString* kObjectStructureFixerSprite;
+
 @class Texture2D;
 @class TextureSingleton;
 @class ImageRenderSingleton;

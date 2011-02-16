@@ -8,7 +8,7 @@
 
 #import "ES1Renderer.h"
 #import "GameController.h"
-#import "AbstractScene.h"
+#import "BroggutScene.h"
 
 @implementation ES1Renderer
 
@@ -128,10 +128,18 @@
 	
 	// Rotate the OpenGL model view to the right 90 degrees so that everything is rendered in landscape
 	// mode
+	UIInterfaceOrientation orientation = [[UIDevice currentDevice] orientation];
+	if (orientation == UIInterfaceOrientationLandscapeRight) {
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(-90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	} else {
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	}
+
 	
-	glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
-	glRotatef(90, 0, 0, 1);
-	glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
     
 	
 	// Setup the texture environment and blend functions.  

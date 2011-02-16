@@ -21,23 +21,25 @@
 #import "BitmapFont.h"
 #import "TouchableObject.h"
 #import "TextObject.h"
+#import "ControllableObject.h"
+#import "SideBarObject.h"
 
 @implementation BaseCampScene
 
 - (void)dealloc {
-	if (currentEmitter) {
-		[currentEmitter release];
-	}
 	if (cameraImage) {
 		[cameraImage release];
+	}
+	if (controllingShip) {
+		[controllingShip release];
 	}
 	[textObject release];
 	[super dealloc];
 }
 
-- (id) initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds
+- (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName 
 {
-	self = [super initWithScreenBounds:screenBounds withFullMapBounds:mapBounds];
+	self = [super initWithScreenBounds:screenBounds withFullMapBounds:mapBounds withName:sName];
 	if (self != nil) {
 		
 		// Grab an instance of the render manager
@@ -48,12 +50,13 @@
 		sharedStarSingleton = [StarSingleton sharedStarSingleton];
 		[sharedStarSingleton randomizeStars];
 		
-		textObject = [[TextObject alloc] initWithFontID:kFontGothicID Text:@"This is space." withLocation:CGPointMake(100, 100) withDuration:2.0f];
-		[textObjectArray addObject:textObject];
-		
+		Image* shipImage = [[Image alloc] initWithImageNamed:@"ship.png" filter:GL_LINEAR];
+		controllingShip = [[ControllableObject alloc]
+						   initWithImage:shipImage withLocation:CGPointMake(256, 256) withObjectType:kObjectCraftAntID];
+		[renderableObjects addObject:controllingShip];
+		[shipImage release];
+
 		frameCounter = 0;
-		
-		[self addSmallBrogguts:500 inBounds:fullMapBounds];
 		
 		cameraImage = [[Image alloc] initWithImageNamed:@"rock.png" filter:GL_LINEAR];		
 	}
@@ -101,8 +104,10 @@
 		return newVector;
 	} else {
 		CGPoint screenMiddle = [self middleOfVisibleScreen];
-		newVector.x = CLAMP(cameraLocation.x - screenMiddle.x, -SCROLL_MAX_SPEED, SCROLL_MAX_SPEED);
-		newVector.y = CLAMP(cameraLocation.y - screenMiddle.y, -SCROLL_MAX_SPEED, SCROLL_MAX_SPEED);
+		newVector.x = CLAMP(newVector.x + SCROLL_MAX_SPEED * (cameraLocation.x - screenMiddle.x) / visibleScreenBounds.size.width,
+							-SCROLL_MAX_SPEED, SCROLL_MAX_SPEED);
+		newVector.y = CLAMP(newVector.y + SCROLL_MAX_SPEED * (cameraLocation.y - screenMiddle.y) / visibleScreenBounds.size.height,
+							-SCROLL_MAX_SPEED, SCROLL_MAX_SPEED);
 	}
 	return newVector;
 }
@@ -113,37 +118,24 @@
 	[sharedStarSingleton updateStars];
 	
 	// Update the camera's location
-	if (isTouchScrolling)
-		cameraLocation = GetMidpointFromPoints(playerLocation, currentTouchLocation);
+	if (isTouchScrolling) {
+		[controllingShip accelerateTowardsLocation:currentTouchLocation];
+		cameraLocation = GetMidpointFromPoints(controllingShip.objectLocation, currentTouchLocation);
+	} else {
+		[controllingShip decelerate];
+	}
 	
 	// Gets the vector that the screen shoudl scroll, and scrolls it, updating the rects as necessary
 	Vector2f cameraScroll = [self newScrollVectorFromCamera];
 	[self scrollScreenWithVector:Vector2fMultiply(cameraScroll, 1.0f)];
 	
-	float maxForce = 5.0f;
-	
-	if (isTouchScrolling) {
-		playerMomentumForce.x = (currentTouchLocation.x - playerLocation.x);
-		playerMomentumForce.y = (currentTouchLocation.y - playerLocation.y);
-	} else {
-		playerMomentumForce.x /= 3;
-		playerMomentumForce.y /= 3;
-	}
-	
-	playerMomentumForce.x = CLAMP(playerMomentumForce.x,-maxForce,maxForce);
-	playerMomentumForce.y = CLAMP(playerMomentumForce.y,-maxForce,maxForce);
-	
-	playerLocation.x += playerMomentumForce.x;
-	playerLocation.y += playerMomentumForce.y;
-	
-	// [currentEmitter updateWithDelta:aDelta];
-	
 	// Stop the player moving beyond the bounds of the screen
+	/*
 	if (playerLocation.x < fullMapBounds.origin.x) playerLocation.x = fullMapBounds.origin.x;
 	if (playerLocation.x > fullMapBounds.size.width) playerLocation.x = fullMapBounds.size.width;
 	if (playerLocation.y < fullMapBounds.origin.y) playerLocation.y = fullMapBounds.origin.y;
 	if (playerLocation.y > fullMapBounds.size.height) playerLocation.y = fullMapBounds.size.height;
-	
+	*/
 	[super updateSceneWithDelta:aDelta];
 }
 
@@ -159,7 +151,10 @@
 	[sharedStarSingleton renderStars];
 	
 	// Draw the grid that collisions are based off of
-	[collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:1.0f withScroll:scroll withAlpha:0.1f];
+	[collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.1f];
+	
+	// Draw the medium/large brogguts
+	[collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
 	
 	// Render all objects (excluding text objects)
 	for (int i = 0; i < [renderableObjects count]; i++) {
@@ -181,6 +176,13 @@
 
 	// Render images to screen
 	[sharedImageRenderSingleton renderImages];
+	
+	// Draw a line to the closest broggut
+	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
+	if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 125)
+		drawLine(controllingShip.objectLocation, closestBrog.objectLocation, scroll);
+	
+	[super renderScene];
 }
 
 #pragma mark -
@@ -188,19 +190,35 @@
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
 	for (UITouch *touch in touches) {
+		if ([touches count] >= 2) {
+			if (!isShowingOverview)
+				[self fadeOverviewMapIn];
+			else
+				[self fadeOverviewMapOut];
+			break;
+		}
+		
         // Get the point where the player has touched the screen
         CGPoint originalTouchLocation = [touch locationInView:aView];
         CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:visibleScreenBounds];
-		currentTouchLocation = touchLocation;
+		if (CGRectContainsPoint([sideBar buttonRect], [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero])) {
+			if (![sideBar isSideBarShowing]) {
+				[sideBar moveSideBarIn];
+			} else {
+				[sideBar moveSideBarOut];
+			}
+			break;
+		}
 		
-		if ([currentObjectsTouching count] == 0) {
+		if ([currentObjectsTouching count] == 0 && isTouchScrolling == NO && (!isShowingOverview || isFadingOverviewOut)) {
 			isTouchScrolling = YES;
 			movingTouchHash = [touch hash];
+			currentTouchLocation = touchLocation;
 		}
 				
 		for (int i = 0; i < [touchableObjects count]; i++) {
 			TouchableObject* obj = [touchableObjects objectAtIndex:i];
-			if (CGRectContainsPoint(obj.touchableBounds, currentTouchLocation)) {
+			if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
 				if (!obj.isCurrentlyTouched) {
 					if (touch.tapCount == 2) {
 						[obj touchesDoubleTappedAtLocation:touchLocation];
@@ -224,7 +242,9 @@
 		CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:visibleScreenBounds];
 		CGPoint prevTouchLocation = [sharedGameController adjustTouchOrientationForTouch:previousOrigTouchLocation inScreenBounds:visibleScreenBounds];
 
-		currentTouchLocation = touchLocation;
+		if (movingTouchHash == [touch hash]) {
+			currentTouchLocation = touchLocation;
+		}
 		
 		TouchableObject* currentObj = [currentObjectsTouching objectForKey:[NSNumber numberWithInt:[touch hash]]];
 		if (currentObj) {
@@ -242,7 +262,6 @@
 	for (UITouch *touch in touches) {
 		CGPoint originalTouchLocation = [touch locationInView:aView];
 		CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:visibleScreenBounds];
-		currentTouchLocation = touchLocation;
 		
 		TouchableObject* currentObj = [currentObjectsTouching objectForKey:[NSNumber numberWithInt:[touch hash]]];
 		if (currentObj) {
@@ -251,6 +270,7 @@
 		}
 		
 		if ([touch hash] == movingTouchHash) {
+			currentTouchLocation = touchLocation;
 			isTouchScrolling = NO;
 			movingTouchHash = 0;
 			return;
