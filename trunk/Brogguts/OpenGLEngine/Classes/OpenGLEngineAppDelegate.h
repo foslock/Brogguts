@@ -10,8 +10,10 @@
 #import "GameCenterSingleton.h"
 
 @class EAGLView;
+@class GameController;
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
+	GameController* sharedGameController;
     UIWindow *window;
     EAGLView *glView;
 	GameCenterSingleton* sharedGCSingleton;

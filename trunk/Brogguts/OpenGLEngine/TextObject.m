@@ -20,7 +20,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
-		scrollWithBounds = NO; // Defaults to staying in the absolute bounds
+		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
 		fontID = fontid;
 		isTextObject = YES;
 		fontColor = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
@@ -28,6 +28,7 @@
 		timeLeft = duration;
 		fadeTime = duration / 3; // By default 2/3 through the duration
 		isCheckedForCollisions = NO;
+		fontScale = Scale2fMake(1.0f, 1.0f);
 		self.objectText = string;
 	}
 	return self;
@@ -49,7 +50,7 @@
 - (void)renderWithFont:(BitmapFont*)font {
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:objectLocation text:objectText];
+	[font renderStringAt:objectLocation text:self.objectText];
 	[font setFontColor:savedColor];
 }
 
@@ -57,7 +58,7 @@
 	CGPoint location = CGPointMake(objectLocation.x - scroll.x, objectLocation.y - scroll.y);
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:location text:objectText];
+	[font renderStringAt:location text:self.objectText];
 	[font setFontColor:savedColor];
 }
 

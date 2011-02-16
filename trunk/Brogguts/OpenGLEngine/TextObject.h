@@ -18,16 +18,16 @@
 	float timeLeft;			// Time (in frames) the object has left alive
 	float fadeTime;			// Time that the object will start to fade
 	Color4f fontColor;		// Color the font will be drawn with
+	Scale2f fontScale;		// Scale the font will be drawn with
 }
 @property (nonatomic, assign) BOOL scrollWithBounds;
 @property (nonatomic, assign) int fontID;
-@property (retain) NSString* objectText;
+@property (copy) NSString* objectText;
 
 // Set duration to -1 for indefinite duration
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration;
 
 - (void)renderWithFont:(BitmapFont*)font;
-
 - (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll;
 
 @end

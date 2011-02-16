@@ -98,7 +98,7 @@ static StarSingleton* sharedStarinstance = nil;
 		starTextureArray = [[NSMutableArray alloc] initWithCapacity:INITIAL_NUMBER_OF_STARS];
 		
 		// Testing star textures
-		Image* starImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
+		Image* starImage = [[Image alloc] initWithImageNamed:@"starTexture.png" filter:GL_LINEAR];
 		[starTextureArray addObject:starImage];
 		[starImage release];
 		

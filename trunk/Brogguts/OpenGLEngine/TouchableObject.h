@@ -12,11 +12,11 @@
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
-	CGRect touchableBounds;
+	Circle touchableBounds;
 }
 
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
-@property (nonatomic, assign) CGRect touchableBounds;
+@property (nonatomic, assign) Circle touchableBounds;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 - (void)touchesBeganAtLocation:(CGPoint)location;

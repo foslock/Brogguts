@@ -7,15 +7,20 @@
 //
 
 #import "CollidableObject.h"
+#import "GameController.h"
 #import "Image.h"
 
 static int globalUniqueID = 0;
 
 @implementation CollidableObject
 
+@synthesize objectRotation;
 @synthesize isCheckedForCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
+@synthesize hasBeenCheckedForCollisions;
+@synthesize objectAlliance, objectType;
+@synthesize staticObject;
 
 - (void)dealloc {
 	if (objectImage)
@@ -26,26 +31,40 @@ static int globalUniqueID = 0;
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
 	self = [super init];
 	if (self) {
+		currentScene = [[GameController sharedGameController] currentScene];
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
 		objectLocation = location;
 		objectType = objecttype;
+		objectAlliance = kAllianceNeutral;
 		objectVelocity = Vector2fZero;
 		rotationSpeed = 0.0f;
-		isCheckedForCollisions = NO;
+		isCheckedForCollisions = NO; // Defaults to NOT being in the spacial collision grid
+		hasBeenCheckedForCollisions = NO; // Temp var that is used to make sure duplicate collisions aren't checked
 		isTextObject = NO;
+		staticObject = NO;
 		
 		// Set bounding information
 		boundingCircle.x = location.x;
 		boundingCircle.y = location.y;
-		boundingCircle.radius = image.imageSize.width / 2; // Half the width for now
+		boundingCircle.radius = (image.imageSize.width / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
 	}
 	return self;
 }
 
-- (void)collidedWithOtherObject:(CollidableObject*)other {
+- (void)collidedWithOtherObject:(CollidableObject*)other { // Called ONCE for every collision, not for each object
+	hasBeenCheckedForCollisions = YES;
+	other.hasBeenCheckedForCollisions = YES;
 	// NSLog(@"Object (%i) collided with Object (%i) at location: <%.0f,%.0f>", uniqueObjectID, other.uniqueObjectID, objectLocation.x, objectLocation.y);
-	
+	if (objectType == kObjectBroggutSmallID) {
+		Vector2f tempVector = objectVelocity;
+		if (!staticObject) {
+			objectVelocity = Vector2fMultiply(other.objectVelocity, COLLISION_ELASTICITY);
+		}
+		if (!other.staticObject) {
+			other.objectVelocity = Vector2fMultiply(tempVector, COLLISION_ELASTICITY);
+		}
+	}
 }
 
 - (Circle)boundingCircle {
@@ -54,21 +73,27 @@ static int globalUniqueID = 0;
 	return boundingCircle;
 }
 
+- (void)setObjectRotation:(float)rot {
+	objectRotation = rot;
+	if (objectRotation > 360.0f) objectRotation -= 360.0f;
+	if (objectRotation < 0.0f) objectRotation += 360.0f;
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
 								 objectLocation.y + objectVelocity.y);
 
-	objectImage.rotation += rotationSpeed;
+	objectRotation += rotationSpeed;
+	objectImage.rotation = objectRotation;
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	if (objectImage) {
 		[objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
 #ifdef BOUNDING_DEBUG
-		Circle newCircle = boundingCircle;
-		newCircle.x -= vector.x;
-		newCircle.y -= vector.y;
-		drawCircle(newCircle, 20);
+		enablePrimitiveDraw();
+		drawCircle(self.boundingCircle, 20, vector);
+		disablePrimitiveDraw();
 #endif
 	}
 		

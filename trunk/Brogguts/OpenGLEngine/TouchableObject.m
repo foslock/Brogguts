@@ -17,19 +17,16 @@
 	if (self) {
 		isTouchable = YES;
 		isCurrentlyTouched = NO;
-		touchableBounds = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
-									 objectLocation.y - (objectImage.imageSize.height / 2),
-									 objectImage.imageSize.width,
-									 objectImage.imageSize.height);
 	}
 	return self;
 }
 
-- (CGRect)touchableBounds {
-	return CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
-					  objectLocation.y - (objectImage.imageSize.height / 2),
-					  objectImage.imageSize.width,
-					  objectImage.imageSize.height);
+- (Circle)touchableBounds { // Bigger than bounding circle, so that it's not hard to tap on it
+	Circle tempBoundingCircle;
+	tempBoundingCircle.x = objectLocation.x;
+	tempBoundingCircle.y = objectLocation.y;
+	tempBoundingCircle.radius = objectImage.imageSize.width / 2;
+	return tempBoundingCircle;
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
@@ -38,9 +35,6 @@
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
 	// OVERRIDE ME
-	
-	// Just testing dragging
-	objectLocation = toLocation;
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {

@@ -6,7 +6,7 @@
 //  Copyright 2009 Michael Daley. All rights reserved.
 //
 
-#import "AbstractScene.h"
+#import "BroggutScene.h"
 
 @class Image;
 @class ImageRenderSingleton;
@@ -18,9 +18,10 @@
 @class StarSingleton;
 @class BitmapFont;
 @class TextObject;
+@class ControllableObject;
 
-@interface BaseCampScene : AbstractScene {
-
+@interface BaseCampScene : BroggutScene {
+/*
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
 	ImageRenderSingleton *sharedImageRenderSingleton;	// Reference to the image render manager
@@ -28,24 +29,21 @@
 	GameCenterSingleton* sharedGameCenterSingleton;		// Reference to the game center controller
 	StarSingleton* sharedStarSingleton;					// Reference to the star controller
 	
+	// Player's first ship
+	ControllableObject* controllingShip;
+	
 	// Camera Image
 	Image *cameraImage;
-	
-	// Player location and velocity vector
-	CGPoint playerLocation;
-	Vector2f playerMomentumForce;
 	
 	// Gothic Font
 	TextObject* textObject;
 	
-	////////////////////// Images
+	// The current location at which the screen is being touched
 	CGPoint currentTouchLocation;
 	int movingTouchHash;		// Holds the unique hash value given to a touch on the joypad.  
 								// This allows us to track the same touch during touchesMoved events
 	BOOL isTouchScrolling;	// YES if a touch is being tracked for the joypad
-	
-	ParticleEmitter* currentEmitter;
-	
+	*/
 }
 
 @end

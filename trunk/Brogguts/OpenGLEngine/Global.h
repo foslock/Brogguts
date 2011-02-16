@@ -80,6 +80,19 @@ static inline CGPoint GetMidpointFromPoints(CGPoint startLocation, CGPoint endLo
 	return CGPointMake(startLocation.x + (dx / 2), startLocation.y + (dy / 2));
 }
 
+static inline float GetDistanceBetweenPoints(CGPoint startLocation, CGPoint endLocation) {
+	float dx = fabsf(endLocation.x - startLocation.x);
+	float dy = fabsf(endLocation.y - startLocation.y);
+	return sqrtf((dx * dx) + (dy * dy));
+}
+
+static inline BOOL CircleContainsPoint(Circle circle, CGPoint point) {
+	if (GetDistanceBetweenPoints(CGPointMake(circle.x, circle.y), point) <= circle.radius) {
+		return YES;
+	}
+	return NO;
+}
+
 // Return a Color4f structure populated with 1.0's
 static const Color4f Color4fOnes = {1.0f, 1.0f, 1.0f, 1.0f};
 
