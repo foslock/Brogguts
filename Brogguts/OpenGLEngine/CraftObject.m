@@ -13,6 +13,12 @@
 
 @implementation CraftObject
 
+
+- (void)dealloc {
+	[pathPointArray release];
+	[super dealloc];
+}
+
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	Image* image;
 	switch (typeID) {
@@ -46,8 +52,65 @@
 	self = [super initWithImage:image withLocation:location withObjectType:typeID];
 	if (self) {
 		// Initialize the craft
+		pathPointArray = nil;
+		pathPointNumber = 0;
+		isFollowingPath = NO;
+		hasCurrentPathFinished = YES;
 	}
 	return self;
+}
+
+- (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
+	if ([array count] == 0) {
+		NSLog(@"Path contained no points!");
+		return;
+	}
+	[pathPointArray autorelease];
+	pathPointArray = [[NSMutableArray alloc] initWithArray:array];
+	isFollowingPath = YES;
+	pathPointNumber = 0;
+	isPathLooped = looped;
+	hasCurrentPathFinished = NO;
+}
+
+- (void)stopFollowingCurrentPath {
+	isFollowingPath = NO;
+	hasCurrentPathFinished = YES;
+}
+
+- (void)resumeFollowingCurrentPath {
+	if (pathPointArray && [pathPointArray count] != 0) {
+		isFollowingPath = YES;
+		hasCurrentPathFinished = NO;
+	}
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+	// Get the current point we should be following
+	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
+		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
+		CGPoint moveTowardsPoint = [pointValue CGPointValue];
+		// If the craft has reached the point...
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint)) {
+			pathPointNumber++;
+		}
+		if (pathPointNumber < [pathPointArray count]) {
+			NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
+			moveTowardsPoint = [pointValue CGPointValue];
+		} else {
+			if (isPathLooped) {
+				pathPointNumber = 0;
+			} else {
+				hasCurrentPathFinished = YES;
+			}
+		}
+		[self accelerateTowardsLocation:moveTowardsPoint];
+	} else {
+		[self decelerate];
+	}
+
+	
+	[super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
@@ -58,7 +121,7 @@
 		} else {
 			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
 		}		
-		drawLine(objectLocation, dragLocation, vector);
+		drawDashedLine(objectLocation, dragLocation, 4, vector);
 		disablePrimitiveDraw();
 	}
 	
@@ -78,8 +141,16 @@
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE ME
+	
+	if (isBeingDragged && !isBeingControlled) {
+		NSArray* newPath = [NSArray arrayWithObjects:
+							[NSValue valueWithCGPoint:dragLocation],
+							nil];
+		[self followPath:newPath isLooped:NO];
+	}
 	isBeingDragged = NO;
-	dragLocation = objectLocation;
+	dragLocation = objectLocation;					
+	
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {

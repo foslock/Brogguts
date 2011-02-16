@@ -134,15 +134,15 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)createBaseCampLevel {
-	int width = 80;
-	int height = 60;
+	int width = 64;
+	int height = 48;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
 	[plistArray insertObject:[NSNumber numberWithBool:YES] atIndex:1];
 	[plistArray insertObject:[NSNumber numberWithInt:width] atIndex:2];
 	[plistArray insertObject:[NSNumber numberWithInt:height] atIndex:3];
-	[plistArray insertObject:[NSNumber numberWithInt:500] atIndex:4];
+	[plistArray insertObject:[NSNumber numberWithInt:250] atIndex:4];
 	
 	for (int j = 0; j < height; j++) {
 		for (int i = 0; i < width; i++) {
@@ -155,7 +155,7 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if (i == 1 && j == 2) { // Add the initial craft
+			} else if ( (i == 2 || i == 3) && j == 2) { // Add two other craft
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
@@ -165,10 +165,11 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 10 && j < 50) && (i > 10 && i < 70)) { // Create some medium brogguts
+			} else if ((j > 10 && j < 20) && (i > 10 && i < 20)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:(int)(RANDOM_0_TO_1() * 200) + 200] atIndex:2];
+				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
+				[cellArray insertObject:[NSNumber numberWithInt:value] atIndex:2];
 			} else {
 				[cellArray insertObject:[NSNumber numberWithInt:-1] atIndex:0];
 			}

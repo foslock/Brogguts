@@ -11,6 +11,7 @@
 
 @implementation ControllableObject
 @synthesize isBeingControlled;
+@synthesize maxVelocity;
 
 - (void)dealloc {
 	
@@ -30,18 +31,37 @@
 }
 
 - (void)accelerateTowardsLocation:(CGPoint)location {
+	
+	// Are the points equal?
+	if (AreCGPointsEqual(objectLocation, location)) {
+		return;
+	}
+	
+	// Are the points close enough to set velocity directly?
+	if (GetDistanceBetweenPoints(objectLocation, location) < boundingCircle.radius) {
+		// If point is closer than the objects radius, move it in the direct velocity
+		float dx = location.x - objectLocation.x;
+		float dy = location.y - objectLocation.y;
+		objectVelocity.x = CLAMP(dx, -maxVelocity, maxVelocity);
+		objectVelocity.y = CLAMP(dy, -maxVelocity, maxVelocity);
+		float direction = RADIANS_TO_DEGREES(atan2f(location.y - objectLocation.y, location.x - objectLocation.x));
+		if (direction < 0.0f) direction += 360.0f;
+		self.objectRotation = (int)direction; // FIX ROTATION SPEED HERE
+		return;
+	}
+	
 	float direction = RADIANS_TO_DEGREES(atan2f(location.y - objectLocation.y, location.x - objectLocation.x));
 	if (direction < 0.0f) direction += 360.0f;
 	float deltaDirection = objectRotation - direction;
 	if (fabs(deltaDirection) < rotationAcceleration) {
-		self.objectRotation = direction;
+		self.objectRotation = (int)direction;
 		float radDir = DEGREES_TO_RADIANS(objectRotation);
 		float xRatio = cosf(radDir);
 		float yRatio = sinf(radDir);
-		if (xRatio > 0.0f) xRatio += 0.8f; // This ensure that it is above 1.0f
-		if (yRatio > 0.0f) yRatio += 0.8f; // This ensure that it is above 1.0f
-		if (xRatio < 0.0f) xRatio -= 0.8f; // This ensure that it is below -1.0f
-		if (yRatio < 0.0f) yRatio -= 0.8f; // This ensure that it is below -1.0f
+		if (xRatio > 0.0f && xRatio != 0.0f) xRatio += 0.8f; // This ensure that it is above 1.0f
+		if (yRatio > 0.0f && yRatio != 0.0f) yRatio += 0.8f; // This ensure that it is above 1.0f
+		if (xRatio < 0.0f && xRatio != 0.0f) xRatio -= 0.8f; // This ensure that it is below -1.0f
+		if (yRatio < 0.0f && yRatio != 0.0f) yRatio -= 0.8f; // This ensure that it is below -1.0f
 		objectVelocity.x = CLAMP((fabs(objectVelocity.x) + 0.1f) * xRatio, -maxVelocity, maxVelocity);
 		objectVelocity.y = CLAMP((fabs(objectVelocity.y) + 0.1f) * yRatio, -maxVelocity, maxVelocity);
 		return;

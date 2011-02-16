@@ -42,6 +42,7 @@ enum BroggutEdgeValues {
 	}
 	[generator release];
 	[bufferNearbyObjects release];
+	[objectTableValues release];
 	[objectTable release];
 	[super dealloc];
 }
@@ -65,8 +66,9 @@ enum BroggutEdgeValues {
 			tempObjectArray->arrayCount = 0; // Set the initial count
 			tempObjectArray->arrayCapacity = INITIAL_HASH_CAPACITY; // Set the initial capacity
 		}
-		objectTable = [[NSMutableDictionary alloc] initWithCapacity:100];
-		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:100];
+		objectTable = [[NSMutableDictionary alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 #ifdef BROGGUTS
 		broggutArray = (BroggutArray*)malloc( sizeof(*broggutArray) );
 		int countWide = ceilf(bounds.size.width / COLLISION_CELL_WIDTH);
@@ -197,13 +199,13 @@ enum BroggutEdgeValues {
 	MediumBroggut* leftBroggut = [self broggutCellForLocation:leftLoc];
 	MediumBroggut* bottomBroggut = [self broggutCellForLocation:bottomLoc];
 	
-		if (rightBroggut->broggutValue != -1 &&
-			topBroggut->broggutValue != -1 &&
-			leftBroggut->broggutValue != -1 &&
-			bottomBroggut->broggutValue != -1) {
-				// There a broggut on all sides
-				middleBroggut->broggutEdge = kMediumBroggutEdgeNone;
-		}
+	if (rightBroggut->broggutValue != -1 &&
+		topBroggut->broggutValue != -1 &&
+		leftBroggut->broggutValue != -1 &&
+		bottomBroggut->broggutValue != -1) {
+		// There a broggut on all sides
+		middleBroggut->broggutEdge = kMediumBroggutEdgeNone;
+	}
 }
 
 - (void)updateAllMediumBroggutsEdges {
@@ -325,6 +327,7 @@ enum BroggutEdgeValues {
 		return; //Already added this object
 	} else {
 		[objectTable setObject:object forKey:[NSNumber numberWithInt:UID]];
+		[objectTableValues addObject:object];
 	}
 	
 	// Index of the object's location in the hash table
@@ -342,13 +345,13 @@ enum BroggutEdgeValues {
 		// RESIZE THE ARRAY
 		NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
 		tempObjectArray->objectIDArray = (int*)realloc(tempObjectArray->objectIDArray,
-												 (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
+													   (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
 		tempObjectArray->arrayCapacity = (currentArrayCapacity + INITIAL_HASH_CAPACITY);
 	}
 }
 
 // Only used internally with objects that have been added to the dictionary
-- (void)addCollidableObjectWithID:(int)objectID {
+- (void)updateCollidableObjectWithID:(int)objectID {
 	CollidableObject* currentObject = [objectTable objectForKey:[NSNumber numberWithInt:objectID]];
 	if (!currentObject) {
 		NSLog(@"ERROR - The objectID does not exist in the table");
@@ -369,7 +372,7 @@ enum BroggutEdgeValues {
 		// RESIZE THE ARRAY
 		NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
 		tempObjectArray->objectIDArray = (int*)realloc(tempObjectArray->objectIDArray,
-												 (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
+													   (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
 		tempObjectArray->arrayCapacity = (currentArrayCapacity + INITIAL_HASH_CAPACITY);
 	}
 }
@@ -382,6 +385,7 @@ enum BroggutEdgeValues {
 		return; // Already removed this object, or wasn't added
 	} else {
 		[objectTable removeObjectForKey:[NSNumber numberWithInt:UID]];
+		[objectTableValues removeObject:object];
 	}
 	
 }
@@ -457,14 +461,12 @@ enum BroggutEdgeValues {
 		nearbyObjects->arrayCount = 0;
 	}
 	
-	NSEnumerator *enumerator = [objectTable objectEnumerator];
-	CollidableObject* currentObject;
-	
-	while ((currentObject = [enumerator nextObject])) {
+	for (int i = 0; i < [objectTableValues count]; i++) {
+		CollidableObject* currentObject = [objectTableValues objectAtIndex:i];
 		if (!CGRectContainsPoint(bounds, currentObject.objectLocation))
 			continue;
 		// This function is used for updating, not adding new objects
-		[self addCollidableObjectWithID:currentObject.uniqueObjectID];
+		[self updateCollidableObjectWithID:currentObject.uniqueObjectID];
 		currentObject.hasBeenCheckedForCollisions = NO; // Reset collision checks
 	}
 }

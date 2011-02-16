@@ -17,6 +17,7 @@
 	CGPoint dragLocation;
 }
 
+@property (nonatomic, assign) float maxVelocity;
 @property (nonatomic, assign) BOOL isBeingControlled;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
