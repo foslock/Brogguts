@@ -97,10 +97,10 @@ typedef struct {
 @property(nonatomic, assign) GLfloat duration;
 
 // Initialises a particle emitter using configuration read from a file
-- (id)initParticleEmitterWithFile:(NSString*)aFileName;
+- (id)initParticleEmitterWithFile:(const NSString*)aFileName;
 
 // Renders the particles for this emitter to the screen
-- (void)renderParticles;
+- (void)renderParticlesWithScroll:(Vector2f)scroll;
 
 // Updates all particles in the particle emitter
 - (void)updateWithDelta:(GLfloat)aDelta;

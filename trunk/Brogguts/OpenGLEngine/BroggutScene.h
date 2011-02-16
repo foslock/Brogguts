@@ -34,6 +34,7 @@
 @class CollisionManager;
 @class TouchableObject;
 @class CraftObject;
+@class ParticleSingleton;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -54,6 +55,8 @@
 	SoundSingleton *sharedSoundSingleton;				// Reference to the sound manager
 	GameCenterSingleton* sharedGameCenterSingleton;		// Reference to the game center controller
 	StarSingleton* sharedStarSingleton;					// Reference to the star controller
+	ParticleSingleton* sharedParticleSingleton;			// Reference to the particle manager
+	
 	
 	// Player's currently controlled ship
 	CraftObject* controllingShip;

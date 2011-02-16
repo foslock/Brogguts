@@ -61,14 +61,14 @@
 	[super dealloc];
 }
 
-- (id)initParticleEmitterWithFile:(NSString*)aFileName {
+- (id)initParticleEmitterWithFile:(const NSString*)aFileName {
 		self = [super init];
 		if (self != nil) {
 			
 			sharedGameController = [GameController sharedGameController];
 			
 			// Create a TBXML instance that we can use to parse the config file
-			TBXML *particleXML = [[TBXML alloc] initWithXMLFile:aFileName];
+			TBXML *particleXML = [[TBXML alloc] initWithXMLFile:[NSString stringWithFormat:@"%@", aFileName]];
 			
 			// Parse the config file
 			[self parseParticleConfig:particleXML];
@@ -174,7 +174,7 @@
 	emitCounter = 0;
 }
 
-- (void)renderParticles {
+- (void)renderParticlesWithScroll:(Vector2f)scroll {
 
 	// Disable the texture coord array so that texture information is not copied over when rendering
 	// the point sprites.
@@ -207,11 +207,16 @@
 	// Enable and configure point sprites which we are going to use for our particles
 	glEnable(GL_POINT_SPRITE_OES);
 	glTexEnvi( GL_POINT_SPRITE_OES, GL_COORD_REPLACE_OES, GL_TRUE );
-
+	glPushMatrix();
+	
+	// Translate for scroll vector
+	glTranslatef(-scroll.x, -scroll.y, 0.0f);
+	
 	// Now that all of the VBOs have been used to configure the vertices, pointer size and color
 	// use glDrawArrays to draw the points
 	glDrawArrays(GL_POINTS, 0, particleIndex);
 
+	glPopMatrix();
 	// Unbind the current VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
@@ -386,8 +391,8 @@
 	// Generate the vertices VBO
 	glGenBuffers(1, &verticesID);
 	
-	// By default the particle emitter is active when created
-	active = YES;
+	// By default the particle emitter is NOT active when created
+	active = NO;
 	
 	// Set the particle count to zero
 	particleCount = 0;

@@ -39,14 +39,18 @@
 		6F8B8A10130884C2009CD1BF /* BroggutGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B8A0F130884C2009CD1BF /* BroggutGenerator.mm */; };
 		6F8B8A3013089180009CD1BF /* ShapeGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B8A2F13089180009CD1BF /* ShapeGenerator.mm */; };
 		6F8B8D0C130B5DD1009CD1BF /* SideBarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B8D0B130B5DD1009CD1BF /* SideBarObject.m */; };
+		6F8B8E0B130C8347009CD1BF /* AntCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B8E0A130C8347009CD1BF /* AntCraftObject.m */; };
+		6F8B8E28130C8885009CD1BF /* ParticleSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B8E27130C8885009CD1BF /* ParticleSingleton.m */; };
+		6F8B8E4F130C8FCB009CD1BF /* broggutParticle.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E4A130C8FCB009CD1BF /* broggutParticle.pex */; };
+		6F8B8E50130C8FCB009CD1BF /* buildLocationParticle.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E4B130C8FCB009CD1BF /* buildLocationParticle.pex */; };
+		6F8B8E51130C8FCB009CD1BF /* laserParticle.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E4C130C8FCB009CD1BF /* laserParticle.pex */; };
+		6F8B8E52130C8FCB009CD1BF /* shipPartsParticle.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E4D130C8FCB009CD1BF /* shipPartsParticle.pex */; };
+		6F8B8E53130C8FCB009CD1BF /* shipThrusterParticle.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E4E130C8FCB009CD1BF /* shipThrusterParticle.pex */; };
+		6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E85130C91D5009CD1BF /* defaultTexture.png */; };
 		6FAD51F51304579100E5E98F /* gothic.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F31304579100E5E98F /* gothic.fnt */; };
 		6FAD51F61304579100E5E98F /* gothic.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F41304579100E5E98F /* gothic.png */; };
 		6FAD539C13049A6400E5E98F /* TouchableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FAD539B13049A6400E5E98F /* TouchableObject.m */; };
-		6FC98B1112FB1F79003F9D9A /* portalEmitter.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98B0F12FB1F79003F9D9A /* portalEmitter.pex */; };
-		6FC98B1212FB1F79003F9D9A /* portalEmitter.xml in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98B1012FB1F79003F9D9A /* portalEmitter.xml */; };
 		6FC98B2112FB1FB4003F9D9A /* starTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98B2012FB1FB4003F9D9A /* starTexture.png */; };
-		6FC98C6212FB4D55003F9D9A /* dyingGhostEmitter.pex in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98C6012FB4D55003F9D9A /* dyingGhostEmitter.pex */; };
-		6FC98C6312FB4D55003F9D9A /* dyingGhostEmitter.xml in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98C6112FB4D55003F9D9A /* dyingGhostEmitter.xml */; };
 		6FCAC69712F75BB500662BDA /* GameplayConstants.h in Resources */ = {isa = PBXBuildFile; fileRef = 6FCAC69612F75BB500662BDA /* GameplayConstants.h */; };
 		6FCAC71712F7CDB300662BDA /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCAC71612F7CDB300662BDA /* Image.m */; };
 		6FCAC71A12F7CDD100662BDA /* ImageRenderSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCAC71912F7CDD100662BDA /* ImageRenderSingleton.m */; };
@@ -123,15 +127,21 @@
 		6F8B8A2F13089180009CD1BF /* ShapeGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShapeGenerator.mm; sourceTree = "<group>"; };
 		6F8B8D0A130B5DD1009CD1BF /* SideBarObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarObject.h; sourceTree = "<group>"; };
 		6F8B8D0B130B5DD1009CD1BF /* SideBarObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarObject.m; sourceTree = "<group>"; };
+		6F8B8E09130C8347009CD1BF /* AntCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AntCraftObject.h; sourceTree = "<group>"; };
+		6F8B8E0A130C8347009CD1BF /* AntCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AntCraftObject.m; sourceTree = "<group>"; };
+		6F8B8E26130C8885009CD1BF /* ParticleSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSingleton.h; sourceTree = "<group>"; };
+		6F8B8E27130C8885009CD1BF /* ParticleSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticleSingleton.m; sourceTree = "<group>"; };
+		6F8B8E4A130C8FCB009CD1BF /* broggutParticle.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = broggutParticle.pex; sourceTree = "<group>"; };
+		6F8B8E4B130C8FCB009CD1BF /* buildLocationParticle.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = buildLocationParticle.pex; sourceTree = "<group>"; };
+		6F8B8E4C130C8FCB009CD1BF /* laserParticle.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = laserParticle.pex; sourceTree = "<group>"; };
+		6F8B8E4D130C8FCB009CD1BF /* shipPartsParticle.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shipPartsParticle.pex; sourceTree = "<group>"; };
+		6F8B8E4E130C8FCB009CD1BF /* shipThrusterParticle.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shipThrusterParticle.pex; sourceTree = "<group>"; };
+		6F8B8E85130C91D5009CD1BF /* defaultTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultTexture.png; sourceTree = "<group>"; };
 		6FAD51F31304579100E5E98F /* gothic.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gothic.fnt; sourceTree = "<group>"; };
 		6FAD51F41304579100E5E98F /* gothic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gothic.png; sourceTree = "<group>"; };
 		6FAD539A13049A6400E5E98F /* TouchableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchableObject.h; sourceTree = "<group>"; };
 		6FAD539B13049A6400E5E98F /* TouchableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchableObject.m; sourceTree = "<group>"; };
-		6FC98B0F12FB1F79003F9D9A /* portalEmitter.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = portalEmitter.pex; sourceTree = "<group>"; };
-		6FC98B1012FB1F79003F9D9A /* portalEmitter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = portalEmitter.xml; sourceTree = "<group>"; };
 		6FC98B2012FB1FB4003F9D9A /* starTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = starTexture.png; sourceTree = "<group>"; };
-		6FC98C6012FB4D55003F9D9A /* dyingGhostEmitter.pex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dyingGhostEmitter.pex; sourceTree = "<group>"; };
-		6FC98C6112FB4D55003F9D9A /* dyingGhostEmitter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = dyingGhostEmitter.xml; sourceTree = "<group>"; };
 		6FCAC69612F75BB500662BDA /* GameplayConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameplayConstants.h; path = Classes/GameplayConstants.h; sourceTree = "<group>"; };
 		6FCAC71512F7CDB300662BDA /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		6FCAC71612F7CDB300662BDA /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
@@ -352,6 +362,7 @@
 			children = (
 				6FC98B2012FB1FB4003F9D9A /* starTexture.png */,
 				6F8B842F13072035009CD1BF /* Default-Landscape.png */,
+				6F8B8E85130C91D5009CD1BF /* defaultTexture.png */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -389,6 +400,27 @@
 				6F8B8D0B130B5DD1009CD1BF /* SideBarObject.m */,
 			);
 			name = "Side Bar";
+			sourceTree = "<group>";
+		};
+		6F8B8E08130C8322009CD1BF /* Crafts */ = {
+			isa = PBXGroup;
+			children = (
+				6F8B8E09130C8347009CD1BF /* AntCraftObject.h */,
+				6F8B8E0A130C8347009CD1BF /* AntCraftObject.m */,
+			);
+			name = Crafts;
+			sourceTree = "<group>";
+		};
+		6F8B8E3F130C8F43009CD1BF /* Particle Types */ = {
+			isa = PBXGroup;
+			children = (
+				6F8B8E4A130C8FCB009CD1BF /* broggutParticle.pex */,
+				6F8B8E4B130C8FCB009CD1BF /* buildLocationParticle.pex */,
+				6F8B8E4C130C8FCB009CD1BF /* laserParticle.pex */,
+				6F8B8E4D130C8FCB009CD1BF /* shipPartsParticle.pex */,
+				6F8B8E4E130C8FCB009CD1BF /* shipThrusterParticle.pex */,
+			);
+			name = "Particle Types";
 			sourceTree = "<group>";
 		};
 		6FCAC71312F7CD5C00662BDA /* Constants */ = {
@@ -442,14 +474,13 @@
 		6FCACA0A12F870D500662BDA /* Particles */ = {
 			isa = PBXGroup;
 			children = (
+				6F8B8E26130C8885009CD1BF /* ParticleSingleton.h */,
+				6F8B8E27130C8885009CD1BF /* ParticleSingleton.m */,
 				6F6A2F6E13019BE8002A4201 /* StarSingleton.h */,
 				6F6A2F6F13019BE8002A4201 /* StarSingleton.m */,
 				6FCACA0D12F870DA00662BDA /* ParticleEmitter.h */,
 				6FCACA0E12F870DA00662BDA /* ParticleEmitter.m */,
-				6FC98B0F12FB1F79003F9D9A /* portalEmitter.pex */,
-				6FC98B1012FB1F79003F9D9A /* portalEmitter.xml */,
-				6FC98C6012FB4D55003F9D9A /* dyingGhostEmitter.pex */,
-				6FC98C6112FB4D55003F9D9A /* dyingGhostEmitter.xml */,
+				6F8B8E3F130C8F43009CD1BF /* Particle Types */,
 			);
 			name = Particles;
 			sourceTree = "<group>";
@@ -481,6 +512,7 @@
 			isa = PBXGroup;
 			children = (
 				6F8B82361306E8BE009CD1BF /* Objects */,
+				6F8B8E08130C8322009CD1BF /* Crafts */,
 				6FE75B1A13036DB400A3C6EF /* CollisionManager.h */,
 				6FE75B1B13036DB400A3C6EF /* CollisionManager.mm */,
 				6F8B8A0E130884C2009CD1BF /* BroggutGenerator.h */,
@@ -565,11 +597,7 @@
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				6FCAC69712F75BB500662BDA /* GameplayConstants.h in Resources */,
-				6FC98B1112FB1F79003F9D9A /* portalEmitter.pex in Resources */,
-				6FC98B1212FB1F79003F9D9A /* portalEmitter.xml in Resources */,
 				6FC98B2112FB1FB4003F9D9A /* starTexture.png in Resources */,
-				6FC98C6212FB4D55003F9D9A /* dyingGhostEmitter.pex in Resources */,
-				6FC98C6312FB4D55003F9D9A /* dyingGhostEmitter.xml in Resources */,
 				6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */,
 				6F6A2FAD1301A782002A4201 /* smallbroggut.png in Resources */,
 				6FAD51F51304579100E5E98F /* gothic.fnt in Resources */,
@@ -581,6 +609,12 @@
 				6F8B879013078EC2009CD1BF /* structurebasestation.png in Resources */,
 				6F8B88C51307B38B009CD1BF /* blair.fnt in Resources */,
 				6F8B88C61307B38B009CD1BF /* blair.png in Resources */,
+				6F8B8E4F130C8FCB009CD1BF /* broggutParticle.pex in Resources */,
+				6F8B8E50130C8FCB009CD1BF /* buildLocationParticle.pex in Resources */,
+				6F8B8E51130C8FCB009CD1BF /* laserParticle.pex in Resources */,
+				6F8B8E52130C8FCB009CD1BF /* shipPartsParticle.pex in Resources */,
+				6F8B8E53130C8FCB009CD1BF /* shipThrusterParticle.pex in Resources */,
+				6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +658,8 @@
 				6F8B8A10130884C2009CD1BF /* BroggutGenerator.mm in Sources */,
 				6F8B8A3013089180009CD1BF /* ShapeGenerator.mm in Sources */,
 				6F8B8D0C130B5DD1009CD1BF /* SideBarObject.m in Sources */,
+				6F8B8E0B130C8347009CD1BF /* AntCraftObject.m in Sources */,
+				6F8B8E28130C8885009CD1BF /* ParticleSingleton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

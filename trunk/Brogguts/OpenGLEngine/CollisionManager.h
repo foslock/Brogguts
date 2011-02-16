@@ -33,13 +33,15 @@ typedef struct Broggut_Array {
 
 @class CollidableObject;
 
-#define INITIAL_HASH_CAPACITY 20 // Initial capacity of each cell for UIDs
-#define INITIAL_TABLE_CAPACITY 100 // Initial capacity of the table holding all CollidableObjects
-#define COLLISION_DETECTION_FREQ 2 // How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
+#define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
+#define INITIAL_TABLE_CAPACITY 100		// Initial capacity of the table holding all CollidableObjects
+#define COLLISION_DETECTION_FREQ 3		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
 #define CHECK_ONLY_OBJECTS_ONSCREEN YES // Only perform collision detection for objects on screen
 
 @interface CollisionManager : NSObject {
 	NSMutableDictionary* objectTable;	// This keeps tracks of all objects that have been added, indexed by their UID
+	NSMutableArray* objectTableValues;	// This array is kept so enumeration is easy through the dictionary, updated whenever an object
+										// is added to the dictionary.
 	ObjectIDArray* cellHashTable;		// Table that contains an array for each cell on the screen, index is the location "hashed"
 										// and the contents is an array of UIDs for each object in that cell
 	NSMutableArray* bufferNearbyObjects;// Buffer that will be used during loops to store nearby objects

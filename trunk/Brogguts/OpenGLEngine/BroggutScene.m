@@ -26,6 +26,7 @@
 #import "BroggutObject.h"
 #import "PlayerProfile.h"
 #import "CraftObject.h"
+#import "ParticleSingleton.h"
 
 @implementation BroggutScene
 
@@ -107,6 +108,7 @@
 		sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
 		sharedGameCenterSingleton = [GameCenterSingleton sharedGCSingleton];
 		sharedStarSingleton = [StarSingleton sharedStarSingleton];
+		sharedParticleSingleton = [ParticleSingleton sharedParticleSingleton];
 		[sharedStarSingleton randomizeStars];
 		
 		frameCounter = 0;
@@ -196,6 +198,9 @@
 	
 	// Update the stars' positions and brightness if applicable
 	[sharedStarSingleton updateStars];
+
+	// Update the particle manager's particles
+	[sharedParticleSingleton updateParticlesWithDelta:aDelta];
 	
 	// Update the camera's location
 	if (isTouchScrolling) {
@@ -210,6 +215,7 @@
 		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
 			[self addBroggutValue:closestBrog.broggutValue atLocation:closestBrog.objectLocation];
 			[closestBrog setDestroyNow:YES];
+			[sharedParticleSingleton createParticles:50 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
 		}
 	}
 	
@@ -310,6 +316,9 @@
 	// Rendering stars
 	[sharedStarSingleton renderStars];
 	
+	// Render all of the particles in the manager
+	[sharedParticleSingleton renderParticlesWithScroll:scroll];
+	
 	// Draw the grid that collisions are based off of
 	[collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.08f];
 	
@@ -354,13 +363,13 @@
 	}
 	
 	/*
-	if (isTouchScrolling) {
-		glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-		enablePrimitiveDraw();
-		drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
-		disablePrimitiveDraw();
-	}
-	*/
+	 if (isTouchScrolling) {
+	 glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+	 enablePrimitiveDraw();
+	 drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
+	 disablePrimitiveDraw();
+	 }
+	 */
 	
 	// Render the sidebar button (and sidebar, if activated)
 	[sideBar renderSideBar];
@@ -551,7 +560,7 @@
 					} else {
 						[obj touchesBeganAtLocation:touchLocation];
 						[currentObjectsTouching setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
-						//  isTouchScrolling = NO;
+						if ([touches count] == 1) isTouchScrolling = NO;
 					}					
 					break;
 				}
