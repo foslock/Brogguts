@@ -145,6 +145,9 @@
 // Returns the point in the middle of the visible screen
 - (CGPoint)middleOfVisibleScreen;
 
+// Sets the middle of the screen to the camera location
+- (void)setMiddleOfVisibleScreenToCamera;
+
 // Returns the point in the middle of the full map
 - (CGPoint)middleOfEntireMap;
 

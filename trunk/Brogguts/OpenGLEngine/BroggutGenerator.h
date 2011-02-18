@@ -10,8 +10,9 @@
 #import "CollisionManager.h"
 #import "ShapeGenerator.h"
 
-#define VERTICIES_PER_BROGGUT 20 // Must be multiple of 4
+#define VERTICIES_PER_BROGGUT 32 // Must be multiple of 4
 #define BROGGUT_PADDING 20.0f
+#define BROGGUT_POINTINESS 10 // Between 0 and 100
 
 @interface BroggutGenerator : NSObject {
 	ShapeGenerator* generator;

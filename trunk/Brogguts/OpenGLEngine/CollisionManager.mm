@@ -105,6 +105,10 @@
 #pragma mark -
 #pragma mark Medium Brogguts
 
+- (BroggutArray*)broggutArray {
+	return broggutArray;
+}
+
 - (MediumBroggut*)broggutCellForLocation:(CGPoint)location {
 	int xIndex = CLAMP(floorf(location.x / COLLISION_CELL_WIDTH), 0, broggutArray->bWidth - 1);
 	int yIndex = CLAMP(floorf(location.y / COLLISION_CELL_HEIGHT), 0, broggutArray->bHeight - 1);
@@ -247,7 +251,6 @@
 	cellsWide = broggutArray->bWidth;
 	cellsHigh = broggutArray->bHeight;
 	enablePrimitiveDraw();
-	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 	for (int j = 0; j < cellsHigh; j++) {
 		for (int i = 0; i < cellsWide; i++) {
 			int straightIndex = i + (j * cellsWide);
@@ -260,12 +263,14 @@
 					continue;
 				}
 				if (broggut->broggutEdge == kMediumBroggutEdgeNone) {
-					drawRect(rectBounds, scroll);
+					glColor4f(1.0f, 1.0f, 1.0f, 0.2f);
+					drawFilledRect(rectBounds, scroll);
 					continue;
 				}
 				
 				float* mediumBroggutVerts;
 				int count = [generator verticesOfMediumBroggutAtIndex:straightIndex intoArray:&mediumBroggutVerts];
+				glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 				drawLines(mediumBroggutVerts, count, scroll);
 			}
 		}
@@ -342,10 +347,6 @@
 		[self remakeGridVertexArrayWithScale:scale];
 		currentGridScale = scale;
 	}
-	
-	// Disable the color array and switch off texturing
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisable(GL_TEXTURE_2D);
 	glPushMatrix();
 	
 	float xOffset = center.x - ((fullMapBounds.size.width / 2) * scale.x) + scroll.x;
@@ -356,11 +357,6 @@
 	glDrawArrays(GL_LINES, 0, 2 * (numberOfColumns + numberOfRows + 2));
 	
 	glPopMatrix();
-	
-	// Switch the color array back on and enable textures.  This is the default state
-	// for our game engine
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnable(GL_TEXTURE_2D);
 #endif
 }
 

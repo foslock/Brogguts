@@ -16,6 +16,7 @@ static int globalUniqueID = 0;
 @implementation CollidableObject
 
 @synthesize objectRotation;
+@synthesize renderLayer;
 @synthesize isCheckedForCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
@@ -34,6 +35,7 @@ static int globalUniqueID = 0;
 	if (self) {
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
+		renderLayer = 0;
 		objectLocation = location;
 		objectType = objecttype;
 		objectAlliance = kAllianceNeutral;
