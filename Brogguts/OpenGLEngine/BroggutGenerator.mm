@@ -19,7 +19,11 @@
 	int index = [self indexForRow:row forColumn:column];
 	CGPoint location = CGPointMake(column * COLLISION_CELL_WIDTH - (BROGGUT_PADDING / 2),
 								   row * COLLISION_CELL_HEIGHT - (BROGGUT_PADDING / 2));
-	int size = generator->generateNewShape(location, COLLISION_CELL_WIDTH + BROGGUT_PADDING, COLLISION_CELL_HEIGHT + BROGGUT_PADDING, 10, true);
+	int size = generator->generateNewShape(location,
+										   COLLISION_CELL_WIDTH + BROGGUT_PADDING,
+										   COLLISION_CELL_HEIGHT + BROGGUT_PADDING,
+										   BROGGUT_POINTINESS,
+										   true);
 	verticies[index] = (float*)malloc(size);
 	
 	generator->createShapeIntoArray(verticies[index]);

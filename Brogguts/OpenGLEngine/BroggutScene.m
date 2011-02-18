@@ -192,6 +192,14 @@
 	return CGPointMake(visibleScreenBounds.origin.x + (visibleScreenBounds.size.width / 2),
 					   visibleScreenBounds.origin.y + (visibleScreenBounds.size.height / 2));
 }
+- (void)setMiddleOfVisibleScreenToCamera {
+	float originX = cameraLocation.x - (visibleScreenBounds.size.width / 2);
+	float originY = cameraLocation.y - (visibleScreenBounds.size.height / 2);
+	visibleScreenBounds = CGRectMake(CLAMP(originX, 0.0f, fullMapBounds.size.width - visibleScreenBounds.size.width),
+									 CLAMP(originY, 0.0f, fullMapBounds.size.height - visibleScreenBounds.size.height), 
+									 visibleScreenBounds.size.width,
+									 visibleScreenBounds.size.height);
+}
 - (CGPoint)middleOfEntireMap {
 	return CGPointMake(fullMapBounds.origin.x + (fullMapBounds.size.width / 2),
 					   fullMapBounds.origin.y + (fullMapBounds.size.height / 2));
@@ -211,7 +219,6 @@
 		cameraLocation = GetMidpointFromPoints(controllingShip.objectLocation, currentTouchLocation);
 	} else {
 		cameraLocation = controllingShip.objectLocation;
-		[controllingShip decelerate];
 	}
 	
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
@@ -309,6 +316,13 @@
 	}
 }
 
+- (void)sortRenderableObjectsByLayer {
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"renderLayer"
+												  ascending:YES];
+	[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	[sortDescriptor release];
+}
+
 - (void)renderScene {
 	
 	// Clear the screen
@@ -323,11 +337,16 @@
 	// Render all of the particles in the manager
 	[sharedParticleSingleton renderParticlesWithScroll:scroll];
 	
+	enablePrimitiveDraw();
 	// Draw the grid that collisions are based off of
 	[collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.08f];
+	disablePrimitiveDraw();
 	
 	// Draw the medium/large brogguts
 	[collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
+	
+	// Resort the objects so they are drawn in the correct layer
+	[self sortRenderableObjectsByLayer];
 	
 	// Render all objects (excluding text objects)
 	for (int i = 0; i < [renderableObjects count]; i++) {
@@ -401,8 +420,7 @@
 
 - (void)renderOverviewMapWithAlpha:(float)alpha {
 	// Disable the color array and switch off texturing
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisable(GL_TEXTURE_2D);
+	enablePrimitiveDraw();
 	GLfloat vertices[10] = {
 		0.0f, 0.0f, // V1
 		0.0f, kPadScreenLandscapeHeight, // V2
@@ -420,8 +438,6 @@
 	
 	CGPoint relativeMiddle = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
 	[collisionManager drawCellGridAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withScroll:Vector2fZero withAlpha:CLAMP(alpha - 0.5f, 0.0f, 0.1f)];
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisable(GL_TEXTURE_2D); // Must disable again because previous call reverts to default state
 	
 	// Render each object as a point (sprite?) on the overview map
 	GLfloat objPoint[2];
@@ -437,20 +453,42 @@
 		glDrawArrays(GL_POINTS, 0, 1);
 	}
 	
+	// Draw the medium broggut grid
+	BroggutArray* brogArray = [collisionManager broggutArray];
+	int cellsWide, cellsHigh;
+	cellsWide = brogArray->bWidth;
+	cellsHigh = brogArray->bHeight;
+	glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha, 0.0f, 0.1f));
+	for (int j = 0; j < cellsHigh; j++) {
+		for (int i = 0; i < cellsWide; i++) {
+			int straightIndex = i + (j * cellsWide);
+			MediumBroggut* broggut = &brogArray->array[straightIndex];
+			CGRect brogRect = CGRectMake(1 + i * COLLISION_CELL_WIDTH * xRatio,
+										 1 + j * COLLISION_CELL_HEIGHT * yRatio,
+										 COLLISION_CELL_WIDTH * xRatio, 
+										 COLLISION_CELL_HEIGHT * yRatio);
+			if (broggut->broggutValue != -1) {
+				if (broggut->broggutEdge == kMediumBroggutEdgeNone) {
+					glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha * 0.1f, 0.0f, 1.0f));
+				} else {
+					glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha * 0.15f, 0.0f, 1.0f));
+				}
+				drawFilledRect(brogRect, Vector2fZero);
+			}
+		}
+	}
+	
 	CGRect viewportRect = CGRectMake(visibleScreenBounds.origin.x * xRatio,
 									 visibleScreenBounds.origin.y * yRatio,
 									 visibleScreenBounds.size.width * xRatio,
 									 visibleScreenBounds.size.height * yRatio);
 	glColor4f(1.0f, 1.0f, 1.0f, alpha);
 	
-	enablePrimitiveDraw();
 	drawRect(viewportRect, Vector2fZero);
-	disablePrimitiveDraw();
 	
 	// Switch the color array back on and enable textures.  This is the default state
 	// for our game engine
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnable(GL_TEXTURE_2D);	
+	disablePrimitiveDraw();
 }
 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray {

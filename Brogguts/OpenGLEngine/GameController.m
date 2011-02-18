@@ -135,7 +135,7 @@ static GameController* sharedGameController = nil;
 
 - (void)createBaseCampLevel {
 	int width = 32;
-	int height = 24;
+	int height = 25;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
@@ -149,23 +149,23 @@ static GameController* sharedGameController = nil;
 			int straightIndex = i + (j * width);
 			NSMutableArray* cellArray = [[NSMutableArray alloc] init];
 			
-			if (i == 1 && j == 1) { // Add the initial craft
+			if (i == 1 && j == 13) { // Add the initial craft
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if ( (i == 2 || i == 3) && j == 2) { // Add two other craft
+			} else if ( (i == 2 || i == 3) && j == 13) { // Add two other craft
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
-			} else if (i == 0 && j == 0) { // Add the initial structure
+			} else if (i == 0 && j == 13) { // Add the initial structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 3 && j < 8) && (i > 3 && i < 8)) { // Create some medium brogguts
+			} else if ((j > 3 && j < 20) && (i > 3 && i < 20)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
 				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
@@ -252,6 +252,8 @@ static GameController* sharedGameController = nil;
 					[newScene addTouchableObject:newCraft withColliding:NO];
 					if ([[currentArray objectAtIndex:3] boolValue]) {
 						[newScene setControllingShip:newCraft];
+						[newScene setCameraLocation:newCraft.objectLocation];
+						[newScene setMiddleOfVisibleScreenToCamera];
 					}
 					break;
 				case kObjectTypeStructure:

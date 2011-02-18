@@ -73,6 +73,7 @@ typedef struct Broggut_Array {
 
 - (void)remakeGenerator;
 
+- (BroggutArray*)broggutArray;
 - (MediumBroggut*)broggutCellForLocation:(CGPoint)location;
 - (int)getBroggutIDatLocation:(CGPoint)location;
 - (CGPoint)getBroggutLocationForID:(int)brogid;

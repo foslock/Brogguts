@@ -17,6 +17,7 @@
 
 @interface CollidableObject : NSObject {
 	Image* objectImage;
+	int renderLayer;
 	float objectRotation;
 	float rotationSpeed;
 	BOOL isCheckedForCollisions;
@@ -36,6 +37,7 @@
 }
 
 @property (readonly) Image* objectImage;
+@property (nonatomic, assign) int renderLayer;
 @property (nonatomic, assign) float rotationSpeed;
 @property (nonatomic, assign) float objectRotation;
 @property (nonatomic, assign) BOOL isCheckedForCollisions;

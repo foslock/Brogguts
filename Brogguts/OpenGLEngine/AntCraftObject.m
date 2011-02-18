@@ -118,7 +118,7 @@ enum MiningStates {
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
-	if (isBeingDragged && miningState == kMiningStateNone) {
+	if (isBeingDragged) {
 		[self startMiningBroggutWithLocation:location];
 	}
 	
