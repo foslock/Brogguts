@@ -34,11 +34,11 @@ enum FontIDs {
 
 enum StarValues {
 	kStarBrightnessMin = 20, // Percent out of 100 of how bright the star is
-	kStarBrightnessMax = 60,
+	kStarBrightnessMax = 100,
 	kStarBrightnessRateMin = 0, // The rate it changes its brightness
 	kStarBrightnessRateMax = 5,
 	kStarSizeMin = 2, // Size of the star
-	kStarSizeMax = 12,
+	kStarSizeMax = 8,
 	kStarBottomLayerID = 0,
 	kStarBottomLayerSizeMax = 6,
 	kStarMiddleLayerID = 1,
@@ -109,7 +109,7 @@ enum TheAntValues {
 	kCraftAntCargoSpace = 200, // brogguts
 	kCraftAntCargoSpaceBonus = 100,
 	kCraftAntEnginesBonus = 1,
-	kCraftAntMiningSpeed = 3, // (seconds / 100 brogguts)
+	kCraftAntMiningSpeed = 1, // (milliseconds / 1 brogguts)
 };
 
 enum TheMothValues {
@@ -186,8 +186,8 @@ enum TheCamelValues {
 	kCraftCamelHull = 60,
 	// Special Values
 	kCraftCamelCargoSpace = 500, // brogguts
-	kCraftCamelMiningSpeed = 2, // (seconds / 100 brogguts)
-	kCraftCamelTunnelingTime = 3, // seconds
+	kCraftCamelMiningSpeed = 100, // (milliseconds / 1 brogguts)
+	kCraftCamelTunnelingTime = 300, // milliseconds
 };
 
 enum TheRatValues {

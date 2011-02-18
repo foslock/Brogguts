@@ -11,8 +11,6 @@
 #import "GameCenterStructs.h"
 #import "GameController.h"
 
-
-
 @interface GameCenterSingleton : UIViewController <GKMatchDelegate, GKMatchmakerViewControllerDelegate> {
 	GameController* sharedGameController;
 	GKLocalPlayer* localPlayer;

@@ -36,6 +36,7 @@
 @synthesize fullMapBounds, visibleScreenBounds;
 @synthesize isShowingOverview;
 @synthesize controllingShip, commandingShip;
+@synthesize homeBaseLocation;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -93,6 +94,7 @@
 												 [self middleOfVisibleScreen].y);
 		TextObject* nameObject = [[TextObject alloc]
 								  initWithFontID:kFontGothicID Text:sceneName withLocation:middleFontLocation withDuration:5.0f];
+		[nameObject setScrollWithBounds:NO];
 		[textObjectArray addObject:nameObject];
 		[nameObject release];
 		
@@ -166,6 +168,7 @@
 	currentTouchLocation = CGPointMake(currentTouchLocation.x + xAddition, currentTouchLocation.y + yAddition);
 }
 
+// Used for scrolling the screen with the camera, NOT to be used by other objects
 - (Vector2f)newScrollVectorFromCamera {
 	Vector2f newVector = Vector2fMake(0, 0);
 	
@@ -181,6 +184,7 @@
 	return newVector;
 }
 
+// ALL objects should use this to do their scrolled drawing
 - (Vector2f)scrollVectorFromScreenBounds {
 	return Vector2fMake(visibleScreenBounds.origin.x, visibleScreenBounds.origin.y);
 }
@@ -193,12 +197,11 @@
 					   fullMapBounds.origin.y + (fullMapBounds.size.height / 2));
 }
 
-
 - (void)updateSceneWithDelta:(GLfloat)aDelta {
 	
 	// Update the stars' positions and brightness if applicable
 	[sharedStarSingleton updateStars];
-
+	
 	// Update the particle manager's particles
 	[sharedParticleSingleton updateParticlesWithDelta:aDelta];
 	
@@ -207,6 +210,7 @@
 		[controllingShip accelerateTowardsLocation:currentTouchLocation];
 		cameraLocation = GetMidpointFromPoints(controllingShip.objectLocation, currentTouchLocation);
 	} else {
+		cameraLocation = controllingShip.objectLocation;
 		[controllingShip decelerate];
 	}
 	
@@ -348,7 +352,7 @@
 	
 	// Draw a line to the closest broggut
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-	if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 100) {
+	if (closestBrog && GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 100) {
 		enablePrimitiveDraw();
 		glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
 		drawLine(controllingShip.objectLocation, closestBrog.objectLocation, scroll);
@@ -364,10 +368,10 @@
 	
 	/*
 	 if (isTouchScrolling) {
-	 glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-	 enablePrimitiveDraw();
-	 drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
-	 disablePrimitiveDraw();
+		glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+		enablePrimitiveDraw();
+		drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
+		disablePrimitiveDraw();
 	 }
 	 */
 	
@@ -506,6 +510,23 @@
 	[craft setIsBeingControlled:YES];
 }
 
+- (void)attemptToControlShipAtLocation:(CGPoint)location {
+	for (int i = 0; i < [touchableObjects count]; i++) {
+		TouchableObject* object = [touchableObjects objectAtIndex:i];
+		if ([object isKindOfClass:[CraftObject class]]) {
+			// Object is a craft
+			if (object == controllingShip) {
+				continue;
+			}
+			if (CircleContainsPoint(object.boundingCircle, location)) {
+				NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
+				[self setControllingShip:(CraftObject*)object];
+				break;
+			}
+		}
+	}
+}
+
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
 	for (UITouch *touch in touches) {
 		// Get the point where the player has touched the screen
@@ -548,22 +569,34 @@
 			isTouchScrolling = YES;
 			movingTouchHash = [touch hash];
 			currentTouchLocation = touchLocation;
+			/*
+			
+			*/
 		}
-		
+		BOOL noObjectTouched = YES;
 		// Check all touchable objects and call their methods
 		for (int i = 0; i < [touchableObjects count]; i++) {
 			TouchableObject* obj = [touchableObjects objectAtIndex:i];
-			if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
-				if (!obj.isCurrentlyTouched) {
-					if (touch.tapCount == 2) {
-						[obj touchesDoubleTappedAtLocation:touchLocation];
-					} else {
-						[obj touchesBeganAtLocation:touchLocation];
-						[currentObjectsTouching setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
-						if ([touches count] == 1) isTouchScrolling = NO;
-					}					
-					break;
+			if (obj.isTouchable) {
+				if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
+					if (!obj.isCurrentlyTouched) {
+						if (touch.tapCount == 2) {
+							[obj touchesDoubleTappedAtLocation:touchLocation];
+						} else {
+							[obj touchesBeganAtLocation:touchLocation];
+							[currentObjectsTouching setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
+							if ([touches count] == 1) isTouchScrolling = NO;
+						}
+						noObjectTouched = NO;
+						break;
+					}
 				}
+			}
+		}
+		
+		if (noObjectTouched) { // If touch used for scrolling, stop the current path
+			if (!CircleContainsPoint(controllingShip.boundingCircle, touchLocation)) {
+				[controllingShip stopFollowingCurrentPath];
 			}
 		}
 	}

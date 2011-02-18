@@ -158,7 +158,10 @@ static StarSingleton* sharedStarinstance = nil;
 		currentSprite->x = location.x;
 		currentSprite->y = location.y;
 		currentSprite->size = currentStar->particleSize;
-		currentSprite->color = Color4fMake(1.0f, 1.0f, 1.0f, ((float)currentStar->brightness) / 100.0f);
+		float red = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
+		float green = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
+		float blue = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
+		currentSprite->color = Color4fMake(red, green, blue, ((float)currentStar->brightness) / 100.0f);
 		
 		starCount++;
 	}
@@ -174,10 +177,10 @@ static StarSingleton* sharedStarinstance = nil;
 				scaledVector = Vector2fMultiply(moveVector, 0.01f * distance);
 				break;
 			case kStarMiddleLayerID:
-				scaledVector = Vector2fMultiply(moveVector, 0.10f * distance);
+				scaledVector = Vector2fMultiply(moveVector, 0.20f * distance);
 				break;
 			case kStarBottomLayerID:
-				scaledVector = Vector2fMultiply(moveVector, 0.50f * distance);
+				scaledVector = Vector2fMultiply(moveVector, 0.75f * distance);
 				break;
 			default:
 				break;
@@ -204,7 +207,7 @@ static StarSingleton* sharedStarinstance = nil;
 		currentSprite->x = currentStar->position.x;
 		currentSprite->y = currentStar->position.y;
 		currentSprite->size = currentStar->particleSize;
-		currentSprite->color = Color4fMake(1.0f, 1.0f, 1.0f, ((float)currentStar->brightness) / 100.0f);
+		// currentSprite->color = Color4fMake(1.0f, 1.0f, 1.0f, ((float)currentStar->brightness) / 100.0f);
 	}
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "CollidableObject.h"
+#import "BroggutScene.h"
 #import "GameController.h"
 #import "Image.h"
 
@@ -31,7 +32,6 @@ static int globalUniqueID = 0;
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
 	self = [super init];
 	if (self) {
-		currentScene = [[GameController sharedGameController] currentScene];
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
 		objectLocation = location;
@@ -50,6 +50,10 @@ static int globalUniqueID = 0;
 		boundingCircle.radius = (image.imageSize.width / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
 	}
 	return self;
+}
+
+- (BroggutScene*)currentScene {
+	return [[GameController sharedGameController] currentScene];
 }
 
 - (void)collidedWithOtherObject:(CollidableObject*)other { // Called ONCE for every collision, not for each object

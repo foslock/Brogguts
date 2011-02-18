@@ -10,7 +10,7 @@
 #import "BitmapFont.h"
 
 @implementation TextObject
-@synthesize fontID, objectText, scrollWithBounds;
+@synthesize isHidden, fontID, objectText, scrollWithBounds;
 
 - (void)dealloc {
 	[objectText release];
@@ -20,6 +20,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
+		isHidden = NO;
 		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
 		fontID = fontid;
 		isTextObject = YES;
@@ -48,6 +49,7 @@
 }
 
 - (void)renderWithFont:(BitmapFont*)font {
+	if (isHidden) return;
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
 	[font renderStringAt:objectLocation text:self.objectText];
@@ -55,6 +57,7 @@
 }
 
 - (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll {
+	if (isHidden) return;
 	CGPoint location = CGPointMake(objectLocation.x - scroll.x, objectLocation.y - scroll.y);
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];

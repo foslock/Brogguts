@@ -64,6 +64,9 @@
 	// The ship (if any) that is currently being commanded
 	CraftObject* commandingShip;
 	
+	// Location of the home base
+	CGPoint homeBaseLocation;
+	
 	// Display of brogguts
 	TextObject* broggutCounter;
 	
@@ -114,6 +117,7 @@
 @property (retain) CraftObject* controllingShip;
 @property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
+@property (nonatomic, assign) CGPoint homeBaseLocation;
 @property (nonatomic, assign) CGRect cameraContainRect;
 @property (nonatomic, assign) CGPoint cameraLocation;	
 @property (nonatomic, assign) CGRect fullMapBounds;
@@ -152,6 +156,9 @@
 
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
+
+// Called when the player is trying to switch controlling ships
+- (void)attemptToControlShipAtLocation:(CGPoint)location;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

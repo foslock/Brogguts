@@ -16,7 +16,6 @@
 @class BroggutScene;
 
 @interface CollidableObject : NSObject {
-	BroggutScene* currentScene;
 	Image* objectImage;
 	float objectRotation;
 	float rotationSpeed;
@@ -53,6 +52,8 @@
 @property (nonatomic, assign) float boundingCircleRadius;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
+
+- (BroggutScene*)currentScene;
 
 - (void)collidedWithOtherObject:(CollidableObject*)other;
 
