@@ -10,7 +10,7 @@
 #import "Image.h"
 
 @implementation TouchableObject
-@synthesize isCurrentlyTouched, touchableBounds;
+@synthesize isTouchable, isCurrentlyTouched, touchableBounds;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
 	self = [super initWithImage:image withLocation:location withObjectType:objecttype];

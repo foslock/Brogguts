@@ -11,14 +11,7 @@
 #import "GameController.h"
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
-
-enum BroggutEdgeValues {
-	kMediumBroggutEdgeLeft,
-	kMediumBroggutEdgeUp,
-	kMediumBroggutEdgeRight,
-	kMediumBroggutEdgeDown,
-	kMediumBroggutEdgeNone,
-};
+#import "TextObject.h"
 
 @implementation CollisionManager
 
@@ -40,6 +33,7 @@ enum BroggutEdgeValues {
 		free(broggutArray->array);
 		free(broggutArray);
 	}
+	[valueTextObject release];
 	[generator release];
 	[bufferNearbyObjects release];
 	[objectTableValues release];
@@ -69,6 +63,10 @@ enum BroggutEdgeValues {
 		objectTable = [[NSMutableDictionary alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+		
+		valueTextObject = [[TextObject alloc]
+						   initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
+		isShowingValueText = NO;
 #ifdef BROGGUTS
 		broggutArray = (BroggutArray*)malloc( sizeof(*broggutArray) );
 		int countWide = ceilf(bounds.size.width / COLLISION_CELL_WIDTH);
@@ -129,6 +127,16 @@ enum BroggutEdgeValues {
 	return newPoint;
 }
 
+- (CGRect)getBroggutRectForID:(int)brogid {
+	int xLoc = brogid % broggutArray->bWidth;
+	int yLoc = brogid / broggutArray->bWidth;
+	CGRect newRect = CGRectMake(xLoc * COLLISION_CELL_WIDTH,
+								 yLoc * COLLISION_CELL_HEIGHT,
+								 COLLISION_CELL_WIDTH,
+								 COLLISION_CELL_HEIGHT);
+	return newRect;
+}
+
 - (BOOL)isLocationOccupiedByBroggut:(CGPoint)location {
 	MediumBroggut* broggut = [self broggutCellForLocation:location];
 	if (broggut->broggutValue != -1) {
@@ -187,6 +195,14 @@ enum BroggutEdgeValues {
 	broggutArray->broggutCount += 1;
 }
 
+- (void)removeMediumBroggutWithID:(int)brogID {
+	MediumBroggut* broggut = &broggutArray->array[brogID];
+	broggut->broggutValue = -1;
+	broggut->broggutAge = 0;
+	broggut->broggutEdge = kMediumBroggutEdgeNone; // Default to drawing the broggut
+	[self updateAllMediumBroggutsEdges];
+}
+
 - (void)updateMediumBroggutEdgeAtLocation:(CGPoint)location {
 	CGPoint rightLoc = CGPointMake(location.x + COLLISION_CELL_WIDTH, location.y);
 	CGPoint topLoc = CGPointMake(location.x, location.y + COLLISION_CELL_HEIGHT);
@@ -205,7 +221,10 @@ enum BroggutEdgeValues {
 		bottomBroggut->broggutValue != -1) {
 		// There a broggut on all sides
 		middleBroggut->broggutEdge = kMediumBroggutEdgeNone;
+	} else {
+		middleBroggut->broggutEdge = kMediumBroggutEdgeUp; // TESTING, default to up
 	}
+
 }
 
 - (void)updateAllMediumBroggutsEdges {
@@ -228,7 +247,7 @@ enum BroggutEdgeValues {
 	cellsWide = broggutArray->bWidth;
 	cellsHigh = broggutArray->bHeight;
 	enablePrimitiveDraw();
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 	for (int j = 0; j < cellsHigh; j++) {
 		for (int i = 0; i < cellsWide; i++) {
 			int straightIndex = i + (j * cellsWide);
@@ -252,6 +271,37 @@ enum BroggutEdgeValues {
 		}
 	}
 	disablePrimitiveDraw();
+}
+
+- (void)drawValidityRectForLocation:(CGPoint)location {
+	MediumBroggut* broggut = [self broggutCellForLocation:location];
+	if (broggut) {
+		if (broggut->broggutValue != -1) {
+			enablePrimitiveDraw();
+			CGRect brogRect = [self getBroggutRectForID:broggut->broggutID];
+			Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
+			if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
+				// If over a broggut that is minable, draw a faded green box
+				glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
+				drawFilledRect(brogRect, scroll);
+			} else {
+				// If over a broggut that is not minable, draw a faded red box
+				glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
+				drawFilledRect(brogRect, scroll);
+			}
+			disablePrimitiveDraw();
+		}
+		// Or else don't draw any box
+	}
+}
+
+- (void)showBroggutValueAtLocation:(CGPoint)location {
+	MediumBroggut* broggut = [self broggutCellForLocation:location];
+	if (isShowingValueText) {
+		NSString* string = [NSString stringWithFormat:@"Bgs: %i",broggut->broggutValue];
+		[valueTextObject setObjectText:string];
+		[valueTextObject setIsHidden:NO];
+	}
 }
 
 #pragma mark -

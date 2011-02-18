@@ -11,6 +11,12 @@
 
 @interface StructureObject : TouchableObject {
 	
+	// Variable attributes that all structure must implement
+	int attributeBroggutCost;
+	int attributeMetalCost;
+	int attributeHullCapacity;
+	int attributeHullCurrent;
+	int attributeMovingTime;
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;

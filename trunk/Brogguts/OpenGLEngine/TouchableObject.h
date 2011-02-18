@@ -15,6 +15,7 @@
 	Circle touchableBounds;
 }
 
+@property (nonatomic, assign) BOOL isTouchable;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
 

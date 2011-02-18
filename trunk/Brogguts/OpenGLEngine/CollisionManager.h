@@ -8,8 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+enum BroggutEdgeValues {
+	kMediumBroggutEdgeLeft,
+	kMediumBroggutEdgeUp,
+	kMediumBroggutEdgeRight,
+	kMediumBroggutEdgeDown,
+	kMediumBroggutEdgeNone,
+};
+
 @class BroggutObject;
 @class BroggutGenerator;
+@class TextObject;
 
 typedef struct Object_ID_Array {
 	int* objectIDArray; // Array of objects in that cell
@@ -53,6 +62,9 @@ typedef struct Broggut_Array {
 	int numberOfColumns;				// Number of cell columns
 	int numberOfRows;					// Number of cell rows
 	
+	TextObject* valueTextObject;		// Text object that shows the medium broggut value
+	BOOL isShowingValueText;			// Boolean about if the text is showing
+	
 	BroggutArray* broggutArray;			// A 2D array of brogguts
 	BroggutGenerator* generator;		// The generator the makes the medium brogguts
 }
@@ -64,6 +76,7 @@ typedef struct Broggut_Array {
 - (MediumBroggut*)broggutCellForLocation:(CGPoint)location;
 - (int)getBroggutIDatLocation:(CGPoint)location;
 - (CGPoint)getBroggutLocationForID:(int)brogid;
+- (CGRect)getBroggutRectForID:(int)brogid;
 - (BOOL)isLocationOccupiedByBroggut:(CGPoint)location;
 - (CGPoint)getLocationOfClosestMediumBroggutToPoint:(CGPoint)location;
 - (int)getBroggutValueAtLocation:(CGPoint)location;
@@ -73,7 +86,9 @@ typedef struct Broggut_Array {
 - (void)updateMediumBroggutEdgeAtLocation:(CGPoint)location;
 - (void)updateAllMediumBroggutsEdges;
 - (void)addMediumBroggut;
+- (void)removeMediumBroggutWithID:(int)brogID;
 - (void)renderMediumBroggutsInScreenBounds:(CGRect)bounds withScrollVector:(Vector2f)scroll;
+- (void)drawValidityRectForLocation:(CGPoint)location;
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
 

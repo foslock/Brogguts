@@ -10,13 +10,101 @@
 #import "Image.h"
 #import "GameController.h"
 #import "BroggutScene.h"
+#import "StructureObject.h"
+#import "CollisionManager.h"
 
 @implementation CraftObject
-
 
 - (void)dealloc {
 	[pathPointArray release];
 	[super dealloc];
+}
+
+- (void)initCraftWithID:(int)typeID {
+	switch (typeID) {
+		case kObjectCraftAntID:
+			attributeBroggutCost = kCraftAntCostBrogguts;
+			attributeMetalCost = kCraftAntCostMetal;
+			attributeEngines = kCraftAntEngines;
+			attributeWeapons = kCraftAntWeapons;
+			attributeAttackRange = kCraftAntAttackRange;
+			attributeAttackRate = kCraftAntAttackRate;
+			attributeHullCapacity = kCraftAntHull;
+			attributeHullCurrent = kCraftAntHull;
+			break;
+		case kObjectCraftMothID:
+			attributeBroggutCost = kCraftMothCostBrogguts;
+			attributeMetalCost = kCraftMothCostMetal;
+			attributeEngines = kCraftMothEngines;
+			attributeWeapons = kCraftMothWeapons;
+			attributeAttackRange = kCraftMothAttackRange;
+			attributeAttackRate = kCraftMothAttackRate;
+			attributeHullCapacity = kCraftMothHull;
+			attributeHullCurrent = kCraftMothHull;
+			break;
+		case kObjectCraftBeetleID:
+			attributeBroggutCost = kCraftBeetleCostBrogguts;
+			attributeMetalCost = kCraftBeetleCostMetal;
+			attributeEngines = kCraftBeetleEngines;
+			attributeWeapons = kCraftBeetleWeapons;
+			attributeAttackRange = kCraftBeetleAttackRange;
+			attributeAttackRate = kCraftBeetleAttackRate;
+			attributeHullCapacity = kCraftBeetleHull;
+			attributeHullCurrent = kCraftBeetleHull;
+			break;
+		case kObjectCraftMonarchID:
+			attributeBroggutCost = kCraftMonarchCostBrogguts;
+			attributeMetalCost = kCraftMonarchCostMetal;
+			attributeEngines = kCraftMonarchEngines;
+			attributeWeapons = kCraftMonarchWeapons;
+			attributeAttackRange = kCraftMonarchAttackRange;
+			attributeAttackRate = kCraftMonarchAttackRate;
+			attributeHullCapacity = kCraftMonarchHull;
+			attributeHullCurrent = kCraftMonarchHull;
+			break;
+		case kObjectCraftCamelID:
+			attributeBroggutCost = kCraftCamelCostBrogguts;
+			attributeMetalCost = kCraftCamelCostMetal;
+			attributeEngines = kCraftCamelEngines;
+			attributeWeapons = kCraftCamelWeapons;
+			attributeAttackRange = kCraftCamelAttackRange;
+			attributeAttackRate = kCraftCamelAttackRate;
+			attributeHullCapacity = kCraftCamelHull;
+			attributeHullCurrent = kCraftCamelHull;
+			break;
+		case kObjectCraftRatID:
+			attributeBroggutCost = kCraftRatCostBrogguts;
+			attributeMetalCost = kCraftRatCostMetal;
+			attributeEngines = kCraftRatEngines;
+			attributeWeapons = kCraftRatWeapons;
+			attributeAttackRange = kCraftRatAttackRange;
+			attributeAttackRate = kCraftRatAttackRate;
+			attributeHullCapacity = kCraftRatHull;
+			attributeHullCurrent = kCraftRatHull;
+			break;
+		case kObjectCraftSpiderID:
+			attributeBroggutCost = kCraftSpiderCostBrogguts;
+			attributeMetalCost = kCraftSpiderCostMetal;
+			attributeEngines = kCraftSpiderEngines;
+			attributeWeapons = kCraftSpiderWeapons;
+			attributeAttackRange = kCraftSpiderAttackRange;
+			attributeAttackRate = kCraftSpiderAttackRate;
+			attributeHullCapacity = kCraftSpiderHull;
+			attributeHullCurrent = kCraftSpiderHull;
+			break;
+		case kObjectCraftEagleID:
+			attributeBroggutCost = kCraftEagleCostBrogguts;
+			attributeMetalCost = kCraftEagleCostMetal;
+			attributeEngines = kCraftEagleEngines;
+			attributeWeapons = kCraftEagleWeapons;
+			attributeAttackRange = kCraftEagleAttackRange;
+			attributeAttackRate = kCraftEagleAttackRate;
+			attributeHullCapacity = kCraftEagleHull;
+			attributeHullCurrent = kCraftEagleHull;
+			break;
+		default:
+			break;
+	}
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling {
@@ -56,6 +144,8 @@
 		pathPointNumber = 0;
 		isFollowingPath = NO;
 		hasCurrentPathFinished = YES;
+		friendlyAIState = kFriendlyAIStateStill;
+		[self initCraftWithID:typeID];
 	}
 	return self;
 }
@@ -76,12 +166,14 @@
 - (void)stopFollowingCurrentPath {
 	isFollowingPath = NO;
 	hasCurrentPathFinished = YES;
+	friendlyAIState = kFriendlyAIStateStill;
 }
 
 - (void)resumeFollowingCurrentPath {
 	if (pathPointArray && [pathPointArray count] != 0) {
 		isFollowingPath = YES;
 		hasCurrentPathFinished = NO;
+		friendlyAIState = kFriendlyAIStateMoving;
 	}
 }
 
@@ -101,15 +193,31 @@
 			if (isPathLooped) {
 				pathPointNumber = 0;
 			} else {
+				isFollowingPath = NO;
 				hasCurrentPathFinished = YES;
+				friendlyAIState = kFriendlyAIStateStill;
 			}
 		}
 		[self accelerateTowardsLocation:moveTowardsPoint];
 	} else {
 		[self decelerate];
 	}
-
 	
+	// Check if there is an enemy in the closet vicinity
+	if (friendlyAIState == kFriendlyAIStateStill ||
+		friendlyAIState == kFriendlyAIStateMoving) {
+		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
+		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
+		for (int i = 0; i < [closeCraftArray count]; i++) {
+			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
+			if ([obj isKindOfClass:[StructureObject class]] || 
+				[obj isKindOfClass:[CraftObject class]]) {
+				if (obj.objectAlliance == kAllianceEnemy) {
+					closestEnemyObject = (TouchableObject*)obj;
+				}
+			}
+		}
+	}
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
@@ -141,16 +249,18 @@
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE ME
-	
-	if (isBeingDragged && !isBeingControlled) {
-		NSArray* newPath = [NSArray arrayWithObjects:
-							[NSValue valueWithCGPoint:dragLocation],
-							nil];
-		[self followPath:newPath isLooped:NO];
+	if (isBeingDragged) {
+		if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
+			NSArray* newPath = [NSArray arrayWithObjects:
+								[NSValue valueWithCGPoint:dragLocation],
+								nil];
+			[self followPath:newPath isLooped:NO];
+		} else {
+			[self.currentScene attemptToControlShipAtLocation:location];
+		}
 	}
 	isBeingDragged = NO;
-	dragLocation = objectLocation;					
-	
+	dragLocation = objectLocation;
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {

@@ -14,6 +14,7 @@
 #import "PlayerProfile.h"
 #import "StructureObject.h"
 #import "CraftObject.h"
+#import "AntCraftObject.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -98,7 +99,6 @@ static GameController* sharedGameController = nil;
 - (id)init {
     self = [super init];
     if(self != nil) {
-		
 		// Initialize the game
         [self initGameController];
     }
@@ -134,8 +134,8 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)createBaseCampLevel {
-	int width = 64;
-	int height = 48;
+	int width = 32;
+	int height = 24;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
@@ -165,7 +165,7 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 10 && j < 20) && (i > 10 && i < 20)) { // Create some medium brogguts
+			} else if ((j > 3 && j < 8) && (i > 3 && i < 8)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
 				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
@@ -207,6 +207,7 @@ static GameController* sharedGameController = nil;
 	
 	if (baseCamp) {
 		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
+		self.currentScene = newScene;
 	}
 	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
 	
@@ -244,8 +245,8 @@ static GameController* sharedGameController = nil;
 				case kObjectTypeCraft:
 					// Create a craft at that location with the appropriate type and rotation
 					objectType = [[currentArray objectAtIndex:1] intValue];
-					CraftObject* newCraft = [[CraftObject alloc]
-											 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
+					AntCraftObject* newCraft = [[AntCraftObject alloc]
+											 initWithLocation:currentPoint isTraveling:NO];
 					[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
 					[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
 					[newScene addTouchableObject:newCraft withColliding:NO];
@@ -260,6 +261,9 @@ static GameController* sharedGameController = nil;
 													 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
 					[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
 					[newScene addTouchableObject:newStructure withColliding:YES];
+					if (objectType == kObjectStructureBaseStationID) {
+						newScene.homeBaseLocation = currentPoint;
+					}
 					break;
 				default:
 					break;

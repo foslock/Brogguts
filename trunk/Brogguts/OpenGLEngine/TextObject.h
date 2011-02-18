@@ -12,6 +12,7 @@
 @class BitmapFont;
 
 @interface TextObject : CollidableObject {
+	BOOL isHidden;			// If the text is hidden (won't be drawn)
 	BOOL scrollWithBounds;	// If the text should scroll with the screen
 	int fontID;				// ID of the font to render in
 	NSString* objectText;	// Text of the object
@@ -20,6 +21,7 @@
 	Color4f fontColor;		// Color the font will be drawn with
 	Scale2f fontScale;		// Scale the font will be drawn with
 }
+@property (nonatomic, assign) BOOL isHidden;
 @property (nonatomic, assign) BOOL scrollWithBounds;
 @property (nonatomic, assign) int fontID;
 @property (copy) NSString* objectText;
