@@ -207,6 +207,11 @@
 
 - (void)updateSceneWithDelta:(GLfloat)aDelta {
 	
+	// Update the frame counter used by the scene
+	if (++frameCounter >= FRAME_COUNTER_MAX) {
+		frameCounter = 0;
+	}
+	
 	// Update the stars' positions and brightness if applicable
 	[sharedStarSingleton updateStars];
 	
@@ -245,11 +250,6 @@
 	 if (playerLocation.y < fullMapBounds.origin.y) playerLocation.y = fullMapBounds.origin.y;
 	 if (playerLocation.y > fullMapBounds.size.height) playerLocation.y = fullMapBounds.size.height;
 	 */
-	
-	// Update the frame counter used by the scene
-	if (++frameCounter >= FRAME_COUNTER_MAX) {
-		frameCounter = 0;
-	}
 	
 	// Update side bar
 	[sideBar updateSideBar];
@@ -317,10 +317,10 @@
 }
 
 - (void)sortRenderableObjectsByLayer {
-	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"renderLayer"
-												  ascending:YES];
-	[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-	[sortDescriptor release];
+	if (renderableObjects) {
+		NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
+		[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	}
 }
 
 - (void)renderScene {
@@ -345,9 +345,6 @@
 	// Draw the medium/large brogguts
 	[collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
 	
-	// Resort the objects so they are drawn in the correct layer
-	[self sortRenderableObjectsByLayer];
-	
 	// Render all objects (excluding text objects)
 	for (int i = 0; i < [renderableObjects count]; i++) {
 		CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
@@ -362,9 +359,6 @@
 		else
 			[tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID]];
 	}
-	
-	// Render camera sprite
-	// [camera renderCenteredAtPoint:cameraLocation withScrollVector:scroll];
 	
 	// Render images to screen
 	[sharedImageRenderSingleton renderImages];
@@ -387,10 +381,10 @@
 	
 	/*
 	 if (isTouchScrolling) {
-		glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-		enablePrimitiveDraw();
-		drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
-		disablePrimitiveDraw();
+	 glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+	 enablePrimitiveDraw();
+	 drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
+	 disablePrimitiveDraw();
 	 }
 	 */
 	
@@ -445,10 +439,13 @@
 		CollidableObject* obj = [renderableObjects objectAtIndex:i];
 		objPoint[0] = obj.objectLocation.x * xRatio;
 		objPoint[1] = obj.objectLocation.y * yRatio;
-		if (obj.objectType == kObjectBroggutSmallID)
+		if (obj.objectAlliance == kAllianceNeutral) {
 			glColor4f(1.0f, 1.0f, 0.0f, alpha);
-		else
+		} else if (obj.objectAlliance == kAllianceFriendly) {
 			glColor4f(0.0f, 1.0f, 0.0f, alpha);
+		} else if (obj.objectAlliance == kAllianceEnemy) {
+			glColor4f(1.0f, 0.0f, 0.0f, alpha);
+		}
 		glVertexPointer(2, GL_FLOAT, 0, objPoint);
 		glDrawArrays(GL_POINTS, 0, 1);
 	}
@@ -537,8 +534,9 @@
 	if (collides) {
 		[collisionManager addCollidableObject:obj]; // Adds to the collision detection
 	}
-	[renderableObjects addObject:obj];			// Adds to the rendering queue
-	[touchableObjects addObject:obj];			// Adds to the touchable queue
+	[renderableObjects addObject:obj];				// Adds to the rendering queue
+	[touchableObjects addObject:obj];				// Adds to the touchable queue
+	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
 }
 
 - (void)setControllingShip:(CraftObject *)craft {
@@ -553,7 +551,7 @@
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[CraftObject class]]) {
 			// Object is a craft
-			if (object == controllingShip) {
+			if (object == controllingShip || object.objectAlliance == kAllianceEnemy) {
 				continue;
 			}
 			if (CircleContainsPoint(object.boundingCircle, location)) {
@@ -608,8 +606,8 @@
 			movingTouchHash = [touch hash];
 			currentTouchLocation = touchLocation;
 			/*
-			
-			*/
+			 
+			 */
 		}
 		BOOL noObjectTouched = YES;
 		// Check all touchable objects and call their methods

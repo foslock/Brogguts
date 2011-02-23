@@ -8,6 +8,9 @@
 
 #import "StructureObject.h"
 #import "Image.h"
+#import "BroggutScene.h"
+#import "CollisionManager.h"
+#import "CraftObject.h"
 
 @implementation StructureObject
 
@@ -112,6 +115,24 @@
 		[self initStructureWithID:typeID];
 	}
 	return self;
+}
+
+- (void)updateObjectTargets {
+	// Check if there is an enemy in the closest vicinity
+	if (friendlyAIState == kFriendlyAIStateStill) {
+		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
+		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
+		for (int i = 0; i < [closeCraftArray count]; i++) {
+			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
+			if ([obj isKindOfClass:[StructureObject class]] || 
+				[obj isKindOfClass:[CraftObject class]]) {
+				if (obj.objectAlliance == kAllianceEnemy) {
+					closestEnemyObject = (TouchableObject*)obj;
+					// NSLog(@"Found an enemy: object (%i)", obj.uniqueObjectID);
+				}
+			}
+		}
+	}
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {

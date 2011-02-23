@@ -393,6 +393,14 @@ enum TheFixerValues {
 // Gameplay Specific Information
 //
 
+enum FriendlyAIStates {
+	kFriendlyAIStateMining,
+	kFriendlyAIStateMoving,
+	kFriendlyAIStateStill,
+	kFriendlyAIStateAttacking,
+	kFriendlyAIStateBuilding,
+};
+
 enum BroggutDataValues {
 	kBroggutRarityBase = 1000, // What below percents are divided into
 	kBroggutYoungRarity = 900, // 

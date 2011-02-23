@@ -35,7 +35,7 @@ static int globalUniqueID = 0;
 	if (self) {
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
-		renderLayer = 0;
+		renderLayer = 1;
 		objectLocation = location;
 		objectType = objecttype;
 		objectAlliance = kAllianceNeutral;
@@ -62,7 +62,7 @@ static int globalUniqueID = 0;
 	hasBeenCheckedForCollisions = YES;
 	other.hasBeenCheckedForCollisions = YES;
 	// NSLog(@"Object (%i) collided with Object (%i) at location: <%.0f,%.0f>", uniqueObjectID, other.uniqueObjectID, objectLocation.x, objectLocation.y);
-	if (objectType == kObjectBroggutSmallID) {
+	if (objectType == kObjectBroggutSmallID && other.objectType == kObjectBroggutSmallID) {
 		Vector2f tempVector = objectVelocity;
 		if (!staticObject) {
 			objectVelocity = Vector2fMultiply(other.objectVelocity, COLLISION_ELASTICITY);
@@ -98,7 +98,7 @@ static int globalUniqueID = 0;
 		[objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
 #ifdef BOUNDING_DEBUG
 		enablePrimitiveDraw();
-		drawCircle(self.boundingCircle, 20, vector);
+		drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
 		disablePrimitiveDraw();
 #endif
 	}

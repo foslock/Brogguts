@@ -145,9 +145,29 @@
 		isFollowingPath = NO;
 		hasCurrentPathFinished = YES;
 		friendlyAIState = kFriendlyAIStateStill;
+		renderLayer = 0;
 		[self initCraftWithID:typeID];
 	}
 	return self;
+}
+
+- (void)updateObjectTargets {
+	// Check if there is an enemy in the closest vicinity
+	if (friendlyAIState == kFriendlyAIStateStill ||
+		friendlyAIState == kFriendlyAIStateMoving) {
+		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
+		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
+		for (int i = 0; i < [closeCraftArray count]; i++) {
+			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
+			if ([obj isKindOfClass:[StructureObject class]] || 
+				[obj isKindOfClass:[CraftObject class]]) {
+				if (obj.objectAlliance == kAllianceEnemy) {
+					closestEnemyObject = (TouchableObject*)obj;
+					// NSLog(@"Found an enemy: object (%i)", obj.uniqueObjectID);
+				}
+			}
+		}
+	}
 }
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
@@ -202,65 +222,65 @@
 	} else {
 		[self decelerate];
 	}
-	
-	// Check if there is an enemy in the closet vicinity
-	if (friendlyAIState == kFriendlyAIStateStill ||
-		friendlyAIState == kFriendlyAIStateMoving) {
-		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
-		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
-		for (int i = 0; i < [closeCraftArray count]; i++) {
-			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
-			if ([obj isKindOfClass:[StructureObject class]] || 
-				[obj isKindOfClass:[CraftObject class]]) {
-				if (obj.objectAlliance == kAllianceEnemy) {
-					closestEnemyObject = (TouchableObject*)obj;
-				}
-			}
-		}
-	}
+
+	[self updateObjectTargets];
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+	enablePrimitiveDraw();
+	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange + boundingCircle.radius) {
+		glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+		glLineWidth(6.0f);
+		drawLine(objectLocation, closestEnemyObject.objectLocation, vector);
+		glLineWidth(1.0f);
+	}
 	if (isBeingDragged) {
-		enablePrimitiveDraw();
 		if (isBeingControlled) {
 			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 		} else {
 			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-		}		
-		drawDashedLine(objectLocation, dragLocation, 4, vector);
-		disablePrimitiveDraw();
+		}
+		float distance = GetDistanceBetweenPoints(objectLocation, dragLocation);
+		int segments = distance / 50;
+		drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), vector);
+		
 	}
-	
+	disablePrimitiveDraw();
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
 	// OVERRIDE ME
-	isBeingDragged = YES;
-	dragLocation = location;
+	if (objectAlliance == kAllianceFriendly) {
+		isBeingDragged = YES;
+		dragLocation = location;
+	}
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
 	// OVERRIDE ME
-	dragLocation = toLocation;
+	if (objectAlliance == kAllianceFriendly) {
+		dragLocation = toLocation;
+	}
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE ME
-	if (isBeingDragged) {
-		if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
-			NSArray* newPath = [NSArray arrayWithObjects:
-								[NSValue valueWithCGPoint:dragLocation],
-								nil];
-			[self followPath:newPath isLooped:NO];
-		} else {
-			[self.currentScene attemptToControlShipAtLocation:location];
+	if (objectAlliance == kAllianceFriendly) {
+		if (isBeingDragged) {
+			if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
+				NSArray* newPath = [NSArray arrayWithObjects:
+									[NSValue valueWithCGPoint:dragLocation],
+									nil];
+				[self followPath:newPath isLooped:NO];
+			} else {
+				[self.currentScene attemptToControlShipAtLocation:location];
+			}
 		}
+		isBeingDragged = NO;
+		dragLocation = objectLocation;
 	}
-	isBeingDragged = NO;
-	dragLocation = objectLocation;
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {
