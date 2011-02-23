@@ -10,6 +10,8 @@
 #import <objc/objc.h>
 #import "Global.h"
 
+#define CIRCLE_SEGMENTS_COUNT 20
+
 //
 // THESE MUST BE CALLED BEFORE PRIMITIVE DRAWING CAN OCCUR
 //
@@ -184,6 +186,41 @@ static inline void drawCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, aSegments);
+	
+	free(vertices);
+}
+
+static inline void drawDashedCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
+	
+	// Set up the array that will store our vertices.  Each segment will need
+	// two vertices {x, y} so we multiply the segments passedin by 2
+	GLfloat* vertices = (GLfloat*)malloc( (aSegments*2) * sizeof(*vertices) );
+	
+	// Set up the counter that will track the number of vertices we will have
+	int vertexCount = 0;
+	
+	// Loop through each segment creating the vertices for that segment and add
+	// the vertices to the vertices array
+	for(int segment = 0; segment < aSegments; segment++) 
+	{ 
+		// Calculate the angle based on the number of segments
+		float theta = 2.0f * M_PI * (float)segment / (float)aSegments;
+		
+		// Calculate the x and y position of the current segment
+		float x = aCircle.radius * cosf(theta) - scroll.x;
+		float y = aCircle.radius * sinf(theta) - scroll.y;
+		
+		// Add the new vertices to the vertices array taking into account the circles
+		// current x and y position
+		vertices[vertexCount++] = x + aCircle.x;
+		vertices[vertexCount++] = y + aCircle.y;
+	}
+	
+	// Set up the vertex pointer to the array of vertices we have created and
+	// then use GL_LINE_LOOP to render them
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glDrawArrays(GL_LINES, 0, aSegments);
 	
 	free(vertices);
 }

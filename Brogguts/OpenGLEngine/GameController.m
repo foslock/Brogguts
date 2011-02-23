@@ -161,11 +161,17 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
+			} else if (i == 10 && j == 10) {
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
 			} else if (i == 0 && j == 13) { // Add the initial structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 3 && j < 20) && (i > 3 && i < 20)) { // Create some medium brogguts
+			} else if ((j > 3 && j < 10) && (i > 3 && i < 10)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
 				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
@@ -249,7 +255,7 @@ static GameController* sharedGameController = nil;
 											 initWithLocation:currentPoint isTraveling:NO];
 					[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
 					[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-					[newScene addTouchableObject:newCraft withColliding:NO];
+					[newScene addTouchableObject:newCraft withColliding:YES];
 					if ([[currentArray objectAtIndex:3] boolValue]) {
 						[newScene setControllingShip:newCraft];
 						[newScene setCameraLocation:newCraft.objectLocation];

@@ -138,9 +138,6 @@
 		glRotatef(90, 0, 0, 1);
 		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
 	}
-
-	
-    
 	
 	// Setup the texture environment and blend functions.  
 	// This controls how a texture is blended with other textures

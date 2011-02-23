@@ -9,14 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "ControllableObject.h"
 
-enum FriendlyAIStates {
-	kFriendlyAIStateMining,
-	kFriendlyAIStateMoving,
-	kFriendlyAIStateStill,
-	kFriendlyAIStateAttacking,
-	kFriendlyAIStateBuilding,
-};
-
 @interface CraftObject : ControllableObject {
 	// Path variables
 	NSMutableArray* pathPointArray;		// Array containing the points that this craft should follow
@@ -43,6 +35,8 @@ enum FriendlyAIStates {
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)updateObjectTargets;
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
 

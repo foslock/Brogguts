@@ -11,6 +11,12 @@
 
 @interface StructureObject : TouchableObject {
 	
+	// AI states
+	int friendlyAIState;
+	
+	// Closest enemy object, within range
+	TouchableObject* closestEnemyObject;
+	
 	// Variable attributes that all structure must implement
 	int attributeBroggutCost;
 	int attributeMetalCost;
@@ -20,6 +26,8 @@
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)updateObjectTargets;
 
 
 @end
