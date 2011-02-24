@@ -283,7 +283,7 @@
 									[NSValue valueWithCGPoint:dragLocation],
 									nil];
 				[self followPath:newPath isLooped:NO];
-			} else {
+			} else if (isBeingControlled) {
 				[self.currentScene attemptToControlShipAtLocation:location];
 			}
 		}

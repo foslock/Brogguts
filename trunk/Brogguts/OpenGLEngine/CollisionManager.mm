@@ -511,7 +511,6 @@
 		CollidableObject* currentObject = [objectTableValues objectAtIndex:i];
 		if (!CGRectContainsPoint(bounds, currentObject.objectLocation))
 			continue;
-		// This function is used for updating, not adding new objects
 		[self updateCollidableObjectWithID:currentObject.uniqueObjectID];
 		currentObject.hasBeenCheckedForCollisions = NO; // Reset collision checks
 	}
@@ -535,11 +534,12 @@
 					CollidableObject* obj1 = [bufferNearbyObjects objectAtIndex:k];
 					for (int l = k + 1; l < [bufferNearbyObjects count]; l++) {
 						CollidableObject* obj2 = [bufferNearbyObjects objectAtIndex:l];
-						if (obj1 == obj2 || obj1.hasBeenCheckedForCollisions || obj2.hasBeenCheckedForCollisions) {
+						if ( obj1 == obj2) {
 							continue;
 						}
-						if (CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle)) {
+						if ( CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle) ) {
 							[obj1 collidedWithOtherObject:obj2];
+							[obj2 collidedWithOtherObject:obj1];
 						}
 					}
 				}

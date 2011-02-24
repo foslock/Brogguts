@@ -21,6 +21,7 @@
 	float objectRotation;
 	float rotationSpeed;
 	BOOL isCheckedForCollisions;
+	BOOL isCheckedForMultipleCollisions;
 	BOOL hasBeenCheckedForCollisions;
 	BOOL isTextObject;
 	BOOL destroyNow;
@@ -41,6 +42,7 @@
 @property (nonatomic, assign) float rotationSpeed;
 @property (nonatomic, assign) float objectRotation;
 @property (nonatomic, assign) BOOL isCheckedForCollisions;
+@property (nonatomic, assign) BOOL isCheckedForMultipleCollisions;
 @property (nonatomic, assign) BOOL hasBeenCheckedForCollisions;
 @property (nonatomic, assign) BOOL destroyNow;
 @property (nonatomic, assign) BOOL isTextObject;

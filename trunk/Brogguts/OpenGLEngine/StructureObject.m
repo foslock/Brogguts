@@ -111,6 +111,7 @@
 	if (self) {
 		staticObject = YES;
 		isTouchable = NO;
+		isCheckedForMultipleCollisions = YES;
 		// Initialize the structure
 		[self initStructureWithID:typeID];
 	}

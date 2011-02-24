@@ -68,12 +68,7 @@ enum MiningStates {
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	// Check if returning cargo
-	if (hasCurrentPathFinished && miningState == kMiningStateReturning) {
-		// Cash in brogguts!
-		[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
-		attributeCurrentCargo = 0;
-		[self startMiningBroggutWithLocation:miningLocation];
-	}
+	
 	
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
@@ -125,6 +120,25 @@ enum MiningStates {
 		disablePrimitiveDraw();
 	}
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
+}
+
+- (void)collidedWithOtherObject:(CollidableObject *)other {
+	if (other.objectType == kObjectStructureBaseStationID &&
+		other.objectAlliance == kAllianceFriendly) {
+		if (attributeCurrentCargo > 0) {
+			// Cash in brogguts!
+			[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
+			attributeCurrentCargo = 0;
+			if (miningState == kMiningStateReturning) {
+				[self startMiningBroggutWithLocation:miningLocation];
+			}
+		}
+	}
+	[super collidedWithOtherObject:other];
+}
+
+- (void)addCargo:(int)cargo {
+	attributeCurrentCargo += cargo;
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
