@@ -114,6 +114,16 @@ enum MiningStates {
 	if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation];
 	}
+	if (miningState == kMiningStateMining) {
+		enablePrimitiveDraw();
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
+		float randY = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_HEIGHT) / 4);
+		glLineWidth(3.0f);
+		drawLine(objectLocation, CGPointMake(miningLocation.x + randX, miningLocation.y + randY), vector);
+		glLineWidth(1.0f);
+		disablePrimitiveDraw();
+	}
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
 }
 

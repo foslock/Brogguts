@@ -229,6 +229,15 @@
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	enablePrimitiveDraw();
+	if (isCurrentlyHoveredOver) {
+		// Draw "selection circle"
+		if (objectAlliance == kAllianceFriendly) {
+			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+		} else {
+			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+		}
+		drawDashedCircle(boundingCircle, 20, vector);
+	}
 	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange + boundingCircle.radius) {
 		glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 		glLineWidth(6.0f);

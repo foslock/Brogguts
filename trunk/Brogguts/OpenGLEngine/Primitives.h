@@ -183,7 +183,6 @@ static inline void drawCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, aSegments);
 	
@@ -218,7 +217,6 @@ static inline void drawDashedCircle(Circle aCircle, uint aSegments, Vector2f scr
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINES, 0, aSegments);
 	

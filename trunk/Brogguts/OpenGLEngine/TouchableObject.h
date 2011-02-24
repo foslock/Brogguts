@@ -12,6 +12,7 @@
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
+	BOOL isCurrentlyHoveredOver; // Private, true if a touch has entered and NOT left its bounding circle yet
 	Circle touchableBounds;
 }
 
@@ -20,6 +21,8 @@
 @property (nonatomic, assign) Circle touchableBounds;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
+- (void)touchesHoveredOver;
+- (void)touchesHoveredLeft;
 - (void)touchesBeganAtLocation:(CGPoint)location;
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation;
 - (void)touchesEndedAtLocation:(CGPoint)location;
