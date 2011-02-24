@@ -231,7 +231,7 @@
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
 	if (closestBrog && !closestBrog.destroyNow) {
 		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
-			[self addBroggutValue:closestBrog.broggutValue atLocation:closestBrog.objectLocation];
+			[controllingShip addCargo:closestBrog.broggutValue];
 			[closestBrog setDestroyNow:YES];
 			[sharedParticleSingleton createParticles:50 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
 		}

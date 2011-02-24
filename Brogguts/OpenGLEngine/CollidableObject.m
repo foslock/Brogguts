@@ -17,7 +17,7 @@ static int globalUniqueID = 0;
 
 @synthesize objectRotation;
 @synthesize renderLayer;
-@synthesize isCheckedForCollisions, destroyNow, isTextObject;
+@synthesize isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
 @synthesize hasBeenCheckedForCollisions;
@@ -41,8 +41,9 @@ static int globalUniqueID = 0;
 		objectAlliance = kAllianceNeutral;
 		objectVelocity = Vector2fZero;
 		rotationSpeed = 0.0f;
-		isCheckedForCollisions = NO; // Defaults to NOT being in the spacial collision grid
-		hasBeenCheckedForCollisions = NO; // Temp var that is used to make sure duplicate collisions aren't checked
+		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
+		hasBeenCheckedForCollisions = NO;		// Var that is used to make sure duplicate collisions aren't checked
+		isCheckedForMultipleCollisions = NO;	// Set to YES if you want multiple objects checking collisions with this one
 		isTextObject = NO;
 		staticObject = NO;
 		
@@ -58,19 +59,12 @@ static int globalUniqueID = 0;
 	return [[GameController sharedGameController] currentScene];
 }
 
-- (void)collidedWithOtherObject:(CollidableObject*)other { // Called ONCE for every collision, not for each object
-	hasBeenCheckedForCollisions = YES;
-	other.hasBeenCheckedForCollisions = YES;
+- (void)collidedWithOtherObject:(CollidableObject*)other { // Called ONCE for each object, ON each object in the collision
+	if (!isCheckedForMultipleCollisions) hasBeenCheckedForCollisions = YES;
+	if (!other.isCheckedForMultipleCollisions) other.hasBeenCheckedForCollisions = YES;
+	
 	// NSLog(@"Object (%i) collided with Object (%i) at location: <%.0f,%.0f>", uniqueObjectID, other.uniqueObjectID, objectLocation.x, objectLocation.y);
-	if (objectType == kObjectBroggutSmallID && other.objectType == kObjectBroggutSmallID) {
-		Vector2f tempVector = objectVelocity;
-		if (!staticObject) {
-			objectVelocity = Vector2fMultiply(other.objectVelocity, COLLISION_ELASTICITY);
-		}
-		if (!other.staticObject) {
-			other.objectVelocity = Vector2fMultiply(tempVector, COLLISION_ELASTICITY);
-		}
-	}
+	
 }
 
 - (Circle)boundingCircle {
@@ -98,6 +92,7 @@ static int globalUniqueID = 0;
 		[objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
 #ifdef BOUNDING_DEBUG
 		enablePrimitiveDraw();
+		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 		drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
 		disablePrimitiveDraw();
 #endif
