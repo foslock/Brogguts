@@ -134,15 +134,15 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)createBaseCampLevel {
-	int width = 32;
-	int height = 25;
+	int width = 128;
+	int height = 96;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
 	[plistArray insertObject:[NSNumber numberWithBool:YES] atIndex:1];
 	[plistArray insertObject:[NSNumber numberWithInt:width] atIndex:2];
 	[plistArray insertObject:[NSNumber numberWithInt:height] atIndex:3];
-	[plistArray insertObject:[NSNumber numberWithInt:250] atIndex:4];
+	[plistArray insertObject:[NSNumber numberWithInt:500] atIndex:4];
 	
 	for (int j = 0; j < height; j++) {
 		for (int i = 0; i < width; i++) {
@@ -171,7 +171,7 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 3 && j < 10) && (i > 3 && i < 10)) { // Create some medium brogguts
+			} else if ((j > 9 && j < 16) && (i > 9 && i < 20)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
 				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));

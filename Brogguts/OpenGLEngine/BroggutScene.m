@@ -49,6 +49,7 @@
 	[fontArray release];
 	[textObjectArray release];
 	[currentObjectsTouching release];
+	[currentObjectsHovering release];
 	[renderableObjects release];
 	[renderableDestroyed release];
 	[touchableObjects release];
@@ -65,6 +66,7 @@
 		touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		textObjectArray = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		currentObjectsTouching = [[NSMutableDictionary alloc] initWithCapacity:11];
+		currentObjectsHovering = [[NSMutableDictionary alloc] initWithCapacity:11];
 		collisionManager = [[CollisionManager alloc] initWithContainingRect:mapBounds WithCellWidth:COLLISION_CELL_WIDTH withHeight:COLLISION_CELL_HEIGHT];
 		visibleScreenBounds = screenBounds;
 		fullMapBounds = mapBounds;
@@ -616,11 +618,14 @@
 			if (obj.isTouchable) {
 				if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
 					if (!obj.isCurrentlyTouched) {
+						obj.isCurrentlyTouched = YES;
 						if (touch.tapCount == 2) {
 							[obj touchesDoubleTappedAtLocation:touchLocation];
 						} else {
+							[obj touchesHoveredOver];
 							[obj touchesBeganAtLocation:touchLocation];
 							[currentObjectsTouching setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
+							[currentObjectsHovering setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
 							if ([touches count] == 1) isTouchScrolling = NO;
 						}
 						noObjectTouched = NO;
@@ -655,11 +660,44 @@
 				break;
 			}
 		}
-		
+	
+		// Update the position of the camera moving/scrolling touch
 		if (movingTouchHash == [touch hash]) {
 			currentTouchLocation = touchLocation;
 		}
 		
+		// Check if the current hovered object no longer is being hovered over
+		TouchableObject* currentHover = [currentObjectsHovering objectForKey:[NSNumber numberWithInt:[touch hash]]];
+		if (currentHover && !CircleContainsPoint(currentHover.boundingCircle, touchLocation)) {
+			[currentHover touchesHoveredLeft];
+		}
+		
+		// Check each touchable object and see which object is closest to the touch
+		float minDistance = visibleScreenBounds.size.width + visibleScreenBounds.size.height;
+		TouchableObject* closestObj = nil;
+		for (int i = 0; i < [touchableObjects count]; i++) {
+			TouchableObject* obj = [touchableObjects objectAtIndex:i];
+			if (obj.isTouchable) {
+				float distance = GetDistanceBetweenPoints(obj.objectLocation, touchLocation);
+				if (distance < minDistance && CircleContainsPoint(obj.boundingCircle, touchLocation)) {
+					minDistance = distance;
+					closestObj = obj;
+				}
+			}
+		}
+		
+		// If there was an object hovered over, add it to the dictionary
+		if (closestObj) {
+			// Check if there is a current hover object
+			TouchableObject* currentHover = [currentObjectsHovering objectForKey:[NSNumber numberWithInt:[touch hash]]];
+			if (currentHover && currentHover != closestObj) {
+				[currentHover touchesHoveredLeft];
+			}
+			[currentObjectsHovering setObject:closestObj forKey:[NSNumber numberWithInt:[touch hash]]];
+			[closestObj touchesHoveredOver];
+		}
+		
+		// Call the touches Moved method on the current object that owns this touch
 		TouchableObject* currentObj = [currentObjectsTouching objectForKey:[NSNumber numberWithInt:[touch hash]]];
 		if (currentObj) {
 			[currentObj touchesMovedToLocation:touchLocation from:prevTouchLocation];
@@ -677,10 +715,19 @@
 		CGPoint originalTouchLocation = [touch locationInView:aView];
 		CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:visibleScreenBounds];
 		
+		// Call touches ended method for object that owns that touch
 		TouchableObject* currentObj = [currentObjectsTouching objectForKey:[NSNumber numberWithInt:[touch hash]]];
 		if (currentObj) {
 			[currentObj touchesEndedAtLocation:touchLocation];
 			[currentObjectsTouching removeObjectForKey:[NSNumber numberWithInt:[touch hash]]];
+			currentObj.isCurrentlyTouched = NO;
+		}
+		
+		// Call hover left method on the object that was hovered over by that touch
+		TouchableObject* currentHoverObj = [currentObjectsHovering objectForKey:[NSNumber numberWithInt:[touch hash]]];
+		if (currentHoverObj) {
+			[currentHoverObj touchesHoveredLeft];
+			[currentObjectsHovering removeObjectForKey:[NSNumber numberWithInt:[touch hash]]];
 		}
 		
 		// Check if the touch is in the (active) sidebar

@@ -81,6 +81,7 @@
 	NSMutableArray* renderableDestroyed;		 // The array of objects that need to be destroyed through the next frame pass
 	NSMutableArray* touchableObjects;			 // The array of objects that need to be checked for touches in ADDITION to rendered/updated
 	NSMutableDictionary* currentObjectsTouching; // Key: numerical hash value of the touch. Value: the object currently being touched
+	NSMutableDictionary* currentObjectsHovering; // Key: numerical hash value of the touch. Value: the object currently being touched
 	CollisionManager* collisionManager;			 // Manages objects that need to check between other collidable objects
 	
 	// Camera Control

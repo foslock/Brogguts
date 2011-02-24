@@ -17,6 +17,7 @@
 	if (self) {
 		isTouchable = YES;
 		isCurrentlyTouched = NO;
+		isCurrentlyHoveredOver = NO;
 	}
 	return self;
 }
@@ -27,6 +28,28 @@
 	tempBoundingCircle.y = objectLocation.y;
 	tempBoundingCircle.radius = objectImage.imageSize.width / 2;
 	return tempBoundingCircle;
+}
+
+- (void)touchesHoveredOver {
+	// OVERRIDE ME, BUT CALL SUPER FIRST
+	if (!isCurrentlyHoveredOver) {
+		isCurrentlyHoveredOver = YES;
+	} else {
+		return;
+	}
+
+	NSLog(@"Hovered over object (%i)", uniqueObjectID);
+}
+
+- (void)touchesHoveredLeft {
+	// OVERRIDE ME, BUT CALL SUPER FIRST
+	if (isCurrentlyHoveredOver) {
+		isCurrentlyHoveredOver = NO;
+	} else {
+		return;
+	}
+	
+	NSLog(@"Hovered left object (%i)", uniqueObjectID);
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
