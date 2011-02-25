@@ -32,16 +32,21 @@
 	int attributeAttackRate;
 	int attributeHullCapacity;
 	int attributeHullCurrent;
+	
+	// Player cargo capacity
+	int attributePlayerCurrentCargo;
+	int attributePlayerCargoCapacity;
 }
+
+@property (readonly) int attributePlayerCargoCapacity;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
+- (void)addCargo:(int)cargo;
 - (void)updateObjectTargets;
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
-
 - (void)stopFollowingCurrentPath;
-
 - (void)resumeFollowingCurrentPath;
 
 @end

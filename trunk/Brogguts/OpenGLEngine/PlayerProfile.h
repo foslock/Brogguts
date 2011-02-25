@@ -18,9 +18,9 @@
 	int playerExperience;
 }
 
-- (void)updateProfile;
+- (void)updateProfile; // Updates the display number of brogguts (what "broggutCount" returns)
 - (void)addBrogguts:(int)brogs;
-- (void)subtractBrogguts:(int)brogs;
+- (BOOL)subtractBrogguts:(int)brogs; // Returns NO if the current broggut count is too low to subtract the passed in brogguts and DOES NOT subtract them
 
 @property (nonatomic, assign) int playerSpaceYear;
 @property (nonatomic, assign) int broggutCount;

@@ -11,6 +11,7 @@
 #import "BroggutScene.h"
 #import "CollisionManager.h"
 #import "CraftObject.h"
+#import "AntCraftObject.h"
 
 @implementation StructureObject
 
@@ -112,8 +113,17 @@
 		staticObject = YES;
 		isTouchable = NO;
 		isCheckedForMultipleCollisions = YES;
+		isCheckedForRadialEffect = YES;
+		pathPointArray = nil;
+		pathPointNumber = 0;
+		isFollowingPath = NO;
+		hasCurrentPathFinished = YES;		
 		// Initialize the structure
 		[self initStructureWithID:typeID];
+		if (traveling) {
+			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
+			[self followPath:path isLooped:NO];
+		}
 	}
 	return self;
 }
@@ -133,6 +143,92 @@
 				}
 			}
 		}
+	}
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+	// Get the current point we should be following
+	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
+		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
+		CGPoint moveTowardsPoint = [pointValue CGPointValue];
+		// If the structure has reached the point...
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint)) {
+			pathPointNumber++;
+		}
+		if (pathPointNumber < [pathPointArray count]) {
+			NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
+			moveTowardsPoint = [pointValue CGPointValue];
+		} else {
+			if (isPathLooped) {
+				pathPointNumber = 0;
+			} else {
+				isFollowingPath = NO;
+				hasCurrentPathFinished = YES;
+				friendlyAIState = kFriendlyAIStateStill;
+			}
+		}
+		[self moveTowardsLocation:moveTowardsPoint];
+	} else {
+		// Don't move, has reached target location
+		objectVelocity = Vector2fZero;
+	}
+	
+	[self updateObjectTargets];
+	[super updateObjectLogicWithDelta:aDelta];
+}
+
+- (void)moveTowardsLocation:(CGPoint)location {
+	float movingMagnitude = 1.0f / (float)attributeMovingTime;
+	if (location.x > objectLocation.x) {
+		if (fabs(location.x - objectLocation.x) > movingMagnitude)
+			objectVelocity.x = movingMagnitude;
+		else
+			objectVelocity.x = location.x - objectLocation.x;
+	}
+	if (location.x < objectLocation.x) {
+		if (fabs(location.x - objectLocation.x) > movingMagnitude)
+			objectVelocity.x = - movingMagnitude;
+		else
+			objectVelocity.x = location.x - objectLocation.x;
+	}
+	if (location.y > objectLocation.y) {
+		if (fabs(location.y - objectLocation.y) > movingMagnitude)
+			objectVelocity.y = movingMagnitude;
+		else
+			objectVelocity.y = location.y - objectLocation.y;
+	}
+	if (location.y < objectLocation.y) {
+		if (fabs(location.y - objectLocation.y) > movingMagnitude)
+			objectVelocity.y = - movingMagnitude;
+		else
+			objectVelocity.y = location.y - objectLocation.y;
+	}
+}
+
+- (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
+	if ([array count] == 0) {
+		NSLog(@"Path contained no points!");
+		return;
+	}
+	[pathPointArray autorelease];
+	pathPointArray = [[NSMutableArray alloc] initWithArray:array];
+	isFollowingPath = YES;
+	pathPointNumber = 0;
+	isPathLooped = looped;
+	hasCurrentPathFinished = NO;
+}
+
+- (void)stopFollowingCurrentPath {
+	isFollowingPath = NO;
+	hasCurrentPathFinished = YES;
+	friendlyAIState = kFriendlyAIStateStill;
+}
+
+- (void)resumeFollowingCurrentPath {
+	if (pathPointArray && [pathPointArray count] != 0) {
+		isFollowingPath = YES;
+		hasCurrentPathFinished = NO;
+		friendlyAIState = kFriendlyAIStateMoving;
 	}
 }
 

@@ -29,7 +29,6 @@
 	BOOL isMovingObjectIn;
 	BOOL isMovingObjectOut;
 	CGPoint sideBarObjectLocation;
-	
 }
 
 @property (nonatomic, assign) BOOL isSideBarShowing;

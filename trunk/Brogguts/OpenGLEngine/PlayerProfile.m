@@ -43,8 +43,13 @@
 	broggutCount += brogs;
 }
 
-- (void)subtractBrogguts:(int)brogs {
-	broggutCount -= brogs;
+- (BOOL)subtractBrogguts:(int)brogs {
+	if (brogs > broggutCount) {
+		return NO;
+	} else {
+		broggutCount -= brogs;
+		return YES;
+	}	
 }
 
 - (int)broggutCount {
@@ -59,6 +64,7 @@
 		[self setBroggutCount:		[coder decodeIntForKey:@"broggutCount"]];
 		[self setMetalCount:		[coder decodeIntForKey:@"metalCount"]];
 		[self setPlayerExperience:	[coder decodeIntForKey:@"playerExperience"]];
+		broggutDisplayNumber = broggutCount;
 	}
 	return self;
 }

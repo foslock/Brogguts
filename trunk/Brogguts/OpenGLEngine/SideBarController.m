@@ -8,6 +8,7 @@
 
 #import "SideBarController.h"
 #import "SideBarObject.h"
+#import "MainMenuSideBar.h"
 
 @implementation SideBarController
 
@@ -24,8 +25,10 @@
 		sideBarWidth = width;
 		sideBarHeight = height;
 		sideBarStack = [[NSMutableArray alloc] init];
-		SideBarObject* topTemp = [[SideBarObject alloc] init];
-		[self pushSideBarObject:topTemp];
+		sideBarObjectLocation = location;
+		MainMenuSideBar* topTemp = [[MainMenuSideBar alloc] init];
+		[topTemp setMyController:self];
+		[sideBarStack addObject:topTemp];
 		[topTemp release];
 	}
 	return self;
@@ -87,29 +90,41 @@
 			}
 		}
 		
+		if (!isMovingObjectIn && !isMovingObjectOut)
+			sideBarObjectLocation = sideBarLocation;
+		
 		if (!isSideBarMovingIn && !isSideBarMovingOut) {
 			// update the current object on the top of the stack
 			SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
 			if (topObject) {
 				if (isMovingObjectIn) {
 					isMovingObjectOut = NO;
-					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x - SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
-					if (sideBarObjectLocation.x <= sideBarLocation.x) {
+					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x + SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
+					if (sideBarObjectLocation.x >= sideBarLocation.x) {
 						sideBarObjectLocation = sideBarLocation;
 						isMovingObjectIn = NO;
 					}
 				}
 				if (isMovingObjectOut) {
 					isMovingObjectIn = NO;
-					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x + SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
-					if (sideBarObjectLocation.x >= sideBarLocation.x + sideBarWidth) {
-						sideBarObjectLocation = CGPointMake(sideBarLocation.x + sideBarWidth, sideBarLocation.y);
+					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x - SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
+					if (sideBarObjectLocation.x <= sideBarLocation.x - sideBarWidth) {
+						sideBarObjectLocation = CGPointMake(sideBarLocation.x - sideBarWidth, sideBarLocation.y);
 						isMovingObjectOut = NO;
+						[sideBarStack removeLastObject];
 					}
 				}
 			}
 		}
 	}
+}
+
+- (CGRect)backButtonRect {
+	CGRect rect = CGRectMake(sideBarLocation.x,
+							 sideBarLocation.y + sideBarHeight - SIDEBAR_BUTTON_HEIGHT,
+							 SIDEBAR_BUTTON_WIDTH,
+							 SIDEBAR_BUTTON_HEIGHT);
+	return rect;
 }
 
 - (void)renderSideBar {
@@ -129,7 +144,15 @@
 	disablePrimitiveDraw();
 	
 	SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-	[topObject renderWithOffset:Vector2fMake(sideBarObjectLocation.x, sideBarObjectLocation.y)];
+	[topObject renderWithOffset:Vector2fMake(-sideBarObjectLocation.x, -sideBarObjectLocation.y)];
+	
+	if ([sideBarStack count] > 1) {
+		// Draw the back button
+		enablePrimitiveDraw();
+		glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+		drawRect([self backButtonRect], Vector2fZero);
+		disablePrimitiveDraw();
+	}
 }
 
 - (void)pushSideBarObject:(SideBarObject*)sideBar {
@@ -145,23 +168,41 @@
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
-	// OVERRIDE
-	// NSLog(@"Touches began in sidebar");
+	if (!isSideBarMovingIn && !isSideBarMovingOut &&
+		!isMovingObjectIn && !isMovingObjectOut) {
+		if ([sideBarStack count] > 1) {
+			if (CGRectContainsPoint([self backButtonRect], location)) {
+				[self popSideBarObject];
+				return;
+			}
+		}
+		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+		[topObject touchesBeganAtLocation:location];
+	}
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
-	// OVERRIDE
-	// NSLog(@"Touches moved in sidebar");
+	if (!isSideBarMovingIn && !isSideBarMovingOut &&
+		!isMovingObjectIn && !isMovingObjectOut) {
+		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+		[topObject touchesMovedToLocation:toLocation from:fromLocation];
+	}
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
-	// OVERRIDE
-	// NSLog(@"Touches ended in sidebar");
+	if (!isSideBarMovingIn && !isSideBarMovingOut &&
+		!isMovingObjectIn && !isMovingObjectOut) {
+		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+		[topObject touchesEndedAtLocation:location];
+	}
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {
-	// OVERRIDE
-	// NSLog(@"Touches double tapped in sidebar");
+	if (!isSideBarMovingIn && !isSideBarMovingOut &&
+		!isMovingObjectIn && !isMovingObjectOut) {
+		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+		[topObject touchesDoubleTappedAtLocation:location];
+	}
 }
 
 @end

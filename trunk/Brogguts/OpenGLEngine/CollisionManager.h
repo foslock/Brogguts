@@ -19,6 +19,7 @@ enum BroggutEdgeValues {
 @class BroggutObject;
 @class BroggutGenerator;
 @class TextObject;
+@class TouchableObject;
 
 typedef struct Object_ID_Array {
 	int* objectIDArray; // Array of objects in that cell
@@ -45,18 +46,22 @@ typedef struct Broggut_Array {
 #define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
 #define INITIAL_TABLE_CAPACITY 100		// Initial capacity of the table holding all CollidableObjects
 #define COLLISION_DETECTION_FREQ 3		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
-#define CHECK_ONLY_OBJECTS_ONSCREEN YES // Only perform collision detection for objects on screen
+#define RADIAL_EFFECT_CHECK_FREQ 10		// " " to check radial effects
 
 @interface CollisionManager : NSObject {
 	NSMutableDictionary* objectTable;	// This keeps tracks of all objects that have been added, indexed by their UID
 	NSMutableArray* objectTableValues;	// This array is kept so enumeration is easy through the dictionary, updated whenever an object
 										// is added to the dictionary.
+	
+	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
+	
 	ObjectIDArray* cellHashTable;		// Table that contains an array for each cell on the screen, index is the location "hashed"
 										// and the contents is an array of UIDs for each object in that cell
+	
 	NSMutableArray* bufferNearbyObjects;// Buffer that will be used during loops to store nearby objects
 	CGRect fullMapBounds;				// The entire map rectangle
 	float* gridVertexArray;				// Vertexes of the grid if we want to draw it
-	Scale2f currentGridScale;				// The scale of the grid
+	Scale2f currentGridScale;			// The scale of the grid
 	float cellWidth;					// The width of a cell dividing the rect
 	float cellHeight;					// The height " "
 	int numberOfColumns;				// Number of cell columns
@@ -90,6 +95,10 @@ typedef struct Broggut_Array {
 - (void)removeMediumBroggutWithID:(int)brogID;
 - (void)renderMediumBroggutsInScreenBounds:(CGRect)bounds withScrollVector:(Vector2f)scroll;
 - (void)drawValidityRectForLocation:(CGPoint)location;
+
+- (void)addRadialAffectedObject:(TouchableObject*)obj;
+- (void)removeRadialAffectedObject:(TouchableObject*)obj;
+- (void)processAllEffectRadii;
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
 

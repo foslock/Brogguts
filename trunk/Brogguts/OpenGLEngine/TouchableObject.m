@@ -10,7 +10,7 @@
 #import "Image.h"
 
 @implementation TouchableObject
-@synthesize isTouchable, isCurrentlyTouched, touchableBounds;
+@synthesize isCheckedForRadialEffect, isTouchable, isCurrentlyTouched, touchableBounds;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
 	self = [super initWithImage:image withLocation:location withObjectType:objecttype];
@@ -18,6 +18,8 @@
 		isTouchable = YES;
 		isCurrentlyTouched = NO;
 		isCurrentlyHoveredOver = NO;
+		isCheckedForRadialEffect = NO;
+		effectRadius = objectImage.imageSize.width / 2;
 	}
 	return self;
 }
@@ -30,6 +32,19 @@
 	return tempBoundingCircle;
 }
 
+- (Circle)effectRadiusCircle {
+	Circle tempBoundingCircle;
+	tempBoundingCircle.x = objectLocation.x;
+	tempBoundingCircle.y = objectLocation.y;
+	tempBoundingCircle.radius = effectRadius;
+	return tempBoundingCircle;
+}
+
+- (void)objectEnteredEffectRadius:(TouchableObject*)other {
+	// "other" has entered the effect radius of this structure
+	// NSLog(@"Object (%i) entered object (%i) effect radius", other.uniqueObjectID, uniqueObjectID);
+}
+
 - (void)touchesHoveredOver {
 	// OVERRIDE ME, BUT CALL SUPER FIRST
 	if (!isCurrentlyHoveredOver) {
@@ -38,7 +53,7 @@
 		return;
 	}
 
-	NSLog(@"Hovered over object (%i)", uniqueObjectID);
+	// NSLog(@"Hovered over object (%i)", uniqueObjectID);
 }
 
 - (void)touchesHoveredLeft {
@@ -49,7 +64,7 @@
 		return;
 	}
 	
-	NSLog(@"Hovered left object (%i)", uniqueObjectID);
+	// NSLog(@"Hovered left object (%i)", uniqueObjectID);
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {

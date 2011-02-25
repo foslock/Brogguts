@@ -27,6 +27,7 @@
 #import "PlayerProfile.h"
 #import "CraftObject.h"
 #import "ParticleSingleton.h"
+#import "BlockStructureObject.h"
 
 @implementation BroggutScene
 
@@ -36,7 +37,7 @@
 @synthesize fullMapBounds, visibleScreenBounds;
 @synthesize isShowingOverview;
 @synthesize controllingShip, commandingShip;
-@synthesize homeBaseLocation;
+@synthesize homeBaseLocation, sideBar;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -48,6 +49,7 @@
 	[sceneName release];
 	[fontArray release];
 	[textObjectArray release];
+	[currentTouchesInSideBar release];
 	[currentObjectsTouching release];
 	[currentObjectsHovering release];
 	[renderableObjects release];
@@ -67,12 +69,14 @@
 		textObjectArray = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		currentObjectsTouching = [[NSMutableDictionary alloc] initWithCapacity:11];
 		currentObjectsHovering = [[NSMutableDictionary alloc] initWithCapacity:11];
+		currentTouchesInSideBar = [[NSMutableDictionary alloc] initWithCapacity:11];
 		collisionManager = [[CollisionManager alloc] initWithContainingRect:mapBounds WithCellWidth:COLLISION_CELL_WIDTH withHeight:COLLISION_CELL_HEIGHT];
 		visibleScreenBounds = screenBounds;
 		fullMapBounds = mapBounds;
 		cameraContainRect = CGRectInset(screenBounds, SCROLL_BOUNDS_X_INSET, SCROLL_BOUNDS_Y_INSET);
 		cameraLocation = [self middleOfVisibleScreen];
 		
+		// Set up the sidebar
 		sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
 		
 		// Set up the overview map variables
@@ -122,6 +126,9 @@
 	return self;
 }
 
+#pragma mark -
+#pragma mark Brogguts
+
 - (void)addBroggutValue:(int)value atLocation:(CGPoint)location {
 	NSString* string = [NSString stringWithFormat:@"+%i Bgs", value];
 	float stringWidth = [[fontArray objectAtIndex:kFontBlairID] getWidthForString:string];
@@ -135,6 +142,50 @@
 	[obj release];
 }
 
+- (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray {
+	for (int i = 0; i < number; i++) {
+		CGPoint curPoint;
+		if ([locationArray count] != 0) {
+			int randomIndex = arc4random() % [locationArray count];
+			NSArray* numberArray = [locationArray objectAtIndex:randomIndex];
+			curPoint = CGPointMake([[numberArray objectAtIndex:0] floatValue],
+								   [[numberArray objectAtIndex:1] floatValue]);
+		} else {
+			curPoint = CGPointMake(RANDOM_0_TO_1() * bounds.size.width,
+								   RANDOM_0_TO_1() * bounds.size.height);
+		}
+		
+		Image* rockImage = [[Image alloc] initWithImageNamed:kObjectBroggutSmallSprite filter:GL_LINEAR];
+		float randomDarkness = CLAMP(RANDOM_0_TO_1() + 0.2f, 0.0f, 0.8f);
+		[rockImage setColor:Color4fMake(randomDarkness, randomDarkness, randomDarkness, 1.0f)];
+		BroggutObject* tempObj = [[BroggutObject alloc]
+								  initWithImage:rockImage
+								  withLocation:CGPointMake(curPoint.x + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_WIDTH / 2),
+														   curPoint.y + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_HEIGHT / 2))
+								  withObjectType:kObjectBroggutSmallID];
+		tempObj.objectRotation = 360 * RANDOM_0_TO_1();
+		tempObj.rotationSpeed = RANDOM_MINUS_1_TO_1() * kBroggutSmallMaxRotationSpeed;
+		tempObj.objectVelocity = Vector2fMake(RANDOM_MINUS_1_TO_1() * ((float)kBroggutSmallMaxVelocity / 100.0f),
+											  RANDOM_MINUS_1_TO_1() * ((float)kBroggutSmallMaxVelocity / 100.0f));
+		
+		int rarityFactor = arc4random() % kBroggutRarityBase;
+		if (rarityFactor > (kBroggutRarityBase - kBroggutYoungRarity)) {
+			tempObj.broggutValue = kBroggutYoungSmallMinValue + (arc4random() % (kBroggutYoungSmallMaxValue - kBroggutYoungSmallMinValue));
+		} else if (rarityFactor > (kBroggutRarityBase - (kBroggutOldRarity + kBroggutYoungRarity))) {
+			tempObj.broggutValue = kBroggutOldSmallMinValue + (arc4random() % (kBroggutOldSmallMaxValue - kBroggutOldSmallMinValue));
+		} else {
+			tempObj.broggutValue = kBroggutAncientSmallMinValue + (arc4random() % (kBroggutAncientSmallMaxValue - kBroggutAncientSmallMinValue));
+		}
+		
+		[collisionManager addCollidableObject:tempObj];
+		[renderableObjects insertObject:tempObj atIndex:0]; // Insert the broggut at the beginning so it is rendered first
+		[tempObj release];
+		[rockImage release];
+	}
+}
+
+#pragma mark -
+#pragma mark Scrolling
 
 - (void)scrollScreenWithVector:(Vector2f)scrollVector {
 	float xAddition = scrollVector.x;
@@ -206,6 +257,9 @@
 	return CGPointMake(fullMapBounds.origin.x + (fullMapBounds.size.width / 2),
 					   fullMapBounds.origin.y + (fullMapBounds.size.height / 2));
 }
+
+#pragma mark -
+#pragma mark Update/Render
 
 - (void)updateSceneWithDelta:(GLfloat)aDelta {
 	
@@ -303,6 +357,10 @@
 		[collisionManager updateAllObjectsInTableInScreenBounds:visibleScreenBounds];
 	}
 	
+	if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == 0) {
+		[collisionManager processAllEffectRadii];
+	}
+	
 	// Destroy all objects in the destory array, and remove them from other arrays
 	for (int i = 0; i < [renderableDestroyed count]; i++) {
 		CollidableObject* tempObj = [renderableDestroyed objectAtIndex:i];
@@ -315,13 +373,6 @@
 		}
 		[tempObj objectWasDestroyed];
 		[renderableDestroyed removeObject:tempObj];
-	}
-}
-
-- (void)sortRenderableObjectsByLayer {
-	if (renderableObjects) {
-		NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
-		[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
 	}
 }
 
@@ -394,6 +445,31 @@
 	[sideBar renderSideBar];
 }
 
+#pragma mark -
+#pragma mark Managing Objects
+
+- (void)sortRenderableObjectsByLayer {
+	if (renderableObjects) {
+		NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
+		[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	}
+}
+
+- (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
+	if (collides) {
+		[collisionManager addCollidableObject:obj]; // Adds to the collision detection
+	}
+	if (obj.isCheckedForRadialEffect) {
+		[collisionManager addRadialAffectedObject:obj];
+	}
+	[renderableObjects addObject:obj];				// Adds to the rendering queue
+	[touchableObjects addObject:obj];				// Adds to the touchable queue
+	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
+}
+
+#pragma mark -
+#pragma mark Overview Map
+
 - (void)fadeOverviewMapIn {
 	if (!isShowingOverview) {
 		if (!isFadingOverviewIn) {
@@ -417,6 +493,7 @@
 - (void)renderOverviewMapWithAlpha:(float)alpha {
 	// Disable the color array and switch off texturing
 	enablePrimitiveDraw();
+	
 	GLfloat vertices[10] = {
 		0.0f, 0.0f, // V1
 		0.0f, kPadScreenLandscapeHeight, // V2
@@ -441,6 +518,15 @@
 		CollidableObject* obj = [renderableObjects objectAtIndex:i];
 		objPoint[0] = obj.objectLocation.x * xRatio;
 		objPoint[1] = obj.objectLocation.y * yRatio;
+		if ([obj isKindOfClass:[TouchableObject class]]) {
+			// If the object has an "effect circle" then draw it in faded gray
+			Circle newCircle;
+			newCircle.x = objPoint[0];
+			newCircle.y = objPoint[1];
+			newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
+			glColor4f(1.0f, 1.0f, 1.0f, 0.4f);
+			drawCircle( newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
+		}
 		if (obj.objectAlliance == kAllianceNeutral) {
 			glColor4f(1.0f, 1.0f, 0.0f, alpha);
 		} else if (obj.objectAlliance == kAllianceFriendly) {
@@ -490,56 +576,8 @@
 	disablePrimitiveDraw();
 }
 
-- (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray {
-	for (int i = 0; i < number; i++) {
-		CGPoint curPoint;
-		if ([locationArray count] != 0) {
-			int randomIndex = arc4random() % [locationArray count];
-			NSArray* numberArray = [locationArray objectAtIndex:randomIndex];
-			curPoint = CGPointMake([[numberArray objectAtIndex:0] floatValue],
-								   [[numberArray objectAtIndex:1] floatValue]);
-		} else {
-			curPoint = CGPointMake(RANDOM_0_TO_1() * bounds.size.width,
-								   RANDOM_0_TO_1() * bounds.size.height);
-		}
-		
-		Image* rockImage = [[Image alloc] initWithImageNamed:kObjectBroggutSmallSprite filter:GL_LINEAR];
-		float randomDarkness = CLAMP(RANDOM_0_TO_1() + 0.2f, 0.0f, 0.8f);
-		[rockImage setColor:Color4fMake(randomDarkness, randomDarkness, randomDarkness, 1.0f)];
-		BroggutObject* tempObj = [[BroggutObject alloc]
-								  initWithImage:rockImage
-								  withLocation:CGPointMake(curPoint.x + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_WIDTH / 2),
-														   curPoint.y + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_HEIGHT / 2))
-								  withObjectType:kObjectBroggutSmallID];
-		tempObj.objectRotation = 360 * RANDOM_0_TO_1();
-		tempObj.rotationSpeed = RANDOM_MINUS_1_TO_1() * kBroggutSmallMaxRotationSpeed;
-		tempObj.objectVelocity = Vector2fMake(RANDOM_MINUS_1_TO_1() * ((float)kBroggutSmallMaxVelocity / 100.0f),
-											  RANDOM_MINUS_1_TO_1() * ((float)kBroggutSmallMaxVelocity / 100.0f));
-		
-		int rarityFactor = arc4random() % kBroggutRarityBase;
-		if (rarityFactor > (kBroggutRarityBase - kBroggutYoungRarity)) {
-			tempObj.broggutValue = kBroggutYoungSmallMinValue + (arc4random() % (kBroggutYoungSmallMaxValue - kBroggutYoungSmallMinValue));
-		} else if (rarityFactor > (kBroggutRarityBase - (kBroggutOldRarity + kBroggutYoungRarity))) {
-			tempObj.broggutValue = kBroggutOldSmallMinValue + (arc4random() % (kBroggutOldSmallMaxValue - kBroggutOldSmallMinValue));
-		} else {
-			tempObj.broggutValue = kBroggutAncientSmallMinValue + (arc4random() % (kBroggutAncientSmallMaxValue - kBroggutAncientSmallMinValue));
-		}
-		
-		[collisionManager addCollidableObject:tempObj];
-		[renderableObjects insertObject:tempObj atIndex:0]; // Insert the broggut at the beginning so it is rendered first
-		[tempObj release];
-		[rockImage release];
-	}
-}
-
-- (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
-	if (collides) {
-		[collisionManager addCollidableObject:obj]; // Adds to the collision detection
-	}
-	[renderableObjects addObject:obj];				// Adds to the rendering queue
-	[touchableObjects addObject:obj];				// Adds to the touchable queue
-	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
-}
+#pragma mark -
+#pragma mark Controlling Ships
 
 - (void)setControllingShip:(CraftObject *)craft {
 	[controllingShip setIsBeingControlled:NO];
@@ -565,6 +603,9 @@
 	}
 }
 
+#pragma mark -
+#pragma mark Touch Events
+
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
 	for (UITouch *touch in touches) {
 		// Get the point where the player has touched the screen
@@ -578,6 +619,7 @@
 					[sideBar touchesDoubleTappedAtLocation:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
 				} else {
 					[sideBar touchesBeganAtLocation:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
+					[currentTouchesInSideBar setObject:[NSNumber numberWithInt:1] forKey:[NSNumber numberWithInt:[touch hash]]];
 				}
 			}
 			break;
@@ -618,10 +660,10 @@
 			if (obj.isTouchable) {
 				if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
 					if (!obj.isCurrentlyTouched) {
-						obj.isCurrentlyTouched = YES;
 						if (touch.tapCount == 2) {
 							[obj touchesDoubleTappedAtLocation:touchLocation];
 						} else {
+							obj.isCurrentlyTouched = YES;
 							[obj touchesHoveredOver];
 							[obj touchesBeganAtLocation:touchLocation];
 							[currentObjectsTouching setObject:obj forKey:[NSNumber numberWithInt:[touch hash]]];
@@ -652,7 +694,7 @@
 		CGPoint prevTouchLocation = [sharedGameController adjustTouchOrientationForTouch:previousOrigTouchLocation inScreenBounds:visibleScreenBounds];
 		
 		// Check if the touch is in the (active) sidebar
-		if (CGRectContainsPoint([sideBar sideBarRect], [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero])) {
+		if ([[currentTouchesInSideBar objectForKey:[NSNumber numberWithInt:[touch hash]]] intValue] == 1) {
 			if ([sideBar isSideBarShowing] && movingTouchHash != [touch hash]) {
 				CGPoint toPoint = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
 				CGPoint fromPoint = [sharedGameController adjustTouchOrientationForTouch:previousOrigTouchLocation inScreenBounds:CGRectZero];
@@ -660,7 +702,7 @@
 				break;
 			}
 		}
-	
+		
 		// Update the position of the camera moving/scrolling touch
 		if (movingTouchHash == [touch hash]) {
 			currentTouchLocation = touchLocation;
@@ -731,9 +773,10 @@
 		}
 		
 		// Check if the touch is in the (active) sidebar
-		if (CGRectContainsPoint([sideBar sideBarRect], [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero])) {
+		if ([[currentTouchesInSideBar objectForKey:[NSNumber numberWithInt:[touch hash]]] intValue] == 1) {
 			if ([sideBar isSideBarShowing] && movingTouchHash != [touch hash]) {
 				[sideBar touchesEndedAtLocation:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
+				[currentTouchesInSideBar removeObjectForKey:[NSNumber numberWithInt:[touch hash]]];
 				break;
 			}
 		}

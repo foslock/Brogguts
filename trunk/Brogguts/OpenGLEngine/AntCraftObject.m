@@ -50,6 +50,20 @@ enum MiningStates {
 	}
 }
 
+- (void)addCargo:(int)cargo {
+	attributeCurrentCargo = CLAMP(attributeCurrentCargo + cargo, 0, attributeCargoCapacity);
+}
+
+- (void)cashInBrogguts {
+	if (attributeCurrentCargo > 0) {
+		[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
+		attributeCurrentCargo = 0;
+		if (miningState == kMiningStateReturning) {
+			[self startMiningBroggutWithLocation:miningLocation];
+		}
+	}
+}
+
 - (void)returnBroggutsHome {
 	NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
 	[self followPath:homePath isLooped:NO];
@@ -67,9 +81,6 @@ enum MiningStates {
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
-	// Check if returning cargo
-	
-	
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -120,25 +131,6 @@ enum MiningStates {
 		disablePrimitiveDraw();
 	}
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
-}
-
-- (void)collidedWithOtherObject:(CollidableObject *)other {
-	if (other.objectType == kObjectStructureBaseStationID &&
-		other.objectAlliance == kAllianceFriendly) {
-		if (attributeCurrentCargo > 0) {
-			// Cash in brogguts!
-			[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
-			attributeCurrentCargo = 0;
-			if (miningState == kMiningStateReturning) {
-				[self startMiningBroggutWithLocation:miningLocation];
-			}
-		}
-	}
-	[super collidedWithOtherObject:other];
-}
-
-- (void)addCargo:(int)cargo {
-	attributeCurrentCargo += cargo;
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {

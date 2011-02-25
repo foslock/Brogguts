@@ -26,6 +26,6 @@
 
 - (void)startMiningBroggutWithLocation:(CGPoint)location;
 
-- (void)addCargo:(int)cargo;
+- (void)cashInBrogguts;
 
 @end

@@ -15,6 +15,8 @@
 #import "StructureObject.h"
 #import "CraftObject.h"
 #import "AntCraftObject.h"
+#import "BaseStationStructureObject.h"
+#import "BlockStructureObject.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -134,8 +136,8 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)createBaseCampLevel {
-	int width = 128;
-	int height = 96;
+	int width = 64;
+	int height = 48;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
@@ -265,9 +267,10 @@ static GameController* sharedGameController = nil;
 				case kObjectTypeStructure:
 					// Create a structure at that location with the appropriate type
 					objectType = [[currentArray objectAtIndex:1] intValue];
-					StructureObject* newStructure = [[StructureObject alloc]
+					BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
 													 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
 					[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+					[newStructure setIsCheckedForRadialEffect:YES];
 					[newScene addTouchableObject:newStructure withColliding:YES];
 					if (objectType == kObjectStructureBaseStationID) {
 						newScene.homeBaseLocation = currentPoint;
@@ -281,6 +284,14 @@ static GameController* sharedGameController = nil;
 	}
 	
 	[newScene addSmallBrogguts:numberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
+	
+	// Create a test moving structure
+	BlockStructureObject* block = [[BlockStructureObject alloc] initWithLocation:CGPointMake(512, 2560) isTraveling:YES];
+	[block setObjectLocation:newScene.homeBaseLocation];
+	[block setObjectAlliance:kAllianceFriendly];
+	[newScene addTouchableObject:block withColliding:YES];
+	[block release];
+	
 	[[newScene collisionManager] remakeGenerator];
 	[[newScene collisionManager] updateAllMediumBroggutsEdges];
 	[locationArray release];

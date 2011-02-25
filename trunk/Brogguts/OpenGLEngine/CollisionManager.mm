@@ -8,6 +8,7 @@
 
 #import "CollisionManager.h"
 #import "CollidableObject.h"
+#import "TouchableObject.h"
 #import "GameController.h"
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
@@ -35,6 +36,7 @@
 	}
 	[valueTextObject release];
 	[generator release];
+	[radialAffectedObjects release];
 	[bufferNearbyObjects release];
 	[objectTableValues release];
 	[objectTable release];
@@ -63,6 +65,7 @@
 		objectTable = [[NSMutableDictionary alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+		radialAffectedObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		
 		valueTextObject = [[TextObject alloc]
 						   initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
@@ -135,9 +138,9 @@
 	int xLoc = brogid % broggutArray->bWidth;
 	int yLoc = brogid / broggutArray->bWidth;
 	CGRect newRect = CGRectMake(xLoc * COLLISION_CELL_WIDTH,
-								 yLoc * COLLISION_CELL_HEIGHT,
-								 COLLISION_CELL_WIDTH,
-								 COLLISION_CELL_HEIGHT);
+								yLoc * COLLISION_CELL_HEIGHT,
+								COLLISION_CELL_WIDTH,
+								COLLISION_CELL_HEIGHT);
 	return newRect;
 }
 
@@ -228,7 +231,7 @@
 	} else {
 		middleBroggut->broggutEdge = kMediumBroggutEdgeUp; // TESTING, default to up
 	}
-
+	
 }
 
 - (void)updateAllMediumBroggutsEdges {
@@ -308,6 +311,32 @@
 		[valueTextObject setIsHidden:NO];
 	}
 }
+
+#pragma mark -
+#pragma mark Radial Affected Objects
+
+- (void)addRadialAffectedObject:(TouchableObject*)obj {
+	[radialAffectedObjects addObject:obj];
+}
+
+- (void)removeRadialAffectedObject:(TouchableObject*)obj {
+	[radialAffectedObjects removeObject:obj];
+}
+
+- (void)processAllEffectRadii {
+	for (int i = 0; i < [radialAffectedObjects count]; i++) {
+		TouchableObject* obj1 = [radialAffectedObjects objectAtIndex:i];
+		for (int j = 0; j < [radialAffectedObjects count]; j++) {
+			TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
+			if (obj1 == obj2) continue;
+			if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
+				[obj1 objectEnteredEffectRadius:obj2];
+			if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
+				[obj2 objectEnteredEffectRadius:obj1];
+		}
+	}
+}
+
 
 #pragma mark -
 #pragma mark Grid
@@ -432,6 +461,7 @@
 	} else {
 		[objectTable removeObjectForKey:[NSNumber numberWithInt:UID]];
 		[objectTableValues removeObject:object];
+		[radialAffectedObjects removeObject:object];
 	}
 	
 }
@@ -517,51 +547,28 @@
 }
 
 - (void)processAllCollisionsWithScreenBounds:(CGRect)bounds {
-	if (CHECK_ONLY_OBJECTS_ONSCREEN) {
-		// Only check collisions with objects that are currently in the passed CGRect
-		CGPoint currentCellLocation;
-		float screenWidth = bounds.size.width;
-		float screenHeight = bounds.size.height;
-		int screenCellsTall = ceil(screenHeight / cellHeight);
-		int screenCellsWide = ceil(screenWidth / cellWidth);
-		for (int i = 0; i < screenCellsTall; i++) {
-			for (int j = 0; j < screenCellsWide; j++) {
-				[bufferNearbyObjects removeAllObjects];
-				currentCellLocation = CGPointMake(bounds.origin.x + (j * cellWidth),
-												  bounds.origin.y + (i * cellHeight));
-				[self putNearbyObjectsToLocation:currentCellLocation intoArray:bufferNearbyObjects];
-				for (int k = 0; k < [bufferNearbyObjects count]; k++) {
-					CollidableObject* obj1 = [bufferNearbyObjects objectAtIndex:k];
-					for (int l = k + 1; l < [bufferNearbyObjects count]; l++) {
-						CollidableObject* obj2 = [bufferNearbyObjects objectAtIndex:l];
-						if ( obj1 == obj2) {
-							continue;
-						}
-						if ( CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle) ) {
-							[obj1 collidedWithOtherObject:obj2];
-							[obj2 collidedWithOtherObject:obj1];
-						}
-					}
-				}
-			}
-		}
-	} else {
-		// Go through the "cellHashTable" and check for collisions between objects that share a cell (and bordering cells)
-		[bufferNearbyObjects removeAllObjects];
-		NSEnumerator *enumerator = [objectTable objectEnumerator];
-		CollidableObject* currentObject;
-		while ((currentObject = [enumerator nextObject])) {
-			// Check collisions for objects near the currentObject
-			[self putNearbyObjectsToID:currentObject.uniqueObjectID intoArray:bufferNearbyObjects];
-			for (int i = 0; i < [bufferNearbyObjects count]; i++) {
-				CollidableObject* obj1 = [bufferNearbyObjects objectAtIndex:i];
-				for (int j = i + 1; j < [bufferNearbyObjects count]; j++) {
-					CollidableObject* obj2 = [bufferNearbyObjects objectAtIndex:j];
-					if (obj1 == obj2 || obj1.hasBeenCheckedForCollisions || obj2.hasBeenCheckedForCollisions) {
+	// Only check collisions with objects that are currently in the passed CGRect
+	CGPoint currentCellLocation;
+	float screenWidth = bounds.size.width;
+	float screenHeight = bounds.size.height;
+	int screenCellsTall = ceil(screenHeight / cellHeight);
+	int screenCellsWide = ceil(screenWidth / cellWidth);
+	for (int i = 0; i < screenCellsTall; i++) {
+		for (int j = 0; j < screenCellsWide; j++) {
+			[bufferNearbyObjects removeAllObjects];
+			currentCellLocation = CGPointMake(bounds.origin.x + (j * cellWidth),
+											  bounds.origin.y + (i * cellHeight));
+			[self putNearbyObjectsToLocation:currentCellLocation intoArray:bufferNearbyObjects];
+			for (int k = 0; k < [bufferNearbyObjects count]; k++) {
+				CollidableObject* obj1 = [bufferNearbyObjects objectAtIndex:k];
+				for (int l = k + 1; l < [bufferNearbyObjects count]; l++) {
+					CollidableObject* obj2 = [bufferNearbyObjects objectAtIndex:l];
+					if ( obj1 == obj2 ) {
 						continue;
 					}
-					if (CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle)) {
+					if ( CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle) ) {
 						[obj1 collidedWithOtherObject:obj2];
+						[obj2 collidedWithOtherObject:obj1];
 					}
 				}
 			}

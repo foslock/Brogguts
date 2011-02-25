@@ -14,6 +14,7 @@
 #import "CollisionManager.h"
 
 @implementation CraftObject
+@synthesize attributePlayerCargoCapacity;
 
 - (void)dealloc {
 	[pathPointArray release];
@@ -146,6 +147,9 @@
 		hasCurrentPathFinished = YES;
 		friendlyAIState = kFriendlyAIStateStill;
 		renderLayer = 0;
+		isCheckedForRadialEffect = YES;
+		attributePlayerCurrentCargo = 0;
+		attributePlayerCargoCapacity = 200;
 		[self initCraftWithID:typeID];
 	}
 	return self;
@@ -257,6 +261,10 @@
 	}
 	disablePrimitiveDraw();
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
+}
+
+- (void)addCargo:(int)cargo {
+	attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo + cargo, 0, attributePlayerCargoCapacity);
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
