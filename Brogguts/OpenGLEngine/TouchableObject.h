@@ -8,19 +8,27 @@
 
 #import "CollidableObject.h"
 
-
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
 	BOOL isCurrentlyHoveredOver; // Private, true if a touch has entered and NOT left its bounding circle yet
 	Circle touchableBounds;
+	
+	// True if the structure should be checked for ships/structures in it's area
+	BOOL isCheckedForRadialEffect;
+	float effectRadius;
 }
 
 @property (nonatomic, assign) BOOL isTouchable;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
+@property (nonatomic, assign) BOOL isCheckedForRadialEffect;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
+
+- (Circle)effectRadiusCircle;
+- (void)objectEnteredEffectRadius:(TouchableObject*)other;
+
 - (void)touchesHoveredOver;
 - (void)touchesHoveredLeft;
 - (void)touchesBeganAtLocation:(CGPoint)location;

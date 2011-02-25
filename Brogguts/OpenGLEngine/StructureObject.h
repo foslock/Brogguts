@@ -10,6 +10,12 @@
 #import "TouchableObject.h"
 
 @interface StructureObject : TouchableObject {
+	// Path variables
+	NSMutableArray* pathPointArray;		// Array containing the points that this craft should follow
+	int pathPointNumber;				// Which index of the path array we should be accelerating towards
+	BOOL isFollowingPath;				// True if the craft should follow its current path (if any)
+	BOOL isPathLooped;					// Should the unit repeat the path when finished
+	BOOL hasCurrentPathFinished;		// True if the previous given path is done
 	
 	// AI states
 	int friendlyAIState;
@@ -22,12 +28,16 @@
 	int attributeMetalCost;
 	int attributeHullCapacity;
 	int attributeHullCurrent;
-	int attributeMovingTime;
+	int attributeMovingTime;	
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)updateObjectTargets;
 
+- (void)moveTowardsLocation:(CGPoint)location;
+- (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
+- (void)stopFollowingCurrentPath;
+- (void)resumeFollowingCurrentPath;
 
 @end

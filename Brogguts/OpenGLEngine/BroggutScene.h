@@ -57,7 +57,6 @@
 	StarSingleton* sharedStarSingleton;					// Reference to the star controller
 	ParticleSingleton* sharedParticleSingleton;			// Reference to the particle manager
 	
-	
 	// Player's currently controlled ship
 	CraftObject* controllingShip;
 	
@@ -74,7 +73,7 @@
 	CGPoint currentTouchLocation;
 	int movingTouchHash;		// Holds the unique hash value given to a touch on the screen.  
 								// This allows us to track the same touch during touchesMoved events
-	BOOL isTouchScrolling;		// YES if a touch is being tracked for scrolling the screen/controlling the play
+	BOOL isTouchScrolling;		// YES if a touch is being tracked for scrolling the screen/controlling the current ship
 	
 	// Object management
 	NSMutableArray* renderableObjects;			 // The array of objects that need to be updated and rendered
@@ -82,6 +81,7 @@
 	NSMutableArray* touchableObjects;			 // The array of objects that need to be checked for touches in ADDITION to rendered/updated
 	NSMutableDictionary* currentObjectsTouching; // Key: numerical hash value of the touch. Value: the object currently being touched
 	NSMutableDictionary* currentObjectsHovering; // Key: numerical hash value of the touch. Value: the object currently being touched
+	NSMutableDictionary* currentTouchesInSideBar;	 // Array of NSValues of touch hashes for touches active in the sidebar
 	CollisionManager* collisionManager;			 // Manages objects that need to check between other collidable objects
 	
 	// Camera Control
@@ -124,6 +124,7 @@
 @property (nonatomic, assign) CGRect fullMapBounds;
 @property (nonatomic, assign) CGRect visibleScreenBounds;
 @property (nonatomic, assign) BOOL isShowingOverview;
+@property (nonatomic, assign) SideBarController* sideBar;
 
 #pragma mark -
 #pragma mark Selectors
@@ -133,6 +134,9 @@
 
 // Creates a broggut value text object showing where brogguts were gathered
 - (void)addBroggutValue:(int)value atLocation:(CGPoint)location;
+
+// Randomly generates small brogguts and adds them to the scene randomly scattered in 
+- (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;
 
 // Handles scrolling all of the objects when the view moves
 - (void)scrollScreenWithVector:(Vector2f)scrollVector;
@@ -151,9 +155,6 @@
 
 // Returns the point in the middle of the full map
 - (CGPoint)middleOfEntireMap;
-
-// Randomly generates small brogguts and adds them to the scene randomly scattered in 
-- (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;
 
 // Adds an touchable object to the scene
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides;

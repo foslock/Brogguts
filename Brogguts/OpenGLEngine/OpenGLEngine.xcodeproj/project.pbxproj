@@ -21,6 +21,17 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F12FDE913060544003CDDD6 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F12FDE813060544003CDDD6 /* craftant.png */; };
+		6F2CAD3C13171501001A10E3 /* BaseStationStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */; };
+		6F2CAD7213171B58001A10E3 /* TurretStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */; };
+		6F2CAD7513171B7E001A10E3 /* BlockStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */; };
+		6F2CAD9C13171E70001A10E3 /* MothCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD9B13171E70001A10E3 /* MothCraftObject.m */; };
+		6F2CAD9F13171E94001A10E3 /* BeetleCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD9E13171E94001A10E3 /* BeetleCraftObject.m */; };
+		6F2CADA213171EA6001A10E3 /* MonarchCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADA113171EA6001A10E3 /* MonarchCraftObject.m */; };
+		6F2CADB313171F11001A10E3 /* RadarStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADB213171F11001A10E3 /* RadarStructureObject.m */; };
+		6F2CADB613171F23001A10E3 /* FixerStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADB513171F23001A10E3 /* FixerStructureObject.m */; };
+		6F2CADC113172529001A10E3 /* structureblock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CADC013172529001A10E3 /* structureblock.png */; };
+		6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */; };
+		6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAEF213173BA7001A10E3 /* SideBarButton.m */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -98,6 +109,27 @@
 		32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLEngine_Prefix.pch; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F12FDE813060544003CDDD6 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
+		6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseStationStructureObject.h; sourceTree = "<group>"; };
+		6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseStationStructureObject.m; sourceTree = "<group>"; };
+		6F2CAD7013171B58001A10E3 /* TurretStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TurretStructureObject.h; sourceTree = "<group>"; };
+		6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TurretStructureObject.m; sourceTree = "<group>"; };
+		6F2CAD7313171B7E001A10E3 /* BlockStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockStructureObject.h; sourceTree = "<group>"; };
+		6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockStructureObject.m; sourceTree = "<group>"; };
+		6F2CAD9A13171E70001A10E3 /* MothCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MothCraftObject.h; sourceTree = "<group>"; };
+		6F2CAD9B13171E70001A10E3 /* MothCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MothCraftObject.m; sourceTree = "<group>"; };
+		6F2CAD9D13171E94001A10E3 /* BeetleCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeetleCraftObject.h; sourceTree = "<group>"; };
+		6F2CAD9E13171E94001A10E3 /* BeetleCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeetleCraftObject.m; sourceTree = "<group>"; };
+		6F2CADA013171EA6001A10E3 /* MonarchCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonarchCraftObject.h; sourceTree = "<group>"; };
+		6F2CADA113171EA6001A10E3 /* MonarchCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonarchCraftObject.m; sourceTree = "<group>"; };
+		6F2CADB113171F11001A10E3 /* RadarStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarStructureObject.h; sourceTree = "<group>"; };
+		6F2CADB213171F11001A10E3 /* RadarStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarStructureObject.m; sourceTree = "<group>"; };
+		6F2CADB413171F23001A10E3 /* FixerStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixerStructureObject.h; sourceTree = "<group>"; };
+		6F2CADB513171F23001A10E3 /* FixerStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FixerStructureObject.m; sourceTree = "<group>"; };
+		6F2CADC013172529001A10E3 /* structureblock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureblock.png; sourceTree = "<group>"; };
+		6F2CAE5F13172D9A001A10E3 /* MainMenuSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuSideBar.h; sourceTree = "<group>"; };
+		6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuSideBar.m; sourceTree = "<group>"; };
+		6F2CAEF113173BA7001A10E3 /* SideBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarButton.h; sourceTree = "<group>"; };
+		6F2CAEF213173BA7001A10E3 /* SideBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarButton.m; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -306,6 +338,63 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6F2CAD38131714E0001A10E3 /* Structures */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CADB713171F37001A10E3 /* Normal Structures */,
+				6F2CADB813171F52001A10E3 /* Station Structures */,
+			);
+			name = Structures;
+			sourceTree = "<group>";
+		};
+		6F2CADA313171EB3001A10E3 /* Basic Craft */ = {
+			isa = PBXGroup;
+			children = (
+				6F8B8E09130C8347009CD1BF /* AntCraftObject.h */,
+				6F8B8E0A130C8347009CD1BF /* AntCraftObject.m */,
+				6F2CAD9A13171E70001A10E3 /* MothCraftObject.h */,
+				6F2CAD9B13171E70001A10E3 /* MothCraftObject.m */,
+				6F2CAD9D13171E94001A10E3 /* BeetleCraftObject.h */,
+				6F2CAD9E13171E94001A10E3 /* BeetleCraftObject.m */,
+				6F2CADA013171EA6001A10E3 /* MonarchCraftObject.h */,
+				6F2CADA113171EA6001A10E3 /* MonarchCraftObject.m */,
+			);
+			name = "Basic Craft";
+			sourceTree = "<group>";
+		};
+		6F2CADB713171F37001A10E3 /* Normal Structures */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CAD7313171B7E001A10E3 /* BlockStructureObject.h */,
+				6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */,
+				6F2CAD7013171B58001A10E3 /* TurretStructureObject.h */,
+				6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */,
+				6F2CADB113171F11001A10E3 /* RadarStructureObject.h */,
+				6F2CADB213171F11001A10E3 /* RadarStructureObject.m */,
+				6F2CADB413171F23001A10E3 /* FixerStructureObject.h */,
+				6F2CADB513171F23001A10E3 /* FixerStructureObject.m */,
+			);
+			name = "Normal Structures";
+			sourceTree = "<group>";
+		};
+		6F2CADB813171F52001A10E3 /* Station Structures */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */,
+				6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */,
+			);
+			name = "Station Structures";
+			sourceTree = "<group>";
+		};
+		6F2CAE6213172DA1001A10E3 /* Specific Side Bars */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CAE5F13172D9A001A10E3 /* MainMenuSideBar.h */,
+				6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */,
+			);
+			name = "Specific Side Bars";
+			sourceTree = "<group>";
+		};
 		6F6A2C0D12FC7982002A4201 /* GameCenter */ = {
 			isa = PBXGroup;
 			children = (
@@ -370,6 +459,7 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
+				6F2CADC013172529001A10E3 /* structureblock.png */,
 				6F8B878F13078EC2009CD1BF /* structurebasestation.png */,
 			);
 			name = Structures;
@@ -398,6 +488,9 @@
 				6F8B859D13074552009CD1BF /* SideBarController.m */,
 				6F8B8D0A130B5DD1009CD1BF /* SideBarObject.h */,
 				6F8B8D0B130B5DD1009CD1BF /* SideBarObject.m */,
+				6F2CAEF113173BA7001A10E3 /* SideBarButton.h */,
+				6F2CAEF213173BA7001A10E3 /* SideBarButton.m */,
+				6F2CAE6213172DA1001A10E3 /* Specific Side Bars */,
 			);
 			name = "Side Bar";
 			sourceTree = "<group>";
@@ -405,8 +498,7 @@
 		6F8B8E08130C8322009CD1BF /* Crafts */ = {
 			isa = PBXGroup;
 			children = (
-				6F8B8E09130C8347009CD1BF /* AntCraftObject.h */,
-				6F8B8E0A130C8347009CD1BF /* AntCraftObject.m */,
+				6F2CADA313171EB3001A10E3 /* Basic Craft */,
 			);
 			name = Crafts;
 			sourceTree = "<group>";
@@ -450,12 +542,12 @@
 		6FCAC71B12F7CDE200662BDA /* Game Control */ = {
 			isa = PBXGroup;
 			children = (
+				6FCAC7DD12F863A200662BDA /* GameController.h */,
+				6FCAC7DE12F863A200662BDA /* GameController.m */,
 				6F8B869B13076AE0009CD1BF /* PlayerProfile.h */,
 				6F8B869C13076AE0009CD1BF /* PlayerProfile.m */,
 				1D3623240D0F684500981E51 /* OpenGLEngineAppDelegate.h */,
 				1D3623250D0F684500981E51 /* OpenGLEngineAppDelegate.m */,
-				6FCAC7DD12F863A200662BDA /* GameController.h */,
-				6FCAC7DE12F863A200662BDA /* GameController.m */,
 			);
 			name = "Game Control";
 			sourceTree = "<group>";
@@ -513,6 +605,7 @@
 			children = (
 				6F8B82361306E8BE009CD1BF /* Objects */,
 				6F8B8E08130C8322009CD1BF /* Crafts */,
+				6F2CAD38131714E0001A10E3 /* Structures */,
 				6FE75B1A13036DB400A3C6EF /* CollisionManager.h */,
 				6FE75B1B13036DB400A3C6EF /* CollisionManager.mm */,
 				6F8B8A0E130884C2009CD1BF /* BroggutGenerator.h */,
@@ -615,6 +708,7 @@
 				6F8B8E52130C8FCB009CD1BF /* shipPartsParticle.pex in Resources */,
 				6F8B8E53130C8FCB009CD1BF /* shipThrusterParticle.pex in Resources */,
 				6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */,
+				6F2CADC113172529001A10E3 /* structureblock.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +754,16 @@
 				6F8B8D0C130B5DD1009CD1BF /* SideBarObject.m in Sources */,
 				6F8B8E0B130C8347009CD1BF /* AntCraftObject.m in Sources */,
 				6F8B8E28130C8885009CD1BF /* ParticleSingleton.m in Sources */,
+				6F2CAD3C13171501001A10E3 /* BaseStationStructureObject.m in Sources */,
+				6F2CAD7213171B58001A10E3 /* TurretStructureObject.m in Sources */,
+				6F2CAD7513171B7E001A10E3 /* BlockStructureObject.m in Sources */,
+				6F2CAD9C13171E70001A10E3 /* MothCraftObject.m in Sources */,
+				6F2CAD9F13171E94001A10E3 /* BeetleCraftObject.m in Sources */,
+				6F2CADA213171EA6001A10E3 /* MonarchCraftObject.m in Sources */,
+				6F2CADB313171F11001A10E3 /* RadarStructureObject.m in Sources */,
+				6F2CADB613171F23001A10E3 /* FixerStructureObject.m in Sources */,
+				6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */,
+				6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

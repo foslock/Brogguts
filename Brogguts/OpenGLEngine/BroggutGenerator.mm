@@ -69,7 +69,7 @@
 
 - (int)verticesOfMediumBroggutAtIndex:(int)index intoArray:(float**)array{
 	(*array) = verticies[index];
-	return VERTICIES_PER_BROGGUT * 2 - 4;
+	return (VERTICIES_PER_BROGGUT * 2) - 4;
 }
 
 @end

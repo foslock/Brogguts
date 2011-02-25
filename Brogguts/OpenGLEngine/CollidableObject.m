@@ -43,7 +43,7 @@ static int globalUniqueID = 0;
 		rotationSpeed = 0.0f;
 		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
 		hasBeenCheckedForCollisions = NO;		// Var that is used to make sure duplicate collisions aren't checked
-		isCheckedForMultipleCollisions = NO;	// Set to YES if you want multiple objects checking collisions with this one
+		isCheckedForMultipleCollisions = NO;	// Set to YES if you want multiple objects checking collisions with this one.
 		isTextObject = NO;
 		staticObject = NO;
 		
