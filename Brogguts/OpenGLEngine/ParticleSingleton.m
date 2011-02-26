@@ -9,14 +9,6 @@
 #import "ParticleSingleton.h"
 #import "ParticleEmitter.h"
 
-static const NSString* kParticleTypeFileName[PARTICLE_TYPE_COUNT] = {
-	@"broggutParticle.pex",
-	@"laserParticle.pex",
-	@"shipPartsParticle.pex",
-	@"shipThrusterParticle.pex",
-	@"buildLocationParticle.pex",
-};
-
 static ParticleSingleton* sharedPartSingletonInstance = nil;
 
 @implementation ParticleSingleton
@@ -86,7 +78,7 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 		for (int j = 0; j < PARTICLE_TYPE_COUNT; j++) {
 			NSMutableArray* tempInnerArray = [[NSMutableArray alloc] init];
 			for (int i = 0; i < PARTICLE_EMITTER_COUNT; i++) {
-				ParticleEmitter* emitter = [[ParticleEmitter alloc] initParticleEmitterWithFile:kParticleTypeFileName[j]];
+				ParticleEmitter* emitter = [[ParticleEmitter alloc] initParticleEmitterWithParticleID:j];
 				[tempInnerArray addObject:emitter];
 				[emitter release];
 			}
@@ -132,9 +124,7 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 		if (emitter.active)
 			continue;
 		else {
-			[emitter setSourcePosition:Vector2fMake(location.x, location.y)];
-			[emitter setParticleCount:count];
-			emitter.active = YES;
+			[emitter addParticles:count atLocation:location];
 			return;
 		}
 	}

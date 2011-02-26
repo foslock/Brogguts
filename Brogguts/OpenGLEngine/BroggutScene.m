@@ -287,7 +287,7 @@
 		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
 			[controllingShip addCargo:closestBrog.broggutValue];
 			[closestBrog setDestroyNow:YES];
-			[sharedParticleSingleton createParticles:50 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+			[sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
 		}
 	}
 	
