@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#define PARTICLE_EMITTER_COUNT 5
+#define PARTICLE_TYPE_COUNT 5
+
 enum ParticleTypes {
 	kParticleTypeBroggut,
 	kParticleTypeLaser,
@@ -15,9 +18,6 @@ enum ParticleTypes {
 	kParticleTypeShipThruster,
 	kParticleTypeBuildLocation,
 };
-
-#define PARTICLE_EMITTER_COUNT 5
-#define PARTICLE_TYPE_COUNT 5
 
 @interface ParticleSingleton : NSObject {
 	NSMutableArray* particleEmitterArray;

@@ -7,6 +7,7 @@
 //
 
 #import "Global.h"
+#import "ParticleSingleton.h"
 
 @class GameController;
 @class Image;
@@ -22,19 +23,17 @@ typedef struct {
 // Structure used to hold particle specific information
 typedef struct {
 	Vector2f position;
-	Vector2f direction;
+	Vector2f velocity;
 	Color4f color;
 	Color4f deltaColor;
-	GLfloat radius;
-	GLfloat radiusDelta;
-	GLfloat angle;
-	GLfloat degreesPerSecond;
 	GLfloat particleSize;
 	GLfloat particleSizeDelta;
 	GLfloat timeToLive;
 } Particle;
 
-#define MAXIMUM_UPDATE_RATE 30.0f	// The maximum number of updates that occur per frame
+#define MAXIMUM_UPDATE_RATE 30.0f		// The maximum number of updates that occur per frame
+#define MAXIMUM_PARTICLE_COUNT 100		// Maximum number of particles allowed
+#define PARTICLE_PRIMITIVE_SCALE 4.0f	// Factor the line particles are scaled by 
 
 // The particleEmitter allows you to define parameters that are used when generating particles.
 // These particles are OpenGL particle sprites that based on the parameters provided each have
@@ -51,38 +50,14 @@ typedef struct {
 	GameController *sharedGameController;
 	
 	/////////////////// Particle iVars
-	Image *texture;												
-	Vector2f sourcePosition, sourcePositionVariance;			
-	GLfloat angle, angleVariance;								
-	GLfloat speed, speedVariance;								
-	Vector2f gravity;											
-	GLfloat particleLifespan, particleLifespanVariance;			
-	Color4f startColor, startColorVariance;						
-	Color4f finishColor, finishColorVariance;
-	GLfloat startParticleSize, startParticleSizeVariance;
-	GLfloat finishParticleSize, finishParticleSizeVariance;
-	GLuint maxParticles;
-	GLint particleCount;
-	GLfloat emissionRate;
-	GLfloat emitCounter;	
-	GLfloat elapsedTime;
-	GLfloat duration;
+	Image *texture;
+	int particleType;
 	BOOL blendAdditive;						// Should the OpenGL Blendmode be additive
-
-	//////////////////// Particle ivars only used when a maxRadius value is provided.  These values are used for
-	//////////////////// the special purpose of creating the spinning portal emitter
-	GLfloat maxRadius;						// Max radius at which particles are drawn when rotating
-	GLfloat maxRadiusVariance;				// Variance of the maxRadius
-	GLfloat radiusSpeed;					// The speed at which a particle moves from maxRadius to minRadius
-	GLfloat minRadius;						// Radius from source below which a particle dies
-	GLfloat rotatePerSecond;				// Numeber of degress to rotate a particle around the source pos per second
-	GLfloat rotatePerSecondVariance;		// Variance in degrees for rotatePerSecond
 
 	//////////////////// Particle Emitter iVars
 	BOOL active;
-	BOOL useTexture;
+	GLint particleCount;
 	GLint particleIndex;		// Stores the number of particles that are going to be rendered
-
 	
 	///////////////////// Render
 	GLuint verticesID;			// Holds the buffer name of the VBO that stores the color and vertices info for the particles
@@ -91,21 +66,19 @@ typedef struct {
 	
 }
 
-@property(nonatomic, assign) Vector2f sourcePosition;
 @property(nonatomic, assign) GLint particleCount;
 @property(nonatomic, assign) BOOL active;
-@property(nonatomic, assign) GLfloat duration;
 
 // Initialises a particle emitter using configuration read from a file
-- (id)initParticleEmitterWithFile:(const NSString*)aFileName;
+- (id)initParticleEmitterWithParticleID:(int)particleID;
+
+// Adds particles to the emitter
+- (void)addParticles:(int)count atLocation:(CGPoint)location;
 
 // Renders the particles for this emitter to the screen
 - (void)renderParticlesWithScroll:(Vector2f)scroll;
 
 // Updates all particles in the particle emitter
 - (void)updateWithDelta:(GLfloat)aDelta;
-
-// Stops the particle emitter
-- (void)stopParticleEmitter;
 
 @end

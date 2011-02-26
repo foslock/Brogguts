@@ -29,6 +29,7 @@ typedef struct Object_ID_Array {
 
 typedef struct Medium_Broggut {
 	int broggutID;		// This is the unique broggut ID, empty or not, all spots have this
+	CGPoint broggutLocation;	// Center of this medium broggut, used for pathfinding
 	int broggutValue;	// This is the number of brogguts in this broggut cell, if -1, then spot is empty
 	int broggutAge;		// The rarity of the broggut (0 - young, 1 - old, 2 - ancient)
 	int broggutEdge;	// If the broggut is on the edge of a large broggut
@@ -101,6 +102,8 @@ typedef struct Broggut_Array {
 - (void)processAllEffectRadii;
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
+
+- (NSArray*)pathAvoidingBroggutsFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial;
 
 - (void)addCollidableObject:(CollidableObject*)object;
 - (void)removeCollidableObject:(CollidableObject*)object;

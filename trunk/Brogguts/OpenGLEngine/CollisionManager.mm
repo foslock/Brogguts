@@ -13,6 +13,7 @@
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
 #import "TextObject.h"
+#import "PathNode.h"
 
 @implementation CollisionManager
 
@@ -83,6 +84,7 @@
 			broggut->broggutID = i;
 			broggut->broggutValue = -1;
 			broggut->broggutAge = 0;
+			broggut->broggutLocation = [self getBroggutLocationForID:i];
 			broggut->broggutEdge = kMediumBroggutEdgeUp; // Default to drawing the broggut
 		}
 		generator = [[BroggutGenerator alloc] initWithWithBroggutArray:broggutArray];
@@ -337,7 +339,6 @@
 	}
 }
 
-
 #pragma mark -
 #pragma mark Grid
 
@@ -389,6 +390,16 @@
 #endif
 }
 
+#pragma mark -
+#pragma mark Path Finding
+
+- (NSArray*)pathAvoidingBroggutsFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial {
+	MediumBroggut* toBroggut = [self broggutCellForLocation:toLocation];
+	if (toBroggut->broggutValue != -1 && !partial) {
+		return nil; // If the final destination is a broggut, and no partial path, then return 'nil'.
+	}
+	return nil;
+}
 
 #pragma mark -
 #pragma mark Collidable Objects

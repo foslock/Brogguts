@@ -149,8 +149,8 @@
 	if ([sideBarStack count] > 1) {
 		// Draw the back button
 		enablePrimitiveDraw();
-		glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
-		drawRect([self backButtonRect], Vector2fZero);
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		drawFilledRect([self backButtonRect], Vector2fZero);
 		disablePrimitiveDraw();
 	}
 }
