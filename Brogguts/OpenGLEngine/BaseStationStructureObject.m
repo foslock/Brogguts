@@ -11,6 +11,14 @@
 
 @implementation BaseStationStructureObject
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	self = [super initWithTypeID:kObjectStructureBaseStationID withLocation:location isTraveling:traveling];
+	if (self) {
+		isCheckedForRadialEffect = YES;
+	}
+	return self;
+}
+
 - (void)objectEnteredEffectRadius:(TouchableObject*)other {
 	// For mining ships, turn in brogguts
 	if (objectAlliance == kAllianceFriendly) {

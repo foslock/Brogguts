@@ -7,6 +7,7 @@
 //
 
 #import "GameController.h"
+#import "SoundSingleton.h"
 #import "OpenGLEngineAppDelegate.h"
 #import "BroggutScene.h"
 #import "BaseCampScene.h"
@@ -15,8 +16,14 @@
 #import "StructureObject.h"
 #import "CraftObject.h"
 #import "AntCraftObject.h"
+#import "MothCraftObject.h"
+#import "BeetleCraftObject.h"
+#import "MonarchCraftObject.h"
 #import "BaseStationStructureObject.h"
 #import "BlockStructureObject.h"
+#import "TurretStructureObject.h"
+#import "RadarStructureObject.h"
+#import "FixerStructureObject.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -93,6 +100,7 @@ static GameController* sharedGameController = nil;
 #pragma mark Public implementation
 
 - (void)dealloc {
+	[[SoundSingleton sharedSoundSingleton] shutdownSoundManager];
 	[currentScene release];
     [gameScenes release];
     [super dealloc];
@@ -157,13 +165,19 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if ( (i == 2 || i == 3) && j == 13) { // Add two other craft
+			} else if (i == 2 && j == 13) { // Add other ant craft
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
-			} else if (i == 10 && j == 10) {
+			} else if (i == 3 && j == 13) { // Add monarch craft
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftMonarchID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
+			} else if (i == 9 && (j == 9 || j == 8 || j == 7)) { // Add an enemy!
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
@@ -172,6 +186,10 @@ static GameController* sharedGameController = nil;
 			} else if (i == 0 && j == 13) { // Add the initial structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+			} else if (i == 6 && j == 8) { // Add a turret!
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 			} else if ((j > 9 && j < 16) && (i > 9 && i < 20)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
@@ -253,28 +271,166 @@ static GameController* sharedGameController = nil;
 				case kObjectTypeCraft:
 					// Create a craft at that location with the appropriate type and rotation
 					objectType = [[currentArray objectAtIndex:1] intValue];
-					AntCraftObject* newCraft = [[AntCraftObject alloc]
-											 initWithLocation:currentPoint isTraveling:NO];
-					[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-					[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-					[newScene addTouchableObject:newCraft withColliding:YES];
-					if ([[currentArray objectAtIndex:3] boolValue]) {
-						[newScene setControllingShip:newCraft];
-						[newScene setCameraLocation:newCraft.objectLocation];
-						[newScene setMiddleOfVisibleScreenToCamera];
+					switch (objectType) {
+						case kObjectCraftAntID: {
+							AntCraftObject* newCraft = [[AntCraftObject alloc]
+														initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftMothID: {
+							MothCraftObject* newCraft = [[MothCraftObject alloc]
+														initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftBeetleID: {
+							BeetleCraftObject* newCraft = [[BeetleCraftObject alloc]
+														initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftMonarchID: {
+							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+															initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftCamelID: {
+							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+															initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftRatID: {
+							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+															initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftSpiderID: {
+							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+															initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						case kObjectCraftEagleID: {
+							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+															initWithLocation:currentPoint isTraveling:NO];
+							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
+							[newScene addTouchableObject:newCraft withColliding:YES];
+							if ([[currentArray objectAtIndex:3] boolValue]) {
+								[newScene setControllingShip:newCraft];
+								[newScene setCameraLocation:newCraft.objectLocation];
+								[newScene setMiddleOfVisibleScreenToCamera];
+							}
+							break;
+						}
+						default:
+							NSLog(@"Invalid Craft ID provided <%i>", objectType);
+							break;
 					}
 					break;
 				case kObjectTypeStructure:
 					// Create a structure at that location with the appropriate type
 					objectType = [[currentArray objectAtIndex:1] intValue];
-					BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
-													 initWithTypeID:objectType withLocation:currentPoint isTraveling:NO];
-					[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-					[newStructure setIsCheckedForRadialEffect:YES];
-					[newScene addTouchableObject:newStructure withColliding:YES];
-					if (objectType == kObjectStructureBaseStationID) {
-						newScene.homeBaseLocation = currentPoint;
+					switch (objectType) {
+						case kObjectStructureBaseStationID: {
+							BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
+																		initWithLocation:currentPoint isTraveling:NO];
+							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newStructure setIsCheckedForRadialEffect:YES];
+							[newScene addTouchableObject:newStructure withColliding:YES];
+							newScene.homeBaseLocation = currentPoint;
+							break;
+						}
+						case kObjectStructureBlockID: {
+							BlockStructureObject* newStructure = [[BlockStructureObject alloc]
+																  initWithLocation:currentPoint isTraveling:NO];
+							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newStructure setIsCheckedForRadialEffect:NO];
+							[newScene addTouchableObject:newStructure withColliding:YES];
+							break;
+						}
+						case kObjectStructureTurretID: {
+							TurretStructureObject* newStructure = [[TurretStructureObject alloc]
+																   initWithLocation:currentPoint isTraveling:NO];
+							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newStructure setIsCheckedForRadialEffect:YES];
+							[newScene addTouchableObject:newStructure withColliding:YES];
+							break;
+						}
+						case kObjectStructureRadarID: {
+							RadarStructureObject* newStructure = [[RadarStructureObject alloc]
+																   initWithLocation:currentPoint isTraveling:NO];
+							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newStructure setIsCheckedForRadialEffect:YES];
+							[newScene addTouchableObject:newStructure withColliding:YES];
+							break;
+						}
+						case kObjectStructureFixerID: {
+							FixerStructureObject* newStructure = [[FixerStructureObject alloc]
+																   initWithLocation:currentPoint isTraveling:NO];
+							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
+							[newStructure setIsCheckedForRadialEffect:YES];
+							[newScene addTouchableObject:newStructure withColliding:YES];
+							break;
+						}
+						default:
+							NSLog(@"Invalid Structure ID provided <%i>", objectType);
+							break;
 					}
+					
 					break;
 				default:
 					break;
@@ -284,13 +440,6 @@ static GameController* sharedGameController = nil;
 	}
 	
 	[newScene addSmallBrogguts:numberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
-	
-	// Create a test moving structure
-	BlockStructureObject* block = [[BlockStructureObject alloc] initWithLocation:CGPointMake(512, 2560) isTraveling:YES];
-	[block setObjectLocation:newScene.homeBaseLocation];
-	[block setObjectAlliance:kAllianceFriendly];
-	[newScene addTouchableObject:block withColliding:YES];
-	[block release];
 	
 	[[newScene collisionManager] remakeGenerator];
 	[[newScene collisionManager] updateAllMediumBroggutsEdges];
@@ -360,7 +509,10 @@ static GameController* sharedGameController = nil;
     
     // Set the starting scene for the game
     currentScene = [gameScenes objectForKey:@"BaseCamp"];
-	
+	/*
+	[[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];
+	[[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"testSound"];
+	*/
     NSLog(@"INFO - GameController: Finished game initialization.");
 }
 

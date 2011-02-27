@@ -28,11 +28,24 @@
 		currentYOffset = 0.0f;
 		totalSideBarHeight = 0.0f;
 		isTouchMovingScroll = NO;
+		isTouchDraggingButton = NO;
+		isTouchTapped = NO;
+		scrollTouchTimer = -1;
 	}
 	return self;
 }
 
-- (void)renderWithOffset:(Vector2f)vector {
+- (void)updateSideBar {
+	// Update the scroll touch timer
+	if (scrollTouchTimer > 0) {
+		scrollTouchTimer--;
+	} else if (scrollTouchTimer == 0) {
+		scrollTouchTimer = -1;
+		if (!isTouchMovingScroll) {
+			[self touchesTappedAtLocation:firstTouchLocation];
+		}
+	}
+	
 	// Update the scroll
 	if (!isTouchMovingScroll) {
 		if (currentYOffset > 0.0f) {
@@ -43,7 +56,9 @@
 			currentYOffset = (diff) + (currentYOffset - diff) / 1.2;
 		}
 	}
-	
+}
+
+- (void)renderWithOffset:(Vector2f)vector {
 	// Render buttons
 	enablePrimitiveDraw();
 	float currentYPosition = 0.0f;
@@ -64,39 +79,58 @@
 	// OVERRIDE
 }
 
-- (void)buttonReleasedWithID:(int)buttonID {
+- (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
 	// OVERRIDE
 }
 
-- (void)touchesBeganAtLocation:(CGPoint)location {
+- (void)touchesScrolledAtLocation:(CGPoint)location {
+	scrollTouchTimer = SCROLL_TIME_INTERVAL;
+	firstTouchLocation = location;
+}
+
+- (void)touchesTappedAtLocation:(CGPoint)location {
 	// OVERRIDE
-	for (int i = 0; i < [buttonArray count]; i++) {
-		// For each button, check if the location is in the rect
-		SideBarButton* button = [buttonArray objectAtIndex:i];
-		if (CGRectContainsPoint([button buttonRect], location)) {
-			[self buttonPressedWithID:i];
+	if (!isTouchMovingScroll) {
+		isTouchTapped = YES;
+		for (int i = 0; i < [buttonArray count]; i++) {
+			// For each button, check if the location is in the rect
+			SideBarButton* button = [buttonArray objectAtIndex:i];
+			if (CGRectContainsPoint([button buttonRect], location)) {
+				[self buttonPressedWithID:i];
+				isTouchDraggingButton = YES;
+			}
 		}
 	}
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
 	// OVERRIDE
-	currentYOffset += fromLocation.y - toLocation.y;
-	isTouchMovingScroll = YES;
+	if (!isTouchTapped)
+		currentYOffset += fromLocation.y - toLocation.y;
+	
+	if (scrollTouchTimer > 0) {
+		if (GetDistanceBetweenPoints(fromLocation, toLocation) > SCROLLING_DISTANCE_THRESHOLD) {
+			scrollTouchTimer = -1;
+			isTouchMovingScroll = YES;
+		}
+	}
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE
-	if (!isTouchMovingScroll) {
+	if (!isTouchMovingScroll && isTouchTapped) {
 		for (int i = 0; i < [buttonArray count]; i++) {
 			// For each button, check if the location is in the rect
 			SideBarButton* button = [buttonArray objectAtIndex:i];
 			if (CGRectContainsPoint([button buttonRect], location)) {
-				[self buttonReleasedWithID:i];
+				[self buttonReleasedWithID:i atLocation:location];
 			}
 		}
+		
 	}
+	isTouchDraggingButton = NO;
 	isTouchMovingScroll = NO;
+	isTouchTapped = NO;
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {

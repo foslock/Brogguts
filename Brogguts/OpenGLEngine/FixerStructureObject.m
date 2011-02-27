@@ -11,4 +11,12 @@
 
 @implementation FixerStructureObject
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	self = [super initWithTypeID:kObjectStructureFixerID withLocation:location isTraveling:traveling];
+	if (self) {
+		isCheckedForRadialEffect = YES;
+	}
+	return self;
+}
+
 @end

@@ -10,7 +10,16 @@
 #import "StructureObject.h"
 
 @interface TurretStructureObject : StructureObject {
-
+	// Attacking vars
+	int attackCooldownTimer;
+	CGPoint attackLaserTargetPosition;
+	int attributeAttackCooldown;
+	int attributeWeaponsDamage;
+	int attributeAttackRange;
 }
+
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)attackTarget;
 
 @end

@@ -111,7 +111,7 @@
 	self = [super initWithImage:image withLocation:location withObjectType:typeID];
 	if (self) {
 		staticObject = YES;
-		isTouchable = NO;
+		isTouchable = YES;
 		isCheckedForMultipleCollisions = YES;
 		isCheckedForRadialEffect = YES;
 		pathPointArray = nil;
@@ -128,25 +128,33 @@
 	return self;
 }
 
-- (void)updateObjectTargets {
-	// Check if there is an enemy in the closest vicinity
-	if (friendlyAIState == kFriendlyAIStateStill) {
-		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
-		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
-		for (int i = 0; i < [closeCraftArray count]; i++) {
-			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
-			if ([obj isKindOfClass:[StructureObject class]] || 
-				[obj isKindOfClass:[CraftObject class]]) {
-				if (obj.objectAlliance == kAllianceEnemy) {
-					closestEnemyObject = (TouchableObject*)obj;
-					// NSLog(@"Found an enemy: object (%i)", obj.uniqueObjectID);
-				}
-			}
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
+	if (isCurrentlyHoveredOver) {
+		// Draw "selection circle"
+		if (objectAlliance == kAllianceFriendly) {
+			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+		} else {
+			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 		}
+		drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
 	}
 }
 
+- (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
+	[super attackedByEnemy:enemy withDamage:damage];
+	attributeHullCurrent -= damage;
+	if (attributeHullCurrent <= 0) {
+		return YES;
+	}
+	return NO;
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+	if (attributeHullCurrent <= 0) {
+		destroyNow = YES;
+		return;
+	}
+	
 	// Get the current point we should be following
 	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
@@ -173,8 +181,14 @@
 		objectVelocity = Vector2fZero;
 	}
 	
-	[self updateObjectTargets];
 	[super updateObjectLogicWithDelta:aDelta];
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
+	enablePrimitiveDraw();
+	[self drawHoverSelectionWithScroll:vector];
+	disablePrimitiveDraw();
 }
 
 - (void)moveTowardsLocation:(CGPoint)location {

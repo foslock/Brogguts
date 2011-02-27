@@ -90,12 +90,15 @@
 			}
 		}
 		
-		if (!isMovingObjectIn && !isMovingObjectOut)
+		if (!isMovingObjectIn && !isMovingObjectOut) {
 			sideBarObjectLocation = sideBarLocation;
+		}
+			
 		
 		if (!isSideBarMovingIn && !isSideBarMovingOut) {
 			// update the current object on the top of the stack
 			SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+			[topObject updateSideBar];
 			if (topObject) {
 				if (isMovingObjectIn) {
 					isMovingObjectOut = NO;
@@ -177,7 +180,7 @@
 			}
 		}
 		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-		[topObject touchesBeganAtLocation:location];
+		[topObject touchesScrolledAtLocation:location];
 	}
 }
 

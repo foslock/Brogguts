@@ -23,7 +23,10 @@
 }
 
 - (CGRect)buttonRect {
-	return CGRectMake(buttonCenter.x - buttonWidth / 2, buttonCenter.y - buttonHeight / 2, buttonWidth, buttonHeight);
+	return CGRectMake(buttonCenter.x - buttonWidth / 2,
+					  buttonCenter.y - buttonHeight / 2,
+					  buttonWidth,
+					  buttonHeight);
 }
 
 @end

@@ -33,6 +33,13 @@
 		6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */; };
 		6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAEF213173BA7001A10E3 /* SideBarButton.m */; };
 		6F2CAFDE13182AA6001A10E3 /* PathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAFDD13182AA6001A10E3 /* PathNode.m */; };
+		6F2CB13A131973A9001A10E3 /* craftmonarch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB139131973A9001A10E3 /* craftmonarch.png */; };
+		6F2CB2A81319EC26001A10E3 /* particlebroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A51319EC26001A10E3 /* particlebroggut.png */; };
+		6F2CB2A91319EC26001A10E3 /* particleshippart.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A61319EC26001A10E3 /* particleshippart.png */; };
+		6F2CB2AA1319EC26001A10E3 /* particleshipthruster.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A71319EC26001A10E3 /* particleshipthruster.png */; };
+		6F2CB3491319F592001A10E3 /* structureturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB3481319F592001A10E3 /* structureturret.png */; };
+		6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB40D131A073C001A10E3 /* testsound.wav */; };
+		6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB470131A24B9001A10E3 /* CraftSideBar.m */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -133,6 +140,14 @@
 		6F2CAEF213173BA7001A10E3 /* SideBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarButton.m; sourceTree = "<group>"; };
 		6F2CAFDC13182AA6001A10E3 /* PathNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathNode.h; sourceTree = "<group>"; };
 		6F2CAFDD13182AA6001A10E3 /* PathNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PathNode.m; sourceTree = "<group>"; };
+		6F2CB139131973A9001A10E3 /* craftmonarch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftmonarch.png; sourceTree = "<group>"; };
+		6F2CB2A51319EC26001A10E3 /* particlebroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlebroggut.png; sourceTree = "<group>"; };
+		6F2CB2A61319EC26001A10E3 /* particleshippart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleshippart.png; sourceTree = "<group>"; };
+		6F2CB2A71319EC26001A10E3 /* particleshipthruster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleshipthruster.png; sourceTree = "<group>"; };
+		6F2CB3481319F592001A10E3 /* structureturret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureturret.png; sourceTree = "<group>"; };
+		6F2CB40D131A073C001A10E3 /* testsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = testsound.wav; sourceTree = "<group>"; };
+		6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftSideBar.h; sourceTree = "<group>"; };
+		6F2CB470131A24B9001A10E3 /* CraftSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftSideBar.m; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -316,6 +331,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6F2CB40D131A073C001A10E3 /* testsound.wav */,
 				6F8B878913078E34009CD1BF /* Images */,
 				6F8B878A13078E3F009CD1BF /* Scenes */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
@@ -383,8 +399,8 @@
 		6F2CADB813171F52001A10E3 /* Station Structures */ = {
 			isa = PBXGroup;
 			children = (
-				6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */,
 				6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */,
+				6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */,
 			);
 			name = "Station Structures";
 			sourceTree = "<group>";
@@ -394,6 +410,8 @@
 			children = (
 				6F2CAE5F13172D9A001A10E3 /* MainMenuSideBar.h */,
 				6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */,
+				6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */,
+				6F2CB470131A24B9001A10E3 /* CraftSideBar.m */,
 			);
 			name = "Specific Side Bars";
 			sourceTree = "<group>";
@@ -403,6 +421,9 @@
 			children = (
 				6FC98B2012FB1FB4003F9D9A /* starTexture.png */,
 				6F8B8E85130C91D5009CD1BF /* defaultTexture.png */,
+				6F2CB2A51319EC26001A10E3 /* particlebroggut.png */,
+				6F2CB2A61319EC26001A10E3 /* particleshippart.png */,
+				6F2CB2A71319EC26001A10E3 /* particleshipthruster.png */,
 			);
 			name = Particles;
 			sourceTree = "<group>";
@@ -471,6 +492,7 @@
 			isa = PBXGroup;
 			children = (
 				6F2CADC013172529001A10E3 /* structureblock.png */,
+				6F2CB3481319F592001A10E3 /* structureturret.png */,
 				6F8B878F13078EC2009CD1BF /* structurebasestation.png */,
 			);
 			name = Structures;
@@ -479,6 +501,7 @@
 		6F8B878D13078E68009CD1BF /* Craft */ = {
 			isa = PBXGroup;
 			children = (
+				6F2CB139131973A9001A10E3 /* craftmonarch.png */,
 				6F12FDE813060544003CDDD6 /* craftant.png */,
 			);
 			name = Craft;
@@ -722,6 +745,12 @@
 				6F8B8E53130C8FCB009CD1BF /* shipThrusterParticle.pex in Resources */,
 				6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */,
 				6F2CADC113172529001A10E3 /* structureblock.png in Resources */,
+				6F2CB13A131973A9001A10E3 /* craftmonarch.png in Resources */,
+				6F2CB2A81319EC26001A10E3 /* particlebroggut.png in Resources */,
+				6F2CB2A91319EC26001A10E3 /* particleshippart.png in Resources */,
+				6F2CB2AA1319EC26001A10E3 /* particleshipthruster.png in Resources */,
+				6F2CB3491319F592001A10E3 /* structureturret.png in Resources */,
+				6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -778,6 +807,7 @@
 				6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */,
 				6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */,
 				6F2CAFDE13182AA6001A10E3 /* PathNode.m in Sources */,
+				6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

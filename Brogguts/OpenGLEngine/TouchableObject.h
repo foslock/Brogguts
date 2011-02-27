@@ -17,8 +17,17 @@
 	// True if the structure should be checked for ships/structures in it's area
 	BOOL isCheckedForRadialEffect;
 	float effectRadius;
+	
+	// Closest enemy object, within range
+	TouchableObject* closestEnemyObject;
+	NSMutableSet* objectsTargetingSelf;
+	
+	// For craft ONLY
+	BOOL isPartOfASquad;
 }
 
+@property (nonatomic, assign) TouchableObject* closestEnemyObject;
+@property (nonatomic, assign) BOOL isPartOfASquad;
 @property (nonatomic, assign) BOOL isTouchable;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
@@ -29,6 +38,17 @@
 - (Circle)effectRadiusCircle;
 - (void)objectEnteredEffectRadius:(TouchableObject*)other;
 
+// Returns YES if the object is destroyed because of the attack
+- (BOOL)attackedByEnemy:(TouchableObject*)enemy withDamage:(int)damage;
+
+// Called on an object when it has been targeted by "enemy"
+- (void)targetedByEnemy:(TouchableObject*)enemy;
+- (void)untargetedByEnemy:(TouchableObject*)enemy;
+
+// Called on an object (enemy targeting the object) when destroyed, passes itself
+- (void)targetWasDestroyed:(TouchableObject*)target;
+
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll;
 - (void)touchesHoveredOver;
 - (void)touchesHoveredLeft;
 - (void)touchesBeganAtLocation:(CGPoint)location;

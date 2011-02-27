@@ -11,4 +11,12 @@
 
 @implementation RadarStructureObject
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	self = [super initWithTypeID:kObjectStructureRadarID withLocation:location isTraveling:traveling];
+	if (self) {
+		isCheckedForRadialEffect = YES;
+	}
+	return self;
+}
+
 @end

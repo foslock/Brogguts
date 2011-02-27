@@ -61,16 +61,18 @@
 		sharedGameController = [GameController sharedGameController];
 		active = NO;
 		particleType = particleID;
+		blendAdditive = NO;
 		
 		switch (particleID) {
 			case kParticleTypeBroggut:
-				texture = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINES];
+				texture = [[Image alloc] initWithImageNamed:@"particlebroggut.png" filter:GL_LINEAR];
 				break;
 			case kParticleTypeShipParts:
-				texture = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINES];
+				texture = [[Image alloc] initWithImageNamed:@"particleshippart.png" filter:GL_LINEAR];
 				break;
 			case kParticleTypeShipThruster:
-				texture = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINES];
+				texture = [[Image alloc] initWithImageNamed:@"particleshipthruster.png" filter:GL_LINEAR];
+				blendAdditive = YES;
 				break;
 			default:
 				texture = nil;
@@ -166,7 +168,7 @@
 		// Configure the point size pointer which will use the currently bound VBO.  PointSprite contains
 		// both the location of the point as well as its size, so the config below tells the point size
 		// pointer where in the currently bound VBO it can find the size for each point
-		glPointSizePointerOES(GL_FLOAT,sizeof(PointSprite),(GLvoid*) (sizeof(GL_FLOAT)*2));
+		glPointSizePointerOES(GL_FLOAT,sizeof(PointSprite),(GLvoid*) (sizeof(GLfloat)*2));
 		
 		// Change the blend function used if blendAdditive has been set
 		if(blendAdditive) {
@@ -202,7 +204,7 @@
 		// its on
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	} else if (particleType == kParticleTypeBuildLocation ||
-			   particleType == kParticleTypeLaser) {
+			   particleType == kParticleTypeSpark) {
 		// Draw each particle as a line
 		enablePrimitiveDraw();
 		for (int i = 0; i < particleCount; i++) {
@@ -211,8 +213,10 @@
 			CGPoint fromPoint = CGPointMake(particle->position.x - (particle->velocity.x * PARTICLE_PRIMITIVE_SCALE),
 											particle->position.y - (particle->velocity.y * PARTICLE_PRIMITIVE_SCALE));
 			glColor4f(particle->color.red, particle->color.green, particle->color.blue, particle->color.alpha);
+			glLineWidth(particle->particleSize);
 			drawLine(fromPoint, toPoint, scroll);
 		}
+		glLineWidth(1.0f);
 		disablePrimitiveDraw();
 	}
 }
@@ -242,19 +246,30 @@
 	switch (particleType) {
 		case kParticleTypeBroggut:
 			particle->position = Vector2fMake(location.x, location.y);
-			particle->velocity = Vector2fMake(RANDOM_MINUS_1_TO_1(), RANDOM_MINUS_1_TO_1());
+			particle->velocity = Vector2fMake(RANDOM_MINUS_1_TO_1() / 4, RANDOM_MINUS_1_TO_1() / 4);
 			particle->color = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
 			particle->deltaColor = Color4fMake(0.0f, 0.0f, 0.0f, -0.01f);
 			particle->timeToLive = 200;
 			particle->particleSize = 32.0f;
+			particle->particleSizeDelta = 0.0f;
 			break;
-		case kParticleTypeLaser:
+		case kParticleTypeSpark:
 			particle->position = Vector2fMake(location.x, location.y);
 			particle->velocity = Vector2fMake(RANDOM_MINUS_1_TO_1(), RANDOM_MINUS_1_TO_1());
 			particle->timeToLive = 200;
 			particle->color = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
 			particle->deltaColor = Color4fMake(0.0f, 0.0f, 0.0f, -0.01f);
 			particle->particleSize = 1.0f;
+			particle->particleSizeDelta = 0.0f;
+			break;
+		case kParticleTypeShipThruster:
+			particle->position = Vector2fMake(location.x, location.y);
+			particle->velocity = Vector2fZero;
+			particle->timeToLive = 200;
+			particle->color = Color4fMake(0.5f, 0.5f, 1.0f, 1.0f);
+			particle->deltaColor = Color4fMake(-0.01f, -0.01f, 0.0f, 0.0f);
+			particle->particleSize = 16.0f;
+			particle->particleSizeDelta = -0.1f;
 			break;
 		default:
 			return NO;
