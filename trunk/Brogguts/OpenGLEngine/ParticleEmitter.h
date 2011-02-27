@@ -32,7 +32,7 @@ typedef struct {
 } Particle;
 
 #define MAXIMUM_UPDATE_RATE 30.0f		// The maximum number of updates that occur per frame
-#define MAXIMUM_PARTICLE_COUNT 500		// Maximum number of particles allowed
+#define MAXIMUM_PARTICLE_COUNT 1000		// Maximum number of particles allowed
 #define PARTICLE_PRIMITIVE_SCALE 8.0f	// Factor the line particles are scaled by 
 
 // The particleEmitter allows you to define parameters that are used when generating particles.

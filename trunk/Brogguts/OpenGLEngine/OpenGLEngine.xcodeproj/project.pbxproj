@@ -40,6 +40,7 @@
 		6F2CB3491319F592001A10E3 /* structureturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB3481319F592001A10E3 /* structureturret.png */; };
 		6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB40D131A073C001A10E3 /* testsound.wav */; };
 		6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB470131A24B9001A10E3 /* CraftSideBar.m */; };
+		6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -148,6 +149,9 @@
 		6F2CB40D131A073C001A10E3 /* testsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = testsound.wav; sourceTree = "<group>"; };
 		6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftSideBar.h; sourceTree = "<group>"; };
 		6F2CB470131A24B9001A10E3 /* CraftSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftSideBar.m; sourceTree = "<group>"; };
+		6F2CB54F131ACDCE001A10E3 /* CraftAndStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftAndStructures.h; sourceTree = "<group>"; };
+		6F2CB5DE131AED6D001A10E3 /* StructureSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructureSideBar.h; sourceTree = "<group>"; };
+		6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructureSideBar.m; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -412,6 +416,8 @@
 				6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */,
 				6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */,
 				6F2CB470131A24B9001A10E3 /* CraftSideBar.m */,
+				6F2CB5DE131AED6D001A10E3 /* StructureSideBar.h */,
+				6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */,
 			);
 			name = "Specific Side Bars";
 			sourceTree = "<group>";
@@ -558,6 +564,7 @@
 				6FCAC74C12F7D2F800662BDA /* Structures.h */,
 				6FF665031305D11900EB76A8 /* Primitives.h */,
 				6FCAC74B12F7D29700662BDA /* Global.h */,
+				6F2CB54F131ACDCE001A10E3 /* CraftAndStructures.h */,
 			);
 			name = Constants;
 			sourceTree = "<group>";
@@ -808,6 +815,7 @@
 				6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */,
 				6F2CAFDE13182AA6001A10E3 /* PathNode.m in Sources */,
 				6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */,
+				6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

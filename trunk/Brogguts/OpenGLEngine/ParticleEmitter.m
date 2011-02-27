@@ -128,6 +128,10 @@
 			// Update the particle counter
 			particleIndex++;
 		} else {
+			// Make sure all the values are zeroed
+			currentParticle->timeToLive = 0;
+			currentParticle->particleSize = 0.0f;
+			currentParticle->color = Color4fMake(1.0f, 1.0f, 1.0f, 0.0f);
 			
 			// As the particle is not alive anymore replace it with the last active particle 
 			// in the array and reduce the count of particles by one.  This causes all active particles

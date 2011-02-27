@@ -25,15 +25,17 @@
 }
 
 - (void)attackTarget {
-	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
-		if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow) {
-			CGPoint enemyPoint = closestEnemyObject.objectLocation;
-			attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
-													enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
-			[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
-			attackCooldownTimer = attributeAttackCooldown;
-			if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
-				[self setClosestEnemyObject:nil];
+	if (closestEnemyObject) {
+		if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+			if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow) {
+				CGPoint enemyPoint = closestEnemyObject.objectLocation;
+				attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
+														enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
+				[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+				attackCooldownTimer = attributeAttackCooldown;
+				if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
+					[self setClosestEnemyObject:nil];
+				}
 			}
 		}
 	}

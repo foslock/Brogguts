@@ -163,6 +163,12 @@
 		squadMonarch = nil;
 		effectRadius = attributeAttackRange;
 		attackCooldownTimer = 0;
+		if (traveling) {
+			isTraveling = YES;
+			isTouchable = NO;
+			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
+			[self followPath:path isLooped:NO];
+		}
 	}
 	return self;
 }
@@ -217,15 +223,17 @@
 }
 
 - (void)attackTarget {
-	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
-		if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow) {
-			CGPoint enemyPoint = closestEnemyObject.objectLocation;
-			attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
-													enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
-			[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
-			attackCooldownTimer = attributeAttackCooldown;
-			if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
-				[self setClosestEnemyObject:nil];
+	if (closestEnemyObject) {
+		if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+			if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
+				CGPoint enemyPoint = closestEnemyObject.objectLocation;
+				attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
+														enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
+				[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+				attackCooldownTimer = attributeAttackCooldown;
+				if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
+					[self setClosestEnemyObject:nil];
+				}
 			}
 		}
 	}
@@ -236,7 +244,7 @@
 		destroyNow = YES;
 		return;
 	}
-
+	
 	// Get the current point we should be following
 	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
@@ -255,6 +263,10 @@
 				isFollowingPath = NO;
 				hasCurrentPathFinished = YES;
 				friendlyAIState = kFriendlyAIStateStill;
+				if (isTraveling) {
+					isTraveling = NO;
+					isTouchable = YES;
+				}
 			}
 		}
 		[self accelerateTowardsLocation:moveTowardsPoint];
@@ -335,7 +347,10 @@
 		for (int i = 0; i < [lightPointsArray count]; i++) {
 			CGPoint curPoint = [[lightPointsArray objectAtIndex:i] CGPointValue];
 			if (self.objectAlliance == kAllianceFriendly) {
-				blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+				if (!isTraveling)
+					blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+				else
+					blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
 			} else {
 				blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
 			}
@@ -376,7 +391,7 @@
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE ME
 	if (objectAlliance == kAllianceFriendly) {
-		if (isBeingDragged) {
+		if (isBeingDragged && !CircleContainsPoint(self.boundingCircle, location)) {
 			if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
 				NSArray* newPath = [NSArray arrayWithObjects:
 									[NSValue valueWithCGPoint:dragLocation],
@@ -387,7 +402,7 @@
 					[self.currentScene attemptToPutCraft:self inSquadAtLocation:location];
 				}
 			} else if (isBeingControlled) {
-				[self.currentScene attemptToControlShipAtLocation:location];
+				[self.currentScene attemptToControlCraftAtLocation:location];
 			}
 		}
 		isBeingDragged = NO;

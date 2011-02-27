@@ -15,15 +15,7 @@
 #import "PlayerProfile.h"
 #import "StructureObject.h"
 #import "CraftObject.h"
-#import "AntCraftObject.h"
-#import "MothCraftObject.h"
-#import "BeetleCraftObject.h"
-#import "MonarchCraftObject.h"
-#import "BaseStationStructureObject.h"
-#import "BlockStructureObject.h"
-#import "TurretStructureObject.h"
-#import "RadarStructureObject.h"
-#import "FixerStructureObject.h"
+#import "CraftAndStructures.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -159,39 +151,29 @@ static GameController* sharedGameController = nil;
 			int straightIndex = i + (j * width);
 			NSMutableArray* cellArray = [[NSMutableArray alloc] init];
 			
-			if (i == 1 && j == 13) { // Add the initial craft
+			if (i == 3 && j == 24) { // Add the initial craft
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if (i == 2 && j == 13) { // Add other ant craft
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
-			} else if (i == 3 && j == 13) { // Add monarch craft
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftMonarchID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
-			} else if (i == 9 && (j == 9 || j == 8 || j == 7)) { // Add an enemy!
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:135.0f] atIndex:4]; // Rotation
-			} else if (i == 0 && j == 13) { // Add the initial structure
+			} else if (i == 0 && j == 24) { // Add the initial base station structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if (i == 6 && j == 8) { // Add a turret!
+			} else if (i == 63 && j == 24) { // Add the initial ENEMY base station structure
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
+			} else if (i == 6 && (j == 22 || j == 26) ) { // Add 2 turrets
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if ((j > 9 && j < 16) && (i > 9 && i < 20)) { // Create some medium brogguts
+			} else if (i == 57 && (j == 22 || j == 26) ) { // Add 2 enemy turrets
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
+			} else if ((j > 10 && j < 38) && (i > 10 && i < 54)) { // Create some medium brogguts
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
 				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
@@ -391,7 +373,12 @@ static GameController* sharedGameController = nil;
 							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
 							[newStructure setIsCheckedForRadialEffect:YES];
 							[newScene addTouchableObject:newStructure withColliding:YES];
-							newScene.homeBaseLocation = currentPoint;
+							if (newStructure.objectAlliance == kAllianceFriendly) {
+								newScene.homeBaseLocation = currentPoint;
+							}
+							if (newStructure.objectAlliance == kAllianceEnemy) {
+								newScene.enemyBaseLocation = currentPoint;
+							}
 							break;
 						}
 						case kObjectStructureBlockID: {

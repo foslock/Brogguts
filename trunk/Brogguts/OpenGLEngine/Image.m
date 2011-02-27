@@ -12,6 +12,7 @@
 #import "ImageRenderSingleton.h"
 #import "GameController.h"
 #import "Transform2D.h"
+#import "BroggutScene.h"
 
 #pragma mark -
 #pragma mark Objects filenames interface
@@ -237,8 +238,12 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
-    [self renderCenteredAtPoint:newPoint scale:scale rotation:rotation];
+	float maxDelta = MAX(imageSize.width, imageSize.height);
+	CGRect viewbounds = CGRectInset([[sharedGameController currentScene] visibleScreenBounds], -maxDelta, -maxDelta);
+	if (CGRectContainsPoint(viewbounds, aPoint)) { // ONLY RENDER OBJECTS ON SCREEN
+		CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
+		[self renderCenteredAtPoint:newPoint scale:scale rotation:rotation];
+	}
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint scale:(Scale2f)aScale rotation:(float)aRotation {

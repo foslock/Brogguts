@@ -63,8 +63,13 @@
 	// The ship (if any) that is currently being commanded
 	CraftObject* commandingShip;
 	
+	// Counters for craft and structures (friendly only)
+	int numberOfCurrentShips;
+	int numberOfCurrentStructures;
+	
 	// Location of the home base
 	CGPoint homeBaseLocation;
+	CGPoint enemyBaseLocation;
 	
 	// Display of brogguts
 	TextObject* broggutCounter;
@@ -119,6 +124,7 @@
 @property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
 @property (nonatomic, assign) CGPoint homeBaseLocation;
+@property (nonatomic, assign) CGPoint enemyBaseLocation;
 @property (nonatomic, assign) CGRect cameraContainRect;
 @property (nonatomic, assign) CGPoint cameraLocation;	
 @property (nonatomic, assign) CGRect fullMapBounds;
@@ -163,13 +169,19 @@
 - (void)updateSceneWithDelta:(float)aDelta;
 
 // Called when the player is trying to switch controlling ships
-- (void)attemptToControlShipAtLocation:(CGPoint)location;
+- (void)attemptToControlCraftAtLocation:(CGPoint)location;
 
 // Called when a ship wants to join a squad
 - (void)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
 
 // Controls the nearest ship to a given location, if there are any ships left
 - (void)controlNearestShipToLocation:(CGPoint)location;
+
+// Called when the player is trying to create/purchase a craft at the location
+- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+// Called when the player is trying to create/purchase a structure at the location
+- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

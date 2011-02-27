@@ -12,9 +12,10 @@
 #import "GameController.h"
 #import "BroggutScene.h"
 #import "SideBarController.h"
+#import "BitmapFont.h"
 
 @implementation SideBarObject
-@synthesize myController;
+@synthesize myController, scrollTouchTimer;
 
 - (void)dealloc {
 	[buttonArray release];
@@ -29,7 +30,6 @@
 		totalSideBarHeight = 0.0f;
 		isTouchMovingScroll = NO;
 		isTouchDraggingButton = NO;
-		isTouchTapped = NO;
 		scrollTouchTimer = -1;
 	}
 	return self;
@@ -41,9 +41,6 @@
 		scrollTouchTimer--;
 	} else if (scrollTouchTimer == 0) {
 		scrollTouchTimer = -1;
-		if (!isTouchMovingScroll) {
-			[self touchesTappedAtLocation:firstTouchLocation];
-		}
 	}
 	
 	// Update the scroll
@@ -66,71 +63,110 @@
 		// For each button, update it's center
 		SideBarButton* button = [buttonArray objectAtIndex:i];
 		currentYPosition += SPACE_BETWEEN_SIDEBAR_BUTTONS + (button.buttonHeight / 2);
-		button.buttonCenter = CGPointMake(SIDEBAR_WIDTH / 2, kPadScreenLandscapeHeight - (currentYPosition + currentYOffset));
+		button.buttonCenter = CGPointMake(button.buttonCenter.x, kPadScreenLandscapeHeight - (currentYPosition + currentYOffset));
 		currentYPosition += button.buttonHeight / 2;
 		totalSideBarHeight = currentYPosition + SPACE_BETWEEN_SIDEBAR_BUTTONS;
-		glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+		if (button.isPressed) {
+			glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+		} else {
+			glColor4f(1.0f, 1.0f, 1.0f, 0.4f);
+		}
 		drawFilledRect([button buttonRect], vector);
+		
+		CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
+		// Draw button text
+		[[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText]];
 	}
 	disablePrimitiveDraw();
 }
 
 - (void)buttonPressedWithID:(int)buttonID {
 	// OVERRIDE
+	SideBarButton* button = [buttonArray objectAtIndex:buttonID];
+	[button setIsPressed:YES];
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
 	// OVERRIDE
+	SideBarButton* button = [buttonArray objectAtIndex:buttonID];
+	[button setIsPressed:NO];
 }
 
-- (void)touchesScrolledAtLocation:(CGPoint)location {
+- (void)buttonCancelledWithId:(int)buttonID {
+	// OVERRIDE
+	SideBarButton* button = [buttonArray objectAtIndex:buttonID];
+	[button setIsPressed:NO];
+}
+
+- (void)touchesBeganAtLocation:(CGPoint)location {
+	NSLog(@"Began");
 	scrollTouchTimer = SCROLL_TIME_INTERVAL;
 	firstTouchLocation = location;
-}
-
-- (void)touchesTappedAtLocation:(CGPoint)location {
-	// OVERRIDE
-	if (!isTouchMovingScroll) {
-		isTouchTapped = YES;
-		for (int i = 0; i < [buttonArray count]; i++) {
-			// For each button, check if the location is in the rect
-			SideBarButton* button = [buttonArray objectAtIndex:i];
-			if (CGRectContainsPoint([button buttonRect], location)) {
-				[self buttonPressedWithID:i];
-				isTouchDraggingButton = YES;
-			}
+	// Press button by default if the touch is on one
+	for (int i = 0; i < [buttonArray count]; i++) {
+		// For each button, check if the location is in the rect
+		SideBarButton* button = [buttonArray objectAtIndex:i];
+		if (CGRectContainsPoint([button buttonRect], location)) {
+			[self buttonPressedWithID:i];
+			isTouchDraggingButton = YES;
 		}
 	}
 }
 
+- (void)touchesTappedAtLocation:(CGPoint)location { // Called when the touch has began and ended within the threshold timing without moving significantly
+													// OVERRIDE
+	NSLog(@"Tapped");
+	for (int i = 0; i < [buttonArray count]; i++) {
+		// For each button, check if the location is in the rect
+		SideBarButton* button = [buttonArray objectAtIndex:i];
+		if (CGRectContainsPoint([button buttonRect], location)) {
+			[self buttonPressedWithID:i];
+			[self buttonReleasedWithID:i atLocation:location];
+		}
+	}
+	isTouchDraggingButton = NO;
+	isTouchMovingScroll = NO;
+}
+
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
 	// OVERRIDE
-	if (!isTouchTapped)
-		currentYOffset += fromLocation.y - toLocation.y;
-	
+	NSLog(@"Moved");
 	if (scrollTouchTimer > 0) {
-		if (GetDistanceBetweenPoints(fromLocation, toLocation) > SCROLLING_DISTANCE_THRESHOLD) {
+		if (fabs(fromLocation.y - toLocation.y) > SCROLLING_DISTANCE_THRESHOLD) {
 			scrollTouchTimer = -1;
 			isTouchMovingScroll = YES;
+			if (isTouchDraggingButton) { // Cancel any touches that may be touching a button
+				isTouchDraggingButton = NO;
+				for (int i = 0; i < [buttonArray count]; i++) {
+					// For each button, check if the location is in the rect
+					SideBarButton* button = [buttonArray objectAtIndex:i];
+					if (CGRectContainsPoint([button buttonRect], fromLocation)) {
+						[self buttonCancelledWithId:i];
+					}
+				}
+			}
 		}
+	}
+	if (isTouchMovingScroll) {
+		currentYOffset += fromLocation.y - toLocation.y;
 	}
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE
-	if (!isTouchMovingScroll && isTouchTapped) {
+	NSLog(@"Ended");
+	if (!isTouchMovingScroll) {
 		for (int i = 0; i < [buttonArray count]; i++) {
 			// For each button, check if the location is in the rect
 			SideBarButton* button = [buttonArray objectAtIndex:i];
 			if (CGRectContainsPoint([button buttonRect], location)) {
 				[self buttonReleasedWithID:i atLocation:location];
 			}
+			[button setIsPressed:NO];
 		}
-		
 	}
 	isTouchDraggingButton = NO;
 	isTouchMovingScroll = NO;
-	isTouchTapped = NO;
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {

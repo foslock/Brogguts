@@ -11,6 +11,7 @@
 
 @implementation TextObject
 @synthesize isHidden, fontID, objectText, scrollWithBounds;
+@synthesize fontColor, fontScale;
 
 - (void)dealloc {
 	[objectText release];
@@ -39,7 +40,7 @@
 	if (timeLeft != -1.0f) {
 		timeLeft -= aDelta;
 		if (timeLeft < fadeTime) {
-			fontColor = Color4fMake(1.0f, 1.0f, 1.0f, CLAMP(timeLeft / fadeTime, 0.0f, 1.0f));
+			fontColor = Color4fMake(fontColor.red, fontColor.green, fontColor.blue, CLAMP(timeLeft / fadeTime, 0.0f, 1.0f));
 		}
 		if (timeLeft <= 0.0f) {
 			destroyNow = YES;

@@ -1,5 +1,5 @@
 //
-//  CraftSideBar.h
+//  StructureSideBar.h
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 2/27/11.
@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "SideBarObject.h"
 
-#define CRAFT_BUTTON_DRAG_SEGMENTS 10
+#define STRUCTURE_BUTTON_DRAG_SEGMENTS 10
 
-@interface CraftSideBar : SideBarObject {
+@interface StructureSideBar : SideBarObject {
 	int currentDragButtonID;
 	CGPoint currentDragButtonLocation;
 }

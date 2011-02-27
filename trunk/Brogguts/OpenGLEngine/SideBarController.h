@@ -13,6 +13,7 @@
 #define SIDEBAR_MOVE_SPEED 8.0f
 
 @class SideBarObject;
+@class BitmapFont;
 
 @interface SideBarController : NSObject {
 	// Vars dealing with bar appearing and disappearing
@@ -29,9 +30,13 @@
 	BOOL isMovingObjectIn;
 	BOOL isMovingObjectOut;
 	CGPoint sideBarObjectLocation;
+	
+	// Font object for text rendering
+	BitmapFont* sideBarFont;
 }
 
 @property (nonatomic, assign) BOOL isSideBarShowing;
+@property (assign) BitmapFont* sideBarFont;
 
 - (id)initWithLocation:(CGPoint)location withWidth:(float)width withHeight:(float)height;
 

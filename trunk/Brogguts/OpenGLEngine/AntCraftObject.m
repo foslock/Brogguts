@@ -156,7 +156,7 @@ enum MiningStates {
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	if (isBeingDragged) {
-		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation];
+		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}
 	if (miningState == kMiningStateMining) {
 		enablePrimitiveDraw();

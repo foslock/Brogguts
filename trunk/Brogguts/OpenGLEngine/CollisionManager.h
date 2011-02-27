@@ -95,7 +95,7 @@ typedef struct Broggut_Array {
 - (void)addMediumBroggut;
 - (void)removeMediumBroggutWithID:(int)brogID;
 - (void)renderMediumBroggutsInScreenBounds:(CGRect)bounds withScrollVector:(Vector2f)scroll;
-- (void)drawValidityRectForLocation:(CGPoint)location;
+- (void)drawValidityRectForLocation:(CGPoint)location forMining:(BOOL)forMining;
 
 - (void)addRadialAffectedObject:(TouchableObject*)obj;
 - (void)removeRadialAffectedObject:(TouchableObject*)obj;
