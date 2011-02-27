@@ -165,6 +165,12 @@
 // Called when the player is trying to switch controlling ships
 - (void)attemptToControlShipAtLocation:(CGPoint)location;
 
+// Called when a ship wants to join a squad
+- (void)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
+
+// Controls the nearest ship to a given location, if there are any ships left
+- (void)controlNearestShipToLocation:(CGPoint)location;
+
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

@@ -11,4 +11,12 @@
 
 @implementation BeetleCraftObject
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	self = [super initWithTypeID:kObjectCraftBeetleID withLocation:location isTraveling:traveling];
+	if (self) {
+		
+	}
+	return self;
+}
+
 @end

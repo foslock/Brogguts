@@ -74,42 +74,30 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 - (id)init {
 	self = [super init];
 	if (self) {
-		NSMutableArray* tempOuterArray = [[NSMutableArray alloc] init];
+		NSMutableArray* tempArray = [[NSMutableArray alloc] init];
 		for (int j = 0; j < PARTICLE_TYPE_COUNT; j++) {
-			NSMutableArray* tempInnerArray = [[NSMutableArray alloc] init];
-			for (int i = 0; i < PARTICLE_EMITTER_COUNT; i++) {
-				ParticleEmitter* emitter = [[ParticleEmitter alloc] initParticleEmitterWithParticleID:j];
-				[tempInnerArray addObject:emitter];
-				[emitter release];
-			}
-			[tempOuterArray addObject:tempInnerArray];
-			[tempInnerArray release];
+			ParticleEmitter* emitter = [[ParticleEmitter alloc] initParticleEmitterWithParticleID:j];
+			[tempArray addObject:emitter];
+			[emitter release];
 		}
-		
-		particleEmitterArray = tempOuterArray;
+		particleEmitterArray = tempArray;
 	}
 	return self;
 }
 
 - (void)updateParticlesWithDelta:(GLfloat)aDelta {
 	for (int i = 0; i < [particleEmitterArray count]; i++) {
-		NSArray* partArray = [particleEmitterArray objectAtIndex:i];
-		for (int j = 0; j < [partArray count]; j++) {
-			ParticleEmitter* emitter = [partArray objectAtIndex:j];
-			if (emitter.active)
-				[emitter updateWithDelta:aDelta];
-		}
+		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:i];
+		if (emitter.active)
+			[emitter updateWithDelta:aDelta];
 	}
 }
 
 - (void)renderParticlesWithScroll:(Vector2f)scroll {
 	for (int i = 0; i < [particleEmitterArray count]; i++) {
-		NSArray* partArray = [particleEmitterArray objectAtIndex:i];
-		for (int j = 0; j < [partArray count]; j++) {
-			ParticleEmitter* emitter = [partArray objectAtIndex:j];
-			if (emitter.active)
-				[emitter renderParticlesWithScroll:scroll];
-		}
+		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:i];
+		if (emitter.active)
+			[emitter renderParticlesWithScroll:scroll];
 	}
 }
 
@@ -118,16 +106,8 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 		NSLog(@"That particle type is invalid");
 		return;
 	}
-	NSArray* partArray = [particleEmitterArray objectAtIndex:particleType];
-	for (int i = 0; i < [partArray count]; i++) {
-		ParticleEmitter* emitter = [partArray objectAtIndex:i];
-		if (emitter.active)
-			continue;
-		else {
-			[emitter addParticles:count atLocation:location];
-			return;
-		}
-	}
+		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:particleType];
+		[emitter addParticles:count atLocation:location];
 }
 
 @end

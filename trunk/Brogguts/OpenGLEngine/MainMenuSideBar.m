@@ -10,6 +10,7 @@
 #import "SideBarButton.h"
 #import "BroggutScene.h"
 #import "SideBarController.h"
+#import "CraftSideBar.h"
 
 @implementation MainMenuSideBar
 
@@ -25,9 +26,9 @@
 	return self;
 }
 
-- (void)buttonReleasedWithID:(int)buttonID {
+- (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
 	if (buttonID == 0) {
-		MainMenuSideBar* newMenu = [[MainMenuSideBar alloc] init];
+		CraftSideBar* newMenu = [[CraftSideBar alloc] init];
 		[newMenu setMyController:myController];
 		[myController pushSideBarObject:newMenu];
 		[newMenu release];

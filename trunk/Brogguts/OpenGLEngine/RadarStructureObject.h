@@ -13,4 +13,6 @@
 
 }
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
 @end

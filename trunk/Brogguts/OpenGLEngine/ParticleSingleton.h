@@ -13,7 +13,7 @@
 
 enum ParticleTypes {
 	kParticleTypeBroggut,
-	kParticleTypeLaser,
+	kParticleTypeSpark,
 	kParticleTypeShipParts,
 	kParticleTypeShipThruster,
 	kParticleTypeBuildLocation,

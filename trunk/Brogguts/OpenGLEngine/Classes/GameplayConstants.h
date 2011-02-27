@@ -101,9 +101,9 @@ enum TheAntValues {
 	kCraftAntCostBrogguts = 100,
 	kCraftAntCostMetal = 0,
 	kCraftAntEngines = 3,
-	kCraftAntWeapons = 1,
-	kCraftAntAttackRange = 128, // pixels
-	kCraftAntAttackRate = 30, // attacks per minute
+	kCraftAntWeapons = 1, // Damage per attack
+	kCraftAntAttackRange = 512, // pixels
+	kCraftAntAttackCooldown = 100, // frames for weapon to recharge
 	kCraftAntHull = 30,
 	// Special Values
 	kCraftAntCargoSpace = 200, // brogguts
@@ -124,7 +124,7 @@ enum TheMothValues {
 	kCraftMothEngines = 5,
 	kCraftMothWeapons = 1,
 	kCraftMothAttackRange = 128, // pixels
-	kCraftMothAttackRate = 60, // attacks per minute
+	kCraftMothAttackCooldown = 30, // frames for weapon to recharge
 	kCraftMothHull = 20,
 	// Special Values
 	kCraftMothEvadeTime = 4, // seconds
@@ -142,7 +142,7 @@ enum TheBeetleValues {
 	kCraftBeetleEngines = 2,
 	kCraftBeetleWeapons = 3,
 	kCraftBeetleAttackRange = 200, // pixels
-	kCraftBeetleAttackRate = 40, // attacks per minute
+	kCraftBeetleAttackCooldown = 60, // frames for weapon to recharge
 	kCraftBeetleHull = 30,
 	// Special Values
 	kCraftBeetleSelfRepairSpeed = 1, // HP / seconds
@@ -160,7 +160,7 @@ enum TheMonarchValues {
 	kCraftMonarchEngines = 3,
 	kCraftMonarchWeapons = 0,
 	kCraftMonarchAttackRange = 0, // pixels
-	kCraftMonarchAttackRate = 0, // attacks per minute
+	kCraftMonarchAttackCooldown = 0, // frames for weapon to recharge
 	kCraftMonarchHull = 30,
 	// Special Values
 	kCraftMonarchSquadRangeLimit = 256,
@@ -182,7 +182,7 @@ enum TheCamelValues {
 	kCraftCamelEngines = 3,
 	kCraftCamelWeapons = 2,
 	kCraftCamelAttackRange = 128, // pixels
-	kCraftCamelAttackRate = 40, // attacks per minute
+	kCraftCamelAttackCooldown = 50, // frames for weapon to recharge
 	kCraftCamelHull = 60,
 	// Special Values
 	kCraftCamelCargoSpace = 500, // brogguts
@@ -202,7 +202,7 @@ enum TheRatValues {
 	kCraftRatEngines = 5,
 	kCraftRatWeapons = 3,
 	kCraftRatAttackRange = 100, // pixels
-	kCraftRatAttackRate = 80, // attacks per minute
+	kCraftRatAttackCooldown = 30, // frames for weapon to recharge
 	kCraftRatHull = 20,
 	// Special Values
 	kCraftRatEMPRadius = 256, // pixels
@@ -221,7 +221,7 @@ enum TheSpiderValues {
 	kCraftSpiderEngines = 1,
 	kCraftSpiderWeapons = 0,
 	kCraftSpiderAttackRange = 512, // pixels
-	kCraftSpiderAttackRate = 0, // attacks per minute
+	kCraftSpiderAttackCooldown = 0, // frames for weapon to recharge
 	kCraftSpiderHull = 50,
 	// Special Values
 	kCraftSpiderEnginesBonus = 2,
@@ -239,7 +239,7 @@ enum TheSpiderDroneValues {
 	kCraftSpiderDroneEngines = 5,
 	kCraftSpiderDroneWeapons = 1,
 	kCraftSpiderDroneAttackRange = 64, // pixels
-	kCraftSpiderDroneAttackRate = 15, // attacks per minute
+	kCraftSpiderDroneAttackCooldown = 30, // frames for weapon to recharge
 	kCraftSpiderDroneHull = 10,
 	// Special Values
 	kCraftSpiderDroneRebuildTime = 6, // seconds
@@ -257,7 +257,7 @@ enum TheEagleValues {
 	kCraftEagleEngines = 6,
 	kCraftEagleWeapons = 5,
 	kCraftEagleAttackRange = 360, // pixels
-	kCraftEagleAttackRate = 30, // attacks per minute
+	kCraftEagleAttackCooldown = 30, // frames for weapon to recharge
 	kCraftEagleHull = 40,
 	// Special Values
 	kCraftEagleExplodeRadius = 256, // pixels
@@ -353,6 +353,9 @@ enum TheTurretValues {
 	kStructureTurretMovingTime = 6, // seconds to move to active spot
 	kStructureTurretHull = 30,
 	// Special Values
+	kStructureTurretWeapons = 2,
+	kStructureTurretAttackCooldown = 30,
+	kStructureTurretAttackRange = 512,
 	kStructureTurretEnemyTargetLimit = 1,
 	kStructureTurretEnemyTargetLimitBonus = 1,
 };

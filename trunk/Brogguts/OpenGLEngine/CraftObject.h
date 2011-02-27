@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "ControllableObject.h"
 
+#define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
+#define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
+#define LIGHT_BLINK_FADE_SPEED 0.05f // Rate at which the blinking light fades out
+
+@class MonarchCraftObject;
+@class Image;
+
 @interface CraftObject : ControllableObject {
 	// Path variables
 	NSMutableArray* pathPointArray;		// Array containing the points that this craft should follow
@@ -20,16 +27,27 @@
 	// AI states
 	int friendlyAIState;
 	
-	// Closest enemy object, within range
-	TouchableObject* closestEnemyObject;
+	// Attacking vars
+	int attackCooldownTimer;
+	CGPoint attackLaserTargetPosition;
+	
+	// Monarch that leads the squad (nil if not in a squad)
+	MonarchCraftObject* squadMonarch;
+	
+	// Turrets and blinking lights
+	Image* blinkingLightImage;
+	NSArray* turretPointsArray;
+	NSArray* lightPointsArray;
+	int lightBlinkTimer;
+	float lightBlinkAlpha;
 	
 	// Variable attributes that all craft must implement
 	int attributeBroggutCost;
 	int attributeMetalCost;
 	int attributeEngines;
-	int attributeWeapons;
+	int attributeWeaponsDamage;
 	int attributeAttackRange;
-	int attributeAttackRate;
+	int attributeAttackCooldown;
 	int attributeHullCapacity;
 	int attributeHullCurrent;
 	
@@ -43,7 +61,11 @@
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)addCargo:(int)cargo;
-- (void)updateObjectTargets;
+
+- (void)attackTarget;
+
+- (void)updateCraftLightLocations;
+- (void)updateCraftTurretLocations;
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
 - (void)stopFollowingCurrentPath;

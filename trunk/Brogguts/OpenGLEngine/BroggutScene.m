@@ -28,6 +28,7 @@
 #import "CraftObject.h"
 #import "ParticleSingleton.h"
 #import "BlockStructureObject.h"
+#import "MonarchCraftObject.h"
 
 @implementation BroggutScene
 
@@ -106,7 +107,7 @@
 		
 		NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentPlayerProfile].broggutCount];
 		broggutCounter = [[TextObject alloc]
-						  initWithFontID:kFontBlairID Text:brogCount withLocation:CGPointMake(90, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
+						  initWithFontID:kFontBlairID Text:brogCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 240, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
 		[broggutCounter setScrollWithBounds:NO];
 		[textObjectArray addObject:broggutCounter];
 		
@@ -387,9 +388,6 @@
 	// Rendering stars
 	[sharedStarSingleton renderStars];
 	
-	// Render all of the particles in the manager
-	[sharedParticleSingleton renderParticlesWithScroll:scroll];
-	
 	enablePrimitiveDraw();
 	// Draw the grid that collisions are based off of
 	[collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.08f];
@@ -397,6 +395,9 @@
 	
 	// Draw the medium/large brogguts
 	[collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
+	
+	// Render images to screen
+	[sharedImageRenderSingleton renderImages];
 	
 	// Render all objects (excluding text objects)
 	for (int i = 0; i < [renderableObjects count]; i++) {
@@ -411,10 +412,7 @@
 			[tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID] withScrollVector:scroll];
 		else
 			[tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID]];
-	}
-	
-	// Render images to screen
-	[sharedImageRenderSingleton renderImages];
+	}	
 	
 	// Draw a line to the closest broggut
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
@@ -425,21 +423,15 @@
 		disablePrimitiveDraw();
 	}
 	
+	// Render all of the particles in the manager
+	[sharedParticleSingleton renderParticlesWithScroll:scroll];
+	
 	// Render the map overview if present
 	if (isShowingOverview) {
 		[self renderOverviewMapWithAlpha:overviewAlpha];
 	} else {
 		overviewAlpha = 0.0f;
 	}
-	
-	/*
-	 if (isTouchScrolling) {
-	 glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-	 enablePrimitiveDraw();
-	 drawDashedLine(currentTouchLocation, controllingShip.objectLocation, 16, scroll);
-	 disablePrimitiveDraw();
-	 }
-	 */
 	
 	// Render the sidebar button (and sidebar, if activated)
 	[sideBar renderSideBar];
@@ -524,7 +516,7 @@
 			newCircle.x = objPoint[0];
 			newCircle.y = objPoint[1];
 			newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
-			glColor4f(1.0f, 1.0f, 1.0f, 0.4f);
+			glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.5f, 0.0f, OVERVIEW_MAX_ALPHA));
 			drawCircle( newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
 		}
 		if (obj.objectAlliance == kAllianceNeutral) {
@@ -589,7 +581,7 @@
 - (void)attemptToControlShipAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
-		if ([object isKindOfClass:[CraftObject class]]) {
+		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
 			// Object is a craft
 			if (object == controllingShip || object.objectAlliance == kAllianceEnemy) {
 				continue;
@@ -600,6 +592,45 @@
 				break;
 			}
 		}
+	}
+}
+
+- (void)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location {
+	for (int i = 0; i < [touchableObjects count]; i++) {
+		TouchableObject* object = [touchableObjects objectAtIndex:i];
+		if ([object isKindOfClass:[MonarchCraftObject class]] && !object.destroyNow) {
+			MonarchCraftObject* monarch = (MonarchCraftObject*)object;
+			// Object is a monarch
+			if (monarch.objectAlliance == kAllianceEnemy) {
+				continue;
+			}
+			if (CircleContainsPoint(object.touchableBounds, location)) {
+				NSLog(@"Attempting to add object (%i) to squad with object (%i)", craft.uniqueObjectID, monarch.uniqueObjectID);
+				[monarch addCraftToSquad:craft];
+				break;
+			}
+		}
+	}
+}
+
+- (void)controlNearestShipToLocation:(CGPoint)location {
+	float minDistance = fullMapBounds.size.width + fullMapBounds.size.height; // Set to above max distance
+	CraftObject* closestCraft = nil;
+	for (int i = 0; i < [touchableObjects count]; i++) {
+		TouchableObject* object = [touchableObjects objectAtIndex:i];
+		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
+			if (object.objectAlliance == kAllianceEnemy) {
+				continue;
+			}
+			float curDist = GetDistanceBetweenPoints(location, object.objectLocation);
+			if (curDist < minDistance) {
+				minDistance = curDist;
+				closestCraft = (CraftObject*)object;
+			}
+		}
+	}
+	if (closestCraft) {
+		[self setControllingShip:closestCraft];
 	}
 }
 
@@ -659,7 +690,7 @@
 			TouchableObject* obj = [touchableObjects objectAtIndex:i];
 			if (obj.isTouchable) {
 				if (CircleContainsPoint(obj.touchableBounds, touchLocation)) {
-					if (!obj.isCurrentlyTouched) {
+					if (!obj.isCurrentlyTouched && !obj.isPartOfASquad) {
 						if (touch.tapCount == 2) {
 							[obj touchesDoubleTappedAtLocation:touchLocation];
 						} else {
@@ -710,7 +741,7 @@
 		
 		// Check if the current hovered object no longer is being hovered over
 		TouchableObject* currentHover = [currentObjectsHovering objectForKey:[NSNumber numberWithInt:[touch hash]]];
-		if (currentHover && !CircleContainsPoint(currentHover.boundingCircle, touchLocation)) {
+		if (currentHover && !CircleContainsPoint(currentHover.touchableBounds, touchLocation)) {
 			[currentHover touchesHoveredLeft];
 		}
 		
@@ -721,7 +752,7 @@
 			TouchableObject* obj = [touchableObjects objectAtIndex:i];
 			if (obj.isTouchable) {
 				float distance = GetDistanceBetweenPoints(obj.objectLocation, touchLocation);
-				if (distance < minDistance && CircleContainsPoint(obj.boundingCircle, touchLocation)) {
+				if (distance < minDistance && CircleContainsPoint(obj.touchableBounds, touchLocation)) {
 					minDistance = distance;
 					closestObj = obj;
 				}

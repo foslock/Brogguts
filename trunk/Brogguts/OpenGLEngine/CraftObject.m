@@ -12,12 +12,15 @@
 #import "BroggutScene.h"
 #import "StructureObject.h"
 #import "CollisionManager.h"
+#import "ParticleSingleton.h"
+#import "MonarchCraftObject.h"
 
 @implementation CraftObject
 @synthesize attributePlayerCargoCapacity;
 
 - (void)dealloc {
 	[pathPointArray release];
+	[blinkingLightImage release];
 	[super dealloc];
 }
 
@@ -27,9 +30,9 @@
 			attributeBroggutCost = kCraftAntCostBrogguts;
 			attributeMetalCost = kCraftAntCostMetal;
 			attributeEngines = kCraftAntEngines;
-			attributeWeapons = kCraftAntWeapons;
+			attributeWeaponsDamage = kCraftAntWeapons;
 			attributeAttackRange = kCraftAntAttackRange;
-			attributeAttackRate = kCraftAntAttackRate;
+			attributeAttackCooldown = kCraftAntAttackCooldown;
 			attributeHullCapacity = kCraftAntHull;
 			attributeHullCurrent = kCraftAntHull;
 			break;
@@ -37,9 +40,9 @@
 			attributeBroggutCost = kCraftMothCostBrogguts;
 			attributeMetalCost = kCraftMothCostMetal;
 			attributeEngines = kCraftMothEngines;
-			attributeWeapons = kCraftMothWeapons;
+			attributeWeaponsDamage = kCraftMothWeapons;
 			attributeAttackRange = kCraftMothAttackRange;
-			attributeAttackRate = kCraftMothAttackRate;
+			attributeAttackCooldown = kCraftMothAttackCooldown;
 			attributeHullCapacity = kCraftMothHull;
 			attributeHullCurrent = kCraftMothHull;
 			break;
@@ -47,9 +50,9 @@
 			attributeBroggutCost = kCraftBeetleCostBrogguts;
 			attributeMetalCost = kCraftBeetleCostMetal;
 			attributeEngines = kCraftBeetleEngines;
-			attributeWeapons = kCraftBeetleWeapons;
+			attributeWeaponsDamage = kCraftBeetleWeapons;
 			attributeAttackRange = kCraftBeetleAttackRange;
-			attributeAttackRate = kCraftBeetleAttackRate;
+			attributeAttackCooldown = kCraftBeetleAttackCooldown;
 			attributeHullCapacity = kCraftBeetleHull;
 			attributeHullCurrent = kCraftBeetleHull;
 			break;
@@ -57,9 +60,9 @@
 			attributeBroggutCost = kCraftMonarchCostBrogguts;
 			attributeMetalCost = kCraftMonarchCostMetal;
 			attributeEngines = kCraftMonarchEngines;
-			attributeWeapons = kCraftMonarchWeapons;
+			attributeWeaponsDamage = kCraftMonarchWeapons;
 			attributeAttackRange = kCraftMonarchAttackRange;
-			attributeAttackRate = kCraftMonarchAttackRate;
+			attributeAttackCooldown = kCraftMonarchAttackCooldown;
 			attributeHullCapacity = kCraftMonarchHull;
 			attributeHullCurrent = kCraftMonarchHull;
 			break;
@@ -67,9 +70,9 @@
 			attributeBroggutCost = kCraftCamelCostBrogguts;
 			attributeMetalCost = kCraftCamelCostMetal;
 			attributeEngines = kCraftCamelEngines;
-			attributeWeapons = kCraftCamelWeapons;
+			attributeWeaponsDamage = kCraftCamelWeapons;
 			attributeAttackRange = kCraftCamelAttackRange;
-			attributeAttackRate = kCraftCamelAttackRate;
+			attributeAttackCooldown = kCraftCamelAttackCooldown;
 			attributeHullCapacity = kCraftCamelHull;
 			attributeHullCurrent = kCraftCamelHull;
 			break;
@@ -77,9 +80,9 @@
 			attributeBroggutCost = kCraftRatCostBrogguts;
 			attributeMetalCost = kCraftRatCostMetal;
 			attributeEngines = kCraftRatEngines;
-			attributeWeapons = kCraftRatWeapons;
+			attributeWeaponsDamage = kCraftRatWeapons;
 			attributeAttackRange = kCraftRatAttackRange;
-			attributeAttackRate = kCraftRatAttackRate;
+			attributeAttackCooldown = kCraftRatAttackCooldown;
 			attributeHullCapacity = kCraftRatHull;
 			attributeHullCurrent = kCraftRatHull;
 			break;
@@ -87,9 +90,9 @@
 			attributeBroggutCost = kCraftSpiderCostBrogguts;
 			attributeMetalCost = kCraftSpiderCostMetal;
 			attributeEngines = kCraftSpiderEngines;
-			attributeWeapons = kCraftSpiderWeapons;
+			attributeWeaponsDamage = kCraftSpiderWeapons;
 			attributeAttackRange = kCraftSpiderAttackRange;
-			attributeAttackRate = kCraftSpiderAttackRate;
+			attributeAttackCooldown = kCraftSpiderAttackCooldown;
 			attributeHullCapacity = kCraftSpiderHull;
 			attributeHullCurrent = kCraftSpiderHull;
 			break;
@@ -97,9 +100,9 @@
 			attributeBroggutCost = kCraftEagleCostBrogguts;
 			attributeMetalCost = kCraftEagleCostMetal;
 			attributeEngines = kCraftEagleEngines;
-			attributeWeapons = kCraftEagleWeapons;
+			attributeWeaponsDamage = kCraftEagleWeapons;
 			attributeAttackRange = kCraftEagleAttackRange;
-			attributeAttackRate = kCraftEagleAttackRate;
+			attributeAttackCooldown = kCraftEagleAttackCooldown;
 			attributeHullCapacity = kCraftEagleHull;
 			attributeHullCurrent = kCraftEagleHull;
 			break;
@@ -141,6 +144,13 @@
 	self = [super initWithImage:image withLocation:location withObjectType:typeID];
 	if (self) {
 		// Initialize the craft
+		[self initCraftWithID:typeID];
+		lightBlinkTimer = (arc4random() % LIGHT_BLINK_FREQUENCY) + 1;
+		lightBlinkAlpha = 0.0f;
+		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
+		blinkingLightImage.scale = Scale2fMake(0.25f, 0.25f);
+		[self updateCraftLightLocations];
+		[self updateCraftTurretLocations];
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
@@ -150,28 +160,19 @@
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
 		attributePlayerCargoCapacity = 200;
-		[self initCraftWithID:typeID];
+		squadMonarch = nil;
+		effectRadius = attributeAttackRange;
+		attackCooldownTimer = 0;
 	}
 	return self;
 }
 
-- (void)updateObjectTargets {
-	// Check if there is an enemy in the closest vicinity
-	if (friendlyAIState == kFriendlyAIStateStill ||
-		friendlyAIState == kFriendlyAIStateMoving) {
-		NSMutableArray* closeCraftArray = [[NSMutableArray alloc] init];
-		[[self.currentScene collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:closeCraftArray];
-		for (int i = 0; i < [closeCraftArray count]; i++) {
-			CollidableObject* obj = [closeCraftArray objectAtIndex:i];
-			if ([obj isKindOfClass:[StructureObject class]] || 
-				[obj isKindOfClass:[CraftObject class]]) {
-				if (obj.objectAlliance == kAllianceEnemy) {
-					closestEnemyObject = (TouchableObject*)obj;
-					// NSLog(@"Found an enemy: object (%i)", obj.uniqueObjectID);
-				}
-			}
-		}
-	}
+- (void)updateCraftLightLocations {
+	// OVERRIDE FOR EACH CRAFT
+}
+
+- (void)updateCraftTurretLocations {
+	// OVERRIDE FOR EACH CRAFT
 }
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
@@ -201,7 +202,41 @@
 	}
 }
 
+- (void)accelerateTowardsLocation:(CGPoint)location {
+	[[ParticleSingleton sharedParticleSingleton] createParticles:1 withType:kParticleTypeShipThruster atLocation:objectLocation];
+	[super accelerateTowardsLocation:location];
+}
+
+- (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
+	[super attackedByEnemy:enemy withDamage:damage];
+	attributeHullCurrent -= damage;
+	if (attributeHullCurrent <= 0) {
+		return YES;
+	}
+	return NO;
+}
+
+- (void)attackTarget {
+	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+		if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow) {
+			CGPoint enemyPoint = closestEnemyObject.objectLocation;
+			attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
+													enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
+			[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+			attackCooldownTimer = attributeAttackCooldown;
+			if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
+				[self setClosestEnemyObject:nil];
+			}
+		}
+	}
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+	if (attributeHullCurrent <= 0) {
+		destroyNow = YES;
+		return;
+	}
+
 	// Get the current point we should be following
 	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
@@ -226,13 +261,33 @@
 	} else {
 		[self decelerate];
 	}
-
-	[self updateObjectTargets];
+	
+	// Update the light blinking
+	if (lightBlinkTimer == 0) {
+		lightBlinkTimer = LIGHT_BLINK_FREQUENCY;
+		lightBlinkAlpha = LIGHT_BLINK_BRIGHTNESS;
+	} else {
+		lightBlinkTimer--;
+		lightBlinkAlpha -= LIGHT_BLINK_FADE_SPEED;
+	}
+	
+	// Update the light blinking positions
+	[self updateCraftLightLocations];
+	
+	// Update turret position
+	[self updateCraftTurretLocations];
+	
+	// Attack if able!
+	if (attackCooldownTimer > 0) {
+		attackCooldownTimer--;
+	} else {
+		[self attackTarget];
+	}
+	
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	enablePrimitiveDraw();
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
 	if (isCurrentlyHoveredOver) {
 		// Draw "selection circle"
 		if (objectAlliance == kAllianceFriendly) {
@@ -240,14 +295,30 @@
 		} else {
 			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 		}
-		drawDashedCircle(boundingCircle, 20, vector);
+		drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
 	}
-	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange + boundingCircle.radius) {
-		glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
-		glLineWidth(6.0f);
-		drawLine(objectLocation, closestEnemyObject.objectLocation, vector);
-		glLineWidth(1.0f);
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
+	enablePrimitiveDraw();
+	[self drawHoverSelectionWithScroll:vector];
+	
+	// Draw the laser attack
+	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+		float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
+		if (width != 0.0f) {
+			if (objectAlliance == kAllianceFriendly)
+				glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
+			if (objectAlliance == kAllianceEnemy)
+				glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
+			glLineWidth(width);
+			drawLine(objectLocation, attackLaserTargetPosition, vector);
+			glLineWidth(1.0f);
+		}
 	}
+	
+	// Draw dragging line
 	if (isBeingDragged) {
 		if (isBeingControlled) {
 			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
@@ -257,14 +328,34 @@
 		float distance = GetDistanceBetweenPoints(objectLocation, dragLocation);
 		int segments = distance / 50;
 		drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), vector);
-		
 	}
+	
+	// Render blinking lights
+	if (lightPointsArray) {
+		for (int i = 0; i < [lightPointsArray count]; i++) {
+			CGPoint curPoint = [[lightPointsArray objectAtIndex:i] CGPointValue];
+			if (self.objectAlliance == kAllianceFriendly) {
+				blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+			} else {
+				blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
+			}
+			[blinkingLightImage renderCenteredAtPoint:curPoint withScrollVector:vector];
+		}
+	}
+	
 	disablePrimitiveDraw();
-	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
 }
 
 - (void)addCargo:(int)cargo {
 	attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo + cargo, 0, attributePlayerCargoCapacity);
+}
+
+- (void)objectWasDestroyed {
+	if (isBeingControlled) {
+		// The controlling ship was just destroyed
+		[self.currentScene controlNearestShipToLocation:objectLocation];
+	}
+	[super objectWasDestroyed];
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
@@ -291,6 +382,10 @@
 									[NSValue valueWithCGPoint:dragLocation],
 									nil];
 				[self followPath:newPath isLooped:NO];
+				
+				if (![self isKindOfClass:[MonarchCraftObject class]]) {
+					[self.currentScene attemptToPutCraft:self inSquadAtLocation:location];
+				}
 			} else if (isBeingControlled) {
 				[self.currentScene attemptToControlShipAtLocation:location];
 			}

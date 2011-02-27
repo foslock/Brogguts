@@ -12,6 +12,7 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "ParticleSingleton.h"
+#import "Image.h"
 
 enum MiningStates {
 	kMiningStateMining,
@@ -22,6 +23,12 @@ enum MiningStates {
 
 @implementation AntCraftObject
 
+- (void)dealloc {
+	[turretPointsArray release];
+	[lightPointsArray release];
+	[super dealloc];
+}
+
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftAntID withLocation:location isTraveling:traveling];
 	if (self) {
@@ -31,6 +38,37 @@ enum MiningStates {
 		miningState = kMiningStateNone;
 	}
 	return self;
+}
+
+- (void)updateCraftLightLocations {
+	[lightPointsArray release];
+	float radDir = DEGREES_TO_RADIANS(objectRotation);
+	CGPoint lPoint1 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
+								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
+	
+	CGPoint lPoint2 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
+								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
+	
+	CGPoint lPoint3 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
+								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
+	
+	CGPoint lPoint4 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
+								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
+	
+	lightPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:lPoint1],
+						 [NSValue valueWithCGPoint:lPoint2],
+						 [NSValue valueWithCGPoint:lPoint3],
+						 [NSValue valueWithCGPoint:lPoint4],
+						 nil];
+}
+
+- (void)updateCraftTurretLocations {
+	[turretPointsArray release];
+	float radDir = DEGREES_TO_RADIANS(objectRotation);
+	CGPoint tPoint1 = CGPointMake((objectLocation.x) * cosf(radDir),
+								  (objectLocation.y) * sinf(radDir));
+	turretPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:tPoint1],
+						nil];
 }
 
 - (void)startMiningBroggutWithLocation:(CGPoint)location {
