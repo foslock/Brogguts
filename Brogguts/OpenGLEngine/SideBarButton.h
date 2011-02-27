@@ -10,11 +10,15 @@
 
 
 @interface SideBarButton : NSObject {
+	NSString* buttonText;
+	BOOL isPressed;
 	float buttonWidth;
 	float buttonHeight;
 	CGPoint buttonCenter;
 }
 
+@property (retain) NSString* buttonText;
+@property (nonatomic, assign) BOOL isPressed;
 @property (nonatomic, assign) float buttonWidth;
 @property (nonatomic, assign) float buttonHeight;
 @property (nonatomic, assign) CGPoint buttonCenter;

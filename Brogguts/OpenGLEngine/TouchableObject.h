@@ -24,6 +24,9 @@
 	
 	// For craft ONLY
 	BOOL isPartOfASquad;
+	
+	// Used so things are disabled when traveling
+	BOOL isTraveling;
 }
 
 @property (nonatomic, assign) TouchableObject* closestEnemyObject;

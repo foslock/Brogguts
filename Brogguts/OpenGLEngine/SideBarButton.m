@@ -8,9 +8,8 @@
 
 #import "SideBarButton.h"
 
-
 @implementation SideBarButton
-@synthesize buttonHeight, buttonWidth, buttonCenter;
+@synthesize buttonText, buttonHeight, buttonWidth, buttonCenter, isPressed;
 
 - (id)initWithWidth:(float)width withHeight:(float)height withCenter:(CGPoint)center {
 	self = [super init];

@@ -283,25 +283,41 @@
 	disablePrimitiveDraw();
 }
 
-- (void)drawValidityRectForLocation:(CGPoint)location {
+- (void)drawValidityRectForLocation:(CGPoint)location forMining:(BOOL)forMining {
 	MediumBroggut* broggut = [self broggutCellForLocation:location];
 	if (broggut) {
-		if (broggut->broggutValue != -1) {
+		if (forMining) {
+			if (broggut->broggutValue != -1) {
+				enablePrimitiveDraw();
+				CGRect brogRect = [self getBroggutRectForID:broggut->broggutID];
+				Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
+				if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
+					// If over a broggut that is minable, draw a faded green box
+					glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
+					drawFilledRect(brogRect, scroll);
+				} else {
+					// If over a broggut that is not minable, draw a faded red box
+					glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
+					drawFilledRect(brogRect, scroll);
+				}
+				disablePrimitiveDraw();
+			}
+		} else {
+			// Draw a box where there ISN'T anything
 			enablePrimitiveDraw();
 			CGRect brogRect = [self getBroggutRectForID:broggut->broggutID];
 			Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
-			if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
-				// If over a broggut that is minable, draw a faded green box
+			if (broggut->broggutValue == -1) {
+				// If empty, draw a faded green box
 				glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
 				drawFilledRect(brogRect, scroll);
 			} else {
-				// If over a broggut that is not minable, draw a faded red box
+				// If already contains something, draw a faded red box
 				glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
 				drawFilledRect(brogRect, scroll);
 			}
 			disablePrimitiveDraw();
 		}
-		// Or else don't draw any box
 	}
 }
 

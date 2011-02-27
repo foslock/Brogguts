@@ -9,10 +9,16 @@
 #import "SideBarController.h"
 #import "SideBarObject.h"
 #import "MainMenuSideBar.h"
+#import "BitmapFont.h"
 
 @implementation SideBarController
 
-@synthesize isSideBarShowing;
+@synthesize isSideBarShowing, sideBarFont;
+
+- (void)dealloc {
+	[sideBarFont release];
+	[super dealloc];
+}
 
 - (id)initWithLocation:(CGPoint)location withWidth:(float)width withHeight:(float)height {
 	self = [super init];
@@ -26,6 +32,8 @@
 		sideBarHeight = height;
 		sideBarStack = [[NSMutableArray alloc] init];
 		sideBarObjectLocation = location;
+		sideBarFont = [[BitmapFont alloc] initWithFontImageNamed:@"blair.png" controlFile:@"blair" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
+		[sideBarFont setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 1.0f)];
 		MainMenuSideBar* topTemp = [[MainMenuSideBar alloc] init];
 		[topTemp setMyController:self];
 		[sideBarStack addObject:topTemp];
@@ -135,13 +143,13 @@
 	CGRect buttonRect = [self buttonRect];
 	
 	if (isSideBarShowing) {
-		glColor4f(0.0f, 0.0f, 1.0f, 0.8f);
+		glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 		enablePrimitiveDraw();
 		drawRect(renderRect, Vector2fZero);
 		disablePrimitiveDraw();
 	}
 	
-	glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 	enablePrimitiveDraw();
 	drawRect(buttonRect, Vector2fZero);
 	disablePrimitiveDraw();
@@ -173,14 +181,8 @@
 - (void)touchesBeganAtLocation:(CGPoint)location {
 	if (!isSideBarMovingIn && !isSideBarMovingOut &&
 		!isMovingObjectIn && !isMovingObjectOut) {
-		if ([sideBarStack count] > 1) {
-			if (CGRectContainsPoint([self backButtonRect], location)) {
-				[self popSideBarObject];
-				return;
-			}
-		}
 		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-		[topObject touchesScrolledAtLocation:location];
+		[topObject touchesBeganAtLocation:location];
 	}
 }
 
@@ -196,7 +198,17 @@
 	if (!isSideBarMovingIn && !isSideBarMovingOut &&
 		!isMovingObjectIn && !isMovingObjectOut) {
 		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-		[topObject touchesEndedAtLocation:location];
+		if ([sideBarStack count] > 1) {
+			if (CGRectContainsPoint([self backButtonRect], location)) {
+				[self popSideBarObject];
+				return;
+			}
+		}
+		if (topObject.scrollTouchTimer > 0) {
+			[topObject touchesTappedAtLocation:location];
+		} else {
+			[topObject touchesEndedAtLocation:location];
+		}
 	}
 }
 

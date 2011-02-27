@@ -27,8 +27,7 @@
 #import "PlayerProfile.h"
 #import "CraftObject.h"
 #import "ParticleSingleton.h"
-#import "BlockStructureObject.h"
-#import "MonarchCraftObject.h"
+#import "CraftAndStructures.h"
 
 @implementation BroggutScene
 
@@ -38,7 +37,7 @@
 @synthesize fullMapBounds, visibleScreenBounds;
 @synthesize isShowingOverview;
 @synthesize controllingShip, commandingShip;
-@synthesize homeBaseLocation, sideBar;
+@synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -76,6 +75,8 @@
 		fullMapBounds = mapBounds;
 		cameraContainRect = CGRectInset(screenBounds, SCROLL_BOUNDS_X_INSET, SCROLL_BOUNDS_Y_INSET);
 		cameraLocation = [self middleOfVisibleScreen];
+		numberOfCurrentShips = 0;
+		numberOfCurrentStructures = 0;
 		
 		// Set up the sidebar
 		sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
@@ -131,16 +132,32 @@
 #pragma mark Brogguts
 
 - (void)addBroggutValue:(int)value atLocation:(CGPoint)location {
-	NSString* string = [NSString stringWithFormat:@"+%i Bgs", value];
-	float stringWidth = [[fontArray objectAtIndex:kFontBlairID] getWidthForString:string];
-	CGPoint newLoc = CGPointMake(CLAMP(location.x - (stringWidth / 2), fullMapBounds.origin.x, fullMapBounds.size.width),
-								 CLAMP(location.y + 16, fullMapBounds.origin.y, fullMapBounds.size.height));
-	TextObject* obj = [[TextObject alloc] initWithFontID:kFontBlairID Text:string withLocation:newLoc withDuration:2.5f];
-	[obj setScrollWithBounds:YES];
-	[obj setObjectVelocity:Vector2fMake(0.0f, 0.5f)];
-	[textObjectArray addObject:obj];
-	[[sharedGameController currentPlayerProfile] addBrogguts:value];
-	[obj release];
+	if (value > 0) {
+		NSString* string = [NSString stringWithFormat:@"+%i Bgs", value];
+		float stringWidth = [[fontArray objectAtIndex:kFontBlairID] getWidthForString:string];
+		CGPoint newLoc = CGPointMake(CLAMP(location.x - (stringWidth / 2), fullMapBounds.origin.x, fullMapBounds.size.width),
+									 CLAMP(location.y + 16, fullMapBounds.origin.y, fullMapBounds.size.height));
+		TextObject* obj = [[TextObject alloc] initWithFontID:kFontBlairID Text:string withLocation:newLoc withDuration:2.5f];
+		[obj setScrollWithBounds:YES];
+		[obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
+		[obj setFontColor:Color4fMake(1.0f, 1.0f, 0.0f, 1.0f)];
+		[textObjectArray addObject:obj];
+		[[sharedGameController currentPlayerProfile] addBrogguts:value];
+		[obj release];
+	} else if (value < 0) {
+		NSString* string = [NSString stringWithFormat:@"%i Bgs", value];
+		float stringWidth = [[fontArray objectAtIndex:kFontBlairID] getWidthForString:string];
+		CGPoint newLoc = CGPointMake(CLAMP(location.x - (stringWidth / 2), fullMapBounds.origin.x, fullMapBounds.size.width),
+									 CLAMP(location.y + 16, fullMapBounds.origin.y, fullMapBounds.size.height));
+		TextObject* obj = [[TextObject alloc] initWithFontID:kFontBlairID Text:string withLocation:newLoc withDuration:3.0f];
+		[obj setScrollWithBounds:YES];
+		[obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
+		[obj setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, 1.0f)];
+		[textObjectArray addObject:obj];
+		[[sharedGameController currentPlayerProfile] addBrogguts:value];
+		[obj release];
+	}
+	
 }
 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray {
@@ -276,15 +293,17 @@
 	[sharedParticleSingleton updateParticlesWithDelta:aDelta];
 	
 	// Update the camera's location
-	if (isTouchScrolling) {
-		[controllingShip accelerateTowardsLocation:currentTouchLocation];
-		cameraLocation = GetMidpointFromPoints(controllingShip.objectLocation, currentTouchLocation);
-	} else {
-		cameraLocation = controllingShip.objectLocation;
+	if (controllingShip && controllingShip.isTouchable) { // If there is a controlling ship
+		if (isTouchScrolling) {
+			[controllingShip accelerateTowardsLocation:currentTouchLocation];
+			cameraLocation = GetMidpointFromPoints(controllingShip.objectLocation, currentTouchLocation);
+		} else {
+			cameraLocation = controllingShip.objectLocation;
+		}
 	}
 	
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-	if (closestBrog && !closestBrog.destroyNow) {
+	if (controllingShip.isTouchable && closestBrog && !closestBrog.destroyNow) {
 		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
 			[controllingShip addCargo:closestBrog.broggutValue];
 			[closestBrog setDestroyNow:YES];
@@ -299,14 +318,6 @@
 	// Gets the vector that the screen shoudl scroll, and scrolls it, updating the rects as necessary
 	Vector2f cameraScroll = [self newScrollVectorFromCamera];
 	[self scrollScreenWithVector:Vector2fMultiply(cameraScroll, 1.0f)];
-	
-	// Stop the player moving beyond the bounds of the screen
-	/*
-	 if (playerLocation.x < fullMapBounds.origin.x) playerLocation.x = fullMapBounds.origin.x;
-	 if (playerLocation.x > fullMapBounds.size.width) playerLocation.x = fullMapBounds.size.width;
-	 if (playerLocation.y < fullMapBounds.origin.y) playerLocation.y = fullMapBounds.origin.y;
-	 if (playerLocation.y > fullMapBounds.size.height) playerLocation.y = fullMapBounds.size.height;
-	 */
 	
 	// Update side bar
 	[sideBar updateSideBar];
@@ -373,6 +384,14 @@
 			[textObjectArray removeObject:tempObj];
 		}
 		[tempObj objectWasDestroyed];
+		if ([tempObj isKindOfClass:[CraftObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
+			// It is a ship
+			numberOfCurrentShips--;
+		}
+		if ([tempObj isKindOfClass:[StructureObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
+			// It is a structure
+			numberOfCurrentStructures--;
+		}
 		[renderableDestroyed removeObject:tempObj];
 	}
 }
@@ -448,6 +467,14 @@
 }
 
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
+	if ([obj isKindOfClass:[CraftObject class]] && obj.objectAlliance == kAllianceFriendly) {
+		// It is a ship
+		numberOfCurrentShips++;
+	}
+	if ([obj isKindOfClass:[StructureObject class]] && obj.objectAlliance == kAllianceFriendly) {
+		// It is a structure
+		numberOfCurrentStructures++;
+	}
 	if (collides) {
 		[collisionManager addCollidableObject:obj]; // Adds to the collision detection
 	}
@@ -516,7 +543,7 @@
 			newCircle.x = objPoint[0];
 			newCircle.y = objPoint[1];
 			newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
-			glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.5f, 0.0f, OVERVIEW_MAX_ALPHA));
+			glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
 			drawCircle( newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
 		}
 		if (obj.objectAlliance == kAllianceNeutral) {
@@ -578,12 +605,12 @@
 	[craft setIsBeingControlled:YES];
 }
 
-- (void)attemptToControlShipAtLocation:(CGPoint)location {
+- (void)attemptToControlCraftAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
 			// Object is a craft
-			if (object == controllingShip || object.objectAlliance == kAllianceEnemy) {
+			if (object == controllingShip || object.objectAlliance == kAllianceEnemy || !object.isTouchable) {
 				continue;
 			}
 			if (CircleContainsPoint(object.boundingCircle, location)) {
@@ -631,6 +658,173 @@
 	}
 	if (closestCraft) {
 		[self setControllingShip:closestCraft];
+	} else {
+		[self setControllingShip:nil];
+		[self setCameraLocation:homeBaseLocation];
+		[self setMiddleOfVisibleScreenToCamera];
+	}
+}
+
+#pragma mark -
+#pragma mark Purchasing Craft and Structures
+
+- (void)failedToCreateAtLocation:(CGPoint)location {
+	NSLog(@"Failed to create object at location <%.1f,%.1f>", location.x, location.y);
+}
+
+- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	// Create a temp at the creation location
+	switch (craftID) {
+		case kObjectCraftAntID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal]) {
+				[self addBroggutValue:-kCraftAntCostBrogguts atLocation:location];
+				AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectCraftMothID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal]) {
+				[self addBroggutValue:-kCraftMothCostBrogguts atLocation:location];
+				MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectCraftBeetleID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal]) {
+				[self addBroggutValue:-kCraftBeetleCostBrogguts atLocation:location];
+				BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectCraftMonarchID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal]) {
+				[self addBroggutValue:-kCraftMonarchCostBrogguts atLocation:location];
+				MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectCraftCamelID: {
+			
+			break;
+		}
+		case kObjectCraftRatID: {
+			
+			break;
+		}
+		case kObjectCraftSpiderID: {
+			
+			break;
+		}
+		case kObjectCraftEagleID: {
+			break;
+		}
+		default:
+			NSLog(@"Tried to create craft with invalid ID (%i)", craftID);
+			break;
+	}
+}
+
+- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+	switch (structureID) {
+		case kObjectStructureBaseStationID: {
+			NSLog(@"Shouldn't create another base station!");
+			break;
+		}
+		case kObjectStructureBlockID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal]) {
+				[self addBroggutValue:-kStructureBlockCostBrogguts atLocation:location];
+				BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:YES];
+				[newStructure setObjectLocation:homeBaseLocation];
+				[newStructure setObjectAlliance:kAllianceFriendly];
+				[self addTouchableObject:newStructure withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectStructureTurretID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal]) {
+				[self addBroggutValue:-kStructureTurretCostBrogguts atLocation:location];
+				TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:YES];
+				[newStructure setObjectLocation:homeBaseLocation];
+				[newStructure setObjectAlliance:kAllianceFriendly];
+				[self addTouchableObject:newStructure withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectStructureRadarID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal]) {
+				[self addBroggutValue:-kStructureRadarCostBrogguts atLocation:location];
+				RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:YES];
+				[newStructure setObjectLocation:homeBaseLocation];
+				[newStructure setObjectAlliance:kAllianceFriendly];
+				[self addTouchableObject:newStructure withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectStructureFixerID: {
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal]) {
+				[self addBroggutValue:-kStructureFixerCostBrogguts atLocation:location];
+				FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:YES];
+				[newStructure setObjectLocation:homeBaseLocation];
+				[newStructure setObjectAlliance:kAllianceFriendly];
+				[self addTouchableObject:newStructure withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
+			break;
+		}
+		case kObjectStructureRefineryID: {
+			
+			break;
+		}
+		case kObjectStructureCraftUpgradesID: {
+			
+			break;
+		}
+		case kObjectStructureStructureUpgradesID: {
+			
+			break;
+		}
+		default:
+			NSLog(@"Tried to create structure with invalid ID (%i)", structureID);
+			break;
 	}
 }
 
@@ -708,7 +902,7 @@
 			}
 		}
 		
-		if (noObjectTouched) { // If touch used for scrolling, stop the current path
+		if (noObjectTouched && controllingShip.isTouchable) { // If touch used for scrolling, stop the current path
 			if (!CircleContainsPoint(controllingShip.boundingCircle, touchLocation)) {
 				[controllingShip stopFollowingCurrentPath];
 			}

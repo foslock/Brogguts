@@ -15,6 +15,7 @@
 	self = [super initWithTypeID:kObjectStructureBaseStationID withLocation:location isTraveling:traveling];
 	if (self) {
 		isCheckedForRadialEffect = YES;
+		isTouchable = NO;
 	}
 	return self;
 }

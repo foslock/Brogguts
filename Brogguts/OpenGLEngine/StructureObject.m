@@ -121,6 +121,8 @@
 		// Initialize the structure
 		[self initStructureWithID:typeID];
 		if (traveling) {
+			isTraveling = YES;
+			isTouchable = NO;
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
 			[self followPath:path isLooped:NO];
 		}
@@ -173,6 +175,10 @@
 				isFollowingPath = NO;
 				hasCurrentPathFinished = YES;
 				friendlyAIState = kFriendlyAIStateStill;
+				if (isTraveling) {
+					isTraveling = NO;
+					isTouchable = YES;
+				}
 			}
 		}
 		[self moveTowardsLocation:moveTowardsPoint];

@@ -24,6 +24,8 @@
 @property (nonatomic, assign) BOOL isHidden;
 @property (nonatomic, assign) BOOL scrollWithBounds;
 @property (nonatomic, assign) int fontID;
+@property (nonatomic, assign) Color4f fontColor;
+@property (nonatomic, assign) Scale2f fontScale;
 @property (copy) NSString* objectText;
 
 // Set duration to -1 for indefinite duration

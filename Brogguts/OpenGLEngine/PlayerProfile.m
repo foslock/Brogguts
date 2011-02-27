@@ -22,6 +22,7 @@
 		broggutCount = 0;
 		broggutDisplayNumber = 0;
 		metalCount = 0;
+		metalDisplayNumber = 0;
 		playerExperience = 0;
 	}
 	return self;
@@ -30,23 +31,35 @@
 - (void)updateProfile {
 	if (broggutDisplayNumber < broggutCount) {
 		broggutDisplayNumber += BROGGUT_DISPLAY_CHANGE_RATE;
+		broggutDisplayNumber = CLAMP(broggutDisplayNumber, 0, broggutCount);
 	}
-	broggutDisplayNumber = CLAMP(broggutDisplayNumber, 0, broggutCount);
-	
 	if (broggutDisplayNumber > broggutCount) {
 		broggutDisplayNumber -= BROGGUT_DISPLAY_CHANGE_RATE;
+		broggutDisplayNumber = CLAMP(broggutDisplayNumber, 0, INT_MAX);
 	}
-	broggutDisplayNumber = CLAMP(broggutDisplayNumber, 0, broggutCount);
+	if (metalDisplayNumber < metalCount) {
+		metalDisplayNumber += BROGGUT_DISPLAY_CHANGE_RATE;
+		metalDisplayNumber = CLAMP(metalDisplayNumber, 0, metalCount);
+	}
+	if (metalDisplayNumber > metalCount) {
+		metalDisplayNumber -= BROGGUT_DISPLAY_CHANGE_RATE;
+		metalDisplayNumber = CLAMP(metalDisplayNumber, 0, INT_MAX);
+	}
 }
 
 - (void)addBrogguts:(int)brogs {
 	broggutCount += brogs;
 }
 
-- (BOOL)subtractBrogguts:(int)brogs {
-	if (brogs > broggutCount) {
+- (void)addMetal:(int)metal {
+	metalCount += metal;
+}
+
+- (BOOL)subtractBrogguts:(int)brogs metal:(int)metal {
+	if (brogs > broggutCount || metal > metalCount) {
 		return NO;
 	} else {
+		metalCount -= metal;
 		broggutCount -= brogs;
 		return YES;
 	}	
@@ -54,6 +67,18 @@
 
 - (int)broggutCount {
 	return broggutDisplayNumber;
+}
+
+- (int)realBroggutCount {
+	return broggutCount;
+}
+
+- (int)metalCount {
+	return metalDisplayNumber;
+}
+
+- (int)realMetalCount {
+	return metalCount;
 }
 
 - (id)initWithCoder:(NSCoder*)coder
@@ -65,6 +90,7 @@
 		[self setMetalCount:		[coder decodeIntForKey:@"metalCount"]];
 		[self setPlayerExperience:	[coder decodeIntForKey:@"playerExperience"]];
 		broggutDisplayNumber = broggutCount;
+		metalDisplayNumber = metalCount;
 	}
 	return self;
 }
@@ -75,7 +101,6 @@
 	[coder encodeInt:broggutCount		forKey:@"broggutCount"];
 	[coder encodeInt:metalCount			forKey:@"metalCount"];
 	[coder encodeInt:playerExperience	forKey:@"playerExperience"];
-
 }
 
 @end
