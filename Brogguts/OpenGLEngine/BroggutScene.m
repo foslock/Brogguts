@@ -610,10 +610,11 @@
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
 			// Object is a craft
-			if (object == controllingShip || object.objectAlliance == kAllianceEnemy || !object.isTouchable) {
+			if (object == controllingShip || object.objectAlliance == kAllianceEnemy ||
+				!object.isTouchable || object.isPartOfASquad) {
 				continue;
 			}
-			if (CircleContainsPoint(object.boundingCircle, location)) {
+			if (CircleContainsPoint(object.touchableBounds, location)) {
 				NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
 				[self setControllingShip:(CraftObject*)object];
 				break;
@@ -628,7 +629,7 @@
 		if ([object isKindOfClass:[MonarchCraftObject class]] && !object.destroyNow) {
 			MonarchCraftObject* monarch = (MonarchCraftObject*)object;
 			// Object is a monarch
-			if (monarch.objectAlliance == kAllianceEnemy) {
+			if (monarch.objectAlliance == kAllianceEnemy || !monarch.isTouchable || craft.isPartOfASquad) {
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
