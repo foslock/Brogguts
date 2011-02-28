@@ -157,6 +157,12 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
+			} else if (i == 4 && j == 24) { // Add the initial craft
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftMonarchID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
 			} else if (i == 0 && j == 24) { // Add the initial base station structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];

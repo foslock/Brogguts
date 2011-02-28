@@ -88,6 +88,7 @@
 				isSideBarMovingIn = NO;
 				sideBarLocation = CGPointMake(originalLocation.x + sideBarWidth, sideBarLocation.y);
 			}
+			sideBarObjectLocation = sideBarLocation;
 		}
 		if (isSideBarMovingOut) {
 			sideBarLocation = CGPointMake(sideBarLocation.x - SIDEBAR_MOVE_SPEED, sideBarLocation.y);
@@ -96,17 +97,18 @@
 				isSideBarShowing = NO;
 				sideBarLocation = CGPointMake(originalLocation.x, sideBarLocation.y);
 			}
+			sideBarObjectLocation = sideBarLocation;
 		}
 		
 		if (!isMovingObjectIn && !isMovingObjectOut) {
 			sideBarObjectLocation = sideBarLocation;
 		}
 			
+		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+		[topObject updateSideBar];
 		
 		if (!isSideBarMovingIn && !isSideBarMovingOut) {
 			// update the current object on the top of the stack
-			SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-			[topObject updateSideBar];
 			if (topObject) {
 				if (isMovingObjectIn) {
 					isMovingObjectOut = NO;
