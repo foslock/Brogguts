@@ -7,7 +7,7 @@
 //
 
 #import "BaseStationStructureObject.h"
-#import "AntCraftObject.h"
+#import "CraftAndStructures.h"
 
 @implementation BaseStationStructureObject
 
@@ -25,6 +25,10 @@
 	if (objectAlliance == kAllianceFriendly) {
 		if ([other isKindOfClass:[AntCraftObject class]]) {
 			AntCraftObject* otherCraft = (AntCraftObject*)other;
+			[otherCraft cashInBrogguts];
+		}
+		if ([other isKindOfClass:[CamelCraftObject class]]) {
+			CamelCraftObject* otherCraft = (CamelCraftObject*)other;
 			[otherCraft cashInBrogguts];
 		}
 	}

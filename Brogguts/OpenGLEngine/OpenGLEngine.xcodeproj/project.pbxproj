@@ -40,6 +40,8 @@
 		6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB40D131A073C001A10E3 /* testsound.wav */; };
 		6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB470131A24B9001A10E3 /* CraftSideBar.m */; };
 		6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */; };
+		6F2CB879131D5ED6001A10E3 /* CamelCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */; };
+		6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB894131D61DF001A10E3 /* craftcamel.png */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -149,6 +151,9 @@
 		6F2CB54F131ACDCE001A10E3 /* CraftAndStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftAndStructures.h; sourceTree = "<group>"; };
 		6F2CB5DE131AED6D001A10E3 /* StructureSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructureSideBar.h; sourceTree = "<group>"; };
 		6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructureSideBar.m; sourceTree = "<group>"; };
+		6F2CB877131D5ED6001A10E3 /* CamelCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamelCraftObject.h; sourceTree = "<group>"; };
+		6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamelCraftObject.m; sourceTree = "<group>"; };
+		6F2CB894131D61DF001A10E3 /* craftcamel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftcamel.png; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -431,6 +436,15 @@
 			name = Particles;
 			sourceTree = "<group>";
 		};
+		6F2CB869131D5D6D001A10E3 /* Advanced Craft */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CB877131D5ED6001A10E3 /* CamelCraftObject.h */,
+				6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */,
+			);
+			name = "Advanced Craft";
+			sourceTree = "<group>";
+		};
 		6F6A2C0D12FC7982002A4201 /* GameCenter */ = {
 			isa = PBXGroup;
 			children = (
@@ -504,6 +518,7 @@
 		6F8B878D13078E68009CD1BF /* Craft */ = {
 			isa = PBXGroup;
 			children = (
+				6F2CB894131D61DF001A10E3 /* craftcamel.png */,
 				6F2CB139131973A9001A10E3 /* craftmonarch.png */,
 				6F12FDE813060544003CDDD6 /* craftant.png */,
 			);
@@ -536,6 +551,7 @@
 			isa = PBXGroup;
 			children = (
 				6F2CADA313171EB3001A10E3 /* Basic Craft */,
+				6F2CB869131D5D6D001A10E3 /* Advanced Craft */,
 			);
 			name = Crafts;
 			sourceTree = "<group>";
@@ -753,6 +769,7 @@
 				6F2CB2AA1319EC26001A10E3 /* particleshipthruster.png in Resources */,
 				6F2CB3491319F592001A10E3 /* structureturret.png in Resources */,
 				6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */,
+				6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -810,6 +827,7 @@
 				6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */,
 				6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */,
 				6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */,
+				6F2CB879131D5ED6001A10E3 /* CamelCraftObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

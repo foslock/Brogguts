@@ -38,6 +38,7 @@
 @synthesize isShowingOverview;
 @synthesize controllingShip, commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
+@synthesize fontArray;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -97,14 +98,6 @@
 		[fontArray insertObject:blair atIndex:kFontBlairID];
 		[gothic release];
 		[blair release];
-		
-		CGPoint middleFontLocation = CGPointMake([self middleOfVisibleScreen].x - [[fontArray objectAtIndex:kFontGothicID] getWidthForString:sceneName] / 2,
-												 [self middleOfVisibleScreen].y);
-		TextObject* nameObject = [[TextObject alloc]
-								  initWithFontID:kFontGothicID Text:sceneName withLocation:middleFontLocation withDuration:5.0f];
-		[nameObject setScrollWithBounds:NO];
-		[textObjectArray addObject:nameObject];
-		[nameObject release];
 		
 		NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentPlayerProfile].broggutCount];
 		broggutCounter = [[TextObject alloc]
@@ -486,6 +479,10 @@
 	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
 }
 
+- (void)addTextObject:(TextObject*)obj {
+	[textObjectArray addObject:obj];
+}
+
 #pragma mark -
 #pragma mark Overview Map
 
@@ -623,7 +620,7 @@
 	return nil;
 }
 
-- (void)attemptToControlCraftAtLocation:(CGPoint)location {
+- (BOOL)attemptToControlCraftAtLocation:(CGPoint)location { // Returns YES if a ship is controlled
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
@@ -635,13 +632,14 @@
 			if (CircleContainsPoint(object.touchableBounds, location)) {
 				NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
 				[self setControllingShip:(CraftObject*)object];
-				break;
+				return YES;
 			}
 		}
 	}
+	return NO;
 }
 
-- (void)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location {
+- (BOOL)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[MonarchCraftObject class]] && !object.destroyNow) {
@@ -653,10 +651,11 @@
 			if (CircleContainsPoint(object.touchableBounds, location)) {
 				NSLog(@"Attempting to add object (%i) to squad with object (%i)", craft.uniqueObjectID, monarch.uniqueObjectID);
 				[monarch addCraftToSquad:craft];
-				break;
+				return YES;
 			}
 		}
 	}
+	return NO;
 }
 
 - (void)controlNearestShipToLocation:(CGPoint)location {
@@ -755,7 +754,18 @@
 			break;
 		}
 		case kObjectCraftCamelID: {
-			
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal]) {
+				[self addBroggutValue:-kCraftCamelCostBrogguts atLocation:location];
+				CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
 			break;
 		}
 		case kObjectCraftRatID: {

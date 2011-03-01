@@ -105,9 +105,36 @@ enum CraftButtonIDs {
 		NSLog(@"Dragging button ended at <%.1f, %.1f> with ID (%i)", location.x, location.y, currentDragButtonID);
 		Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
 		CGPoint absoluteLocation = CGPointMake(location.x + scroll.x, location.y + scroll.y);
-		[[[GameController sharedGameController] currentScene] attemptToCreateCraftWithID:kObjectCraftAntID atLocation:absoluteLocation isTraveling:YES];
+		BroggutScene* scene = [[GameController sharedGameController] currentScene];
+		switch (currentDragButtonID) {
+			case kCraftButtonAntID:
+				[scene attemptToCreateCraftWithID:kObjectCraftAntID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonMothID:
+				[scene attemptToCreateCraftWithID:kObjectCraftMothID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonBeetleID:
+				[scene attemptToCreateCraftWithID:kObjectCraftBeetleID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonMonarchID:
+				[scene attemptToCreateCraftWithID:kObjectCraftMonarchID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonCamelID:
+				[scene attemptToCreateCraftWithID:kObjectCraftCamelID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonRatID:
+				[scene attemptToCreateCraftWithID:kObjectCraftRatID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonSpiderID:
+				[scene attemptToCreateCraftWithID:kObjectCraftSpiderID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kCraftButtonEagleID:
+				[scene attemptToCreateCraftWithID:kObjectCraftEagleID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			default:
+				break;
+		}
 	}
-		
 	[super touchesEndedAtLocation:location];
 }
 

@@ -112,7 +112,32 @@ enum StructureButtonIDs {
 		float xRounded = COLLISION_CELL_WIDTH * floorf((location.x + scroll.x) / COLLISION_CELL_WIDTH) + COLLISION_CELL_WIDTH / 2;
 		float yRounded = COLLISION_CELL_HEIGHT * floorf((location.y + scroll.y) / COLLISION_CELL_HEIGHT) + COLLISION_CELL_HEIGHT / 2;
 		CGPoint absoluteLocation = CGPointMake(xRounded, yRounded);
-		[[[GameController sharedGameController] currentScene] attemptToCreateStructureWithID:kObjectStructureBlockID atLocation:absoluteLocation isTraveling:YES];
+		BroggutScene* scene = [[GameController sharedGameController] currentScene];
+		switch (currentDragButtonID) {
+			case kStructureButtonBlockID:
+				[scene attemptToCreateStructureWithID:kObjectStructureBlockID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonRefineryID:
+				[scene attemptToCreateStructureWithID:kObjectStructureRefineryID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonCraftUpgradesID:
+				[scene attemptToCreateStructureWithID:kObjectStructureCraftUpgradesID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonStructureUpgradesID:
+				[scene attemptToCreateStructureWithID:kObjectStructureStructureUpgradesID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonTurretID:
+				[scene attemptToCreateStructureWithID:kObjectStructureTurretID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonRadarID:
+				[scene attemptToCreateStructureWithID:kObjectStructureRadarID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			case kStructureButtonFixerID:
+				[scene attemptToCreateStructureWithID:kObjectStructureFixerID atLocation:absoluteLocation isTraveling:YES];
+				break;
+			default:
+				break;
+		}
 	}
 	
 	[super touchesEndedAtLocation:location];

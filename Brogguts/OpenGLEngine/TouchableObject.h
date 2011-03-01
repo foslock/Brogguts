@@ -18,6 +18,9 @@
 	BOOL isCheckedForRadialEffect;
 	float effectRadius;
 	
+	// AI states
+	int friendlyAIState;
+	
 	// Closest enemy object, within range
 	TouchableObject* closestEnemyObject;
 	NSMutableSet* objectsTargetingSelf;
@@ -29,6 +32,7 @@
 	BOOL isTraveling;
 }
 
+@property (readonly) int friendlyAIState;
 @property (nonatomic, assign) TouchableObject* closestEnemyObject;
 @property (nonatomic, assign) BOOL isPartOfASquad;
 @property (nonatomic, assign) BOOL isTouchable;
