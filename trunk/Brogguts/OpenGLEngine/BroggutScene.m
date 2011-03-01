@@ -605,6 +605,24 @@
 	[craft setIsBeingControlled:YES];
 }
 
+- (TouchableObject*)attemptToAttackCraftAtLocation:(CGPoint)location {
+	for (int i = 0; i < [touchableObjects count]; i++) {
+		TouchableObject* object = [touchableObjects objectAtIndex:i];
+		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
+			// Object is a craft
+			if (object == controllingShip || object.objectAlliance == kAllianceFriendly) {
+				continue;
+			}
+			if (CircleContainsPoint(object.touchableBounds, location)) {
+				NSLog(@"Set enemy target to object (%i)", object.uniqueObjectID);
+				return object;
+				break;
+			}
+		}
+	}
+	return nil;
+}
+
 - (void)attemptToControlCraftAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
@@ -770,6 +788,7 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
+				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -782,6 +801,7 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
+				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -794,6 +814,7 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
+				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -806,6 +827,7 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
+				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}

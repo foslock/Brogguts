@@ -42,6 +42,27 @@ typedef struct Broggut_Array {
 	int broggutCount;		// The number of medium brogguts in the array (values != -1)
 } BroggutArray;
 
+typedef struct Path_Node {
+	struct Path_Node* parentNode;	// Parent node, used in path finding
+	BOOL isOpen;					// YES if the node is currently free and travellable
+	float distanceToDest;			// Approximate distance to the final point in the path, CONSIDER INVALID WHEN STARTING NEW PATH
+	float distanceFromStart;		// Approximate distance from the start point of the path, CONSIDER INVALID WHEN STARTING NEW PATH
+	float totalDistance;			// Cost of this node in the path
+	int currentList;				// The list that the path node is currently on
+	CGPoint nodeLocation;
+} PathNode;
+
+enum PathNodeListTypes {
+	kPathNodeListNone,
+	kPathNodeListOpen,
+	kPathNodeListClosed,
+};
+
+typedef struct Path_Node_Queue {
+	PathNode** nodeQueue;
+	int nodeCount;
+} PathNodeQueue;
+
 @class CollidableObject;
 
 #define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
@@ -71,8 +92,13 @@ typedef struct Broggut_Array {
 	TextObject* valueTextObject;		// Text object that shows the medium broggut value
 	BOOL isShowingValueText;			// Boolean about if the text is showing
 	
-	BroggutArray* broggutArray;			// A 2D array of brogguts
+	BroggutArray* broggutArray;			// A 1D array of brogguts mapped to 2D
 	BroggutGenerator* generator;		// The generator the makes the medium brogguts
+	
+	// Path finding array of nodes
+	PathNode* pathNodeArray;			// A 1D array of pathnodes mapped to 2D
+	PathNodeQueue pathNodeQueueOpen;	// A queue that can contain path nodes (the open list)
+	PathNodeQueue pathNodeQueueClosed;	// A queue that can contain path nodes (the closed list)
 }
 
 - (id)initWithContainingRect:(CGRect)bounds WithCellWidth:(float)width withHeight:(float)height;
@@ -103,7 +129,9 @@ typedef struct Broggut_Array {
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
 
-- (NSArray*)pathAvoidingBroggutsFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial;
+- (void)setPathNodeIsOpen:(BOOL)open atLocation:(CGPoint)location;
+- (PathNode*)pathNodeForRow:(int)row forColumn:(int)col;
+- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial;
 
 - (void)addCollidableObject:(CollidableObject*)object;
 - (void)removeCollidableObject:(CollidableObject*)object;

@@ -13,7 +13,6 @@
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
 #import "TextObject.h"
-#import "PathNode.h"
 
 @implementation CollisionManager
 
@@ -34,6 +33,17 @@
 	if (broggutArray) {
 		free(broggutArray->array);
 		free(broggutArray);
+	}
+	
+	// Free path node array and such
+	if (pathNodeArray) {
+		free(pathNodeArray);
+	}
+	if (pathNodeQueueOpen.nodeQueue) {
+		free(pathNodeQueueOpen.nodeQueue);
+	}
+	if (pathNodeQueueClosed.nodeQueue) {
+		free(pathNodeQueueClosed.nodeQueue);
 	}
 	[valueTextObject release];
 	[generator release];
@@ -71,6 +81,27 @@
 		valueTextObject = [[TextObject alloc]
 						   initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
 		isShowingValueText = NO;
+		
+		// Set up pathnode array
+		pathNodeArray = (PathNode*)malloc(numberOfColumns * numberOfRows * sizeof(*pathNodeArray));
+		pathNodeQueueOpen.nodeQueue = (PathNode**)malloc(1 + numberOfColumns * numberOfRows * sizeof(PathNode*));
+		pathNodeQueueOpen.nodeCount = 0;
+		pathNodeQueueClosed.nodeQueue = (PathNode**)malloc(1 + numberOfColumns * numberOfRows * sizeof(PathNode*));
+		pathNodeQueueClosed.nodeCount = 0;
+		
+		for (int i = 0; i < numberOfRows * numberOfColumns; i++) {
+			float xLoc = (COLLISION_CELL_WIDTH / 2) + (i % numberOfColumns) * COLLISION_CELL_WIDTH;
+			float yLoc = (COLLISION_CELL_HEIGHT / 2) + (i / numberOfColumns) * COLLISION_CELL_HEIGHT;
+			PathNode* node = &pathNodeArray[i];
+			node->parentNode = NULL;
+			node->isOpen = YES;
+			node->distanceFromStart = 0.0f;
+			node->distanceToDest = 0.0f;
+			node->totalDistance = 0.0f;
+			node->currentList = kPathNodeListNone;
+			node->nodeLocation = CGPointMake(xLoc, yLoc);
+		}
+		
 #ifdef BROGGUTS
 		broggutArray = (BroggutArray*)malloc( sizeof(*broggutArray) );
 		int countWide = ceilf(bounds.size.width / COLLISION_CELL_WIDTH);
@@ -87,7 +118,7 @@
 			broggut->broggutLocation = [self getBroggutLocationForID:i];
 			broggut->broggutEdge = kMediumBroggutEdgeUp; // Default to drawing the broggut
 		}
-		generator = [[BroggutGenerator alloc] initWithWithBroggutArray:broggutArray];
+		generator = [[BroggutGenerator alloc] initWithBroggutArray:broggutArray];
 #endif
 #ifdef GRID
 		// Fill the vertex array for the grid
@@ -103,7 +134,7 @@
 	if (generator)
 		[generator release];
 	
-	generator = [[BroggutGenerator alloc] initWithWithBroggutArray:broggutArray];
+	generator = [[BroggutGenerator alloc] initWithBroggutArray:broggutArray];
 }
 
 // Broggut array methods
@@ -198,6 +229,15 @@
 	}
 	MediumBroggut* broggut = &broggutArray->array[brogID];
 	broggut->broggutValue = newValue;
+	int col = brogID % numberOfColumns;
+	int row = brogID / numberOfColumns;
+	PathNode* node = [self pathNodeForRow:row forColumn:col];
+	if (newValue == -1) {
+		node->isOpen = YES;
+	} else {
+		node->isOpen = NO;
+	}
+	[self updateAllMediumBroggutsEdges];
 }
 
 - (void)addMediumBroggut {
@@ -244,8 +284,12 @@
 			int straightIndex = i + (j * cellsWide);
 			MediumBroggut* broggut = &broggutArray->array[straightIndex];
 			CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
+			[self updateMediumBroggutEdgeAtLocation:currentPoint];
+			PathNode* node = [self pathNodeForRow:j forColumn:i];
 			if (broggut->broggutValue != -1) {
-				[self updateMediumBroggutEdgeAtLocation:currentPoint];
+				node->isOpen = NO;
+			} else {
+				node->isOpen = YES;
 			}
 		}
 	}
@@ -409,11 +453,224 @@
 #pragma mark -
 #pragma mark Path Finding
 
-- (NSArray*)pathAvoidingBroggutsFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial {
+- (PathNode*)pathNodeForRow:(int)row forColumn:(int)col {
+	row = CLAMP(row, 0, numberOfRows - 1);
+	col = CLAMP(col, 0, numberOfColumns - 1);
+	int index = col + (row * numberOfColumns);
+	if (index >= numberOfRows * numberOfColumns) {
+		NSLog(@"Invalid index for path node: %i", index);
+		return NULL;
+	}	
+	PathNode* thisNode = &pathNodeArray[index];
+	return thisNode;
+}
+
+- (void)setPathNodeIsOpen:(BOOL)open atLocation:(CGPoint)location {
+	int row = (location.y / COLLISION_CELL_HEIGHT);
+	int col = (location.x / COLLISION_CELL_WIDTH);
+	PathNode* node = [self pathNodeForRow:row forColumn:col];
+	node->isOpen = open;
+}
+
+- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial; {
 	MediumBroggut* toBroggut = [self broggutCellForLocation:toLocation];
 	if (toBroggut->broggutValue != -1 && !partial) {
 		return nil; // If the final destination is a broggut, and no partial path, then return 'nil'.
 	}
+	int toRow = (toLocation.y / COLLISION_CELL_HEIGHT);
+	int toCol = (toLocation.x / COLLISION_CELL_WIDTH);
+	int fromRow = (fromLocation.y / COLLISION_CELL_HEIGHT);
+	int fromCol = (fromLocation.x / COLLISION_CELL_WIDTH);
+	if (toRow == fromRow && toCol == fromCol) {
+		// Path is nothing
+		return nil;
+	}
+	
+	// Reset the values for the nodes
+	for (int i = 0; i < numberOfRows * numberOfColumns; i++) {
+		PathNode* node = &pathNodeArray[i];
+		node->parentNode = NULL;
+		node->distanceFromStart = 0.0f;
+		node->distanceToDest = 0.0f;
+		node->totalDistance = 0.0f;
+		node->currentList = kPathNodeListNone;
+	}
+	
+	// The node that the path starts from
+	PathNode* startNode = [self pathNodeForRow:fromRow forColumn:fromCol];
+	// The node that the path SHOULD end on
+	PathNode* endNode = [self pathNodeForRow:toRow forColumn:toCol];
+	
+	startNode->distanceFromStart = 0.0f;
+	startNode->distanceToDest = GetDistanceBetweenPoints(startNode->nodeLocation, endNode->nodeLocation);
+	startNode->totalDistance = startNode->distanceFromStart + startNode->distanceToDest;
+	startNode->currentList = kPathNodeListOpen;
+	endNode->distanceFromStart = GetDistanceBetweenPoints(startNode->nodeLocation, endNode->nodeLocation);
+	endNode->distanceToDest = 0.0f;
+	endNode->totalDistance = endNode->distanceFromStart + endNode->distanceToDest;
+	
+	// Reset the queues
+	pathNodeQueueOpen.nodeCount = 0;
+	pathNodeQueueClosed.nodeCount = 0;
+	
+	// Add the starting node to the open list
+	pathNodeQueueOpen.nodeQueue[0] = startNode;
+	pathNodeQueueOpen.nodeCount++;
+	
+	BOOL pathWasFound = NO;
+	while (!pathWasFound) {
+		
+		if (pathNodeQueueOpen.nodeCount != 0) {
+			
+			float minCost = INT_MAX;
+			PathNode* currentNode;
+			for (int i = 0; i < pathNodeQueueOpen.nodeCount; i++) {
+				PathNode* node = pathNodeQueueOpen.nodeQueue[i];
+				if (node->totalDistance < minCost) {
+					minCost = node->totalDistance;
+					currentNode = node;
+				}
+			}
+			
+			pathNodeQueueOpen.nodeCount--;
+			currentNode->currentList = kPathNodeListClosed;
+			
+			int currentRow = (currentNode->nodeLocation.y / COLLISION_CELL_HEIGHT);
+			int currentCol = (currentNode->nodeLocation.x / COLLISION_CELL_WIDTH);
+			
+			for (int row = -1; row < 2; row++) {
+				for (int col = -1; col < 2; col++) {
+					if (row == 0 && col == 0) {
+						continue;
+					}
+					int adjRow = currentRow + row;
+					int adjCol = currentCol + col;
+					PathNode* currentAdjNode = [self pathNodeForRow:adjRow forColumn:adjCol];
+					// Make sure the bounds are within the full map bounds
+					if (adjRow >= 0 && adjCol >= 0 && adjRow < numberOfRows && adjCol < numberOfColumns) {
+						// Don't worry about nodes already on the closed list
+						if (currentAdjNode->currentList != kPathNodeListClosed) {
+							// If the current node is free to move to, check for corners
+							if (currentAdjNode->isOpen == YES) {
+								BOOL isCornerOpen = YES;
+								
+								if (row == -1 && col == -1) {
+									// Bottom left corner node
+									PathNode* aboveNode = [self pathNodeForRow:adjRow+1 forColumn:adjCol];
+									PathNode* rightNode = [self pathNodeForRow:adjRow forColumn:adjCol+1];
+									if (aboveNode->isOpen == NO ||
+										rightNode->isOpen == NO) {
+										isCornerOpen = NO;
+									}
+								}
+								
+								if (row == 1 && col == -1) {
+									// top left corner node
+									PathNode* belowNode = [self pathNodeForRow:adjRow-1 forColumn:adjCol];
+									PathNode* rightNode = [self pathNodeForRow:adjRow forColumn:adjCol+1];
+									if (belowNode->isOpen == NO ||
+										rightNode->isOpen == NO) {
+										isCornerOpen = NO;
+									}
+								}
+								
+								if (row == -1 && col == 1) {
+									// Bottom right corner node
+									PathNode* aboveNode = [self pathNodeForRow:adjRow+1 forColumn:adjCol];
+									PathNode* leftNode = [self pathNodeForRow:adjRow forColumn:adjCol-1];
+									if (aboveNode->isOpen == NO ||
+										leftNode->isOpen == NO) {
+										isCornerOpen = NO;
+									}
+								}
+								
+								if (row == 1 && col == 1) {
+									// top right corner node
+									PathNode* belowNode = [self pathNodeForRow:adjRow-1 forColumn:adjCol];
+									PathNode* leftNode = [self pathNodeForRow:adjRow forColumn:adjCol-1];
+									if (belowNode->isOpen == NO ||
+										leftNode->isOpen == NO) {
+										isCornerOpen = NO;
+									}
+								}
+								
+								// If there are no corners blocking...
+								if (isCornerOpen) {
+									if (currentAdjNode->currentList != kPathNodeListOpen) {
+										// Add it to the open list
+										pathNodeQueueOpen.nodeQueue[pathNodeQueueOpen.nodeCount] = currentAdjNode;
+										pathNodeQueueOpen.nodeCount++;
+										
+										// Calculate the total distance (cost) for this cell
+										float additionalCost = 0.0f;
+										
+										if (row == 0 && (col == -1 || col == 1) ) {
+											additionalCost = COLLISION_CELL_WIDTH;
+										} else if (col == 0 && (row == -1 || row == 1) ) {
+											additionalCost = COLLISION_CELL_HEIGHT;
+										} else {
+											additionalCost = sqrtf( (COLLISION_CELL_WIDTH * COLLISION_CELL_WIDTH) + 
+																	(COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
+										}
+										
+										// Add to the distance from start
+										currentAdjNode->distanceFromStart += additionalCost;
+										currentAdjNode->distanceToDest = GetDistanceBetweenPoints(currentAdjNode->nodeLocation, endNode->nodeLocation);
+										currentAdjNode->totalDistance = currentAdjNode->distanceFromStart + currentAdjNode->distanceToDest;
+										currentAdjNode->parentNode = currentNode;
+										currentAdjNode->currentList = kPathNodeListOpen;
+									} else { // If the node is already on the open list
+										
+										// See if this path would be better than the current
+										float newCost = currentNode->distanceFromStart;
+										if (row == 0 && (col == -1 || col == 1) ) {
+											newCost += COLLISION_CELL_WIDTH;
+										} else if (col == 0 && (row == -1 || row == 1) ) {
+											newCost += COLLISION_CELL_HEIGHT;
+										} else {
+											newCost += sqrtf( (COLLISION_CELL_WIDTH * COLLISION_CELL_WIDTH) + 
+															(COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
+										}
+										
+										if (newCost < currentAdjNode->distanceFromStart) {
+											// This cell has a shorter path from the beginning 
+											currentAdjNode->parentNode = currentNode;
+											currentAdjNode->distanceFromStart = newCost;
+											currentAdjNode->totalDistance = currentAdjNode->distanceFromStart + currentAdjNode->distanceToDest;
+										} // If the newCost is less
+										
+									} // If the current adjacent sell is on the open list
+								} // If corner is free
+							} // If not occupied node
+						} // If not already on the closed list
+					} // If in the bounds of the screen
+				} // loops through columns of adjecent nodes
+			} // loops through rows of adjecent nodes
+		} // if there are more than 0 nodes on the open list
+		else {
+			pathWasFound = NO;
+			break; // RETURN THE HALF-PATH
+		}
+
+		if (endNode->currentList == kPathNodeListOpen) {
+			pathWasFound = YES;
+			break;
+		}
+		
+	}
+	
+	if (pathWasFound) {
+		NSMutableArray* followablePath = [[NSMutableArray alloc] init];
+		PathNode* currentNode = endNode; 
+		while (currentNode->parentNode != NULL) {
+			NSValue* value = [NSValue valueWithCGPoint:currentNode->nodeLocation];
+			[followablePath insertObject:value atIndex:0]; // Insert each point at the beginning of the path
+			currentNode = currentNode->parentNode;
+		}
+		return [followablePath autorelease];
+	}
+	
+	// Compile all the nodes/points into a followable path
 	return nil;
 }
 

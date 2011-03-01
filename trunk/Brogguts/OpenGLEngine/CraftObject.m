@@ -213,10 +213,38 @@
 	[super accelerateTowardsLocation:location];
 }
 
+- (void)targetWasDestroyed:(TouchableObject *)target {
+	[super targetWasDestroyed:target];
+	if (target == closestEnemyObject) {
+		if (friendlyAIState == kFriendlyAIStateAttacking) {
+			friendlyAIState = kFriendlyAIStateStill;
+			[self stopFollowingCurrentPath];
+		}
+	}
+}
+
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
 	[super attackedByEnemy:enemy withDamage:damage];
 	attributeHullCurrent -= damage;
+	if (friendlyAIState == kFriendlyAIStateStill && !isBeingControlled && !isBeingDragged) {
+		// Move away from the attacker
+		float xDest = objectLocation.x;
+		float yDest = objectLocation.y;
+		if (enemy.objectLocation.x < objectLocation.x) {
+			xDest += COLLISION_CELL_WIDTH;
+		} else {
+			xDest -= COLLISION_CELL_WIDTH;
+		}
+		if (enemy.objectLocation.y < objectLocation.y) {
+			yDest += COLLISION_CELL_HEIGHT;
+		} else {
+			yDest -= COLLISION_CELL_HEIGHT;
+		}
+		NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO];
+		[self followPath:newPath isLooped:NO];
+	}
 	if (attributeHullCurrent <= 0) {
+		destroyNow = YES;
 		return YES;
 	}
 	return NO;
@@ -393,9 +421,15 @@
 	if (objectAlliance == kAllianceFriendly) {
 		if (isBeingDragged && !CircleContainsPoint(self.boundingCircle, location)) {
 			if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
-				NSArray* newPath = [NSArray arrayWithObjects:
-									[NSValue valueWithCGPoint:dragLocation],
-									nil];
+				TouchableObject* enemy = [self.currentScene attemptToAttackCraftAtLocation:dragLocation];
+				if (enemy) {
+					[self setClosestEnemyObject:enemy];
+					friendlyAIState = kFriendlyAIStateAttacking;
+				}
+	
+				NSArray* newPath = [[self.currentScene
+									 collisionManager]
+									pathFrom:objectLocation to:dragLocation allowPartial:NO];
 				[self followPath:newPath isLooped:NO];
 				
 				if (![self isKindOfClass:[MonarchCraftObject class]]) {

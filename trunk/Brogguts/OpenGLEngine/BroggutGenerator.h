@@ -23,7 +23,7 @@
 	int vertexedBroggutCount;
 }
 
-- (id)initWithWithBroggutArray:(BroggutArray*)broggutArray;
+- (id)initWithBroggutArray:(BroggutArray*)broggutArray;
 
 - (int)verticesOfMediumBroggutAtIndex:(int)index intoArray:(float**)array;
 

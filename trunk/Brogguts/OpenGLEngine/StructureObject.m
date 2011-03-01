@@ -146,6 +146,7 @@
 	[super attackedByEnemy:enemy withDamage:damage];
 	attributeHullCurrent -= damage;
 	if (attributeHullCurrent <= 0) {
+		destroyNow = YES;
 		return YES;
 	}
 	return NO;
