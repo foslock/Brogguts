@@ -119,6 +119,7 @@
 #pragma mark -
 #pragma mark Properties
 
+@property (readonly) NSMutableArray* fontArray;
 @property (retain) NSString* sceneName;
 @property (retain) CraftObject* controllingShip;
 @property (retain) CraftObject* commandingShip;
@@ -165,6 +166,9 @@
 // Adds an touchable object to the scene
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides;
 
+// Adds a text object to the scene
+- (void)addTextObject:(TextObject*)obj;
+
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
 
@@ -172,10 +176,10 @@
 - (TouchableObject*)attemptToAttackCraftAtLocation:(CGPoint)location;
 
 // Called when the player is trying to switch controlling ships
-- (void)attemptToControlCraftAtLocation:(CGPoint)location;
+- (BOOL)attemptToControlCraftAtLocation:(CGPoint)location;
 
 // Called when a ship wants to join a squad
-- (void)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
+- (BOOL)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
 
 // Controls the nearest ship to a given location, if there are any ships left
 - (void)controlNearestShipToLocation:(CGPoint)location;

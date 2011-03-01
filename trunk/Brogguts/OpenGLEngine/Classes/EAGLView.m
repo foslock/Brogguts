@@ -215,22 +215,26 @@
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
 	// Pass touch events onto the current scene
-	[[sharedGameController currentScene] touchesBegan:touches withEvent:event view:self];
+	if (!sharedGameController.isFadingSceneIn && !sharedGameController.isFadingSceneOut)
+		[[sharedGameController currentScene] touchesBegan:touches withEvent:event view:self];
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
 	// Pass touch events onto the current scene
-	[[sharedGameController currentScene] touchesMoved:touches withEvent:event view:self];
+	if (!sharedGameController.isFadingSceneIn && !sharedGameController.isFadingSceneOut)
+		[[sharedGameController currentScene] touchesMoved:touches withEvent:event view:self];
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
 	// Pass touch events onto the current scene
-	[[sharedGameController currentScene] touchesEnded:touches withEvent:event view:self];
+	if (!sharedGameController.isFadingSceneIn && !sharedGameController.isFadingSceneOut)
+		[[sharedGameController currentScene] touchesEnded:touches withEvent:event view:self];
 }
 
 - (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
 	// Pass touch events onto the current scene
-	[[sharedGameController currentScene] touchesCancelled:touches withEvent:event view:self];
+	if (!sharedGameController.isFadingSceneIn && !sharedGameController.isFadingSceneOut)
+		[[sharedGameController currentScene] touchesCancelled:touches withEvent:event view:self];
 }
 
 

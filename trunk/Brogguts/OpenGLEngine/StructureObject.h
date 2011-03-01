@@ -17,9 +17,6 @@
 	BOOL isPathLooped;					// Should the unit repeat the path when finished
 	BOOL hasCurrentPathFinished;		// True if the previous given path is done
 	
-	// AI states
-	int friendlyAIState;
-	
 	// Variable attributes that all structure must implement
 	int attributeBroggutCost;
 	int attributeMetalCost;

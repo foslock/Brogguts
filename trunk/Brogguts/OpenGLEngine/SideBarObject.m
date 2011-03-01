@@ -99,7 +99,7 @@
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
-	NSLog(@"Began");
+	// NSLog(@"Began");
 	scrollTouchTimer = SCROLL_TIME_INTERVAL;
 	firstTouchLocation = location;
 	// Press button by default if the touch is on one
@@ -114,8 +114,8 @@
 }
 
 - (void)touchesTappedAtLocation:(CGPoint)location { // Called when the touch has began and ended within the threshold timing without moving significantly
-													// OVERRIDE
-	NSLog(@"Tapped");
+	// OVERRIDE
+	// NSLog(@"Tapped");
 	for (int i = 0; i < [buttonArray count]; i++) {
 		// For each button, check if the location is in the rect
 		SideBarButton* button = [buttonArray objectAtIndex:i];
@@ -130,7 +130,7 @@
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
 	// OVERRIDE
-	NSLog(@"Moved");
+	// NSLog(@"Moved");
 	if (scrollTouchTimer > 0) {
 		if (fabs(fromLocation.y - toLocation.y) > SCROLLING_DISTANCE_THRESHOLD) {
 			scrollTouchTimer = -1;
@@ -154,7 +154,7 @@
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	// OVERRIDE
-	NSLog(@"Ended");
+	// NSLog(@"Ended");
 	if (!isTouchMovingScroll) {
 		for (int i = 0; i < [buttonArray count]; i++) {
 			// For each button, check if the location is in the rect

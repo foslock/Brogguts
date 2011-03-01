@@ -15,9 +15,11 @@
 @class BroggutScene;
 @class EAGLView;
 @class PlayerProfile;
+@class TextObject;
 
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
+#define FADING_RECT_ALPHA_RATE 0.01f
 
 // Class responsible for passing touch and game events to the correct game
 // scene.  A game scene is an object which is responsible for a specific
@@ -30,20 +32,30 @@
 	// Player profile
 	PlayerProfile* currentPlayerProfile;
 	
-	///////////////////// Views and orientation
-	EAGLView *eaglView;						// Reference to the EAGLView
+	// Views and orientation
+	EAGLView *eaglView;								// Reference to the EAGLView
 	UIInterfaceOrientation interfaceOrientation;	// Devices interface orientation
 	BroggutScene* currentScene;
 	
-    ///////////////////// Game controller iVars	
-    NSDictionary *gameScenes;				// Dictionary of the different game scenes
+	// Scene transition vars
+	NSString* transitionName;
+	TextObject* sceneNameObject;
+	BOOL isFadingSceneIn;
+	BOOL isFadingSceneOut;
+	float fadingRectAlpha;
+	
+    // Game controller iVars	
+    NSDictionary *gameScenes;						// Dictionary of the different game scenes
 }
 
+@property (retain) NSString* transitionName;
 @property (retain) PlayerProfile* currentPlayerProfile;
 @property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
+@property (readonly) BOOL isFadingSceneIn;
+@property (readonly) BOOL isFadingSceneOut;
 
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class
@@ -57,6 +69,9 @@
 
 - (void)createBaseCampLevel;
 - (BroggutScene*)sceneFromLevelWithFilename:(NSString*)filename;
+
+// Transitions from one scene to another
+- (void)transitionToSceneWithName:(NSString*)sceneName;
 
 // Updates the logic within the current scene
 - (void)updateCurrentSceneWithDelta:(float)aDelta;

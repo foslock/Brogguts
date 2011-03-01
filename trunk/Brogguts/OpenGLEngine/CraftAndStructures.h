@@ -4,6 +4,7 @@
 #import "MothCraftObject.h"
 #import "BeetleCraftObject.h"
 #import "MonarchCraftObject.h"
+#import "CamelCraftObject.h"
 
 // Structures
 #import "BlockStructureObject.h"

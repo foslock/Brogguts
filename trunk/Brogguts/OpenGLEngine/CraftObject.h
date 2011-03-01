@@ -24,12 +24,14 @@
 	BOOL isPathLooped;					// Should the unit repeat the path when finished
 	BOOL hasCurrentPathFinished;		// True if the previous given path is done
 	
-	// AI states
-	int friendlyAIState;
-	
 	// Attacking vars
 	int attackCooldownTimer;
 	CGPoint attackLaserTargetPosition;
+	
+	// Special Ability vars
+	BOOL isSpecialAbilityCooling;
+	BOOL isSpecialAbilityActive;
+	int specialAbilityCooldownTimer;
 	
 	// Monarch that leads the squad (nil if not in a squad)
 	MonarchCraftObject* squadMonarch;
@@ -48,6 +50,7 @@
 	int attributeWeaponsDamage;
 	int attributeAttackRange;
 	int attributeAttackCooldown;
+	int attributeSpecialCooldown;
 	int attributeHullCapacity;
 	int attributeHullCurrent;
 	
@@ -63,6 +66,10 @@
 - (void)addCargo:(int)cargo;
 
 - (void)attackTarget;
+
+- (void)setPriorityEnemyTarget:(TouchableObject*)target;
+
+- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location; // Returns YES if the ability was performed
 
 - (void)updateCraftLightLocations;
 - (void)updateCraftTurretLocations;

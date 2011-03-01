@@ -12,6 +12,7 @@
 @implementation TouchableObject
 @synthesize isCheckedForRadialEffect, isTouchable, isCurrentlyTouched, isPartOfASquad, touchableBounds;
 @synthesize closestEnemyObject;
+@synthesize friendlyAIState;
 
 - (void)dealloc {
 	[objectsTargetingSelf release];
@@ -79,22 +80,24 @@
 - (void)objectEnteredEffectRadius:(TouchableObject*)other {
 	// "other" has entered the effect radius of this structure
 	// NSLog(@"Object (%i) entered object (%i) effect radius", other.uniqueObjectID, uniqueObjectID);
-	if (closestEnemyObject && !closestEnemyObject.destroyNow) {
-		if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 
-			GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation)) {
+	if (friendlyAIState != kFriendlyAIStateAttacking) {
+		if (closestEnemyObject && !closestEnemyObject.destroyNow) {
+			if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 
+				GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation)) {
+				if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
+					[self setClosestEnemyObject:other];
+				}
+				if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
+					[self setClosestEnemyObject:other];
+				}
+			}
+		} else {
 			if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
 				[self setClosestEnemyObject:other];
 			}
 			if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
 				[self setClosestEnemyObject:other];
 			}
-		}
-	} else {
-		if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
-			[self setClosestEnemyObject:other];
-		}
-		if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
-			[self setClosestEnemyObject:other];
 		}
 	}
 }
@@ -105,7 +108,8 @@
 }
 
 - (void)objectWasDestroyed {
-	for (TouchableObject* enemy in objectsTargetingSelf) {
+	NSSet* setCopy = [NSSet setWithSet:objectsTargetingSelf];
+	for (TouchableObject* enemy in setCopy) {
 		[enemy targetWasDestroyed:self];
 	}
 	[super objectWasDestroyed];

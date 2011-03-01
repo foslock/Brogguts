@@ -16,6 +16,8 @@
 #import "StructureObject.h"
 #import "CraftObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
+#import "BitmapFont.h"
 
 #pragma mark -
 #pragma mark Private interface
@@ -31,10 +33,11 @@ static GameController* sharedGameController = nil;
 @implementation GameController
 
 @synthesize currentPlayerProfile;
-@synthesize currentScene;
+@synthesize currentScene, transitionName;
 @synthesize gameScenes;
 @synthesize eaglView;
 @synthesize interfaceOrientation;
+@synthesize isFadingSceneIn, isFadingSceneOut;
 
 #pragma mark -
 #pragma mark Singleton implementation
@@ -95,6 +98,7 @@ static GameController* sharedGameController = nil;
 	[[SoundSingleton sharedSoundSingleton] shutdownSoundManager];
 	[currentScene release];
     [gameScenes release];
+	[transitionName release];
     [super dealloc];
 }
 
@@ -449,16 +453,55 @@ static GameController* sharedGameController = nil;
 	return [newScene autorelease];
 }
 
+- (void)transitionToSceneWithName:(NSString*)sceneName {
+	transitionName = sceneName;
+	if (currentScene) { // If already in a scene, fade that one out
+		isFadingSceneOut = YES;
+		fadingRectAlpha = 0.0f;
+	} else {
+		currentScene = [gameScenes objectForKey:transitionName];
+		isFadingSceneIn = YES;
+		fadingRectAlpha = 1.0f;
+	}
+}
+
 #pragma mark -
 #pragma mark Update & Render
 
 - (void)updateCurrentSceneWithDelta:(float)aDelta {
+	if (isFadingSceneIn) {
+		if (fadingRectAlpha > 0.0f) {
+			fadingRectAlpha -= FADING_RECT_ALPHA_RATE;
+		} else {
+			isFadingSceneIn = NO;
+			fadingRectAlpha = 0.0f;
+		}
+	}
+	
+	if (isFadingSceneOut) {
+		if (fadingRectAlpha < 1.0f) {
+			fadingRectAlpha += FADING_RECT_ALPHA_RATE;
+		} else {
+			isFadingSceneOut = NO;
+			currentScene = [gameScenes objectForKey:transitionName];
+			isFadingSceneIn = YES; // If fading out, set fading in to yes
+			fadingRectAlpha = 1.0f;
+		}
+	}
 	[currentPlayerProfile updateProfile];
     [currentScene updateSceneWithDelta:aDelta];
 }
 
 -(void)renderCurrentScene {
     [currentScene renderScene];
+	if (isFadingSceneIn || isFadingSceneOut) {
+		enablePrimitiveDraw();
+		glColor4f(0.0f, 0.0f, 0.0f, fadingRectAlpha);
+		CGRect bounds = [currentScene visibleScreenBounds];
+		CGRect fullRect = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+		drawFilledRect(fullRect, Vector2fZero);
+		disablePrimitiveDraw();
+	}
 }
 
 
@@ -497,6 +540,11 @@ static GameController* sharedGameController = nil;
 	
     NSLog(@"INFO - GameController: Starting game initialization.");
 	
+	isFadingSceneIn = NO;
+	isFadingSceneOut = NO;
+	fadingRectAlpha = 0.0f;
+	currentScene = nil;
+	
 	[self loadPlayerProfile];
 	
 	interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
@@ -509,7 +557,8 @@ static GameController* sharedGameController = nil;
 	[gameScenes setValue:scene forKey:@"BaseCamp"];
     
     // Set the starting scene for the game
-    currentScene = [gameScenes objectForKey:@"BaseCamp"];
+	[self transitionToSceneWithName:@"BaseCamp"];
+    
 	/*
 	[[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];
 	[[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"testSound"];

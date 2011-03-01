@@ -35,6 +35,7 @@
 			attributeAttackCooldown = kCraftAntAttackCooldown;
 			attributeHullCapacity = kCraftAntHull;
 			attributeHullCurrent = kCraftAntHull;
+			attributeSpecialCooldown = kCraftAntSpecialCoolDown;
 			break;
 		case kObjectCraftMothID:
 			attributeBroggutCost = kCraftMothCostBrogguts;
@@ -45,6 +46,7 @@
 			attributeAttackCooldown = kCraftMothAttackCooldown;
 			attributeHullCapacity = kCraftMothHull;
 			attributeHullCurrent = kCraftMothHull;
+			attributeSpecialCooldown = kCraftMothSpecialCoolDown;
 			break;
 		case kObjectCraftBeetleID:
 			attributeBroggutCost = kCraftBeetleCostBrogguts;
@@ -55,6 +57,7 @@
 			attributeAttackCooldown = kCraftBeetleAttackCooldown;
 			attributeHullCapacity = kCraftBeetleHull;
 			attributeHullCurrent = kCraftBeetleHull;
+			attributeSpecialCooldown = kCraftBeetleSpecialCoolDown;
 			break;
 		case kObjectCraftMonarchID:
 			attributeBroggutCost = kCraftMonarchCostBrogguts;
@@ -65,6 +68,7 @@
 			attributeAttackCooldown = kCraftMonarchAttackCooldown;
 			attributeHullCapacity = kCraftMonarchHull;
 			attributeHullCurrent = kCraftMonarchHull;
+			attributeSpecialCooldown = kCraftMonarchSpecialCoolDown;
 			break;
 		case kObjectCraftCamelID:
 			attributeBroggutCost = kCraftCamelCostBrogguts;
@@ -75,6 +79,7 @@
 			attributeAttackCooldown = kCraftCamelAttackCooldown;
 			attributeHullCapacity = kCraftCamelHull;
 			attributeHullCurrent = kCraftCamelHull;
+			attributeSpecialCooldown = kCraftCamelSpecialCoolDown;
 			break;
 		case kObjectCraftRatID:
 			attributeBroggutCost = kCraftRatCostBrogguts;
@@ -85,6 +90,7 @@
 			attributeAttackCooldown = kCraftRatAttackCooldown;
 			attributeHullCapacity = kCraftRatHull;
 			attributeHullCurrent = kCraftRatHull;
+			attributeSpecialCooldown = kCraftRatSpecialCoolDown;
 			break;
 		case kObjectCraftSpiderID:
 			attributeBroggutCost = kCraftSpiderCostBrogguts;
@@ -95,6 +101,7 @@
 			attributeAttackCooldown = kCraftSpiderAttackCooldown;
 			attributeHullCapacity = kCraftSpiderHull;
 			attributeHullCurrent = kCraftSpiderHull;
+			attributeSpecialCooldown = kCraftSpiderSpecialCoolDown;
 			break;
 		case kObjectCraftEagleID:
 			attributeBroggutCost = kCraftEagleCostBrogguts;
@@ -105,6 +112,7 @@
 			attributeAttackCooldown = kCraftEagleAttackCooldown;
 			attributeHullCapacity = kCraftEagleHull;
 			attributeHullCurrent = kCraftEagleHull;
+			attributeSpecialCooldown = kCraftEagleSpecialCoolDown;
 			break;
 		default:
 			break;
@@ -163,6 +171,9 @@
 		squadMonarch = nil;
 		effectRadius = attributeAttackRange;
 		attackCooldownTimer = 0;
+		isSpecialAbilityCooling = NO;
+		isSpecialAbilityActive = NO;
+		specialAbilityCooldownTimer = 0;
 		if (traveling) {
 			isTraveling = YES;
 			isTouchable = NO;
@@ -250,6 +261,19 @@
 	return NO;
 }
 
+- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
+	// Override in each ship with special ability, CALL THIS FIRST
+	if (isSpecialAbilityActive || isSpecialAbilityCooling || specialAbilityCooldownTimer > 0 ||
+		attributeSpecialCooldown == 0) { // If the ability is passive, don't do anything
+		return NO;
+	}
+	specialAbilityCooldownTimer = attributeSpecialCooldown;
+	isSpecialAbilityCooling = YES;
+	isSpecialAbilityActive = YES;
+	return YES;
+	// NSLog(@"Special performed");
+}
+
 - (void)attackTarget {
 	if (closestEnemyObject) {
 		if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
@@ -267,10 +291,29 @@
 	}
 }
 
+- (void)setPriorityEnemyTarget:(TouchableObject*)target {
+	[self setClosestEnemyObject:target];
+	friendlyAIState = kFriendlyAIStateAttacking;
+	NSArray* newPath = [[self.currentScene
+						 collisionManager]
+						pathFrom:objectLocation to:target.objectLocation allowPartial:NO];
+	[self followPath:newPath isLooped:NO];
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	if (attributeHullCurrent <= 0) {
 		destroyNow = YES;
 		return;
+	}
+	
+	if (specialAbilityCooldownTimer > 0) { // Reduce the special counter timer by one each frame
+		isSpecialAbilityCooling = YES;
+		specialAbilityCooldownTimer--;
+		if (specialAbilityCooldownTimer <= 0) {
+			isSpecialAbilityCooling = NO;
+			isSpecialAbilityActive = NO;
+			specialAbilityCooldownTimer = 0;
+		}
 	}
 	
 	// Get the current point we should be following
@@ -421,22 +464,28 @@
 	if (objectAlliance == kAllianceFriendly) {
 		if (isBeingDragged && !CircleContainsPoint(self.boundingCircle, location)) {
 			if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
-				TouchableObject* enemy = [self.currentScene attemptToAttackCraftAtLocation:dragLocation];
-				if (enemy) {
-					[self setClosestEnemyObject:enemy];
-					friendlyAIState = kFriendlyAIStateAttacking;
-				}
-	
+				
 				NSArray* newPath = [[self.currentScene
 									 collisionManager]
 									pathFrom:objectLocation to:dragLocation allowPartial:NO];
 				[self followPath:newPath isLooped:NO];
 				
+				
+				TouchableObject* enemy = [self.currentScene attemptToAttackCraftAtLocation:dragLocation];
+				if (enemy) {
+					[self setPriorityEnemyTarget:enemy];
+				}
+				
 				if (![self isKindOfClass:[MonarchCraftObject class]]) {
-					[self.currentScene attemptToPutCraft:self inSquadAtLocation:location];
+					 if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
+						 friendlyAIState = kFriendlyAIStateMoving;
+					 }
 				}
 			} else if (isBeingControlled) {
-				[self.currentScene attemptToControlCraftAtLocation:location];
+				if (![self.currentScene attemptToControlCraftAtLocation:location]) {
+					if (friendlyAIState != kFriendlyAIStateMining)
+						[self performSpecialAbilityAtLocation:location];
+				}
 			}
 		}
 		isBeingDragged = NO;

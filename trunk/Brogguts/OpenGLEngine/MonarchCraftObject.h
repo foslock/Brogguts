@@ -30,5 +30,4 @@
 - (void)removeCraftFromSquad:(CraftObject*)craft;
 
 
-
 @end
