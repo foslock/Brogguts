@@ -168,6 +168,9 @@
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
 
+// Returns an enemy ship at the location
+- (TouchableObject*)attemptToAttackCraftAtLocation:(CGPoint)location;
+
 // Called when the player is trying to switch controlling ships
 - (void)attemptToControlCraftAtLocation:(CGPoint)location;
 

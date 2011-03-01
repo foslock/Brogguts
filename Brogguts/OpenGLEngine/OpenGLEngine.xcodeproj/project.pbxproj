@@ -32,7 +32,6 @@
 		6F2CADC113172529001A10E3 /* structureblock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CADC013172529001A10E3 /* structureblock.png */; };
 		6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */; };
 		6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAEF213173BA7001A10E3 /* SideBarButton.m */; };
-		6F2CAFDE13182AA6001A10E3 /* PathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAFDD13182AA6001A10E3 /* PathNode.m */; };
 		6F2CB13A131973A9001A10E3 /* craftmonarch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB139131973A9001A10E3 /* craftmonarch.png */; };
 		6F2CB2A81319EC26001A10E3 /* particlebroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A51319EC26001A10E3 /* particlebroggut.png */; };
 		6F2CB2A91319EC26001A10E3 /* particleshippart.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A61319EC26001A10E3 /* particleshippart.png */; };
@@ -139,8 +138,6 @@
 		6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuSideBar.m; sourceTree = "<group>"; };
 		6F2CAEF113173BA7001A10E3 /* SideBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarButton.h; sourceTree = "<group>"; };
 		6F2CAEF213173BA7001A10E3 /* SideBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarButton.m; sourceTree = "<group>"; };
-		6F2CAFDC13182AA6001A10E3 /* PathNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathNode.h; sourceTree = "<group>"; };
-		6F2CAFDD13182AA6001A10E3 /* PathNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PathNode.m; sourceTree = "<group>"; };
 		6F2CB139131973A9001A10E3 /* craftmonarch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftmonarch.png; sourceTree = "<group>"; };
 		6F2CB2A51319EC26001A10E3 /* particlebroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlebroggut.png; sourceTree = "<group>"; };
 		6F2CB2A61319EC26001A10E3 /* particleshippart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleshippart.png; sourceTree = "<group>"; };
@@ -649,8 +646,6 @@
 				6F2CAD38131714E0001A10E3 /* Structures */,
 				6FE75B1A13036DB400A3C6EF /* CollisionManager.h */,
 				6FE75B1B13036DB400A3C6EF /* CollisionManager.mm */,
-				6F2CAFDC13182AA6001A10E3 /* PathNode.h */,
-				6F2CAFDD13182AA6001A10E3 /* PathNode.m */,
 				6F8B8A0E130884C2009CD1BF /* BroggutGenerator.h */,
 				6F8B8A0F130884C2009CD1BF /* BroggutGenerator.mm */,
 				6F8B8A2E13089180009CD1BF /* ShapeGenerator.h */,
@@ -813,7 +808,6 @@
 				6F2CADB613171F23001A10E3 /* FixerStructureObject.m in Sources */,
 				6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */,
 				6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */,
-				6F2CAFDE13182AA6001A10E3 /* PathNode.m in Sources */,
 				6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */,
 				6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */,
 			);

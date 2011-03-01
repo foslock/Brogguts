@@ -60,7 +60,7 @@
 }
 
 - (void)targetWasDestroyed:(TouchableObject*)target {
-	if (target == closestEnemyObject) {
+	if (target == closestEnemyObject) { // Just in case, remove it from the objects targeting
 		[objectsTargetingSelf removeObject:closestEnemyObject];
 	}
 	[self setClosestEnemyObject:nil];

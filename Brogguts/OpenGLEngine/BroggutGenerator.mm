@@ -32,7 +32,7 @@
 
 - (void)dealloc {
 	if (verticies) {
-		for (int i = 0; i < broggutCount; i++) {
+		for (int i = 0; i < cellsWide * cellsHigh; i++) {
 			free(verticies[i]);
 		}
 		free(verticies);
@@ -41,7 +41,7 @@
 	[super dealloc];
 }
 
-- (id)initWithWithBroggutArray:(BroggutArray*)broggutArray {
+- (id)initWithBroggutArray:(BroggutArray*)broggutArray {
 	self = [super init];
 	if (self) {
 		generator = new ShapeGenerator(VERTICIES_PER_BROGGUT / 2, VERTICIES_PER_BROGGUT / 2);

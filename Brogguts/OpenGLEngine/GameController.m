@@ -132,7 +132,7 @@ static GameController* sharedGameController = nil;
 	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString* documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
 	NSString* filePath = [documentsDirectory stringByAppendingPathComponent:filename];
-	return [filePath retain];
+	return filePath;
 }
 
 - (void)createBaseCampLevel {
@@ -163,6 +163,12 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
 				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
 				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
+			} else if (i == 8 && j == 24) { // Add the initial enemy craft
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
+				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
+				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
+				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
+				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
 			} else if (i == 0 && j == 24) { // Add the initial base station structure
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
@@ -171,7 +177,7 @@ static GameController* sharedGameController = nil;
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
-			} else if (i == 6 && (j == 22 || j == 26) ) { // Add 2 turrets
+			} else if (i == 4 && (j == 22 || j == 26) ) { // Add 2 turrets
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
 				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
 				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
@@ -232,7 +238,7 @@ static GameController* sharedGameController = nil;
 			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
 			CGPoint currentPoint = CGPointMake(currentX, currentY);
 			int straightIndex = i + (j * cellsWide);
-			
+			PathNode* currentNode = [[newScene collisionManager] pathNodeForRow:j forColumn:i];
 			NSArray* currentArray = [array objectAtIndex:straightIndex + 5];
 			int idOfObject = [[currentArray objectAtIndex:0] intValue];
 			int objectType = 0;
@@ -254,6 +260,7 @@ static GameController* sharedGameController = nil;
 					broggut->broggutValue = [[currentArray objectAtIndex:2] intValue];
 					if (broggut->broggutValue != -1) {
 						[[newScene collisionManager] addMediumBroggut];
+						currentNode->isOpen = NO;
 					}
 					break;
 				case kObjectTypeCraft:
@@ -372,6 +379,7 @@ static GameController* sharedGameController = nil;
 				case kObjectTypeStructure:
 					// Create a structure at that location with the appropriate type
 					objectType = [[currentArray objectAtIndex:1] intValue];
+					currentNode->isOpen = NO;
 					switch (objectType) {
 						case kObjectStructureBaseStationID: {
 							BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
