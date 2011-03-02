@@ -8,11 +8,18 @@
 
 #import "CollidableObject.h"
 
+#define CIRCLE_BLINK_FREQUENCY 50	// The number of times the selection circle blinks when "selected"
+#define CIRCLE_BLINK_FRAMES 150	// The frames it takes for the circle to blink (must be larger than the above number)
+
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
 	BOOL isCurrentlyHoveredOver; // Private, true if a touch has entered and NOT left its bounding circle yet
 	Circle touchableBounds;
+	
+	// Selection circle blinking vars
+	BOOL isBlinkingSelectionCircle;
+	int blinkingSelectionCircleTimer;
 	
 	// True if the structure should be checked for ships/structures in it's area
 	BOOL isCheckedForRadialEffect;
@@ -44,6 +51,9 @@
 
 - (Circle)effectRadiusCircle;
 - (void)objectEnteredEffectRadius:(TouchableObject*)other;
+
+// Blinks the selection circle around the object
+- (void)blinkSelectionCircle;
 
 // Returns YES if the object is destroyed because of the attack
 - (BOOL)attackedByEnemy:(TouchableObject*)enemy withDamage:(int)damage;

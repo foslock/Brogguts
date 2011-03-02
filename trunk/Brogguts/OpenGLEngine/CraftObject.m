@@ -293,6 +293,7 @@
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target {
 	[self setClosestEnemyObject:target];
+	[target blinkSelectionCircle];
 	friendlyAIState = kFriendlyAIStateAttacking;
 	NSArray* newPath = [[self.currentScene
 						 collisionManager]

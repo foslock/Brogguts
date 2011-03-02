@@ -45,6 +45,7 @@
 		if (enemy) {
 			for (CraftObject* craft in squadCraft) {
 				[craft setPriorityEnemyTarget:enemy];
+				[craft blinkSelectionCircle];
 			}
 		}
 		return YES;

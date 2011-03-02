@@ -42,6 +42,9 @@
 		6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */; };
 		6F2CB879131D5ED6001A10E3 /* CamelCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */; };
 		6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB894131D61DF001A10E3 /* craftcamel.png */; };
+		6F2CB91D131DD3CF001A10E3 /* RatCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB91C131DD3CF001A10E3 /* RatCraftObject.m */; };
+		6F2CB920131DD42A001A10E3 /* SpiderCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */; };
+		6F2CB923131DD452001A10E3 /* EagleCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB922131DD452001A10E3 /* EagleCraftObject.m */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -154,6 +157,12 @@
 		6F2CB877131D5ED6001A10E3 /* CamelCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamelCraftObject.h; sourceTree = "<group>"; };
 		6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamelCraftObject.m; sourceTree = "<group>"; };
 		6F2CB894131D61DF001A10E3 /* craftcamel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftcamel.png; sourceTree = "<group>"; };
+		6F2CB91B131DD3CF001A10E3 /* RatCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RatCraftObject.h; sourceTree = "<group>"; };
+		6F2CB91C131DD3CF001A10E3 /* RatCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RatCraftObject.m; sourceTree = "<group>"; };
+		6F2CB91E131DD42A001A10E3 /* SpiderCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpiderCraftObject.h; sourceTree = "<group>"; };
+		6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpiderCraftObject.m; sourceTree = "<group>"; };
+		6F2CB921131DD452001A10E3 /* EagleCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EagleCraftObject.h; sourceTree = "<group>"; };
+		6F2CB922131DD452001A10E3 /* EagleCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EagleCraftObject.m; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -441,6 +450,12 @@
 			children = (
 				6F2CB877131D5ED6001A10E3 /* CamelCraftObject.h */,
 				6F2CB878131D5ED6001A10E3 /* CamelCraftObject.m */,
+				6F2CB91B131DD3CF001A10E3 /* RatCraftObject.h */,
+				6F2CB91C131DD3CF001A10E3 /* RatCraftObject.m */,
+				6F2CB91E131DD42A001A10E3 /* SpiderCraftObject.h */,
+				6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */,
+				6F2CB921131DD452001A10E3 /* EagleCraftObject.h */,
+				6F2CB922131DD452001A10E3 /* EagleCraftObject.m */,
 			);
 			name = "Advanced Craft";
 			sourceTree = "<group>";
@@ -828,6 +843,9 @@
 				6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */,
 				6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */,
 				6F2CB879131D5ED6001A10E3 /* CamelCraftObject.m in Sources */,
+				6F2CB91D131DD3CF001A10E3 /* RatCraftObject.m in Sources */,
+				6F2CB920131DD42A001A10E3 /* SpiderCraftObject.m in Sources */,
+				6F2CB923131DD452001A10E3 /* EagleCraftObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
