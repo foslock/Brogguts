@@ -30,6 +30,8 @@
 		effectRadius = objectImage.imageSize.width / 2;
 		closestEnemyObject = nil;
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
+		isBlinkingSelectionCircle = NO;
+		blinkingSelectionCircleTimer = 0;
 	}
 	return self;
 }
@@ -48,6 +50,41 @@
 	tempBoundingCircle.y = objectLocation.y;
 	tempBoundingCircle.radius = effectRadius;
 	return tempBoundingCircle;
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+	if (isBlinkingSelectionCircle) {
+		if (blinkingSelectionCircleTimer > 0) {
+			blinkingSelectionCircleTimer--;
+			if (blinkingSelectionCircleTimer <= 0) {
+				isBlinkingSelectionCircle = NO;
+				blinkingSelectionCircleTimer = 0;
+			}
+		}
+	}
+	[super updateObjectLogicWithDelta:aDelta];
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
+	if (isBlinkingSelectionCircle) {
+		int modTime = blinkingSelectionCircleTimer % CIRCLE_BLINK_FREQUENCY;
+		if (modTime < (CIRCLE_BLINK_FREQUENCY / 2)) {
+			if (objectAlliance == kAllianceFriendly) {
+				glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+			} else {
+				glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+			}
+			enablePrimitiveDraw();
+			drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
+			disablePrimitiveDraw();
+		}
+	}
+}
+
+- (void)blinkSelectionCircle {
+	isBlinkingSelectionCircle = YES;
+	blinkingSelectionCircleTimer = CIRCLE_BLINK_FRAMES;
 }
 
 - (void)targetedByEnemy:(TouchableObject*)enemy {

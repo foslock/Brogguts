@@ -272,12 +272,8 @@
 								<string>6F8B8E08130C8322009CD1BF</string>
 								<string>6F2CADA313171EB3001A10E3</string>
 								<string>6F2CB869131D5D6D001A10E3</string>
-								<string>6F2CAD38131714E0001A10E3</string>
-								<string>6F2CADB713171F37001A10E3</string>
-								<string>6F2CADB813171F52001A10E3</string>
 								<string>6FE758B01302FFE400A3C6EF</string>
 								<string>6F8B8CF1130B5867009CD1BF</string>
-								<string>6F2CAE6213172DA1001A10E3</string>
 								<string>6FCAC71B12F7CDE200662BDA</string>
 								<string>6FCACA0A12F870D500662BDA</string>
 								<string>6FCAC72812F7CE4000662BDA</string>
@@ -291,13 +287,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>52</integer>
-									<integer>50</integer>
+									<integer>6</integer>
+									<integer>3</integer>
+									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 575}, {262, 980}}</string>
+							<string>{{0, 0}, {262, 980}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -332,7 +329,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>6F97E89112EF392900CF1EA4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>BroggutScene.m</string>
+								<string>TouchableObject.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -340,11 +337,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>6F97E89212EF392900CF1EA4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>BroggutScene.m</string>
+										<string>TouchableObject.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>6F2CB91A131D6DDA001A10E3</string>
+										<string>6F2CB95D131DD92B001A10E3</string>
 										<key>history</key>
 										<array>
 											<string>6FCACA4812F8D40D00662BDA</string>
@@ -403,7 +400,6 @@
 											<string>6F2CB3B81319FB3F001A10E3</string>
 											<string>6F2CB3DE1319FF9F001A10E3</string>
 											<string>6F2CB3DF1319FF9F001A10E3</string>
-											<string>6F2CB3E01319FF9F001A10E3</string>
 											<string>6F2CB41B131A07FC001A10E3</string>
 											<string>6F2CB41C131A07FC001A10E3</string>
 											<string>6F2CB536131AC9A8001A10E3</string>
@@ -427,7 +423,6 @@
 											<string>6F2CB646131AFC4B001A10E3</string>
 											<string>6F2CB69E131B6AF3001A10E3</string>
 											<string>6F2CB69F131B6AF3001A10E3</string>
-											<string>6F2CB6C7131C5919001A10E3</string>
 											<string>6F2CB6F9131C6837001A10E3</string>
 											<string>6F2CB7B2131C7D5D001A10E3</string>
 											<string>6F2CB7B3131C7D5D001A10E3</string>
@@ -440,35 +435,43 @@
 											<string>6F2CB817131D4DCD001A10E3</string>
 											<string>6F2CB818131D4DCD001A10E3</string>
 											<string>6F2CB819131D4DCD001A10E3</string>
-											<string>6F2CB859131D5BCE001A10E3</string>
-											<string>6F2CB85A131D5BCE001A10E3</string>
-											<string>6F2CB85C131D5BCE001A10E3</string>
 											<string>6F2CB85D131D5BCE001A10E3</string>
 											<string>6F2CB86A131D5DB2001A10E3</string>
 											<string>6F2CB86E131D5DB2001A10E3</string>
-											<string>6F2CB870131D5DB2001A10E3</string>
-											<string>6F2CB882131D6020001A10E3</string>
 											<string>6F2CB88F131D617F001A10E3</string>
 											<string>6F2CB89F131D6383001A10E3</string>
 											<string>6F2CB8A1131D6383001A10E3</string>
-											<string>6F2CB8A3131D6383001A10E3</string>
-											<string>6F2CB8A8131D6383001A10E3</string>
-											<string>6F2CB8B1131D6476001A10E3</string>
 											<string>6F2CB8B3131D6476001A10E3</string>
 											<string>6F2CB8E7131D6933001A10E3</string>
-											<string>6F2CB8E8131D6933001A10E3</string>
-											<string>6F2CB8E9131D6933001A10E3</string>
-											<string>6F2CB8EA131D6933001A10E3</string>
-											<string>6F2CB8EB131D6933001A10E3</string>
 											<string>6F2CB8EC131D6933001A10E3</string>
-											<string>6F2CB901131D6CBC001A10E3</string>
-											<string>6F2CB902131D6CBC001A10E3</string>
 											<string>6F2CB903131D6CBC001A10E3</string>
 											<string>6F2CB904131D6CBC001A10E3</string>
 											<string>6F2CB905131D6CBC001A10E3</string>
 											<string>6F2CB90F131D6CEF001A10E3</string>
 											<string>6F2CB914131D6D04001A10E3</string>
-											<string>6F2CB918131D6D06001A10E3</string>
+											<string>6F2CB928131DD5C9001A10E3</string>
+											<string>6F2CB929131DD5C9001A10E3</string>
+											<string>6F2CB92A131DD5C9001A10E3</string>
+											<string>6F2CB92B131DD5C9001A10E3</string>
+											<string>6F2CB92D131DD5C9001A10E3</string>
+											<string>6F2CB92F131DD5C9001A10E3</string>
+											<string>6F2CB930131DD5C9001A10E3</string>
+											<string>6F2CB931131DD5C9001A10E3</string>
+											<string>6F2CB932131DD5C9001A10E3</string>
+											<string>6F2CB933131DD5C9001A10E3</string>
+											<string>6F2CB934131DD5C9001A10E3</string>
+											<string>6F2CB935131DD5C9001A10E3</string>
+											<string>6F2CB936131DD5C9001A10E3</string>
+											<string>6F2CB937131DD5C9001A10E3</string>
+											<string>6F2CB938131DD5C9001A10E3</string>
+											<string>6F2CB944131DD795001A10E3</string>
+											<string>6F2CB948131DD795001A10E3</string>
+											<string>6F2CB949131DD795001A10E3</string>
+											<string>6F2CB94A131DD795001A10E3</string>
+											<string>6F2CB950131DD815001A10E3</string>
+											<string>6F2CB951131DD815001A10E3</string>
+											<string>6F2CB952131DD815001A10E3</string>
+											<string>6F2CB953131DD815001A10E3</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -787,6 +790,7 @@
 	<array>
 		<string>6F2CB6D4131C5919001A10E3</string>
 		<string>6F2CB6D5131C5919001A10E3</string>
+		<string>/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/OpenGLEngine/OpenGLEngine.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>-2 139 1697 1039 0 0 1920 1178 </string>

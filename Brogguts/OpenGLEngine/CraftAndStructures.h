@@ -1,10 +1,13 @@
 
 // Craft
-#import "AntCraftObject.h"
+#import "AntCraftObject.h" // Basic
 #import "MothCraftObject.h"
 #import "BeetleCraftObject.h"
 #import "MonarchCraftObject.h"
-#import "CamelCraftObject.h"
+#import "CamelCraftObject.h" // Advanced
+#import "RatCraftObject.h"
+#import "SpiderCraftObject.h"
+#import "EagleCraftObject.h"
 
 // Structures
 #import "BlockStructureObject.h"
