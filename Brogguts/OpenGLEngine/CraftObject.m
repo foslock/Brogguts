@@ -13,7 +13,7 @@
 #import "StructureObject.h"
 #import "CollisionManager.h"
 #import "ParticleSingleton.h"
-#import "MonarchCraftObject.h"
+#import "CraftAndStructures.h"
 
 @implementation CraftObject
 @synthesize attributePlayerCargoCapacity;
@@ -390,13 +390,16 @@
 	}
 	
 	// If too far away to attack, and in ATTACKING state, move towards your target
-	if (attackingAIState == kAttackingAIStateAttacking) {
+	if (attackingAIState == kAttackingAIStateAttacking && !([self isKindOfClass:[SpiderDroneObject class]])) {
 		if (!isFollowingPath && closestEnemyObject) {
-			if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
-				NSArray* newPath = [[self.currentScene
-									 collisionManager]
-									pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO];
-				[self followPath:newPath isLooped:NO];
+			if (movingAIState == kMovingAIStateStill) {
+				[self setMovingAIState:kMovingAIStateMoving];
+				if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
+					NSArray* newPath = [[self.currentScene
+										 collisionManager]
+										pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO];
+					[self followPath:newPath isLooped:NO];
+				}
 			}
 		}
 	}
