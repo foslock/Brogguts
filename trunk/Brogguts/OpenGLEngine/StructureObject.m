@@ -163,7 +163,7 @@
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
 		CGPoint moveTowardsPoint = [pointValue CGPointValue];
 		// If the structure has reached the point...
-		if (AreCGPointsEqual(objectLocation, moveTowardsPoint)) {
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, 0)) {
 			pathPointNumber++;
 		}
 		if (pathPointNumber < [pathPointArray count]) {
@@ -175,10 +175,11 @@
 			} else {
 				isFollowingPath = NO;
 				hasCurrentPathFinished = YES;
-				friendlyAIState = kFriendlyAIStateStill;
+				[self setMovingAIState:kMovingAIStateStill];
 				if (isTraveling) {
 					isTraveling = NO;
 					isTouchable = YES;
+					[[self.currentScene collisionManager] setPathNodeIsOpen:NO atLocation:objectLocation];
 				}
 			}
 		}
@@ -242,14 +243,14 @@
 - (void)stopFollowingCurrentPath {
 	isFollowingPath = NO;
 	hasCurrentPathFinished = YES;
-	friendlyAIState = kFriendlyAIStateStill;
+	[self setMovingAIState:kMovingAIStateStill];
 }
 
 - (void)resumeFollowingCurrentPath {
 	if (pathPointArray && [pathPointArray count] != 0) {
 		isFollowingPath = YES;
 		hasCurrentPathFinished = NO;
-		friendlyAIState = kFriendlyAIStateMoving;
+		[self setMovingAIState:kMovingAIStateMoving];
 	}
 }
 

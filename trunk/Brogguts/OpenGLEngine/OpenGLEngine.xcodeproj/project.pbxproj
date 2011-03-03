@@ -45,11 +45,15 @@
 		6F2CB91D131DD3CF001A10E3 /* RatCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB91C131DD3CF001A10E3 /* RatCraftObject.m */; };
 		6F2CB920131DD42A001A10E3 /* SpiderCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */; };
 		6F2CB923131DD452001A10E3 /* EagleCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB922131DD452001A10E3 /* EagleCraftObject.m */; };
+		6F2CB9A5131EB7F3001A10E3 /* SpiderDroneObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */; };
+		6F2CB9D3131EE517001A10E3 /* BroggutsSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
 		6F6A2F7013019BE8002A4201 /* StarSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2F6F13019BE8002A4201 /* StarSingleton.m */; };
 		6F6A2FAD1301A782002A4201 /* smallbroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2FAC1301A782002A4201 /* smallbroggut.png */; };
+		6F8ACF52131F109000B67BB5 /* craftspider.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8ACF50131F109000B67BB5 /* craftspider.png */; };
+		6F8ACF53131F109000B67BB5 /* craftspiderdrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8ACF51131F109000B67BB5 /* craftspiderdrone.png */; };
 		6F8B8231130678BD009CD1BF /* BaseCampSaved.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8230130678BD009CD1BF /* BaseCampSaved.plist */; };
 		6F8B843013072035009CD1BF /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B842F13072035009CD1BF /* Default-Landscape.png */; };
 		6F8B859E13074552009CD1BF /* SideBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B859D13074552009CD1BF /* SideBarController.m */; };
@@ -163,6 +167,10 @@
 		6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpiderCraftObject.m; sourceTree = "<group>"; };
 		6F2CB921131DD452001A10E3 /* EagleCraftObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EagleCraftObject.h; sourceTree = "<group>"; };
 		6F2CB922131DD452001A10E3 /* EagleCraftObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EagleCraftObject.m; sourceTree = "<group>"; };
+		6F2CB9A3131EB7F3001A10E3 /* SpiderDroneObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpiderDroneObject.h; sourceTree = "<group>"; };
+		6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpiderDroneObject.m; sourceTree = "<group>"; };
+		6F2CB9D1131EE517001A10E3 /* BroggutsSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggutsSideBar.h; sourceTree = "<group>"; };
+		6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BroggutsSideBar.m; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -171,6 +179,8 @@
 		6F6A2F6E13019BE8002A4201 /* StarSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarSingleton.h; sourceTree = "<group>"; };
 		6F6A2F6F13019BE8002A4201 /* StarSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarSingleton.m; sourceTree = "<group>"; };
 		6F6A2FAC1301A782002A4201 /* smallbroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smallbroggut.png; sourceTree = "<group>"; };
+		6F8ACF50131F109000B67BB5 /* craftspider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspider.png; sourceTree = "<group>"; };
+		6F8ACF51131F109000B67BB5 /* craftspiderdrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspiderdrone.png; sourceTree = "<group>"; };
 		6F8B8230130678BD009CD1BF /* BaseCampSaved.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCampSaved.plist; sourceTree = "<group>"; };
 		6F8B842F13072035009CD1BF /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		6F8B859C13074552009CD1BF /* SideBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarController.h; sourceTree = "<group>"; };
@@ -425,6 +435,8 @@
 			children = (
 				6F2CAE5F13172D9A001A10E3 /* MainMenuSideBar.h */,
 				6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */,
+				6F2CB9D1131EE517001A10E3 /* BroggutsSideBar.h */,
+				6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */,
 				6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */,
 				6F2CB470131A24B9001A10E3 /* CraftSideBar.m */,
 				6F2CB5DE131AED6D001A10E3 /* StructureSideBar.h */,
@@ -454,6 +466,8 @@
 				6F2CB91C131DD3CF001A10E3 /* RatCraftObject.m */,
 				6F2CB91E131DD42A001A10E3 /* SpiderCraftObject.h */,
 				6F2CB91F131DD42A001A10E3 /* SpiderCraftObject.m */,
+				6F2CB9A3131EB7F3001A10E3 /* SpiderDroneObject.h */,
+				6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */,
 				6F2CB921131DD452001A10E3 /* EagleCraftObject.h */,
 				6F2CB922131DD452001A10E3 /* EagleCraftObject.m */,
 			);
@@ -533,6 +547,8 @@
 		6F8B878D13078E68009CD1BF /* Craft */ = {
 			isa = PBXGroup;
 			children = (
+				6F8ACF50131F109000B67BB5 /* craftspider.png */,
+				6F8ACF51131F109000B67BB5 /* craftspiderdrone.png */,
 				6F2CB894131D61DF001A10E3 /* craftcamel.png */,
 				6F2CB139131973A9001A10E3 /* craftmonarch.png */,
 				6F12FDE813060544003CDDD6 /* craftant.png */,
@@ -785,6 +801,8 @@
 				6F2CB3491319F592001A10E3 /* structureturret.png in Resources */,
 				6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */,
 				6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */,
+				6F8ACF52131F109000B67BB5 /* craftspider.png in Resources */,
+				6F8ACF53131F109000B67BB5 /* craftspiderdrone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +864,8 @@
 				6F2CB91D131DD3CF001A10E3 /* RatCraftObject.m in Sources */,
 				6F2CB920131DD42A001A10E3 /* SpiderCraftObject.m in Sources */,
 				6F2CB923131DD452001A10E3 /* EagleCraftObject.m in Sources */,
+				6F2CB9A5131EB7F3001A10E3 /* SpiderDroneObject.m in Sources */,
+				6F2CB9D3131EE517001A10E3 /* BroggutsSideBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

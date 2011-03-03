@@ -14,6 +14,7 @@
 
 // #define MULTIPLAYER
 // #define BOUNDING_DEBUG
+// #define DRAW_PATH
 #define STARS
 #define COLLISIONS
 #define GRID
@@ -75,6 +76,7 @@ enum ObjectIDs { // How objects are indentified
 	kObjectCraftCamelID,
 	kObjectCraftRatID,
 	kObjectCraftSpiderID,
+	kObjectCraftSpiderDroneID,
 	kObjectCraftEagleID,
 	kObjectStructureBaseStationID,
 	kObjectStructureBlockID,
@@ -182,7 +184,7 @@ enum TheCamelValues {
 	kCraftCamelUpgradeCost = 100, // brogguts
 	kCraftCamelUpgradeTime = 30, // seconds
 	kCraftCamelCostBrogguts = 400,
-	kCraftCamelCostMetal = 0, // 40
+	kCraftCamelCostMetal = 40,
 	kCraftCamelEngines = 3,
 	kCraftCamelWeapons = 2,
 	kCraftCamelAttackRange = 512, // pixels
@@ -229,7 +231,7 @@ enum TheSpiderValues {
 	kCraftSpiderAttackRange = 512, // pixels
 	kCraftSpiderAttackCooldown = 0, // frames for weapon to recharge
 	kCraftSpiderSpecialCoolDown = 500, // frames for special to recharge
-	kCraftSpiderHull = 50,
+	kCraftSpiderHull = 100,
 	// Special Values
 	kCraftSpiderEnginesBonus = 2,
 };
@@ -243,9 +245,9 @@ enum TheSpiderDroneValues {
 	kCraftSpiderDroneUpgradeTime = 0, // seconds
 	kCraftSpiderDroneCostBrogguts = 100,
 	kCraftSpiderDroneCostMetal = 10,
-	kCraftSpiderDroneEngines = 5,
+	kCraftSpiderDroneEngines = 6,
 	kCraftSpiderDroneWeapons = 1,
-	kCraftSpiderDroneAttackRange = 64, // pixels
+	kCraftSpiderDroneAttackRange = 32, // pixels
 	kCraftSpiderDroneAttackCooldown = 30, // frames for weapon to recharge
 	kCraftSpiderDroneSpecialCoolDown = 0, // frames for special to recharge
 	kCraftSpiderDroneHull = 10,
@@ -300,7 +302,7 @@ enum TheBlockValues {
 	kStructureBlockUpgradeTime = 0, // seconds
 	kStructureBlockCostBrogguts = 100,
 	kStructureBlockCostMetal = 0,
-	kStructureBlockMovingTime = 8, // seconds to move to active spot
+	kStructureBlockMovingTime = 1, // seconds to move to active spot
 	kStructureBlockHull = 60,
 	// Special Values
 };
@@ -405,12 +407,15 @@ enum TheFixerValues {
 // Gameplay Specific Information
 //
 
-enum FriendlyAIStates {
-	kFriendlyAIStateMining,
-	kFriendlyAIStateMoving,
-	kFriendlyAIStateStill,
-	kFriendlyAIStateAttacking,
-	kFriendlyAIStateBuilding,
+enum MovingAIStates {
+	kMovingAIStateStill,
+	kMovingAIStateMoving,
+	kMovingAIStateMining,
+};
+
+enum AttackingAIStates {
+	kAttackingAIStateNeutral,
+	kAttackingAIStateAttacking,
 };
 
 enum BroggutDataValues {

@@ -86,8 +86,8 @@ static inline float GetDistanceBetweenPoints(CGPoint startLocation, CGPoint endL
 	return sqrtf((dx * dx) + (dy * dy));
 }
 
-static inline BOOL AreCGPointsEqual(CGPoint p1, CGPoint p2) {
-	return ( ((int)p1.x == (int)p2.x) && ((int)p1.y == (int)p2.y) );
+static inline BOOL AreCGPointsEqual(CGPoint p1, CGPoint p2, float maxDifference) {
+	return ( (fabs(p1.x - p2.x) < maxDifference) && (fabs(p1.y - p2.y) < maxDifference) );
 }
 
 static inline BOOL CircleContainsPoint(Circle circle, CGPoint point) {

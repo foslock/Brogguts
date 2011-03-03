@@ -86,17 +86,17 @@ enum MiningStates {
 - (void)startMiningBroggutWithLocation:(CGPoint)location {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
 	if (broggut && broggut->broggutValue != -1 && broggut->broggutEdge != kMediumBroggutEdgeNone) {
-		NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
+		// NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
 		CGPoint broggutLoc = [[self.currentScene collisionManager] getBroggutLocationForID:broggut->broggutID];
 		miningBroggutID = broggut->broggutID;
 		miningLocation = broggutLoc;
 		NSArray* pathArray = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:broggutLoc], nil];
 		[self followPath:pathArray isLooped:NO];
 		miningState = kMiningStateApproaching;
-		friendlyAIState = kFriendlyAIStateMining;
+		[self setMovingAIState:kMovingAIStateMining];
 	} else {
 		miningState = kMiningStateNone;
-		friendlyAIState = kFriendlyAIStateStill;
+		[self setMovingAIState:kMovingAIStateStill];
 	}
 }
 
@@ -117,6 +117,7 @@ enum MiningStates {
 - (void)returnBroggutsHome {
 	NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
 	[self followPath:homePath isLooped:NO];
+	[self setMovingAIState:kMovingAIStateMining];
 	miningState = kMiningStateReturning;
 }
 
@@ -131,6 +132,7 @@ enum MiningStates {
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+	[super updateObjectLogicWithDelta:aDelta];
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -139,6 +141,7 @@ enum MiningStates {
 	
 	// When arrived at broggut, start mining
 	if (hasCurrentPathFinished && miningState == kMiningStateMining) {
+		[self setMovingAIState:kMovingAIStateMining];
 		// Harvest some brogguts!
 		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:miningLocation];
 		if (broggut->broggutValue > 0) {
@@ -162,8 +165,6 @@ enum MiningStates {
 			[self returnBroggutsHome];
 		}
 	}
-	
-	[super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {

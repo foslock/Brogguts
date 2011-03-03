@@ -41,7 +41,7 @@
 
 - (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
 	if ([super performSpecialAbilityAtLocation:location]) {
-		TouchableObject* enemy = [self.currentScene attemptToAttackCraftAtLocation:location];
+		TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:location];
 		if (enemy) {
 			for (CraftObject* craft in squadCraft) {
 				[craft setPriorityEnemyTarget:enemy];
@@ -109,7 +109,7 @@
 	if (numberOfShipsInSquad == 1) {
 		
 		CraftObject* craft1 = [squadCraft objectAtIndex:0];
-		if (craft1.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft1.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir = DEGREES_TO_RADIANS(objectRotation + 90);
 			float xPos = location.x + (cosf(radDir) * SQUAD_CRAFT_DISTANCE);
 			float yPos = location.y + (sinf(radDir) * SQUAD_CRAFT_DISTANCE);
@@ -121,7 +121,7 @@
 	} else if (numberOfShipsInSquad == 2) {
 		
 		CraftObject* craft1 = [squadCraft objectAtIndex:0];
-		if (craft1.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft1.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir1 = DEGREES_TO_RADIANS(objectRotation + 90);
 			float xPos1 = location.x + (cosf(radDir1) * SQUAD_CRAFT_DISTANCE);
 			float yPos1 = location.y + (sinf(radDir1) * SQUAD_CRAFT_DISTANCE);
@@ -131,7 +131,7 @@
 		}
 		
 		CraftObject* craft2 = [squadCraft objectAtIndex:1];
-		if (craft2.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft2.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir2 = DEGREES_TO_RADIANS(objectRotation + 270);
 			float xPos2 = location.x + (cosf(radDir2) * SQUAD_CRAFT_DISTANCE);
 			float yPos2 = location.y + (sinf(radDir2) * SQUAD_CRAFT_DISTANCE);
@@ -143,7 +143,7 @@
 	} else if (numberOfShipsInSquad == 3) {
 		
 		CraftObject* craft1 = [squadCraft objectAtIndex:0];
-		if (craft1.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft1.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir1 = DEGREES_TO_RADIANS(objectRotation);
 			float xPos1 = location.x + (cosf(radDir1) * SQUAD_CRAFT_DISTANCE);
 			float yPos1 = location.y + (sinf(radDir1) * SQUAD_CRAFT_DISTANCE);
@@ -153,7 +153,7 @@
 		}
 		
 		CraftObject* craft2 = [squadCraft objectAtIndex:1];
-		if (craft2.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft2.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir2 = DEGREES_TO_RADIANS(objectRotation + 120);
 			float xPos2 = location.x + (cosf(radDir2) * SQUAD_CRAFT_DISTANCE);
 			float yPos2 = location.y + (sinf(radDir2) * SQUAD_CRAFT_DISTANCE);
@@ -163,7 +163,7 @@
 		}
 		
 		CraftObject* craft3 = [squadCraft objectAtIndex:2];
-		if (craft3.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft3.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir3 = DEGREES_TO_RADIANS(objectRotation + 240);
 			float xPos3 = location.x + (cosf(radDir3) * SQUAD_CRAFT_DISTANCE);
 			float yPos3 = location.y + (sinf(radDir3) * SQUAD_CRAFT_DISTANCE);
@@ -175,7 +175,7 @@
 	} else if (numberOfShipsInSquad == 4) {
 		
 		CraftObject* craft1 = [squadCraft objectAtIndex:0];
-		if (craft1.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft1.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir1 = DEGREES_TO_RADIANS(objectRotation + 45);
 			float xPos1 = location.x + (cosf(radDir1) * SQUAD_CRAFT_DISTANCE);
 			float yPos1 = location.y + (sinf(radDir1) * SQUAD_CRAFT_DISTANCE);
@@ -185,7 +185,7 @@
 		}
 		
 		CraftObject* craft2 = [squadCraft objectAtIndex:1];
-		if (craft2.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft2.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir2 = DEGREES_TO_RADIANS(objectRotation + 135);
 			float xPos2 = location.x + (cosf(radDir2) * SQUAD_CRAFT_DISTANCE);
 			float yPos2 = location.y + (sinf(radDir2) * SQUAD_CRAFT_DISTANCE);
@@ -195,7 +195,7 @@
 		}
 		
 		CraftObject* craft3 = [squadCraft objectAtIndex:2];
-		if (craft3.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft3.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir3 = DEGREES_TO_RADIANS(objectRotation + 225);
 			float xPos3 = location.x + (cosf(radDir3) * SQUAD_CRAFT_DISTANCE);
 			float yPos3 = location.y + (sinf(radDir3) * SQUAD_CRAFT_DISTANCE);
@@ -205,7 +205,7 @@
 		}
 		
 		CraftObject* craft4 = [squadCraft objectAtIndex:3];
-		if (craft4.friendlyAIState != kFriendlyAIStateAttacking) {
+		if (craft4.attackingAIState != kAttackingAIStateAttacking) {
 			float radDir4 = DEGREES_TO_RADIANS(objectRotation + 315);
 			float xPos4 = location.x + (cosf(radDir4) * SQUAD_CRAFT_DISTANCE);
 			float yPos4 = location.y + (sinf(radDir4) * SQUAD_CRAFT_DISTANCE);

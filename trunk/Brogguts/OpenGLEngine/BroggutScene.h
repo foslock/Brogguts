@@ -73,6 +73,7 @@
 	
 	// Display of brogguts
 	TextObject* broggutCounter;
+	TextObject* metalCounter;
 	
 	// The current location at which the screen is being touched
 	CGPoint currentTouchLocation;
@@ -132,6 +133,8 @@
 @property (nonatomic, assign) CGRect visibleScreenBounds;
 @property (nonatomic, assign) BOOL isShowingOverview;
 @property (nonatomic, assign) SideBarController* sideBar;
+@property (readonly) TextObject* broggutCounter;
+@property (readonly) TextObject* metalCounter;
 
 #pragma mark -
 #pragma mark Selectors
@@ -173,7 +176,7 @@
 - (void)updateSceneWithDelta:(float)aDelta;
 
 // Returns an enemy ship at the location
-- (TouchableObject*)attemptToAttackCraftAtLocation:(CGPoint)location;
+- (TouchableObject*)attemptToGetEnemyAtLocation:(CGPoint)location;
 
 // Called when the player is trying to switch controlling ships
 - (BOOL)attemptToControlCraftAtLocation:(CGPoint)location;

@@ -231,7 +231,6 @@ static GameController* sharedGameController = nil;
 	
 	if (baseCamp) {
 		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
-		self.currentScene = newScene;
 	}
 	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
 	
@@ -242,7 +241,6 @@ static GameController* sharedGameController = nil;
 			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
 			CGPoint currentPoint = CGPointMake(currentX, currentY);
 			int straightIndex = i + (j * cellsWide);
-			PathNode* currentNode = [[newScene collisionManager] pathNodeForRow:j forColumn:i];
 			NSArray* currentArray = [array objectAtIndex:straightIndex + 5];
 			int idOfObject = [[currentArray objectAtIndex:0] intValue];
 			int objectType = 0;
@@ -264,7 +262,7 @@ static GameController* sharedGameController = nil;
 					broggut->broggutValue = [[currentArray objectAtIndex:2] intValue];
 					if (broggut->broggutValue != -1) {
 						[[newScene collisionManager] addMediumBroggut];
-						currentNode->isOpen = NO;
+						[[newScene collisionManager] setPathNodeIsOpen:NO atLocation:currentPoint];
 					}
 					break;
 				case kObjectTypeCraft:
@@ -383,7 +381,7 @@ static GameController* sharedGameController = nil;
 				case kObjectTypeStructure:
 					// Create a structure at that location with the appropriate type
 					objectType = [[currentArray objectAtIndex:1] intValue];
-					currentNode->isOpen = NO;
+					[[newScene collisionManager] setPathNodeIsOpen:NO atLocation:currentPoint];
 					switch (objectType) {
 						case kObjectStructureBaseStationID: {
 							BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]

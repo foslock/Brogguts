@@ -17,7 +17,7 @@ static int globalUniqueID = 0;
 
 @synthesize objectRotation;
 @synthesize renderLayer;
-@synthesize isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
+@synthesize isHidden, isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
 @synthesize hasBeenCheckedForCollisions;
@@ -41,6 +41,7 @@ static int globalUniqueID = 0;
 		objectAlliance = kAllianceNeutral;
 		objectVelocity = Vector2fZero;
 		rotationSpeed = 0.0f;
+		isHidden = NO;							// Defaults to being drawn
 		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
 		hasBeenCheckedForCollisions = NO;		// Var that is used to make sure duplicate collisions aren't checked
 		isCheckedForMultipleCollisions = NO;	// Set to YES if you want multiple objects checking collisions with this one.
@@ -88,7 +89,7 @@ static int globalUniqueID = 0;
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	if (objectImage) {
+	if (objectImage && !isHidden) {
 		[objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
 #ifdef BOUNDING_DEBUG
 		enablePrimitiveDraw();
@@ -101,7 +102,7 @@ static int globalUniqueID = 0;
 }
 
 - (void)objectWasDestroyed {
-	NSLog(@"Object (%i) was destroyed", uniqueObjectID);
+	// NSLog(@"Object (%i) was destroyed", uniqueObjectID);
 }
 
 @end

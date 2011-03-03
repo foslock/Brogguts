@@ -20,6 +20,7 @@
 	int renderLayer;
 	float objectRotation;
 	float rotationSpeed;
+	BOOL isHidden;
 	BOOL isCheckedForCollisions;
 	BOOL isCheckedForMultipleCollisions;
 	BOOL hasBeenCheckedForCollisions;
@@ -41,6 +42,7 @@
 @property (nonatomic, assign) int renderLayer;
 @property (nonatomic, assign) float rotationSpeed;
 @property (nonatomic, assign) float objectRotation;
+@property (nonatomic, assign) BOOL isHidden;
 @property (nonatomic, assign) BOOL isCheckedForCollisions;
 @property (nonatomic, assign) BOOL isCheckedForMultipleCollisions;
 @property (nonatomic, assign) BOOL hasBeenCheckedForCollisions;

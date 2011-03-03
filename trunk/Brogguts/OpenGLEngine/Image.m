@@ -49,6 +49,7 @@ NSString* kObjectCraftMonarchSprite = @"craftmonarch.png";
 NSString* kObjectCraftCamelSprite = @"craftcamel.png";
 NSString* kObjectCraftRatSprite = @"craftrat.png";
 NSString* kObjectCraftSpiderSprite = @"craftspider.png";
+NSString* kObjectCraftSpiderDroneSprite = @"craftspiderdrone.png";
 NSString* kObjectCraftEagleSprite = @"crafteagle.png";
 
 NSString* kObjectStructureBaseStationSprite = @"structurebasestation.png";

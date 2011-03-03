@@ -33,7 +33,7 @@
 - (void)accelerateTowardsLocation:(CGPoint)location {
 	
 	// Are the points equal?
-	if (AreCGPointsEqual(objectLocation, location)) {
+	if (AreCGPointsEqual(objectLocation, location, maxVelocity)) {
 		return;
 	}
 	
