@@ -103,6 +103,17 @@
 			attributeHullCurrent = kCraftSpiderHull;
 			attributeSpecialCooldown = kCraftSpiderSpecialCoolDown;
 			break;
+		case kObjectCraftSpiderDroneID:
+			attributeBroggutCost = kCraftSpiderDroneCostBrogguts;
+			attributeMetalCost = kCraftSpiderDroneCostMetal;
+			attributeEngines = kCraftSpiderDroneEngines;
+			attributeWeaponsDamage = kCraftSpiderDroneWeapons;
+			attributeAttackRange = kCraftSpiderDroneAttackRange;
+			attributeAttackCooldown = kCraftSpiderDroneAttackCooldown;
+			attributeHullCapacity = kCraftSpiderDroneHull;
+			attributeHullCurrent = kCraftSpiderDroneHull;
+			attributeSpecialCooldown = kCraftSpiderDroneSpecialCoolDown;
+			break;
 		case kObjectCraftEagleID:
 			attributeBroggutCost = kCraftEagleCostBrogguts;
 			attributeMetalCost = kCraftEagleCostMetal;
@@ -117,6 +128,7 @@
 		default:
 			break;
 	}
+	maxVelocity = attributeEngines; // Set the maximum velocity
 }
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling {
@@ -143,6 +155,9 @@
 		case kObjectCraftSpiderID:
 			image = [[Image alloc] initWithImageNamed:kObjectCraftSpiderSprite filter:GL_LINEAR];
 			break;
+		case kObjectCraftSpiderDroneID:
+			image = [[Image alloc] initWithImageNamed:kObjectCraftSpiderDroneSprite filter:GL_LINEAR];
+			break;
 		case kObjectCraftEagleID:
 			image = [[Image alloc] initWithImageNamed:kObjectCraftEagleSprite filter:GL_LINEAR];
 			break;
@@ -163,7 +178,8 @@
 		pathPointNumber = 0;
 		isFollowingPath = NO;
 		hasCurrentPathFinished = YES;
-		friendlyAIState = kFriendlyAIStateStill;
+		[self setMovingAIState:kMovingAIStateStill];
+		[self setAttackingAIState:kAttackingAIStateNeutral];
 		renderLayer = 0;
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
@@ -203,19 +219,21 @@
 	pathPointNumber = 0;
 	isPathLooped = looped;
 	hasCurrentPathFinished = NO;
+	[self setMovingAIState:kMovingAIStateMoving];
+	// Must reset the state after the follow path call if want to change from moving
 }
 
 - (void)stopFollowingCurrentPath {
 	isFollowingPath = NO;
 	hasCurrentPathFinished = YES;
-	friendlyAIState = kFriendlyAIStateStill;
+	[self setMovingAIState:kMovingAIStateStill];
 }
 
 - (void)resumeFollowingCurrentPath {
 	if (pathPointArray && [pathPointArray count] != 0) {
 		isFollowingPath = YES;
 		hasCurrentPathFinished = NO;
-		friendlyAIState = kFriendlyAIStateMoving;
+		[self setMovingAIState:kMovingAIStateMoving];
 	}
 }
 
@@ -225,19 +243,19 @@
 }
 
 - (void)targetWasDestroyed:(TouchableObject *)target {
-	[super targetWasDestroyed:target];
 	if (target == closestEnemyObject) {
-		if (friendlyAIState == kFriendlyAIStateAttacking) {
-			friendlyAIState = kFriendlyAIStateStill;
-			[self stopFollowingCurrentPath];
+		if (attackingAIState == kAttackingAIStateAttacking) {
+			[self setAttackingAIState:kAttackingAIStateNeutral];
 		}
 	}
+	[super targetWasDestroyed:target];
 }
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
 	[super attackedByEnemy:enemy withDamage:damage];
 	attributeHullCurrent -= damage;
-	if (friendlyAIState == kFriendlyAIStateStill && !isBeingControlled && !isBeingDragged) {
+	if (movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
+		&& !isBeingControlled && !isBeingDragged) {
 		// Move away from the attacker
 		float xDest = objectLocation.x;
 		float yDest = objectLocation.y;
@@ -253,6 +271,7 @@
 		}
 		NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO];
 		[self followPath:newPath isLooped:NO];
+		[self setMovingAIState:kMovingAIStateMoving];
 	}
 	if (attributeHullCurrent <= 0) {
 		destroyNow = YES;
@@ -275,26 +294,20 @@
 }
 
 - (void)attackTarget {
-	if (closestEnemyObject) {
-		if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
-			if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
-				CGPoint enemyPoint = closestEnemyObject.objectLocation;
-				attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
-														enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
-				[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
-				attackCooldownTimer = attributeAttackCooldown;
-				if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
-					[self setClosestEnemyObject:nil];
-				}
-			}
-		}
+	CGPoint enemyPoint = closestEnemyObject.objectLocation;
+	attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
+											enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
+	[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+	attackCooldownTimer = attributeAttackCooldown;
+	if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
+		[self setClosestEnemyObject:nil];
 	}
 }
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target {
 	[self setClosestEnemyObject:target];
 	[target blinkSelectionCircle];
-	friendlyAIState = kFriendlyAIStateAttacking;
+	[self setAttackingAIState:kAttackingAIStateAttacking];
 	NSArray* newPath = [[self.currentScene
 						 collisionManager]
 						pathFrom:objectLocation to:target.objectLocation allowPartial:NO];
@@ -322,7 +335,7 @@
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
 		CGPoint moveTowardsPoint = [pointValue CGPointValue];
 		// If the craft has reached the point...
-		if (AreCGPointsEqual(objectLocation, moveTowardsPoint)) {
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, attributeEngines)) {
 			pathPointNumber++;
 		}
 		if (pathPointNumber < [pathPointArray count]) {
@@ -334,7 +347,7 @@
 			} else {
 				isFollowingPath = NO;
 				hasCurrentPathFinished = YES;
-				friendlyAIState = kFriendlyAIStateStill;
+				[self setMovingAIState:kMovingAIStateStill];
 				if (isTraveling) {
 					isTraveling = NO;
 					isTouchable = YES;
@@ -365,7 +378,27 @@
 	if (attackCooldownTimer > 0) {
 		attackCooldownTimer--;
 	} else {
-		[self attackTarget];
+		if (attributeWeaponsDamage != 0 && attributeAttackCooldown != 0) {
+			if (closestEnemyObject && (movingAIState != kMovingAIStateMining) ) {
+				if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+					if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
+						[self attackTarget];
+					}
+				}
+			}
+		}
+	}
+	
+	// If too far away to attack, and in ATTACKING state, move towards your target
+	if (attackingAIState == kAttackingAIStateAttacking) {
+		if (!isFollowingPath && closestEnemyObject) {
+			if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
+				NSArray* newPath = [[self.currentScene
+									 collisionManager]
+									pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO];
+				[self followPath:newPath isLooped:NO];
+			}
+		}
 	}
 	
 	[super updateObjectLogicWithDelta:aDelta];
@@ -379,7 +412,10 @@
 		} else {
 			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 		}
-		drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
+		// drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
+		Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
+		Color4f unfilled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
+		drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
 	}
 }
 
@@ -389,16 +425,18 @@
 	[self drawHoverSelectionWithScroll:vector];
 	
 	// Draw the laser attack
-	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
-		float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
-		if (width != 0.0f) {
-			if (objectAlliance == kAllianceFriendly)
-				glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
-			if (objectAlliance == kAllianceEnemy)
-				glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
-			glLineWidth(width);
-			drawLine(objectLocation, attackLaserTargetPosition, vector);
-			glLineWidth(1.0f);
+	if (attributeWeaponsDamage != 0) {
+		if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+			float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
+			if (width != 0.0f) {
+				if (objectAlliance == kAllianceFriendly)
+					glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
+				if (objectAlliance == kAllianceEnemy)
+					glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
+				glLineWidth(width);
+				drawLine(objectLocation, attackLaserTargetPosition, vector);
+				glLineWidth(1.0f);
+			}
 		}
 	}
 	
@@ -430,11 +468,25 @@
 		}
 	}
 	
+#ifdef DRAW_PATH
+	if (isFollowingPath) {
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		drawPath(pathPointArray, vector);
+	}
+#endif
+	
 	disablePrimitiveDraw();
 }
 
 - (void)addCargo:(int)cargo {
 	attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo + cargo, 0, attributePlayerCargoCapacity);
+}
+
+- (void)cashInBrogguts {
+	if (attributePlayerCurrentCargo > 0) {
+		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation];
+		attributePlayerCurrentCargo = 0;
+	}
 }
 
 - (void)objectWasDestroyed {
@@ -464,27 +516,28 @@
 	// OVERRIDE ME
 	if (objectAlliance == kAllianceFriendly) {
 		if (isBeingDragged && !CircleContainsPoint(self.boundingCircle, location)) {
-			if (!isBeingControlled && friendlyAIState != kFriendlyAIStateMining) {
+			if (!isBeingControlled && movingAIState != kMovingAIStateMining) {
 				
 				NSArray* newPath = [[self.currentScene
 									 collisionManager]
 									pathFrom:objectLocation to:dragLocation allowPartial:NO];
 				[self followPath:newPath isLooped:NO];
+				[self setMovingAIState:kMovingAIStateMoving];
+				[self setAttackingAIState:kAttackingAIStateNeutral];
 				
-				
-				TouchableObject* enemy = [self.currentScene attemptToAttackCraftAtLocation:dragLocation];
+				TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:dragLocation];
 				if (enemy) {
 					[self setPriorityEnemyTarget:enemy];
 				}
 				
 				if (![self isKindOfClass:[MonarchCraftObject class]]) {
-					 if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
-						 friendlyAIState = kFriendlyAIStateMoving;
-					 }
+					if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
+						[self setMovingAIState:kMovingAIStateMoving];
+					}
 				}
 			} else if (isBeingControlled) {
 				if (![self.currentScene attemptToControlCraftAtLocation:location]) {
-					if (friendlyAIState != kFriendlyAIStateMining)
+					if (movingAIState != kMovingAIStateMining)
 						[self performSpecialAbilityAtLocation:location];
 				}
 			}

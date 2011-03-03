@@ -65,11 +65,14 @@
 
 - (void)addCargo:(int)cargo;
 
+// Called when the target is in range and the cooling systems are ready
 - (void)attackTarget;
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target;
 
 - (BOOL)performSpecialAbilityAtLocation:(CGPoint)location; // Returns YES if the ability was performed
+
+- (void)cashInBrogguts;
 
 - (void)updateCraftLightLocations;
 - (void)updateCraftTurretLocations;

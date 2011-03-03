@@ -13,6 +13,7 @@
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
 #import "TextObject.h"
+#import "ParticleSingleton.h"
 
 @implementation CollisionManager
 
@@ -249,6 +250,7 @@
 	broggut->broggutValue = -1;
 	broggut->broggutAge = 0;
 	broggut->broggutEdge = kMediumBroggutEdgeNone; // Default to drawing the broggut
+	[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:broggut->broggutLocation];
 	[self updateAllMediumBroggutsEdges];
 }
 
@@ -452,6 +454,46 @@
 
 #pragma mark -
 #pragma mark Path Finding
+
+// Returns YES if there aren't any obstructions on the way
+- (BOOL)isLineOpenFromLocation:(CGPoint)startLoc toLocation:(CGPoint)endLoc {
+	int x0 = startLoc.x;
+	int y0 = startLoc.y;
+	int x1 = endLoc.x;
+	int y1 = endLoc.y;
+	int dx = abs(x1 - x0);
+    int dy = abs(y1 - y0);
+    int x = x0;
+    int y = y0;
+    int n = 1 + dx + dy;
+    int x_inc = (x1 > x0) ? 1 : -1;
+    int y_inc = (y1 > y0) ? 1 : -1;
+    int error = dx - dy;
+    dx *= 2;
+    dy *= 2;
+	
+    for (; n > 0; --n)
+    {
+		int row = (y / COLLISION_CELL_HEIGHT);
+		int col = (x / COLLISION_CELL_WIDTH);
+		PathNode* node = [self pathNodeForRow:row forColumn:col];
+		if ( !(node->isOpen) ) {
+			return NO;
+		}
+		
+        if (error > 0)
+        {
+            x += x_inc;
+            error -= dy;
+        }
+        else
+        {
+            y += y_inc;
+            error += dx;
+        }
+    }
+	return YES;
+}
 
 - (PathNode*)pathNodeForRow:(int)row forColumn:(int)col {
 	row = CLAMP(row, 0, numberOfRows - 1);
@@ -667,6 +709,37 @@
 			[followablePath insertObject:value atIndex:0]; // Insert each point at the beginning of the path
 			currentNode = currentNode->parentNode;
 		}
+		
+		// THIS IS TO MINIMIZE THE TURNS
+		/*
+		NSArray* tempArray = [NSArray arrayWithArray:followablePath];
+		[followablePath removeAllObjects];
+		int currentStartIndex = 0;
+		while (currentStartIndex < [tempArray count]) {
+			NSValue* value1 = [tempArray objectAtIndex:currentStartIndex];
+			CGPoint curStartPoint = [value1 CGPointValue];
+			if (currentStartIndex == 0) {
+				[followablePath addObject:value1];
+			}
+			for (int j = currentStartIndex + 1; j < [tempArray count]; j++) {
+				NSValue* value2 = [tempArray objectAtIndex:j];
+				NSValue* valueBefore2 = [tempArray objectAtIndex:j-1];
+				CGPoint curEndPoint = [value2 CGPointValue];
+				if (![self isLineOpenFromLocation:curStartPoint toLocation:curEndPoint]) {
+					[followablePath addObject:valueBefore2];
+					currentStartIndex = (j - 1);
+					// NSLog(@"Path Obstructed...");
+				} else if (j == ([tempArray count] - 1) ) {
+					[followablePath addObject:value2];
+					currentStartIndex = [tempArray count] - 1;
+					// NSLog(@"End of path!");
+					break;
+				}
+			}
+			currentStartIndex++;
+		}
+		 */
+		
 		return [followablePath autorelease];
 	}
 	

@@ -45,6 +45,7 @@ typedef struct Broggut_Array {
 typedef struct Path_Node {
 	struct Path_Node* parentNode;	// Parent node, used in path finding
 	BOOL isOpen;					// YES if the node is currently free and travellable
+	BOOL isBuildingLocation;		// YES if there is a building currently moving to that location
 	float distanceToDest;			// Approximate distance to the final point in the path, CONSIDER INVALID WHEN STARTING NEW PATH
 	float distanceFromStart;		// Approximate distance from the start point of the path, CONSIDER INVALID WHEN STARTING NEW PATH
 	float totalDistance;			// Cost of this node in the path
@@ -129,6 +130,7 @@ typedef struct Path_Node_Queue {
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
 
+- (BOOL)isLineOpenFromLocation:(CGPoint)startLoc toLocation:(CGPoint)endLoc;
 - (void)setPathNodeIsOpen:(BOOL)open atLocation:(CGPoint)location;
 - (PathNode*)pathNodeForRow:(int)row forColumn:(int)col;
 - (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial;

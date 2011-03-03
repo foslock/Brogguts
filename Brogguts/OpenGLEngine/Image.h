@@ -19,6 +19,7 @@ extern NSString* kObjectCraftMonarchSprite;
 extern NSString* kObjectCraftCamelSprite;
 extern NSString* kObjectCraftRatSprite;
 extern NSString* kObjectCraftSpiderSprite;
+extern NSString* kObjectCraftSpiderDroneSprite;
 extern NSString* kObjectCraftEagleSprite;
 
 extern NSString* kObjectStructureBaseStationSprite;

@@ -26,7 +26,8 @@
 	float effectRadius;
 	
 	// AI states
-	int friendlyAIState;
+	int movingAIState;
+	int attackingAIState;
 	
 	// Closest enemy object, within range
 	TouchableObject* closestEnemyObject;
@@ -39,7 +40,8 @@
 	BOOL isTraveling;
 }
 
-@property (readonly) int friendlyAIState;
+@property (readonly) int movingAIState;
+@property (readonly) int attackingAIState;
 @property (nonatomic, assign) TouchableObject* closestEnemyObject;
 @property (nonatomic, assign) BOOL isPartOfASquad;
 @property (nonatomic, assign) BOOL isTouchable;
@@ -51,6 +53,10 @@
 
 - (Circle)effectRadiusCircle;
 - (void)objectEnteredEffectRadius:(TouchableObject*)other;
+
+// Use these functions to set the AI states
+- (void)setMovingAIState:(int)state;
+- (void)setAttackingAIState:(int)state;
 
 // Blinks the selection circle around the object
 - (void)blinkSelectionCircle;

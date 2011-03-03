@@ -12,7 +12,7 @@
 @implementation TouchableObject
 @synthesize isCheckedForRadialEffect, isTouchable, isCurrentlyTouched, isPartOfASquad, touchableBounds;
 @synthesize closestEnemyObject;
-@synthesize friendlyAIState;
+@synthesize movingAIState, attackingAIState;
 
 - (void)dealloc {
 	[objectsTargetingSelf release];
@@ -32,6 +32,7 @@
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
 		isBlinkingSelectionCircle = NO;
 		blinkingSelectionCircleTimer = 0;
+		[self setMovingAIState:kMovingAIStateStill];
 	}
 	return self;
 }
@@ -82,9 +83,23 @@
 	}
 }
 
+- (void)setMovingAIState:(int)state {
+	if (movingAIState != state)
+		// NSLog(@"Object (%i) changed moving from state (%i) to (%i)", uniqueObjectID, movingAIState, state);
+	movingAIState = state;
+}
+
+- (void)setAttackingAIState:(int)state {
+	if (attackingAIState != state)
+		// NSLog(@"Object (%i) changed attacking from state (%i) to (%i)", uniqueObjectID, attackingAIState, state);
+	attackingAIState = state;
+}
+
 - (void)blinkSelectionCircle {
-	isBlinkingSelectionCircle = YES;
-	blinkingSelectionCircleTimer = CIRCLE_BLINK_FRAMES;
+	if (!isBlinkingSelectionCircle) {
+		isBlinkingSelectionCircle = YES;
+		blinkingSelectionCircleTimer = CIRCLE_BLINK_FRAMES;		
+	}
 }
 
 - (void)targetedByEnemy:(TouchableObject*)enemy {
@@ -100,8 +115,8 @@
 - (void)targetWasDestroyed:(TouchableObject*)target {
 	if (target == closestEnemyObject) { // Just in case, remove it from the objects targeting
 		[objectsTargetingSelf removeObject:closestEnemyObject];
+		[self setClosestEnemyObject:nil];
 	}
-	[self setClosestEnemyObject:nil];
 }
 
 // MUST USE THIS METHOD TO SET THE CLOSEST TARGET
@@ -112,15 +127,27 @@
 	}
 	[enemy targetedByEnemy:self];
 	closestEnemyObject = enemy;
+	if (!closestEnemyObject) {
+		attackingAIState = kAttackingAIStateNeutral;
+	}
 }
 
 - (void)objectEnteredEffectRadius:(TouchableObject*)other {
 	// "other" has entered the effect radius of this structure
 	// NSLog(@"Object (%i) entered object (%i) effect radius", other.uniqueObjectID, uniqueObjectID);
-	if (friendlyAIState != kFriendlyAIStateAttacking) {
-		if (closestEnemyObject && !closestEnemyObject.destroyNow) {
-			if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 
-				GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation)) {
+	if (!other.isHidden) {
+		if (attackingAIState != kAttackingAIStateAttacking) {
+			if (closestEnemyObject && !closestEnemyObject.destroyNow) {
+				if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 
+					GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation)) {
+					if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
+						[self setClosestEnemyObject:other];
+					}
+					if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
+						[self setClosestEnemyObject:other];
+					}
+				}
+			} else {
 				if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
 					[self setClosestEnemyObject:other];
 				}
@@ -128,19 +155,12 @@
 					[self setClosestEnemyObject:other];
 				}
 			}
-		} else {
-			if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
-				[self setClosestEnemyObject:other];
-			}
-			if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
-				[self setClosestEnemyObject:other];
-			}
 		}
 	}
 }
 
 - (BOOL)attackedByEnemy:(TouchableObject*)enemy withDamage:(int)damage {
-	NSLog(@"Object (%i) attacked by enemy (%i) with damage <%i>", uniqueObjectID, enemy.uniqueObjectID, damage);
+	// NSLog(@"Object (%i) attacked by enemy (%i) with damage <%i>", uniqueObjectID, enemy.uniqueObjectID, damage);
 	return NO;
 }
 

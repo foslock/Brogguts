@@ -12,6 +12,7 @@
 #import "SideBarController.h"
 #import "CraftSideBar.h"
 #import "StructureSideBar.h"
+#import "BroggutsSideBar.h"
 
 @implementation MainMenuSideBar
 
@@ -45,6 +46,12 @@
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
 	[super buttonReleasedWithID:buttonID atLocation:location];
+	if (buttonID == 0) {
+		BroggutsSideBar* newMenu = [[BroggutsSideBar alloc] init];
+		[newMenu setMyController:myController];
+		[myController pushSideBarObject:newMenu];
+		[newMenu release];
+	}
 	if (buttonID == 1) {
 		CraftSideBar* newMenu = [[CraftSideBar alloc] init];
 		[newMenu setMyController:myController];

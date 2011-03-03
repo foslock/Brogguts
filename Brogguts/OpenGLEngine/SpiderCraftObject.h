@@ -9,10 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "CraftObject.h"
 
-@interface SpiderCraftObject : CraftObject {
+@class SpiderDroneObject;
 
+#define SPIDER_NUMBER_OF_DRONES 8
+
+@interface SpiderCraftObject : CraftObject {
+	NSMutableArray* droneArray;		// Array of spider drones for this ship
+	int droneCount;					// Current number of drone owned by this ship
+	int droneCountLimit;			// Limit to the number of drones this ship can hold
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)addNewDroneToBay;
+- (void)removeDrone:(SpiderDroneObject*)drone;
 
 @end

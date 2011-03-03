@@ -38,13 +38,14 @@
 @synthesize isShowingOverview;
 @synthesize controllingShip, commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
-@synthesize fontArray;
+@synthesize fontArray, broggutCounter, metalCounter;
 
 - (void)dealloc {
 	if (cameraImage) {
 		[cameraImage release];
 	}
 	[broggutCounter release];
+	[metalCounter release];
 	[controllingShip release];
 	[sideBar release];
 	[sceneName release];
@@ -104,6 +105,12 @@
 						  initWithFontID:kFontBlairID Text:brogCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 240, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
 		[broggutCounter setScrollWithBounds:NO];
 		[textObjectArray addObject:broggutCounter];
+		
+		NSString* metalCount = [NSString stringWithFormat:@"Metal: %i",[sharedGameController currentPlayerProfile].metalCount];
+		metalCounter = [[TextObject alloc]
+						  initWithFontID:kFontBlairID Text:metalCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 240, visibleScreenBounds.size.height - 64) withDuration:-1.0f];
+		[metalCounter setScrollWithBounds:NO];
+		[textObjectArray addObject:metalCounter];
 		
 		// Grab an instance of the render manager
 		sharedGameController = [GameController sharedGameController];
@@ -307,6 +314,9 @@
 	// Update the current broggut count
 	NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentPlayerProfile].broggutCount];
 	[broggutCounter setObjectText:brogCount];
+	
+	NSString* metalCount = [NSString stringWithFormat:@"Metal: %i",[sharedGameController currentPlayerProfile].metalCount];
+	[metalCounter setObjectText:metalCount];
 	
 	// Gets the vector that the screen shoudl scroll, and scrolls it, updating the rects as necessary
 	Vector2f cameraScroll = [self newScrollVectorFromCamera];
@@ -602,16 +612,17 @@
 	[craft setIsBeingControlled:YES];
 }
 
-- (TouchableObject*)attemptToAttackCraftAtLocation:(CGPoint)location {
+- (TouchableObject*)attemptToGetEnemyAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
-		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
-			// Object is a craft
+		if (([object isKindOfClass:[CraftObject class]] || [object isKindOfClass:[StructureObject class]])
+			&& !object.destroyNow) {
+			// Object is a craft or structure
 			if (object == controllingShip || object.objectAlliance == kAllianceFriendly) {
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
-				NSLog(@"Set enemy target to object (%i)", object.uniqueObjectID);
+				// NSLog(@"Set enemy target to object (%i)", object.uniqueObjectID);
 				return object;
 				break;
 			}
@@ -630,7 +641,7 @@
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
-				NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
+				// NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
 				[self setControllingShip:(CraftObject*)object];
 				return YES;
 			}
@@ -649,7 +660,7 @@
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
-				NSLog(@"Attempting to add object (%i) to squad with object (%i)", craft.uniqueObjectID, monarch.uniqueObjectID);
+				// NSLog(@"Attempting to add object (%i) to squad with object (%i)", craft.uniqueObjectID, monarch.uniqueObjectID);
 				[monarch addCraftToSquad:craft];
 				return YES;
 			}
@@ -773,7 +784,18 @@
 			break;
 		}
 		case kObjectCraftSpiderID: {
-			
+			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal]) {
+				[self addBroggutValue:-kCraftSpiderCostBrogguts atLocation:location];
+				SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
+				[newCraft setObjectLocation:homeBaseLocation];
+				[newCraft setObjectAlliance:kAllianceFriendly];
+				if (numberOfCurrentShips == 0) {
+					[self setControllingShip:newCraft];
+				}
+				[self addTouchableObject:newCraft withColliding:YES];
+			} else {
+				[self failedToCreateAtLocation:location];
+			}
 			break;
 		}
 		case kObjectCraftEagleID: {
@@ -798,7 +820,6 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
-				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -811,7 +832,6 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
-				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -824,7 +844,6 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
-				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -837,7 +856,6 @@
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
 				[self addTouchableObject:newStructure withColliding:YES];
-				[[self collisionManager] setPathNodeIsOpen:NO atLocation:location];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
