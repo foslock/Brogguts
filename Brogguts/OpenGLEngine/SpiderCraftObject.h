@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CraftObject.h"
-
-@class SpiderDroneObject;
+#import "SpiderDroneObject.h"
 
 #define SPIDER_NUMBER_OF_DRONES 8
 

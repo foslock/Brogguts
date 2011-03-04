@@ -25,7 +25,11 @@
 	int attributeMovingTime;	
 }
 
+@property (readonly) int attributeHullCurrent;
+
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)setCurrentHull:(int)newHull;
 
 - (void)moveTowardsLocation:(CGPoint)location;
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;

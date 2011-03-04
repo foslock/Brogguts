@@ -33,7 +33,12 @@
 
 - (void)setPriorityEnemyTarget:(TouchableObject *)target {
 	[super setPriorityEnemyTarget:target];
-	droneAIState = kDroneAIStateApproaching;
+	if (droneAIState == kDroneAIStateHidden) {
+		droneAIState = kDroneAIStateApproaching;
+	}
+	if (target == nil) {
+		droneAIState = kDroneAIStateReturning;
+	}
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {

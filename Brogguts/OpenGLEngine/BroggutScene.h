@@ -66,6 +66,7 @@
 	// Counters for craft and structures (friendly only)
 	int numberOfCurrentShips;
 	int numberOfCurrentStructures;
+	int numberOfSmallBrogguts;
 	
 	// Location of the home base
 	CGPoint homeBaseLocation;
@@ -115,6 +116,10 @@
 	BOOL isFadingOverviewOut;
 	float overviewAlpha;
 	
+	// Map vars
+	int widthCells;
+	int heightCells;
+	
 }
 
 #pragma mark -
@@ -135,6 +140,10 @@
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
+@property (readonly) NSMutableArray* touchableObjects;
+@property (readonly) int widthCells;
+@property (readonly) int heightCells;
+@property (readonly) int numberOfSmallBrogguts;
 
 #pragma mark -
 #pragma mark Selectors

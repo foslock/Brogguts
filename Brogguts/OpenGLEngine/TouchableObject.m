@@ -10,9 +10,10 @@
 #import "Image.h"
 
 @implementation TouchableObject
-@synthesize isCheckedForRadialEffect, isTouchable, isCurrentlyTouched, isPartOfASquad, touchableBounds;
+@synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad, touchableBounds;
 @synthesize closestEnemyObject;
 @synthesize movingAIState, attackingAIState;
+@synthesize creationEndLocation;
 
 - (void)dealloc {
 	[objectsTargetingSelf release];
@@ -51,6 +52,11 @@
 	tempBoundingCircle.y = objectLocation.y;
 	tempBoundingCircle.radius = effectRadius;
 	return tempBoundingCircle;
+}
+
+- (void)setIsTraveling:(BOOL)traveling {
+	isTouchable = !traveling;
+	isTraveling = traveling;
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
@@ -135,7 +141,7 @@
 - (void)objectEnteredEffectRadius:(TouchableObject*)other {
 	// "other" has entered the effect radius of this structure
 	// NSLog(@"Object (%i) entered object (%i) effect radius", other.uniqueObjectID, uniqueObjectID);
-	if (!other.isHidden) {
+	if (!other.isHidden && !isTraveling) {
 		if (attackingAIState != kAttackingAIStateAttacking) {
 			if (closestEnemyObject && !closestEnemyObject.destroyNow) {
 				if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 

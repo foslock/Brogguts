@@ -21,6 +21,7 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F12FDE913060544003CDDD6 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F12FDE813060544003CDDD6 /* craftant.png */; };
+		6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27EBC41321605C00579EE5 /* structurefixer.png */; };
 		6F2CAD3C13171501001A10E3 /* BaseStationStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */; };
 		6F2CAD7213171B58001A10E3 /* TurretStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */; };
 		6F2CAD7513171B7E001A10E3 /* BlockStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */; };
@@ -126,6 +127,7 @@
 		32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLEngine_Prefix.pch; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F12FDE813060544003CDDD6 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
+		6F27EBC41321605C00579EE5 /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseStationStructureObject.h; sourceTree = "<group>"; };
 		6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseStationStructureObject.m; sourceTree = "<group>"; };
 		6F2CAD7013171B58001A10E3 /* TurretStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TurretStructureObject.h; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
+				6F27EBC41321605C00579EE5 /* structurefixer.png */,
 				6F2CADC013172529001A10E3 /* structureblock.png */,
 				6F2CB3481319F592001A10E3 /* structureturret.png */,
 				6F8B878F13078EC2009CD1BF /* structurebasestation.png */,
@@ -803,6 +806,7 @@
 				6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */,
 				6F8ACF52131F109000B67BB5 /* craftspider.png in Resources */,
 				6F8ACF53131F109000B67BB5 /* craftspiderdrone.png in Resources */,
+				6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

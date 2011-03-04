@@ -46,6 +46,7 @@
 - (void)applicationWillResignActive:(UIApplication *)application
 {
 	[sharedGameController savePlayerProfile];
+	[sharedGameController saveCurrentSceneWithFilename:@"SavedScene.plist"];
     [glView stopAnimation];
 }
 

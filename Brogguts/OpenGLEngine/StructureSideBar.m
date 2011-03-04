@@ -29,7 +29,7 @@ enum StructureButtonIDs {
 - (id)init {
 	self = [super init];
 	if (self) {
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 7; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
 			switch (i) {

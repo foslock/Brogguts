@@ -60,6 +60,8 @@
 }
 
 @property (readonly) int attributePlayerCargoCapacity;
+@property (readonly) int attributePlayerCurrentCargo;
+@property (readonly) int attributeHullCurrent;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
@@ -67,6 +69,12 @@
 
 // Called when the target is in range and the cooling systems are ready
 - (void)attackTarget;
+
+// Called when this craft is being repaired
+- (void)repairCraft:(int)amount;
+- (BOOL)isHullFull;
+
+- (void)setCurrentHull:(int)newHull;
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target;
 

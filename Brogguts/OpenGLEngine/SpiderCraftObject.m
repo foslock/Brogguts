@@ -7,7 +7,6 @@
 //
 
 #import "SpiderCraftObject.h"
-#import "SpiderDroneObject.h"
 #import "BroggutScene.h"
 #import "Image.h"
 
@@ -33,7 +32,9 @@
 	for (SpiderDroneObject* drone in droneArray) {
 		[drone setPriorityEnemyTarget:target];
 		[drone stopFollowingCurrentPath];
-		[drone setDroneAIState:kDroneAIStateApproaching];
+		if (drone.droneAIState == kDroneAIStateHidden) {
+			[drone setDroneAIState:kDroneAIStateApproaching];
+		}
 	}
 }
 
@@ -42,7 +43,6 @@
 	for (SpiderDroneObject* drone in droneArray) {
 		[drone setPriorityEnemyTarget:target];
 		[drone stopFollowingCurrentPath];
-		[drone setDroneAIState:kDroneAIStateApproaching];
 	}
 }
 

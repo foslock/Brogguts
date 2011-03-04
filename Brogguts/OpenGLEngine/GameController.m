@@ -139,83 +139,294 @@ static GameController* sharedGameController = nil;
 	return filePath;
 }
 
-- (void)createBaseCampLevel {
-	int width = 64;
-	int height = 48;
+- (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index {
+	NSMutableArray* newPointArray = [[NSMutableArray alloc] init];
+	[newPointArray insertObject:[NSNumber numberWithFloat:point.x] atIndex:0];
+	[newPointArray insertObject:[NSNumber numberWithFloat:point.y] atIndex:1];
+	[array insertObject:newPointArray atIndex:index];
+	[newPointArray release];
+}
+
+- (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index {
+	NSArray* pointArray = [array objectAtIndex:index];
+	NSNumber* xNum = [pointArray objectAtIndex:0];
+	NSNumber* yNum = [pointArray objectAtIndex:1];
+	return CGPointMake([xNum floatValue], [yNum floatValue]);
+}
+
+- (void)createInitialBaseCampLevel {
+	NSString* sceneTitle = @"Base Camp";
+	BOOL isBaseCamp = YES;
+	int widthCells = 64;
+	int heightCells = 48;
+	int numberOfSmallBrogguts = 500;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
-	[plistArray insertObject:[NSString stringWithFormat:@"Base Camp"] atIndex:0];
-	[plistArray insertObject:[NSNumber numberWithBool:YES] atIndex:1];
-	[plistArray insertObject:[NSNumber numberWithInt:width] atIndex:2];
-	[plistArray insertObject:[NSNumber numberWithInt:height] atIndex:3];
-	[plistArray insertObject:[NSNumber numberWithInt:500] atIndex:4];
+	[plistArray insertObject:sceneTitle atIndex:0];
+	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:1];
+	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:2];
+	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:3];
+	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:4];
 	
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			int straightIndex = i + (j * width);
-			NSMutableArray* cellArray = [[NSMutableArray alloc] init];
-			
-			if (i == 3 && j == 24) { // Add the initial craft
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:YES] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if (i == 4 && j == 24) { // Add the initial craft
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftMonarchID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if (i == 8 && j == 24) { // Add the initial enemy craft
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeCraft] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectCraftAntID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
-				[cellArray insertObject:[NSNumber numberWithBool:NO] atIndex:3]; // Control this ship?
-				[cellArray insertObject:[NSNumber numberWithFloat:0.0f] atIndex:4]; // Rotation
-			} else if (i == 0 && j == 24) { // Add the initial base station structure
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if (i == 63 && j == 24) { // Add the initial ENEMY base station structure
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureBaseStationID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
-			} else if (i == 4 && (j == 22 || j == 26) ) { // Add 2 turrets
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceFriendly] atIndex:2];
-			} else if (i == 57 && (j == 22 || j == 26) ) { // Add 2 enemy turrets
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeStructure] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectStructureTurretID] atIndex:1];
-				[cellArray insertObject:[NSNumber numberWithInt:kAllianceEnemy] atIndex:2];
-			} else if ((j > 10 && j < 38) && (i > 10 && i < 54)) { // Create some medium brogguts
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectTypeBroggut] atIndex:0];
-				[cellArray insertObject:[NSNumber numberWithInt:kObjectBroggutMediumID] atIndex:1];
-				int value = kBroggutYoungMediumMinValue + (arc4random() % (kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue));
-				[cellArray insertObject:[NSNumber numberWithInt:value] atIndex:2];
+	// Save all the other crap, medium brogguts first
+	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
+	for (int j = 0; j < heightCells; j++) {
+		for (int i = 0; i < widthCells; i++) {
+			int straightIndex = i + (j * widthCells);
+			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
+			NSNumber* broggutValue;
+			NSNumber* broggutAge;
+			if (i > 17 && i < 47 && j > 14 && j < 34) {
+				broggutValue = [NSNumber numberWithInt:600];
+				broggutAge = [NSNumber numberWithInt:1];
 			} else {
-				[cellArray insertObject:[NSNumber numberWithInt:-1] atIndex:0];
-			}
-			
-			[plistArray insertObject:cellArray atIndex:straightIndex + 5];
-			[cellArray release];
+				broggutValue = [NSNumber numberWithInt:-1];
+				broggutAge = [NSNumber numberWithInt:0];
+			}			
+			[thisBroggutInfo insertObject:broggutValue atIndex:0];
+			[thisBroggutInfo insertObject:broggutAge atIndex:1];
+			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
+			[thisBroggutInfo release];
 		}
 	}
+	[plistArray insertObject:broggutArray atIndex:5];
+	[broggutArray release];
 	
+	// Save structures, namely the base stations
+	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
+	// Create the initial base station: 
+	{
+		NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
+		
+		int objectTypeID = kObjectTypeStructure;
+		int objectID = kObjectStructureBaseStationID;
+		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+		int objectAlliance = kAllianceFriendly;
+		float objectRotation = 0.0f;
+		BOOL objectIsTraveling = NO;
+		CGPoint objectEndLocation = CGPointMake(COLLISION_CELL_WIDTH / 2, COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectCurrentLocation = objectEndLocation;
+		int objectCurrentHull = -1; // Means full
+		BOOL objectIsControlledShip = NO;
+		BOOL objectIsMining = NO;
+		CGPoint objectMiningLocation = CGPointZero;
+		
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
+		[thisStructureArray insertObject:objectCurrentPath atIndex:2];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
+		[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
+		[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:6];
+		[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:7];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
+		[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:11];
+		if (objectID == kObjectStructureBaseStationID) {
+			[finalObjectArray insertObject:thisStructureArray atIndex:0];
+		} else {
+			[finalObjectArray addObject:thisStructureArray];
+		}
+		[thisStructureArray release];
+		[objectCurrentPath release];
+	}
+	
+	// Create the initial ANT craft for the player: 
+	{
+		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
+		
+		int objectTypeID = kObjectTypeCraft;
+		int objectID = kObjectCraftAntID;
+		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+		int objectAlliance = kAllianceFriendly;
+		float objectRotation = 0.0f;
+		BOOL objectIsTraveling = NO;
+		CGPoint objectEndLocation = CGPointMake(5 * COLLISION_CELL_WIDTH / 2, 5 * COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectCurrentLocation = objectEndLocation;
+		int objectCurrentHull = -1; // Means full
+		BOOL objectIsControlledShip = YES;
+		BOOL objectIsMining = NO;
+		CGPoint objectMiningLocation = CGPointZero;
+		
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
+		[thisCraftArray insertObject:objectCurrentPath atIndex:2];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
+		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
+		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:6];
+		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:7];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
+		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:11];
+		[finalObjectArray addObject:thisCraftArray];
+		[thisCraftArray release];
+		[objectCurrentPath release];
+	}
+	
+	[plistArray insertObject:finalObjectArray atIndex:6];
 	NSString* filePath = [self documentsPathWithFilename:@"BaseCampSaved.plist"];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
-		NSLog(@"Cannot save the new level!");
-	};
+		NSLog(@"Cannot save the Base Camp Scene!");
+	}
 	[plistArray release];
 }
 
-- (BroggutScene*)sceneFromLevelWithFilename:(NSString*)filename {
+- (void)saveCurrentSceneWithFilename:(NSString*)filename {
+	// Format for saved scenes:
+	//
+	// ----
+	// Propert List format
+	// ----
+	// index - type - description
+	//
+	// 0 - NSString - Scene title/name
+	// 1 - NSNumber (BOOL) - Whether the scene is base camp or not
+	// 2 - NSNumber (int) - The width of the scene (in units of cells, not pixels)
+	// 3 - NSNumber (int) - Height in cells
+	// 4 - NSNumber (int) - Number of small brogguts floating in scene
+	// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
+	// 6 - NSArray - Object array, containing information about both structures and crafts
+	//
+	//
+	
+	
+	NSString* sceneTitle = currentScene.sceneName;
+	BOOL isBaseCamp = YES;
+	int widthCells = currentScene.widthCells;
+	int heightCells = currentScene.heightCells;
+	int numberOfSmallBrogguts = currentScene.numberOfSmallBrogguts;
+	
+	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
+	[plistArray insertObject:sceneTitle atIndex:0];
+	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:1];
+	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:2];
+	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:3];
+	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:4];
+	
+	// Save all the other crap, medium brogguts first
+	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
+	for (int j = 0; j < heightCells; j++) {
+		for (int i = 0; i < widthCells; i++) {
+			float currentX = (i * COLLISION_CELL_WIDTH) + (COLLISION_CELL_WIDTH / 2);
+			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
+			CGPoint currentPoint = CGPointMake(currentX, currentY);
+			int straightIndex = i + (j * widthCells);
+			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
+			MediumBroggut* broggut = [[currentScene collisionManager] broggutCellForLocation:currentPoint]; 
+			NSNumber* broggutValue = [NSNumber numberWithInt:broggut->broggutValue];
+			NSNumber* broggutAge = [NSNumber numberWithInt:broggut->broggutAge];
+			[thisBroggutInfo insertObject:broggutValue atIndex:0];
+			[thisBroggutInfo insertObject:broggutAge atIndex:1];
+			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
+			[thisBroggutInfo release];
+		}
+	}
+	[plistArray insertObject:broggutArray atIndex:5];
+	[broggutArray release];
+	
+	// Save structures, namely the base stations
+	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
+	
+	NSArray* currentObjectArray = [NSArray arrayWithArray:[currentScene touchableObjects]];
+	for (int i = 0; i < [currentObjectArray count]; i++) {
+		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+		if ([object isKindOfClass:[StructureObject class]]) {
+			// It is a structure, so save it!
+			NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
+			StructureObject* thisStructure = (StructureObject*)object;
+			
+			int objectTypeID = kObjectTypeStructure;
+			int objectID = thisStructure.objectType;
+			NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+			int objectAlliance = thisStructure.objectAlliance;
+			float objectRotation = thisStructure.objectRotation;
+			BOOL objectIsTraveling = thisStructure.isTraveling;
+			CGPoint objectEndLocation = thisStructure.objectLocation;
+			CGPoint objectCurrentLocation = thisStructure.objectLocation;
+			int objectCurrentHull = thisStructure.attributeHullCurrent;
+			BOOL objectIsControlledShip = NO;
+			BOOL objectIsMining = NO;
+			CGPoint objectMiningLocation = CGPointZero;
+			
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
+			[thisStructureArray insertObject:objectCurrentPath atIndex:2];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
+			[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
+			[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:6];
+			[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:7];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
+			[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:11];
+			if (objectID == kObjectStructureBaseStationID) {
+				[finalObjectArray insertObject:thisStructureArray atIndex:0];
+			} else {
+				[finalObjectArray addObject:thisStructureArray];
+			}
+			[objectCurrentPath release];
+			[thisStructureArray release];
+		}
+	}
+	
+	// Save all craft next
+	for (int i = 0; i < [currentObjectArray count]; i++) {
+		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+		if ([object isKindOfClass:[CraftObject class]] && ![object isKindOfClass:[SpiderDroneObject class]]) {
+			// It is a craft (and not a drone!) so save it!
+			NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
+			CraftObject* thisCraft = (CraftObject*)object;
+			
+			int objectTypeID = kObjectTypeCraft;
+			int objectID = thisCraft.objectType;
+			NSArray* objectCurrentPath = [[NSArray alloc] init]; // Nothing in this array for now
+			int objectAlliance = thisCraft.objectAlliance;
+			float objectRotation = thisCraft.objectRotation;
+			BOOL objectIsTraveling = thisCraft.isTraveling;
+			CGPoint objectEndLocation = thisCraft.objectLocation;
+			CGPoint objectCurrentLocation = thisCraft.objectLocation;
+			int objectCurrentHull = thisCraft.attributeHullCurrent;
+			BOOL objectIsControlledShip = thisCraft.isBeingControlled;
+			BOOL objectIsMining = NO;
+			CGPoint objectMiningLocation = CGPointZero;
+			
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
+			[thisCraftArray insertObject:objectCurrentPath atIndex:2];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
+			[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
+			[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:6];
+			[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:7];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
+			[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:11];
+			[finalObjectArray addObject:thisCraftArray];
+			[thisCraftArray release];
+		}
+	}
+	
+	[plistArray insertObject:finalObjectArray atIndex:6];
 	NSString* filePath = [self documentsPathWithFilename:filename];
-	if (!filePath) {
-		NSLog(@"Scene '%@.plist' not found", filename);
+	if (![plistArray writeToFile:filePath atomically:YES]) {
+		NSLog(@"Cannot save the current Scene!");
+	}
+	[plistArray release];
+}
+
+- (BroggutScene*)sceneWithFilename:(NSString*)filename {
+	NSString* filePath = [self documentsPathWithFilename:filename];
+	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+	if (!fileExists) {
+		NSLog(@"Scene '%@' not found", filename);
 		return nil;
 	}
+	
 	NSArray* array = [[NSArray alloc] initWithContentsOfFile:filePath];
 	BroggutScene* newScene;
 	
@@ -225,6 +436,8 @@ static GameController* sharedGameController = nil;
 	int cellsWide = [[array objectAtIndex:2] intValue];				// 2: int - Width (in cells) of the map
 	int cellsHigh = [[array objectAtIndex:3] intValue];				// 3: int - Height (in cells) of the map
 	int numberOfSmallBrogguts = [[array objectAtIndex:4] intValue];	// 4: int - Number of small brogguts to be created
+	NSArray* broggutArray = [array objectAtIndex:5];				// 6: NSArray - the information for all of the medium brogguts
+	NSArray* objectArray = [array objectAtIndex:6];					// 7: NSArray - " " objects
 	
 	CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
 	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
@@ -232,8 +445,10 @@ static GameController* sharedGameController = nil;
 	if (baseCamp) {
 		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
 	}
+	// Array used to store locations where small brogguts should be created
 	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
 	
+	// Iterate through the broggut cell array
 	for (int j = 0; j < cellsHigh; j++) {
 		for (int i = 0; i < cellsWide; i++) {
 			NSMutableArray* pointArray = [[NSMutableArray alloc] init];
@@ -241,206 +456,249 @@ static GameController* sharedGameController = nil;
 			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
 			CGPoint currentPoint = CGPointMake(currentX, currentY);
 			int straightIndex = i + (j * cellsWide);
-			NSArray* currentArray = [array objectAtIndex:straightIndex + 5];
-			int idOfObject = [[currentArray objectAtIndex:0] intValue];
-			int objectType = 0;
-			// Make the potential pointers outside of switch
-			MediumBroggut* broggut; 
-			switch (idOfObject) {
-				case (-1):
-					// Nothing located in that cell
-					broggut = [[newScene collisionManager] broggutCellForLocation:currentPoint];
-					broggut->broggutValue = [[currentArray objectAtIndex:0] intValue];
-					[pointArray addObject:[NSNumber numberWithFloat:currentX]];
-					[pointArray addObject:[NSNumber numberWithFloat:currentY]];
-					[locationArray addObject:pointArray];
-					break;
-				case kObjectTypeBroggut:
-					// Change the broggut at that location to what's saved
-					broggut = [[newScene collisionManager] broggutCellForLocation:currentPoint];
-					broggut->broggutAge = [[currentArray objectAtIndex:1] intValue];
-					broggut->broggutValue = [[currentArray objectAtIndex:2] intValue];
-					if (broggut->broggutValue != -1) {
-						[[newScene collisionManager] addMediumBroggut];
-						[[newScene collisionManager] setPathNodeIsOpen:NO atLocation:currentPoint];
-					}
-					break;
-				case kObjectTypeCraft:
-					// Create a craft at that location with the appropriate type and rotation
-					objectType = [[currentArray objectAtIndex:1] intValue];
-					switch (objectType) {
-						case kObjectCraftAntID: {
-							AntCraftObject* newCraft = [[AntCraftObject alloc]
-														initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftMothID: {
-							MothCraftObject* newCraft = [[MothCraftObject alloc]
-														initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftBeetleID: {
-							BeetleCraftObject* newCraft = [[BeetleCraftObject alloc]
-														initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftMonarchID: {
-							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
-															initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftCamelID: {
-							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
-															initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftRatID: {
-							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
-															initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftSpiderID: {
-							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
-															initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						case kObjectCraftEagleID: {
-							MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
-															initWithLocation:currentPoint isTraveling:NO];
-							[newCraft setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newCraft setObjectRotation:[[currentArray objectAtIndex:3] floatValue]];
-							[newScene addTouchableObject:newCraft withColliding:YES];
-							if ([[currentArray objectAtIndex:3] boolValue]) {
-								[newScene setControllingShip:newCraft];
-								[newScene setCameraLocation:newCraft.objectLocation];
-								[newScene setMiddleOfVisibleScreenToCamera];
-							}
-							break;
-						}
-						default:
-							NSLog(@"Invalid Craft ID provided <%i>", objectType);
-							break;
-					}
-					break;
-				case kObjectTypeStructure:
-					// Create a structure at that location with the appropriate type
-					objectType = [[currentArray objectAtIndex:1] intValue];
-					[[newScene collisionManager] setPathNodeIsOpen:NO atLocation:currentPoint];
-					switch (objectType) {
-						case kObjectStructureBaseStationID: {
-							BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
-																		initWithLocation:currentPoint isTraveling:NO];
-							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newStructure setIsCheckedForRadialEffect:YES];
-							[newScene addTouchableObject:newStructure withColliding:YES];
-							if (newStructure.objectAlliance == kAllianceFriendly) {
-								newScene.homeBaseLocation = currentPoint;
-							}
-							if (newStructure.objectAlliance == kAllianceEnemy) {
-								newScene.enemyBaseLocation = currentPoint;
-							}
-							break;
-						}
-						case kObjectStructureBlockID: {
-							BlockStructureObject* newStructure = [[BlockStructureObject alloc]
-																  initWithLocation:currentPoint isTraveling:NO];
-							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newStructure setIsCheckedForRadialEffect:NO];
-							[newScene addTouchableObject:newStructure withColliding:YES];
-							break;
-						}
-						case kObjectStructureTurretID: {
-							TurretStructureObject* newStructure = [[TurretStructureObject alloc]
-																   initWithLocation:currentPoint isTraveling:NO];
-							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newStructure setIsCheckedForRadialEffect:YES];
-							[newScene addTouchableObject:newStructure withColliding:YES];
-							break;
-						}
-						case kObjectStructureRadarID: {
-							RadarStructureObject* newStructure = [[RadarStructureObject alloc]
-																   initWithLocation:currentPoint isTraveling:NO];
-							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newStructure setIsCheckedForRadialEffect:YES];
-							[newScene addTouchableObject:newStructure withColliding:YES];
-							break;
-						}
-						case kObjectStructureFixerID: {
-							FixerStructureObject* newStructure = [[FixerStructureObject alloc]
-																   initWithLocation:currentPoint isTraveling:NO];
-							[newStructure setObjectAlliance:[[currentArray objectAtIndex:2] intValue]];
-							[newStructure setIsCheckedForRadialEffect:YES];
-							[newScene addTouchableObject:newStructure withColliding:YES];
-							break;
-						}
-						default:
-							NSLog(@"Invalid Structure ID provided <%i>", objectType);
-							break;
-					}
-					
-					break;
-				default:
-					break;
+			
+			NSArray* currentBroggutInfo = [broggutArray objectAtIndex:straightIndex];
+			MediumBroggut* broggut = [[newScene collisionManager] broggutCellForLocation:currentPoint]; 
+			NSNumber* broggutValue = [currentBroggutInfo objectAtIndex:0];  // Value stored
+			NSNumber* broggutAge = [currentBroggutInfo objectAtIndex:1];	// Age stored
+			broggut->broggutValue = [broggutValue intValue];
+			broggut->broggutAge = [broggutAge intValue];
+			if ([broggutValue intValue] == -1) {
+				[pointArray addObject:[NSNumber numberWithFloat:currentX]];
+				[pointArray addObject:[NSNumber numberWithFloat:currentY]];
+				[locationArray addObject:pointArray];
+			} else {
+				[[newScene collisionManager] addMediumBroggut];
+				[[newScene collisionManager] setPathNodeIsOpen:NO atLocation:currentPoint];
 			}
 			[pointArray release];
 		}
 	}
+	
+	// Iterate through the object array
+	for (int i = 0; i < [objectArray count]; i++) {
+		NSArray* currentObjectInfo = [objectArray objectAtIndex:i];
+		// Go through each object and create the appropriate object with the correct attributes
+		// - object type ID
+		int objectTypeID = [[currentObjectInfo objectAtIndex:0] intValue];
+		// - object ID
+		int objectID = [[currentObjectInfo objectAtIndex:1] intValue];
+		// - Current path
+		NSArray* objectCurrentPath = [currentObjectInfo objectAtIndex:2];
+		// - Alliance
+		int objectAlliance = [[currentObjectInfo objectAtIndex:3] intValue];
+		// - Rotation
+		float objectRotation = [[currentObjectInfo objectAtIndex:4] floatValue];
+		// - isTraveling
+		BOOL objectIsTraveling = [[currentObjectInfo objectAtIndex:5] boolValue];
+		// - ^^ end location
+		CGPoint objectEndLocation = [self getCGPointFromArray:currentObjectInfo atIndex:6];
+		// - Current location
+		CGPoint objectCurrentLocation = [self getCGPointFromArray:currentObjectInfo atIndex:7];
+		// - Current Hull
+		int objectCurrentHull = [[currentObjectInfo objectAtIndex:8] intValue];
+		// - isControlledShip
+		BOOL objectIsControlledShip = [[currentObjectInfo objectAtIndex:9] boolValue];
+		// - if mining
+		BOOL objectIsMining = [[currentObjectInfo objectAtIndex:10] boolValue];
+		// - mining location
+		CGPoint objectMiningLocation = [self getCGPointFromArray:currentObjectInfo atIndex:11];
+		
+		switch (objectTypeID) {
+			case kObjectTypeStructure: {
+				// Create structure for this iteration
+				switch (objectID) {
+					case kObjectStructureBaseStationID: {
+						BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
+																	initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newStructure setObjectAlliance:objectAlliance];
+						[newStructure setObjectLocation:objectCurrentLocation];
+						[newStructure setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newStructure withColliding:YES];
+						if (newStructure.objectAlliance == kAllianceFriendly) {
+							newScene.homeBaseLocation = objectEndLocation;
+						}
+						if (newStructure.objectAlliance == kAllianceEnemy) {
+							newScene.enemyBaseLocation = objectEndLocation;
+						}
+						break;
+					}
+					case kObjectStructureBlockID: {
+						BlockStructureObject* newStructure = [[BlockStructureObject alloc]
+															  initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newStructure setObjectAlliance:objectAlliance];
+						[newStructure setObjectLocation:objectCurrentLocation];
+						[newStructure setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newStructure withColliding:YES];
+						break;
+					}
+					case kObjectStructureTurretID: {
+						TurretStructureObject* newStructure = [[TurretStructureObject alloc]
+															   initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newStructure setObjectAlliance:objectAlliance];
+						[newStructure setObjectLocation:objectCurrentLocation];
+						[newStructure setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newStructure withColliding:YES];
+						break;
+					}
+					case kObjectStructureRadarID: {
+						RadarStructureObject* newStructure = [[RadarStructureObject alloc]
+															  initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newStructure setObjectAlliance:objectAlliance];
+						[newStructure setObjectLocation:objectCurrentLocation];
+						[newStructure setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newStructure withColliding:YES];
+						break;
+					}
+					case kObjectStructureFixerID: {
+						FixerStructureObject* newStructure = [[FixerStructureObject alloc]
+															  initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newStructure setObjectAlliance:objectAlliance];
+						[newStructure setObjectLocation:objectCurrentLocation];
+						[newStructure setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newStructure withColliding:YES];
+						break;
+					}
+					default:
+						NSLog(@"Invalid Structure ID provided <%i>", objectID);
+						break;
+				}
+			}
+				break;
+			case kObjectTypeCraft: {
+				// Create craft for this iteration
+				switch (objectID) {
+					case kObjectCraftAntID: {
+						AntCraftObject* newCraft = [[AntCraftObject alloc]
+													initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftMothID: {
+						MothCraftObject* newCraft = [[MothCraftObject alloc]
+													 initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftBeetleID: {
+						BeetleCraftObject* newCraft = [[BeetleCraftObject alloc]
+													   initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftMonarchID: {
+						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftCamelID: {
+						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftRatID: {
+						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftSpiderID: {
+						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					case kObjectCraftEagleID: {
+						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+						[newCraft setObjectAlliance:objectAlliance];
+						[newCraft setObjectRotation:objectRotation];
+						[newCraft setObjectLocation:objectCurrentLocation];
+						[newCraft setCurrentHull:objectCurrentHull];
+						[newScene addTouchableObject:newCraft withColliding:YES];
+						if (objectIsControlledShip) {
+							[newScene setControllingShip:newCraft];
+							[newScene setCameraLocation:newCraft.objectLocation];
+							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						break;
+					}
+					default:
+						NSLog(@"Invalid Craft ID provided <%i>", objectID);
+						break;
+				} // End switch for specific craft
+			} // End Case for craft type
+				break;
+			default:
+				NSLog(@"Invalid object type ID read in (%i)", objectTypeID);
+				break;
+		} // End switch for object type
+	} // Loop ending
 	
 	[newScene addSmallBrogguts:numberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
 	
@@ -487,11 +745,11 @@ static GameController* sharedGameController = nil;
 		}
 	}
 	[currentPlayerProfile updateProfile];
-    [currentScene updateSceneWithDelta:aDelta];
+	[currentScene updateSceneWithDelta:aDelta];
 }
 
 -(void)renderCurrentScene {
-    [currentScene renderScene];
+	[currentScene renderScene];
 	if (isFadingSceneIn || isFadingSceneOut) {
 		enablePrimitiveDraw();
 		glColor4f(0.0f, 0.0f, 0.0f, fadingRectAlpha);
@@ -536,7 +794,7 @@ static GameController* sharedGameController = nil;
 
 - (void)initGameController {
 	
-    NSLog(@"INFO - GameController: Starting game initialization.");
+	NSLog(@"INFO - GameController: Starting game initialization.");
 	
 	isFadingSceneIn = NO;
 	isFadingSceneOut = NO;
@@ -547,21 +805,26 @@ static GameController* sharedGameController = nil;
 	
 	interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
 	
-	[self createBaseCampLevel];
+	
 	
 	// Load the game scenes
-    gameScenes = [[NSMutableDictionary alloc] init];
-	BroggutScene *scene = [self sceneFromLevelWithFilename:@"BaseCampSaved.plist"];
+	gameScenes = [[NSMutableDictionary alloc] init];
+	BroggutScene *scene = [self sceneWithFilename:@"SavedScene.plist"];
+	if (!scene) {
+		[self createInitialBaseCampLevel];
+		scene = [self sceneWithFilename:@"BaseCampSaved.plist"];
+	}
+	
 	[gameScenes setValue:scene forKey:@"BaseCamp"];
-    
-    // Set the starting scene for the game
+	
+	// Set the starting scene for the game
 	[self transitionToSceneWithName:@"BaseCamp"];
-    
+	
 	/*
-	[[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];
-	[[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"testSound"];
-	*/
-    NSLog(@"INFO - GameController: Finished game initialization.");
+	 [[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];
+	 [[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"testSound"];
+	 */
+	NSLog(@"INFO - GameController: Finished game initialization.");
 }
 
 @end

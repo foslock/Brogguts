@@ -10,7 +10,7 @@
 #import "StructureObject.h"
 
 @interface RadarStructureObject : StructureObject {
-
+	
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
