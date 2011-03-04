@@ -38,6 +38,7 @@
 	
 	// Used so things are disabled when traveling
 	BOOL isTraveling;
+	CGPoint creationEndLocation;
 }
 
 @property (readonly) int movingAIState;
@@ -45,9 +46,11 @@
 @property (nonatomic, assign) TouchableObject* closestEnemyObject;
 @property (nonatomic, assign) BOOL isPartOfASquad;
 @property (nonatomic, assign) BOOL isTouchable;
+@property (readonly) BOOL isTraveling;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
 @property (nonatomic, assign) BOOL isCheckedForRadialEffect;
+@property (nonatomic, assign) CGPoint creationEndLocation;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 

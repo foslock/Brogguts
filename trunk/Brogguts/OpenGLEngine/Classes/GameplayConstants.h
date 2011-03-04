@@ -224,8 +224,8 @@ enum TheSpiderValues {
 	kCraftSpiderUpgradeUnlockYears = 5, // increases movement speed
 	kCraftSpiderUpgradeCost = 100, // brogguts
 	kCraftSpiderUpgradeTime = 50, // seconds
-	kCraftSpiderCostBrogguts = 600,
-	kCraftSpiderCostMetal = 60,
+	kCraftSpiderCostBrogguts = 0, // 600
+	kCraftSpiderCostMetal = 0, // 60
 	kCraftSpiderEngines = 1,
 	kCraftSpiderWeapons = 0,
 	kCraftSpiderAttackRange = 512, // pixels
@@ -397,8 +397,10 @@ enum TheFixerValues {
 	kStructureFixerCostBrogguts = 400,
 	kStructureFixerCostMetal = 40,
 	kStructureFixerMovingTime = 6, // seconds to move to active spot
-	kStructureFixerHull = 20,
+	kStructureFixerHull = 50,
 	// Special Values
+	kStructureFixerRepairRange = 512,
+	kStructureFixerRepairRate = 1, // HP per 100 frames
 	kStructureFixerFriendlyTargetLimit = 1,
 	kStructureFixerFriendlyTargetLimitBonus = 1,
 };

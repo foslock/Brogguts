@@ -39,6 +39,8 @@
 @synthesize controllingShip, commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 @synthesize fontArray, broggutCounter, metalCounter;
+@synthesize touchableObjects;
+@synthesize widthCells, heightCells, numberOfSmallBrogguts;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -73,12 +75,15 @@
 		currentObjectsHovering = [[NSMutableDictionary alloc] initWithCapacity:11];
 		currentTouchesInSideBar = [[NSMutableDictionary alloc] initWithCapacity:11];
 		collisionManager = [[CollisionManager alloc] initWithContainingRect:mapBounds WithCellWidth:COLLISION_CELL_WIDTH withHeight:COLLISION_CELL_HEIGHT];
+		widthCells = mapBounds.size.width / COLLISION_CELL_WIDTH;
+		heightCells = mapBounds.size.height / COLLISION_CELL_HEIGHT;
 		visibleScreenBounds = screenBounds;
 		fullMapBounds = mapBounds;
 		cameraContainRect = CGRectInset(screenBounds, SCROLL_BOUNDS_X_INSET, SCROLL_BOUNDS_Y_INSET);
 		cameraLocation = [self middleOfVisibleScreen];
 		numberOfCurrentShips = 0;
 		numberOfCurrentStructures = 0;
+		numberOfSmallBrogguts = 0;
 		
 		// Set up the sidebar
 		sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
@@ -196,6 +201,7 @@
 		}
 		
 		[collisionManager addCollidableObject:tempObj];
+		numberOfSmallBrogguts++;
 		[renderableObjects insertObject:tempObj atIndex:0]; // Insert the broggut at the beginning so it is rendered first
 		[tempObj release];
 		[rockImage release];
@@ -305,9 +311,11 @@
 	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
 	if (controllingShip.isTouchable && closestBrog && !closestBrog.destroyNow) {
 		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
-			[controllingShip addCargo:closestBrog.broggutValue];
-			[closestBrog setDestroyNow:YES];
-			[sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+			if ( (controllingShip.attributePlayerCurrentCargo + closestBrog.broggutValue) < controllingShip.attributePlayerCargoCapacity) {
+				[controllingShip addCargo:closestBrog.broggutValue];
+				[closestBrog setDestroyNow:YES];
+				[sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+			}
 		}
 	}
 	
@@ -395,6 +403,11 @@
 			// It is a structure
 			numberOfCurrentStructures--;
 		}
+		if ([tempObj isKindOfClass:[BroggutObject class]]) {
+			// It is a broggut
+			numberOfSmallBrogguts--;
+		}
+		
 		[renderableDestroyed removeObject:tempObj];
 	}
 }

@@ -30,8 +30,8 @@
 	
 	CGPoint objectLocation;
 	Vector2f objectVelocity;
-	int uniqueObjectID;			// The unique ID for a specific object, no two should ever have the same one 
-	int objectType;				// This is the type of the object, seen in GameplayConstants.h
+	int uniqueObjectID;			// The unique ID for a specific object, no two should ever have the same one
+	int objectType;				// This is the type of the object, seen in GameplayConstants.h (each object has a unique type ID)
 	int objectAlliance;			// This is used to determine whether or not the object is friendly or enemy
 	
 	// Bounding Circle info

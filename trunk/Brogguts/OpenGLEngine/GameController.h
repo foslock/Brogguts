@@ -67,8 +67,12 @@
 
 - (NSString*)documentsPathWithFilename:(NSString*)filename;
 
-- (void)createBaseCampLevel;
-- (BroggutScene*)sceneFromLevelWithFilename:(NSString*)filename;
+- (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index;
+- (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index;
+
+- (void)createInitialBaseCampLevel;
+- (void)saveCurrentSceneWithFilename:(NSString*)filename;
+- (BroggutScene*)sceneWithFilename:(NSString*)filename;
 
 // Transitions from one scene to another
 - (void)transitionToSceneWithName:(NSString*)sceneName;

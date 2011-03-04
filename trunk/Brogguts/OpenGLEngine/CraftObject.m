@@ -16,7 +16,7 @@
 #import "CraftAndStructures.h"
 
 @implementation CraftObject
-@synthesize attributePlayerCargoCapacity;
+@synthesize attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
 
 - (void)dealloc {
 	[pathPointArray release];
@@ -190,9 +190,9 @@
 		isSpecialAbilityCooling = NO;
 		isSpecialAbilityActive = NO;
 		specialAbilityCooldownTimer = 0;
+		creationEndLocation = location;
 		if (traveling) {
-			isTraveling = YES;
-			isTouchable = NO;
+			[self setIsTraveling:YES];
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
 			[self followPath:path isLooped:NO];
 		}
@@ -304,6 +304,24 @@
 	}
 }
 
+- (void)repairCraft:(int)amount {
+	int newHP = attributeHullCurrent + amount;
+	attributeHullCurrent = CLAMP(newHP, 0, attributeHullCapacity);
+}
+
+- (BOOL)isHullFull {
+	if (attributeHullCurrent == attributeHullCapacity) {
+		return YES;
+	}
+	return NO;
+}
+
+- (void)setCurrentHull:(int)newHull {
+	if (newHull >= 0) {
+		attributeHullCurrent = CLAMP(newHull, 0, attributeHullCapacity);
+	}
+}
+
 - (void)setPriorityEnemyTarget:(TouchableObject*)target {
 	[self setClosestEnemyObject:target];
 	[target blinkSelectionCircle];
@@ -349,8 +367,7 @@
 				hasCurrentPathFinished = YES;
 				[self setMovingAIState:kMovingAIStateStill];
 				if (isTraveling) {
-					isTraveling = NO;
-					isTouchable = YES;
+					[self setIsTraveling:NO];
 				}
 			}
 		}
@@ -404,21 +421,32 @@
 		}
 	}
 	
+	// If the closest target is too far away, and not in ATTACKING state, set it to nil
+	if (attackingAIState != kAttackingAIStateAttacking && !([self isKindOfClass:[SpiderDroneObject class]])) {
+		if (closestEnemyObject) {
+			if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
+				[self setClosestEnemyObject:nil];
+			}
+		}
+	}
+	
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
 	if (isCurrentlyHoveredOver) {
 		// Draw "selection circle"
+		glLineWidth(2.0f);
 		if (objectAlliance == kAllianceFriendly) {
-			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+			Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
+			Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
+			drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
 		} else {
-			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+			Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
+			Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
+			drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
 		}
-		// drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
-		Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
-		Color4f unfilled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
-		drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+		glLineWidth(1.0f);
 	}
 }
 

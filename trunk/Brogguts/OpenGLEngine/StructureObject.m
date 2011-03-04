@@ -14,6 +14,7 @@
 #import "AntCraftObject.h"
 
 @implementation StructureObject
+@synthesize attributeHullCurrent;
 
 - (void)initStructureWithID:(int)typeID {
 	switch (typeID) {
@@ -117,17 +118,23 @@
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
-		hasCurrentPathFinished = YES;		
+		hasCurrentPathFinished = YES;
+		creationEndLocation = location;
 		// Initialize the structure
 		[self initStructureWithID:typeID];
 		if (traveling) {
-			isTraveling = YES;
-			isTouchable = NO;
+			[self setIsTraveling:YES];
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
 			[self followPath:path isLooped:NO];
 		}
 	}
 	return self;
+}
+
+- (void)setCurrentHull:(int)newHull {
+	if (newHull >= 0) {
+		attributeHullCurrent = CLAMP(newHull, 0, attributeHullCapacity);
+	}
 }
 
 - (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
@@ -163,7 +170,7 @@
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
 		CGPoint moveTowardsPoint = [pointValue CGPointValue];
 		// If the structure has reached the point...
-		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, 0)) {
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, 0.1f)) {
 			pathPointNumber++;
 		}
 		if (pathPointNumber < [pathPointArray count]) {
@@ -177,8 +184,7 @@
 				hasCurrentPathFinished = YES;
 				[self setMovingAIState:kMovingAIStateStill];
 				if (isTraveling) {
-					isTraveling = NO;
-					isTouchable = YES;
+					[self setIsTraveling:NO];
 					[[self.currentScene collisionManager] setPathNodeIsOpen:NO atLocation:objectLocation];
 				}
 			}
