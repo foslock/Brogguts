@@ -83,7 +83,24 @@ enum MiningStates {
 						 nil];
 }
 
-- (void)startMiningBroggutWithLocation:(CGPoint)location {
+- (void)tryMiningBroggutsWithCenter:(CGPoint)location {
+	if (![self startMiningBroggutWithLocation:location]) {
+		// Middle broggut isn't minable
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (i == 0 && j == 0) {
+					continue;
+				}
+				CGPoint point = CGPointMake(location.x + (i * COLLISION_CELL_WIDTH), location.y + (j * COLLISION_CELL_HEIGHT));
+				if ([self startMiningBroggutWithLocation:point]) {
+					break;
+				}
+			}
+		}
+	}
+}
+
+- (BOOL)startMiningBroggutWithLocation:(CGPoint)location {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
 	if (broggut && broggut->broggutValue != -1 && broggut->broggutEdge != kMediumBroggutEdgeNone) {
 		// NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
@@ -94,9 +111,11 @@ enum MiningStates {
 		[self followPath:pathArray isLooped:NO];
 		miningState = kMiningStateApproaching;
 		[self setMovingAIState:kMovingAIStateMining];
+		return YES;
 	} else {
 		miningState = kMiningStateNone;
 		[self setMovingAIState:kMovingAIStateStill];
+		return NO;
 	}
 }
 
@@ -109,7 +128,7 @@ enum MiningStates {
 		[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
 		attributeCurrentCargo = 0;
 		if (miningState == kMiningStateReturning) {
-			[self startMiningBroggutWithLocation:miningLocation];
+			[self tryMiningBroggutsWithCenter:miningLocation];
 		}
 	}
 }

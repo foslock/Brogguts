@@ -46,7 +46,7 @@
 @property (nonatomic, assign) TouchableObject* closestEnemyObject;
 @property (nonatomic, assign) BOOL isPartOfASquad;
 @property (nonatomic, assign) BOOL isTouchable;
-@property (readonly) BOOL isTraveling;
+@property (nonatomic, assign) BOOL isTraveling;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
 @property (nonatomic, assign) BOOL isCheckedForRadialEffect;
