@@ -629,7 +629,7 @@ static GameController* sharedGameController = nil;
 						break;
 					}
 					case kObjectCraftCamelID: {
-						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+						CamelCraftObject* newCraft = [[CamelCraftObject alloc]
 														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
@@ -644,7 +644,7 @@ static GameController* sharedGameController = nil;
 						break;
 					}
 					case kObjectCraftRatID: {
-						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+						RatCraftObject* newCraft = [[RatCraftObject alloc]
 														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
@@ -659,7 +659,7 @@ static GameController* sharedGameController = nil;
 						break;
 					}
 					case kObjectCraftSpiderID: {
-						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+						SpiderCraftObject* newCraft = [[SpiderCraftObject alloc]
 														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
@@ -674,7 +674,7 @@ static GameController* sharedGameController = nil;
 						break;
 					}
 					case kObjectCraftEagleID: {
-						MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
+						EagleCraftObject* newCraft = [[EagleCraftObject alloc]
 														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
