@@ -66,6 +66,7 @@
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)addCargo:(int)cargo;
+- (CGPoint)miningLocation;
 
 // Called when the target is in range and the cooling systems are ready
 - (void)attackTarget;

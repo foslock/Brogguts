@@ -22,6 +22,7 @@ enum MiningStates {
 };
 
 @implementation AntCraftObject
+@synthesize miningLocation;
 
 - (void)dealloc {
 	[turretPointsArray release];
@@ -69,6 +70,10 @@ enum MiningStates {
 								  (objectLocation.y) * sinf(radDir));
 	turretPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:tPoint1],
 						nil];
+}
+
+- (CGPoint)miningLocation {
+	return miningLocation;
 }
 
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location {

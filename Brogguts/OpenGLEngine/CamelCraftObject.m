@@ -83,6 +83,10 @@ enum MiningStates {
 						 nil];
 }
 
+- (CGPoint)miningLocation {
+	return miningLocation;
+}
+
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location {
 	if (![self startMiningBroggutWithLocation:location]) {
 		// Middle broggut isn't minable
