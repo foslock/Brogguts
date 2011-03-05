@@ -20,6 +20,24 @@
 #import "BitmapFont.h"
 
 #pragma mark -
+#pragma mark Scene storage 
+
+enum kSceneStorageIndexs {
+	kSceneStorageIndexTypeID, // - object type ID
+	kSceneStorageIndexID, // - object ID
+	kSceneStorageIndexPath, // - Current path
+	kSceneStorageIndexAlliance, // - Alliance
+	kSceneStorageIndexRotation, // - Rotation
+	kSceneStorageIndexTraveling, // - isTraveling
+	kSceneStorageIndexEndLoc, // - ^^ end location
+	kSceneStorageIndexCurrentLoc, // - Current location
+	kSceneStorageIndexHull, // - Current Hull
+	kSceneStorageIndexControlledShip, // - isControlledShip
+	kSceneStorageIndexMining, // - if mining
+	kSceneStorageIndexMiningLoc, // - mining location
+};
+
+#pragma mark -
 #pragma mark Private interface
 
 @interface GameController (Private) 
@@ -211,18 +229,18 @@ static GameController* sharedGameController = nil;
 		BOOL objectIsMining = NO;
 		CGPoint objectMiningLocation = CGPointZero;
 		
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
-		[thisStructureArray insertObject:objectCurrentPath atIndex:2];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
-		[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
-		[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:6];
-		[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:7];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
-		[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:11];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+		[thisStructureArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+		[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+		[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexEndLoc];
+		[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexCurrentLoc];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+		[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
 		if (objectID == kObjectStructureBaseStationID) {
 			[finalObjectArray insertObject:thisStructureArray atIndex:0];
 		} else {
@@ -249,18 +267,18 @@ static GameController* sharedGameController = nil;
 		BOOL objectIsMining = NO;
 		CGPoint objectMiningLocation = CGPointZero;
 		
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
-		[thisCraftArray insertObject:objectCurrentPath atIndex:2];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
-		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
-		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:6];
-		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:7];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
-		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:11];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+		[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
+		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
 		[finalObjectArray addObject:thisCraftArray];
 		[thisCraftArray release];
 		[objectCurrentPath release];
@@ -290,8 +308,6 @@ static GameController* sharedGameController = nil;
 	// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
 	// 6 - NSArray - Object array, containing information about both structures and crafts
 	//
-	//
-	
 	
 	NSString* sceneTitle = currentScene.sceneName;
 	BOOL isBaseCamp = YES;
@@ -351,25 +367,25 @@ static GameController* sharedGameController = nil;
 			BOOL objectIsMining = NO; // Since it is a structure
 			CGPoint objectMiningLocation = CGPointZero;
 			
-			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
-			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
-			[thisStructureArray insertObject:objectCurrentPath atIndex:2];
-			[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
-			[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
-			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
-			[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:6];
-			[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:7];
-			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
-			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
-			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
-			[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:11];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+			[thisStructureArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+			[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+			[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexEndLoc];
+			[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexCurrentLoc];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+			[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
 			if (objectID == kObjectStructureBaseStationID) {
 				[finalObjectArray insertObject:thisStructureArray atIndex:0];
 			} else {
 				[finalObjectArray addObject:thisStructureArray];
 			}
-			[objectCurrentPath release];
 			[thisStructureArray release];
+			[objectCurrentPath release];
 		}
 	}
 	
@@ -397,20 +413,21 @@ static GameController* sharedGameController = nil;
 				objectIsMining = YES;
 			}
 						
-			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
-			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
-			[thisCraftArray insertObject:objectCurrentPath atIndex:2];
-			[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:3];
-			[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:4];
-			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:5];
-			[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:6];
-			[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:7];
-			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:8];
-			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:9];
-			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:10];
-			[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:11];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+			[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+			[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+			[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
+			[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+			[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
 			[finalObjectArray addObject:thisCraftArray];
 			[thisCraftArray release];
+			[objectCurrentPath release];
 		}
 	}
 	
@@ -483,30 +500,18 @@ static GameController* sharedGameController = nil;
 	for (int i = 0; i < [objectArray count]; i++) {
 		NSArray* currentObjectInfo = [objectArray objectAtIndex:i];
 		// Go through each object and create the appropriate object with the correct attributes
-		// - object type ID
-		int objectTypeID = [[currentObjectInfo objectAtIndex:0] intValue];
-		// - object ID
-		int objectID = [[currentObjectInfo objectAtIndex:1] intValue];
-		// - Current path
-		NSArray* objectCurrentPath = [currentObjectInfo objectAtIndex:2];
-		// - Alliance
-		int objectAlliance = [[currentObjectInfo objectAtIndex:3] intValue];
-		// - Rotation
-		float objectRotation = [[currentObjectInfo objectAtIndex:4] floatValue];
-		// - isTraveling
-		BOOL objectIsTraveling = [[currentObjectInfo objectAtIndex:5] boolValue];
-		// - ^^ end location
-		CGPoint objectEndLocation = [self getCGPointFromArray:currentObjectInfo atIndex:6];
-		// - Current location
-		CGPoint objectCurrentLocation = [self getCGPointFromArray:currentObjectInfo atIndex:7];
-		// - Current Hull
-		int objectCurrentHull = [[currentObjectInfo objectAtIndex:8] intValue];
-		// - isControlledShip
-		BOOL objectIsControlledShip = [[currentObjectInfo objectAtIndex:9] boolValue];
-		// - if mining
-		BOOL objectIsMining = [[currentObjectInfo objectAtIndex:10] boolValue];
-		// - mining location
-		CGPoint objectMiningLocation = [self getCGPointFromArray:currentObjectInfo atIndex:11];
+		int objectTypeID = [[currentObjectInfo objectAtIndex:kSceneStorageIndexTypeID] intValue];
+		int objectID = [[currentObjectInfo objectAtIndex:kSceneStorageIndexID] intValue];
+		NSArray* objectCurrentPath = [currentObjectInfo objectAtIndex:kSceneStorageIndexPath];
+		int objectAlliance = [[currentObjectInfo objectAtIndex:kSceneStorageIndexAlliance] intValue];
+		float objectRotation = [[currentObjectInfo objectAtIndex:kSceneStorageIndexRotation] floatValue];
+		BOOL objectIsTraveling = [[currentObjectInfo objectAtIndex:kSceneStorageIndexTraveling] boolValue];
+		CGPoint objectEndLocation = [self getCGPointFromArray:currentObjectInfo atIndex:kSceneStorageIndexEndLoc];
+		CGPoint objectCurrentLocation = [self getCGPointFromArray:currentObjectInfo atIndex:kSceneStorageIndexCurrentLoc];
+		int objectCurrentHull = [[currentObjectInfo objectAtIndex:kSceneStorageIndexHull] intValue];
+		BOOL objectIsControlledShip = [[currentObjectInfo objectAtIndex:kSceneStorageIndexControlledShip] boolValue];
+		BOOL objectIsMining = [[currentObjectInfo objectAtIndex:kSceneStorageIndexMining] boolValue];
+		CGPoint objectMiningLocation = [self getCGPointFromArray:currentObjectInfo atIndex:kSceneStorageIndexMiningLoc];
 		
 		switch (objectTypeID) {
 			case kObjectTypeStructure: {
