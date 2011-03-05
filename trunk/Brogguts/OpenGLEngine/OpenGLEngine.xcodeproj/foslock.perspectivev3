@@ -287,7 +287,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {262, 980}}</string>
+							<string>{{0, 163}, {262, 980}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -334,7 +334,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>6F27EDA61321B7CD00579EE5</string>
+										<string>6F27EDD01321BE2500579EE5</string>
 										<key>history</key>
 										<array>
 											<string>6FCACA4812F8D40D00662BDA</string>
@@ -456,19 +456,19 @@
 											<string>6F27ED3D13219CEA00579EE5</string>
 											<string>6F27ED5B1321A0F800579EE5</string>
 											<string>6F27ED5C1321A0F800579EE5</string>
-											<string>6F27ED661321A24D00579EE5</string>
 											<string>6F27ED7B1321AD3600579EE5</string>
 											<string>6F27ED8B1321B35100579EE5</string>
-											<string>6F27ED8C1321B35100579EE5</string>
-											<string>6F27ED8D1321B35100579EE5</string>
-											<string>6F27ED8E1321B35100579EE5</string>
 											<string>6F27ED8F1321B35100579EE5</string>
-											<string>6F27ED911321B35100579EE5</string>
 											<string>6F27ED931321B35100579EE5</string>
-											<string>6F27ED941321B35100579EE5</string>
 											<string>6F27ED991321B6D300579EE5</string>
-											<string>6F27EDA41321B7CD00579EE5</string>
-											<string>6F27EDA51321B7CD00579EE5</string>
+											<string>6F27EDC81321BE2500579EE5</string>
+											<string>6F27EDC91321BE2500579EE5</string>
+											<string>6F27EDCA1321BE2500579EE5</string>
+											<string>6F27EDCB1321BE2500579EE5</string>
+											<string>6F27EDCC1321BE2500579EE5</string>
+											<string>6F27EDCD1321BE2500579EE5</string>
+											<string>6F27EDCE1321BE2500579EE5</string>
+											<string>6F27EDCF1321BE2500579EE5</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -482,18 +482,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1413, 904}}</string>
+								<string>{{0, 0}, {1413, 902}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 139 1697 1039 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>904pt</string>
+							<string>902pt</string>
 						</dict>
 						<dict>
 							<key>Proportion</key>
-							<string>89pt</string>
+							<string>91pt</string>
 							<key>Tabs</key>
 							<array>
 								<dict>
@@ -507,7 +507,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1413, 224}}</string>
+										<string>{{10, 27}, {1413, 64}}</string>
 									</dict>
 									<key>Module</key>
 									<string>XCDetailModule</string>
@@ -561,7 +561,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1413, 62}}</string>
+										<string>{{10, 27}, {1413, 64}}</string>
 										<key>RubberWindowFrame</key>
 										<string>0 139 1697 1039 0 0 1920 1178 </string>
 									</dict>
@@ -591,11 +591,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>6F27EB681320037400579EE5</string>
+				<string>6F27EDD11321BE2500579EE5</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>6F27EB691320037400579EE5</string>
+				<string>6F27EDD21321BE2500579EE5</string>
 				<string>6F97E89112EF392900CF1EA4</string>
-				<string>6F27EB6A1320037400579EE5</string>
+				<string>6F27EDD31321BE2500579EE5</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -744,14 +744,14 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>6F27EB6B1320037400579EE5</string>
+				<string>6F27EDD41321BE2500579EE5</string>
 				<string>1CCC7628064C1048000F2A68</string>
 				<string>1CCC7629064C1048000F2A68</string>
-				<string>6F27EB6C1320037400579EE5</string>
-				<string>6F27EB6D1320037400579EE5</string>
-				<string>6F27EB6E1320037400579EE5</string>
-				<string>6F27EB6F1320037400579EE5</string>
-				<string>6F27EB701320037400579EE5</string>
+				<string>6F27EDD51321BE2500579EE5</string>
+				<string>6F27EDD61321BE2500579EE5</string>
+				<string>6F27EDD71321BE2500579EE5</string>
+				<string>6F27EDD81321BE2500579EE5</string>
+				<string>6F27EDD91321BE2500579EE5</string>
 			</array>
 			<key>ToolbarConfigUserDefaultsMinorVersion</key>
 			<string>2</string>
@@ -785,9 +785,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>6F6A30641301B3B7002A4201</string>
-		<string>6F27EB721320037400579EE5</string>
-		<string>6F27EB731320037400579EE5</string>
+		<string>6F27EDDA1321BE2500579EE5</string>
+		<string>6F27EDDB1321BE2500579EE5</string>
 		<string>/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/OpenGLEngine/OpenGLEngine.xcodeproj</string>
 	</array>
 	<key>WindowString</key>

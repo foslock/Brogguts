@@ -348,7 +348,7 @@ static GameController* sharedGameController = nil;
 			CGPoint objectCurrentLocation = thisStructure.objectLocation;
 			int objectCurrentHull = thisStructure.attributeHullCurrent;
 			BOOL objectIsControlledShip = NO;
-			BOOL objectIsMining = NO;
+			BOOL objectIsMining = NO; // Since it is a structure
 			CGPoint objectMiningLocation = CGPointZero;
 			
 			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
@@ -392,8 +392,11 @@ static GameController* sharedGameController = nil;
 			int objectCurrentHull = thisCraft.attributeHullCurrent;
 			BOOL objectIsControlledShip = thisCraft.isBeingControlled;
 			BOOL objectIsMining = NO;
-			CGPoint objectMiningLocation = CGPointZero;
-			
+			CGPoint objectMiningLocation = [thisCraft miningLocation];
+			if (thisCraft.movingAIState == kMovingAIStateMining) {
+				objectIsMining = YES;
+			}
+						
 			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:0];
 			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:1];
 			[thisCraftArray insertObject:objectCurrentPath atIndex:2];
@@ -444,6 +447,7 @@ static GameController* sharedGameController = nil;
 	
 	if (baseCamp) {
 		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
+		self.currentScene = newScene;
 	}
 	// Array used to store locations where small brogguts should be created
 	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
@@ -581,6 +585,9 @@ static GameController* sharedGameController = nil;
 							[newScene setCameraLocation:newCraft.objectLocation];
 							[newScene setMiddleOfVisibleScreenToCamera];
 						}
+						if (objectIsMining) {
+							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
+						}
 						break;
 					}
 					case kObjectCraftMothID: {
@@ -640,6 +647,9 @@ static GameController* sharedGameController = nil;
 							[newScene setControllingShip:newCraft];
 							[newScene setCameraLocation:newCraft.objectLocation];
 							[newScene setMiddleOfVisibleScreenToCamera];
+						}
+						if (objectIsMining) {
+							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
 						}
 						break;
 					}
@@ -711,10 +721,11 @@ static GameController* sharedGameController = nil;
 
 - (void)transitionToSceneWithName:(NSString*)sceneName {
 	transitionName = sceneName;
-	if (currentScene) { // If already in a scene, fade that one out
+	if (isAlreadyInScene) { // If already in a scene, fade that one out
 		isFadingSceneOut = YES;
 		fadingRectAlpha = 0.0f;
 	} else {
+		isAlreadyInScene = YES;
 		currentScene = [gameScenes objectForKey:transitionName];
 		isFadingSceneIn = YES;
 		fadingRectAlpha = 1.0f;
@@ -798,14 +809,13 @@ static GameController* sharedGameController = nil;
 	
 	isFadingSceneIn = NO;
 	isFadingSceneOut = NO;
-	fadingRectAlpha = 0.0f;
+	fadingRectAlpha = 1.0f;
 	currentScene = nil;
+	isAlreadyInScene = NO;
 	
 	[self loadPlayerProfile];
 	
 	interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
-	
-	
 	
 	// Load the game scenes
 	gameScenes = [[NSMutableDictionary alloc] init];

@@ -40,6 +40,7 @@
 	// Scene transition vars
 	NSString* transitionName;
 	TextObject* sceneNameObject;
+	BOOL isAlreadyInScene;
 	BOOL isFadingSceneIn;
 	BOOL isFadingSceneOut;
 	float fadingRectAlpha;

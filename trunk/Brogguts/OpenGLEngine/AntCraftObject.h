@@ -22,6 +22,8 @@
 	CGPoint miningLocation;			// The center of the broggut currently being mined
 }
 
+@property (readonly) CGPoint miningLocation;
+
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 // If called, the craft will mine the broggut in the middle, but also check the adjacent brogguts if the middle is empty.

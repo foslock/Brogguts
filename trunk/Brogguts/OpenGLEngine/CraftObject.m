@@ -208,6 +208,10 @@
 	// OVERRIDE FOR EACH CRAFT
 }
 
+- (CGPoint)miningLocation {
+	return CGPointZero;
+}
+
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
 	if ([array count] == 0) {
 		NSLog(@"Path contained no points!");
