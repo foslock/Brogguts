@@ -24,7 +24,7 @@
 		dragLocation = objectLocation;
 		isBeingControlled = NO;
 		isBeingDragged = NO;
-		maxVelocity = 2.0f;
+		maxVelocity = 1.0f;
 		rotationAcceleration = 2.0f;
 	}
 	return self;

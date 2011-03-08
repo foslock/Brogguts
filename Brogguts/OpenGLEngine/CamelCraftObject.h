@@ -13,8 +13,6 @@
 	
 	// Variable attributes that are specific to this craft
 	int attributeMiningSpeed;		// Time it takes to mine 1 brogguts (in ms)
-	int attributeCargoCapacity;		// Amount of brogguts this craft can hold
-	int attributeCurrentCargo;		// Amount the cargo currently holds
 	
 	// Mining varaibles
 	int miningState;				// The state of the craft, enum vars are in implementation
@@ -28,5 +26,7 @@
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location;
 // Will either mine the broggut at the location or nothing.
 - (BOOL)startMiningBroggutWithLocation:(CGPoint)location;
+
+- (void)returnBroggutsHome;
 
 @end

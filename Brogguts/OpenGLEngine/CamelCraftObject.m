@@ -32,8 +32,8 @@ enum MiningStates {
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftCamelID withLocation:location isTraveling:traveling];
 	if (self) {
-		attributeCargoCapacity = kCraftCamelCargoSpace;
-		attributeCurrentCargo = 0;
+		attributePlayerCargoCapacity = kCraftCamelCargoSpace;
+		attributePlayerCurrentCargo = 0;
 		attributeMiningSpeed = kCraftCamelMiningSpeed;
 		miningState = kMiningStateNone;
 	}
@@ -88,6 +88,11 @@ enum MiningStates {
 }
 
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location {
+	if (attributePlayerCurrentCargo >= attributePlayerCargoCapacity) {
+		[self returnBroggutsHome];
+		miningLocation = location;
+		return;
+	}
 	if (![self startMiningBroggutWithLocation:location]) {
 		// Middle broggut isn't minable
 		for (int i = -1; i < 2; i++) {
@@ -124,13 +129,13 @@ enum MiningStates {
 }
 
 - (void)addCargo:(int)cargo {
-	attributeCurrentCargo = CLAMP(attributeCurrentCargo + cargo, 0, attributeCargoCapacity);
+	attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo + cargo, 0, attributePlayerCargoCapacity);
 }
 
 - (void)cashInBrogguts {
-	if (attributeCurrentCargo > 0) {
-		[self.currentScene addBroggutValue:attributeCurrentCargo atLocation:objectLocation];
-		attributeCurrentCargo = 0;
+	if (attributePlayerCurrentCargo > 0) {
+		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation];
+		attributePlayerCurrentCargo = 0;
 		if (miningState == kMiningStateReturning) {
 			[self tryMiningBroggutsWithCenter:miningLocation];
 		}
@@ -169,9 +174,9 @@ enum MiningStates {
 		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:miningLocation];
 		if (broggut->broggutValue > 0) {
 			// There are still brogguts left...
-			attributeCurrentCargo += CLAMP(attributeMiningSpeed, 0, broggut->broggutValue);
-			attributeCurrentCargo = CLAMP(attributeCurrentCargo, 0, attributeCargoCapacity);
-			broggut->broggutValue -= CLAMP(attributeMiningSpeed, 0, attributeCargoCapacity);
+			attributePlayerCurrentCargo += CLAMP(attributeMiningSpeed, 0, broggut->broggutValue);
+			attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo, 0, attributePlayerCargoCapacity);
+			broggut->broggutValue -= CLAMP(attributeMiningSpeed, 0, attributePlayerCargoCapacity);
 		}
 		// Check if the broggut is out
 		if (broggut->broggutValue <= 0) {
@@ -183,7 +188,7 @@ enum MiningStates {
 			[self returnBroggutsHome];
 		}
 		// Check if cargo has full brogguts
-		if (attributeCurrentCargo == attributeCargoCapacity) {
+		if (attributePlayerCurrentCargo == attributePlayerCargoCapacity) {
 			// Ship is full, bring her home
 			[self returnBroggutsHome];
 		}

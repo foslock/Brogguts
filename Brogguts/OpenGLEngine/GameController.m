@@ -35,6 +35,7 @@ enum kSceneStorageIndexs {
 	kSceneStorageIndexControlledShip, // - isControlledShip
 	kSceneStorageIndexMining, // - if mining
 	kSceneStorageIndexMiningLoc, // - mining location
+	kSceneStorageIndexCargo, // - broggut cargo
 };
 
 #pragma mark -
@@ -228,6 +229,7 @@ static GameController* sharedGameController = nil;
 		BOOL objectIsControlledShip = NO;
 		BOOL objectIsMining = NO;
 		CGPoint objectMiningLocation = CGPointZero;
+		int objectCurrentCargo = 0;
 		
 		[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
 		[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
@@ -241,6 +243,7 @@ static GameController* sharedGameController = nil;
 		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
 		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
 		[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
+		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
 		if (objectID == kObjectStructureBaseStationID) {
 			[finalObjectArray insertObject:thisStructureArray atIndex:0];
 		} else {
@@ -266,6 +269,7 @@ static GameController* sharedGameController = nil;
 		BOOL objectIsControlledShip = YES;
 		BOOL objectIsMining = NO;
 		CGPoint objectMiningLocation = CGPointZero;
+		int objectCurrentCargo = 0;
 		
 		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
 		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
@@ -279,6 +283,43 @@ static GameController* sharedGameController = nil;
 		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
 		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
 		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
+		[finalObjectArray addObject:thisCraftArray];
+		[thisCraftArray release];
+		[objectCurrentPath release];
+	}
+	
+	// Create a bunch of enemies to try to kill
+	for (int i = 0; i < 20; i++) {
+		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
+		
+		int objectTypeID = kObjectTypeCraft;
+		int objectID = kObjectCraftAntID;
+		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+		int objectAlliance = kAllianceEnemy;
+		float objectRotation = 360 * RANDOM_MINUS_1_TO_1();
+		BOOL objectIsTraveling = NO;
+		CGPoint objectEndLocation = CGPointMake(60 * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectCurrentLocation = objectEndLocation;
+		int objectCurrentHull = -1; // Means full
+		BOOL objectIsControlledShip = NO;
+		BOOL objectIsMining = NO;
+		CGPoint objectMiningLocation = CGPointZero;
+		int objectCurrentCargo = 0;
+		
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+		[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
+		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
+		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
 		[finalObjectArray addObject:thisCraftArray];
 		[thisCraftArray release];
 		[objectCurrentPath release];
@@ -366,6 +407,7 @@ static GameController* sharedGameController = nil;
 			BOOL objectIsControlledShip = NO;
 			BOOL objectIsMining = NO; // Since it is a structure
 			CGPoint objectMiningLocation = CGPointZero;
+			int objectCurrentCargo = 0;
 			
 			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
 			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
@@ -379,6 +421,7 @@ static GameController* sharedGameController = nil;
 			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
 			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
 			[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
 			if (objectID == kObjectStructureBaseStationID) {
 				[finalObjectArray insertObject:thisStructureArray atIndex:0];
 			} else {
@@ -409,6 +452,7 @@ static GameController* sharedGameController = nil;
 			BOOL objectIsControlledShip = thisCraft.isBeingControlled;
 			BOOL objectIsMining = NO;
 			CGPoint objectMiningLocation = [thisCraft miningLocation];
+			int objectCurrentCargo = [thisCraft attributePlayerCurrentCargo];
 			if (thisCraft.movingAIState == kMovingAIStateMining) {
 				objectIsMining = YES;
 			}
@@ -425,6 +469,7 @@ static GameController* sharedGameController = nil;
 			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
 			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
 			[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
 			[finalObjectArray addObject:thisCraftArray];
 			[thisCraftArray release];
 			[objectCurrentPath release];
@@ -502,7 +547,7 @@ static GameController* sharedGameController = nil;
 		// Go through each object and create the appropriate object with the correct attributes
 		int objectTypeID = [[currentObjectInfo objectAtIndex:kSceneStorageIndexTypeID] intValue];
 		int objectID = [[currentObjectInfo objectAtIndex:kSceneStorageIndexID] intValue];
-		NSArray* objectCurrentPath = [currentObjectInfo objectAtIndex:kSceneStorageIndexPath];
+		// NSArray* objectCurrentPath = [currentObjectInfo objectAtIndex:kSceneStorageIndexPath];
 		int objectAlliance = [[currentObjectInfo objectAtIndex:kSceneStorageIndexAlliance] intValue];
 		float objectRotation = [[currentObjectInfo objectAtIndex:kSceneStorageIndexRotation] floatValue];
 		BOOL objectIsTraveling = [[currentObjectInfo objectAtIndex:kSceneStorageIndexTraveling] boolValue];
@@ -512,6 +557,7 @@ static GameController* sharedGameController = nil;
 		BOOL objectIsControlledShip = [[currentObjectInfo objectAtIndex:kSceneStorageIndexControlledShip] boolValue];
 		BOOL objectIsMining = [[currentObjectInfo objectAtIndex:kSceneStorageIndexMining] boolValue];
 		CGPoint objectMiningLocation = [self getCGPointFromArray:currentObjectInfo atIndex:kSceneStorageIndexMiningLoc];
+		int objectCurrentCargo = [[currentObjectInfo objectAtIndex:kSceneStorageIndexCargo] intValue];
 		
 		switch (objectTypeID) {
 			case kObjectTypeStructure: {
@@ -584,11 +630,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -602,11 +647,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}
@@ -617,11 +661,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}
@@ -632,11 +675,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}
@@ -647,11 +689,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -665,11 +706,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}
@@ -680,11 +720,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}
@@ -695,11 +734,10 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
+						[newCraft addCargo:objectCurrentCargo];
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
-							[newScene setControllingShip:newCraft];
-							[newScene setCameraLocation:newCraft.objectLocation];
-							[newScene setMiddleOfVisibleScreenToCamera];
+							[newScene addControlledCraft:newCraft];
 						}
 						break;
 					}

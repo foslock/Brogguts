@@ -18,6 +18,7 @@
 #define OVERVIEW_FADE_IN_RATE 0.025f
 #define SIDEBAR_WIDTH 192.0f
 #define OVERVIEW_MAX_ALPHA 1.0f
+#define SELECTION_MIN_DISTANCE 20.0f
 
 @class Image;
 @class ImageRenderSingleton;
@@ -58,6 +59,12 @@
 	ParticleSingleton* sharedParticleSingleton;			// Reference to the particle manager
 	
 	// Player's currently controlled ship
+	NSMutableArray* controlledShips;
+	NSMutableArray* selectionPointsOne;
+	NSMutableArray* selectionPointsTwo; // Stored in reverse order
+	int selectionTouchHashOne;
+	int selectionTouchHashTwo;
+	BOOL isSelectingShips;
 	CraftObject* controllingShip;
 	
 	// The ship (if any) that is currently being commanded
@@ -183,6 +190,15 @@
 
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
+
+// Render the selection area
+- (void)renderSelectionAreaWithPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;
+
+// Try to select the ships between the two arrays of points
+- (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;
+
+// Add a craft the the current controlled craft
+- (void)addControlledCraft:(CraftObject*)craft;
 
 // Returns an enemy ship at the location
 - (TouchableObject*)attemptToGetEnemyAtLocation:(CGPoint)location;
