@@ -31,19 +31,14 @@
 // Returns YES is the point provided is inside the closed poly defined by
 // the vertices provided
 static inline BOOL isPointInPoly(int sides, float *px, float *py, CGPoint point) {
-	int sideCount;
-	int totalSides = sides - 1;
-	BOOL inside = NO;
-	
-	for (sideCount = 0; sideCount < sides; sideCount++) {
-		if ((py[sideCount] < point.y && py[totalSides] >= point.y) ||
-			(py[totalSides] < point.y && py[sideCount] >= point.y)) {
-			if (px[sideCount] + (point.y - py[sideCount]) / (py[totalSides] - py[sideCount]) * (px[totalSides] - px[sideCount]) < point.x) {
-				inside = !inside;
-			}
-		}
+	int i, j;
+	BOOL c = NO;
+	for (i = 0, j = sides-1; i < sides; j = i++) {
+		if ( ((py[i]>point.y) != (py[j]>point.y)) &&
+			(point.x < (px[j]-px[i]) * (point.y-py[i]) / (py[j]-py[i]) + px[i]) )
+			c = !c;
 	}
-	return inside;
+	return c;
 }
 
 // Returns YES if the rectangle and circle interset each other.  This include the circle being fulling inside

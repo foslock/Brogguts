@@ -85,6 +85,7 @@
 		newDrone.droneBayLocation = Vector2fMake(xBay, yBay);
 		newDrone.isHidden = YES;
 		newDrone.mySpiderCraft = self;
+		newDrone.objectAlliance = self.objectAlliance;
 		[newDrone release];
 		droneCount++;
 	}

@@ -21,6 +21,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
+		renderLayer = -10;
 		isTextHidden = NO;
 		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
 		fontID = fontid;
