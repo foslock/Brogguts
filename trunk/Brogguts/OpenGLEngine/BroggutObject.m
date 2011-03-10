@@ -7,7 +7,7 @@
 //
 
 #import "BroggutObject.h"
-
+#import "BroggutScene.h"
 
 @implementation BroggutObject
 @synthesize broggutValue, broggutType;

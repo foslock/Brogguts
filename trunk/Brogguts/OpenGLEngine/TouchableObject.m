@@ -7,6 +7,7 @@
 //
 
 #import "TouchableObject.h"
+#import "BroggutScene.h"
 #import "Image.h"
 
 @implementation TouchableObject
@@ -60,6 +61,7 @@
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+	[super updateObjectLogicWithDelta:aDelta];
 	if (isBlinkingSelectionCircle) {
 		if (blinkingSelectionCircleTimer > 0) {
 			blinkingSelectionCircleTimer--;
@@ -69,7 +71,6 @@
 			}
 		}
 	}
-	[super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
@@ -83,7 +84,7 @@
 				glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
 			}
 			enablePrimitiveDraw();
-			drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
+			drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
 			disablePrimitiveDraw();
 		}
 	}

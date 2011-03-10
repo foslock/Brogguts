@@ -74,6 +74,9 @@
 				texture = [[Image alloc] initWithImageNamed:@"particleshipthruster.png" filter:GL_LINEAR];
 				blendAdditive = YES;
 				break;
+            case kParticleTypeSpark:
+                texture = nil;
+                blendAdditive = NO;
 			default:
 				texture = nil;
 				break;
@@ -218,7 +221,13 @@
 											particle->position.y - (particle->velocity.y * PARTICLE_PRIMITIVE_SCALE));
 			glColor4f(particle->color.red, particle->color.green, particle->color.blue, particle->color.alpha);
 			glLineWidth(particle->particleSize);
-			drawLine(fromPoint, toPoint, scroll);
+            if(blendAdditive) {
+                glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE);
+                drawLine(fromPoint, toPoint, scroll);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            } else {
+                drawLine(fromPoint, toPoint, scroll);
+            }
 		}
 		glLineWidth(1.0f);
 		disablePrimitiveDraw();

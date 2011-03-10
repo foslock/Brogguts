@@ -290,7 +290,7 @@ static GameController* sharedGameController = nil;
 	}
 	
 	// Create a bunch of enemies to try to kill
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 80; i++) {
 		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
 		
 		int objectTypeID = kObjectTypeCraft;
@@ -299,7 +299,7 @@ static GameController* sharedGameController = nil;
 		int objectAlliance = kAllianceEnemy;
 		float objectRotation = 360 * RANDOM_MINUS_1_TO_1();
 		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake(60 * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectEndLocation = CGPointMake(120 * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
 		CGPoint objectCurrentLocation = objectEndLocation;
 		int objectCurrentHull = -1; // Means full
 		BOOL objectIsControlledShip = NO;
@@ -634,6 +634,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -651,6 +652,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}
@@ -665,6 +667,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}
@@ -679,6 +682,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}
@@ -693,6 +697,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -710,6 +715,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}
@@ -724,6 +730,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}
@@ -738,6 +745,7 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:YES];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
+							[newScene setCameraLocation:objectEndLocation];
 						}
 						break;
 					}

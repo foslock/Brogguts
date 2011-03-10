@@ -36,7 +36,7 @@
 @synthesize cameraContainRect, cameraLocation;
 @synthesize fullMapBounds, visibleScreenBounds;
 @synthesize isShowingOverview;
-@synthesize controllingShip, commandingShip;
+@synthesize commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 @synthesize fontArray, broggutCounter, metalCounter;
 @synthesize touchableObjects;
@@ -48,7 +48,6 @@
 	}
 	[broggutCounter release];
 	[metalCounter release];
-	[controllingShip release];
 	[controlledShips release];
 	[selectionPointsOne release];
 	[selectionPointsTwo release];
@@ -328,18 +327,18 @@
 			cameraLocation = cameraPoint;
 		}
 	}
-	
-	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-	if (controllingShip.isTouchable && closestBrog && !closestBrog.destroyNow) {
-		if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
-			if ( (controllingShip.attributePlayerCurrentCargo + closestBrog.broggutValue) < controllingShip.attributePlayerCargoCapacity) {
-				[controllingShip addCargo:closestBrog.broggutValue];
-				[closestBrog setDestroyNow:YES];
-				[sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
-			}
-		}
-	}
-	
+	/*
+     BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
+     if (controllingShip.isTouchable && closestBrog && !closestBrog.destroyNow) {
+     if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
+     if ( (controllingShip.attributePlayerCurrentCargo + closestBrog.broggutValue) < controllingShip.attributePlayerCargoCapacity) {
+     [controllingShip addCargo:closestBrog.broggutValue];
+     [closestBrog setDestroyNow:YES];
+     [sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+     }
+     }
+     }
+     */
 	// Update the current broggut count
 	NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentPlayerProfile].broggutCount];
 	[broggutCounter setObjectText:brogCount];
@@ -380,16 +379,19 @@
 	for (int i = 0; i < [renderableObjects count]; i++) {
 		CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
 		[tempObj updateObjectLogicWithDelta:aDelta];
-		
-		// Keep objects in the fullMapBounds
-		if (tempObj.objectLocation.x < fullMapBounds.origin.x)
-			tempObj.objectLocation = CGPointMake(fullMapBounds.size.width, tempObj.objectLocation.y);
-		if (tempObj.objectLocation.x > fullMapBounds.size.width)
-			tempObj.objectLocation = CGPointMake(fullMapBounds.origin.x, tempObj.objectLocation.y);
-		if (tempObj.objectLocation.y < fullMapBounds.origin.y)
-			tempObj.objectLocation = CGPointMake(tempObj.objectLocation.x, fullMapBounds.size.height);
-		if (tempObj.objectLocation.y > fullMapBounds.size.height)
-			tempObj.objectLocation = CGPointMake(tempObj.objectLocation.x, fullMapBounds.origin.y);
+        if ([tempObj isKindOfClass:[BroggutObject class]]) {
+            if (tempObj.objectLocation.x < fullMapBounds.origin.x)
+                tempObj.objectLocation = CGPointMake(fullMapBounds.size.width, tempObj.objectLocation.y);
+            if (tempObj.objectLocation.x > fullMapBounds.size.width)
+                tempObj.objectLocation = CGPointMake(fullMapBounds.origin.x, tempObj.objectLocation.y);
+            if (tempObj.objectLocation.y < fullMapBounds.origin.y)
+                tempObj.objectLocation = CGPointMake(tempObj.objectLocation.x, fullMapBounds.size.height);
+            if (tempObj.objectLocation.y > fullMapBounds.size.height)
+                tempObj.objectLocation = CGPointMake(tempObj.objectLocation.x, fullMapBounds.origin.y);
+        } else {
+            tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, 0.0f, fullMapBounds.size.width),
+                                                 CLAMP(tempObj.objectLocation.y, 0.0f, fullMapBounds.size.height));
+        }
 		if (tempObj.destroyNow) {
 			[renderableDestroyed addObject:tempObj];
 		}
@@ -453,40 +455,40 @@
 	
 	// Draw the medium/large brogguts
 	[collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
-	
-	// Render all objects (excluding text objects)
-	for (int i = 0; i < [renderableObjects count]; i++) {
-		CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
-		[tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
-	}
-	
-	// Render text objects
+    
+    // Render text objects
 	for (int i = 0; i < [textObjectArray count]; i++) {
 		TextObject* tempObj = [textObjectArray objectAtIndex:i];
 		if (tempObj.scrollWithBounds)
 			[tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID] withScrollVector:scroll];
 		else
 			[tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID]];
-	}	
-	
-	// Render images to screen
+	}
+    
+    // Render images to screen
 	[sharedImageRenderSingleton renderImages];
+    
+	// Render all objects (excluding text objects)
+	for (int i = 0; i < [renderableObjects count]; i++) {
+		CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
+		[tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
+	}
 	
 	// Draw the selection area
 	if (isSelectingShips) {
 		glColor4f(0.1f, 1.0f, 0.1f, 0.75f);
 		[self renderSelectionAreaWithPoints:selectionPointsOne andPoints:selectionPointsTwo];
 	}
-	
-	// Draw a line to the closest broggut
-	BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-	if (closestBrog && GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 100) {
-		enablePrimitiveDraw();
-		glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
-		drawLine(controllingShip.objectLocation, closestBrog.objectLocation, scroll);
-		disablePrimitiveDraw();
-	}
-	
+	/*
+     // Draw a line to the closest broggut
+     BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
+     if (closestBrog && GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 100) {
+     enablePrimitiveDraw();
+     glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
+     drawLine(controllingShip.objectLocation, closestBrog.objectLocation, scroll);
+     disablePrimitiveDraw();
+     }
+     */
 	// Render all of the particles in the manager
 	[sharedParticleSingleton renderParticlesWithScroll:scroll];
 	
@@ -507,7 +509,7 @@
 - (void)sortRenderableObjectsByLayer {
 	if (renderableObjects) {
 		NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
-		[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+		// [renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
 	}
 }
 
@@ -647,13 +649,6 @@
 #pragma mark -
 #pragma mark Controlling Ships
 
-- (void)setControllingShip:(CraftObject *)craft {
-	[controllingShip setIsBeingControlled:NO];
-	[controllingShip autorelease];
-	controllingShip = [craft retain];
-	[craft setIsBeingControlled:YES];
-}
-
 - (void)renderSelectionAreaWithPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo {
 	enablePrimitiveDraw();
 	NSArray* pointsAll = [pointsOne arrayByAddingObjectsFromArray:pointsTwo];
@@ -692,7 +687,7 @@
 	// Go through all friendly craft and check if we can select them
 	for (int i = 0; i < [touchableObjects count]; i++) {
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
-		if ([object isKindOfClass:[CraftObject class]]) {
+		if ([object isKindOfClass:[CraftObject class]] && ![object isKindOfClass:[SpiderDroneObject class]]) {
 			if (object.isTouchable) {
 				if (CGRectContainsPoint([self visibleScreenBounds], object.objectLocation)) {
 					if (object.objectAlliance == kAllianceFriendly) {
@@ -726,8 +721,15 @@
 }
 
 - (void)addControlledCraft:(CraftObject*)craft {
-	[controlledShips addObject:craft];
-	[craft setIsBeingControlled:YES];
+    if (![craft isKindOfClass:[SpiderDroneObject class]]) {
+        [controlledShips addObject:craft];
+        [craft setIsBeingControlled:YES];
+    }
+}
+
+- (void)removeControlledCraft:(CraftObject*)craft {
+    [controlledShips removeObject:craft];
+	[craft setIsBeingControlled:NO];
 }
 
 - (TouchableObject*)attemptToGetEnemyAtLocation:(CGPoint)location {
@@ -736,7 +738,7 @@
 		if (([object isKindOfClass:[CraftObject class]] || [object isKindOfClass:[StructureObject class]])
 			&& !object.destroyNow) {
 			// Object is a craft or structure
-			if (object == controllingShip || object.objectAlliance == kAllianceFriendly) {
+			if (object.objectAlliance == kAllianceFriendly) {
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
@@ -754,19 +756,20 @@
 		TouchableObject* object = [touchableObjects objectAtIndex:i];
 		if ([object isKindOfClass:[CraftObject class]] && !object.destroyNow) {
 			// Object is a craft
-			if (object == controllingShip || object.objectAlliance == kAllianceEnemy ||
+			if (object.objectAlliance == kAllianceEnemy ||
 				!object.isTouchable || object.isPartOfASquad) {
 				continue;
 			}
 			if (CircleContainsPoint(object.touchableBounds, location)) {
 				// NSLog(@"Set controlling ship to object (%i)", object.uniqueObjectID);
-				[self setControllingShip:(CraftObject*)object];
+				[self addControlledCraft:(CraftObject*)object];
 				return YES;
 			}
 		}
 	}
 	return NO;
 }
+
 
 - (BOOL)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location {
 	for (int i = 0; i < [touchableObjects count]; i++) {
@@ -804,9 +807,8 @@
 		}
 	}
 	if (closestCraft) {
-		[self setControllingShip:closestCraft];
+		[self addControlledCraft:closestCraft];
 	} else {
-		[self setControllingShip:nil];
 		[self setCameraLocation:homeBaseLocation];
 		[self setMiddleOfVisibleScreenToCamera];
 	}
@@ -829,7 +831,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -844,7 +846,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -859,7 +861,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -874,7 +876,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -889,7 +891,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -908,7 +910,7 @@
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
 				if (numberOfCurrentShips == 0) {
-					[self setControllingShip:newCraft];
+					[self addControlledCraft:newCraft];
 				}
 				[self addTouchableObject:newCraft withColliding:YES];
 			} else {
@@ -1056,14 +1058,12 @@
 		}
 		
 		// If it is somewhere else, scroll using this touch
-		if ([currentObjectsTouching count] == 0 && isTouchScrolling == NO && (!isShowingOverview || isFadingOverviewOut)) {
+		if (!isSelectingShips && [currentObjectsTouching count] == 0 && !isTouchScrolling && (!isShowingOverview || isFadingOverviewOut)) {
 			isTouchScrolling = YES;
 			movingTouchHash = [touch hash];
 			currentTouchLocation = touchLocation;
-			/*
-			 
-			 */
 		}
+		
 		BOOL noObjectTouched = YES;
 		// Check all touchable objects and call their methods
 		for (int i = 0; i < [touchableObjects count]; i++) {
@@ -1088,10 +1088,10 @@
 			}
 		}
 		
-		if (noObjectTouched && controllingShip.isTouchable) { // If touch used for scrolling, stop the current path
-			if (!CircleContainsPoint(controllingShip.boundingCircle, touchLocation)) {
-				[controllingShip stopFollowingCurrentPath];
-			}
+		if (!isSelectingShips && noObjectTouched) { // If touch used for scrolling, stop the current path
+            for (CraftObject* craft in controlledShips) {
+				[craft stopFollowingCurrentPath];
+            }
 		}
 	}
 }

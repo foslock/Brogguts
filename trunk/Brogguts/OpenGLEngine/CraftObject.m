@@ -301,7 +301,7 @@
 	CGPoint enemyPoint = closestEnemyObject.objectLocation;
 	attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
 											enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
-	[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+	[[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
 	attackCooldownTimer = attributeAttackCooldown;
 	if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
 		[self setClosestEnemyObject:nil];
@@ -333,7 +333,8 @@
 	NSArray* newPath = [[self.currentScene
 						 collisionManager]
 						pathFrom:objectLocation to:target.objectLocation allowPartial:NO];
-	[self followPath:newPath isLooped:NO];
+    if (newPath)
+        [self followPath:newPath isLooped:NO];
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
@@ -390,10 +391,10 @@
 	}
 	
 	// Update the light blinking positions
-	[self updateCraftLightLocations];
+	// [self updateCraftLightLocations];
 	
 	// Update turret position
-	[self updateCraftTurretLocations];
+	// [self updateCraftTurretLocations];
 	
 	// Attack if able!
 	if (attackCooldownTimer > 0) {
@@ -455,7 +456,8 @@
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
 	enablePrimitiveDraw();
-	if (isCurrentlyHoveredOver || isBeingControlled) {
+    
+	if (isCurrentlyHoveredOver || isBeingControlled && !isBlinkingSelectionCircle) {
 		[self drawHoverSelectionWithScroll:vector];
 	}
 	
@@ -477,11 +479,7 @@
 	
 	// Draw dragging line
 	if (isBeingDragged) {
-		if (isBeingControlled) {
-			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
-		} else {
-			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-		}
+        glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
 		float distance = GetDistanceBetweenPoints(objectLocation, dragLocation);
 		int segments = distance / 50;
 		drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), vector);
@@ -551,7 +549,7 @@
 	// OVERRIDE ME
 	if (objectAlliance == kAllianceFriendly) {
 		if (isBeingDragged && !CircleContainsPoint(self.boundingCircle, location)) {
-			if (!isBeingControlled && movingAIState != kMovingAIStateMining) {
+			if (movingAIState != kMovingAIStateMining) {
 				
 				NSArray* newPath = [[self.currentScene
 									 collisionManager]
@@ -570,12 +568,15 @@
 						[self setMovingAIState:kMovingAIStateMoving];
 					}
 				}
-			} else if (isBeingControlled) {
+			}
+            /*
+            if (isBeingControlled) {
 				if (![self.currentScene attemptToControlCraftAtLocation:location]) {
 					if (movingAIState != kMovingAIStateMining)
 						[self performSpecialAbilityAtLocation:location];
 				}
 			}
+             */
 		}
 		isBeingDragged = NO;
 		dragLocation = objectLocation;

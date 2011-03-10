@@ -65,7 +65,6 @@
 	int selectionTouchHashOne;
 	int selectionTouchHashTwo;
 	BOOL isSelectingShips;
-	CraftObject* controllingShip;
 	
 	// The ship (if any) that is currently being commanded
 	CraftObject* commandingShip;
@@ -134,7 +133,6 @@
 
 @property (readonly) NSMutableArray* fontArray;
 @property (retain) NSString* sceneName;
-@property (retain) CraftObject* controllingShip;
 @property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
 @property (nonatomic, assign) CGPoint homeBaseLocation;
@@ -199,6 +197,9 @@
 
 // Add a craft the the current controlled craft
 - (void)addControlledCraft:(CraftObject*)craft;
+
+// Removes a craft the the current controlled craft
+- (void)removeControlledCraft:(CraftObject*)craft;
 
 // Returns an enemy ship at the location
 - (TouchableObject*)attemptToGetEnemyAtLocation:(CGPoint)location;

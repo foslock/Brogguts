@@ -19,9 +19,9 @@
 	if (self = [super init])
 	{
 		playerSpaceYear = 0;
-		broggutCount = 0;
+		broggutCount = PROFILE_BROGGUT_START_COUNT;
 		broggutDisplayNumber = 0;
-		metalCount = 0;
+		metalCount = PROFILE_METAL_START_COUNT;
 		metalDisplayNumber = 0;
 		playerExperience = 0;
 	}

@@ -213,7 +213,8 @@ enum MiningStates {
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
-	if (!isBeingControlled && isBeingDragged) {
+	if (isBeingDragged) {
+        [[self currentScene] removeControlledCraft:self];
 		[self startMiningBroggutWithLocation:location];
 	}
 	

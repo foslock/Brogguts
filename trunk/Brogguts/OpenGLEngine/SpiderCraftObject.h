@@ -16,6 +16,7 @@
 	NSMutableArray* droneArray;		// Array of spider drones for this ship
 	int droneCount;					// Current number of drone owned by this ship
 	int droneCountLimit;			// Limit to the number of drones this ship can hold
+    BOOL droneBayContainment[SPIDER_NUMBER_OF_DRONES];  // containing bools for each drone bay stating whether or not a drone is held in it
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
