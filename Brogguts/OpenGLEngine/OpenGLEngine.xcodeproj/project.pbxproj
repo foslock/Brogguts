@@ -50,6 +50,7 @@
 		6F2CB923131DD452001A10E3 /* EagleCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB922131DD452001A10E3 /* EagleCraftObject.m */; };
 		6F2CB9A5131EB7F3001A10E3 /* SpiderDroneObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */; };
 		6F2CB9D3131EE517001A10E3 /* BroggutsSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */; };
+		6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -177,6 +178,7 @@
 		6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpiderDroneObject.m; sourceTree = "<group>"; };
 		6F2CB9D1131EE517001A10E3 /* BroggutsSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggutsSideBar.h; sourceTree = "<group>"; };
 		6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BroggutsSideBar.m; sourceTree = "<group>"; };
+		6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -544,6 +546,7 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */,
 				6F8B842F13072035009CD1BF /* Default-Landscape.png */,
 			);
 			name = Misc;
@@ -820,6 +823,7 @@
 				6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */,
 				6F27F0041325B10D00579EE5 /* structurebasestation.png in Resources */,
 				6F27F0061325B11D00579EE5 /* craftant.png in Resources */,
+				6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -901,6 +905,7 @@
 				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = OpenGLEngine;
 			};
 			name = Debug;
@@ -914,6 +919,7 @@
 				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = OpenGLEngine;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -929,9 +935,10 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
-				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts";
+				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
@@ -944,10 +951,11 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
-				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts";
+				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;

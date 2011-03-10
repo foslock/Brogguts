@@ -23,6 +23,9 @@
 		droneArray = [[NSMutableArray alloc] initWithCapacity:SPIDER_NUMBER_OF_DRONES];
 		droneCount = 0;
 		droneCountLimit = SPIDER_NUMBER_OF_DRONES;
+        for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
+            droneBayContainment[i] = NO;
+        }
 	}
 	return self;
 }
@@ -75,17 +78,26 @@
 }
 
 - (void)addNewDroneToBay {
+    int droneIndex = 0;
+    for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
+        if (droneBayContainment[i] == NO) {
+            droneIndex = i;
+            break;
+        }
+    }
 	if (droneCount < droneCountLimit) {
 		SpiderDroneObject* newDrone = [[SpiderDroneObject alloc] initWithLocation:objectLocation isTraveling:NO];
 		[self.currentScene addTouchableObject:newDrone withColliding:NO];
 		[droneArray addObject:newDrone];
-		float radDir = 2 * M_PI * droneCount / droneCountLimit;
+        droneBayContainment[droneIndex] = YES;
+		float radDir = 2 * M_PI * droneIndex / droneCountLimit;
 		float xBay = cosf(radDir) * self.boundingCircle.radius;
 		float yBay = sinf(radDir) * self.boundingCircle.radius;
 		newDrone.droneBayLocation = Vector2fMake(xBay, yBay);
 		newDrone.isHidden = YES;
 		newDrone.mySpiderCraft = self;
 		newDrone.objectAlliance = self.objectAlliance;
+        newDrone.droneIndex = droneIndex;
 		[newDrone release];
 		droneCount++;
 	}
@@ -95,6 +107,7 @@
 	if (drone)
 		[droneArray removeObject:drone];
 	droneCount = [droneArray count];
+    droneBayContainment[drone.droneIndex] = NO;
 }
 
 - (void)objectWasDestroyed {

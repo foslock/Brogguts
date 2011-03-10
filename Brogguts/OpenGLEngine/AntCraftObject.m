@@ -41,7 +41,7 @@ enum MiningStates {
 	return self;
 }
 
-- (void)updateCraftLightLocations {
+- (void)updateCraftLightLocations { // Too Slow!!
 	[lightPointsArray release];
 	float radDir = DEGREES_TO_RADIANS(objectRotation);
 	CGPoint lPoint1 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
@@ -201,6 +201,7 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
+        [[self currentScene] removeControlledCraft:self];
 		[self startMiningBroggutWithLocation:location];
 	}
 	

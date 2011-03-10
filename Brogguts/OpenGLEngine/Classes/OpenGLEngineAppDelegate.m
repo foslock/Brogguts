@@ -15,6 +15,13 @@
 @synthesize window;
 @synthesize glView;
 
+- (void)applicationEnded {
+    [sharedGameController savePlayerProfile];
+	[sharedGameController saveCurrentSceneWithFilename:@"SavedScene.plist"];
+    [glView stopAnimation];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions   
 {
 	// Seed the random numbers!
@@ -43,23 +50,24 @@
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-	[sharedGameController savePlayerProfile];
-	[sharedGameController saveCurrentSceneWithFilename:@"SavedScene.plist"];
-    [glView stopAnimation];
+- (void)applicationWillResignActive:(UIApplication *)application {
+	[self applicationEnded];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [self applicationEnded];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
     [glView startAnimation];
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-	[sharedGameController savePlayerProfile];
-    [glView stopAnimation];
-	[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [glView startAnimation];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+	 [self applicationEnded];
 }
 
 - (void)dealloc

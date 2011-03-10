@@ -393,10 +393,10 @@
 		for (int j = 0; j < [radialAffectedObjects count]; j++) {
 			TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
 			if (obj1 == obj2) continue;
-			if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
-				[obj1 objectEnteredEffectRadius:obj2];
-			if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
-				[obj2 objectEnteredEffectRadius:obj1];
+            if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
+                [obj1 objectEnteredEffectRadius:obj2];
+            if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
+                [obj2 objectEnteredEffectRadius:obj1];
 		}
 	}
 }
@@ -652,7 +652,7 @@
 											additionalCost = COLLISION_CELL_HEIGHT;
 										} else {
 											additionalCost = sqrtf( (COLLISION_CELL_WIDTH * COLLISION_CELL_WIDTH) + 
-																	(COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
+                                                                   (COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
 										}
 										
 										// Add to the distance from start
@@ -671,7 +671,7 @@
 											newCost += COLLISION_CELL_HEIGHT;
 										} else {
 											newCost += sqrtf( (COLLISION_CELL_WIDTH * COLLISION_CELL_WIDTH) + 
-															(COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
+                                                             (COLLISION_CELL_HEIGHT * COLLISION_CELL_HEIGHT) );
 										}
 										
 										if (newCost < currentAdjNode->distanceFromStart) {
@@ -693,7 +693,7 @@
 			pathWasFound = NO;
 			break; // RETURN THE HALF-PATH
 		}
-
+        
 		if (endNode->currentList == kPathNodeListOpen) {
 			pathWasFound = YES;
 			break;
@@ -712,32 +712,32 @@
 		
 		// THIS IS TO MINIMIZE THE TURNS
 		/*
-		NSArray* tempArray = [NSArray arrayWithArray:followablePath];
-		[followablePath removeAllObjects];
-		int currentStartIndex = 0;
-		while (currentStartIndex < [tempArray count]) {
-			NSValue* value1 = [tempArray objectAtIndex:currentStartIndex];
-			CGPoint curStartPoint = [value1 CGPointValue];
-			if (currentStartIndex == 0) {
-				[followablePath addObject:value1];
-			}
-			for (int j = currentStartIndex + 1; j < [tempArray count]; j++) {
-				NSValue* value2 = [tempArray objectAtIndex:j];
-				NSValue* valueBefore2 = [tempArray objectAtIndex:j-1];
-				CGPoint curEndPoint = [value2 CGPointValue];
-				if (![self isLineOpenFromLocation:curStartPoint toLocation:curEndPoint]) {
-					[followablePath addObject:valueBefore2];
-					currentStartIndex = (j - 1);
-					// NSLog(@"Path Obstructed...");
-				} else if (j == ([tempArray count] - 1) ) {
-					[followablePath addObject:value2];
-					currentStartIndex = [tempArray count] - 1;
-					// NSLog(@"End of path!");
-					break;
-				}
-			}
-			currentStartIndex++;
-		}
+         NSArray* tempArray = [NSArray arrayWithArray:followablePath];
+         [followablePath removeAllObjects];
+         int currentStartIndex = 0;
+         while (currentStartIndex < [tempArray count]) {
+         NSValue* value1 = [tempArray objectAtIndex:currentStartIndex];
+         CGPoint curStartPoint = [value1 CGPointValue];
+         if (currentStartIndex == 0) {
+         [followablePath addObject:value1];
+         }
+         for (int j = currentStartIndex + 1; j < [tempArray count]; j++) {
+         NSValue* value2 = [tempArray objectAtIndex:j];
+         NSValue* valueBefore2 = [tempArray objectAtIndex:j-1];
+         CGPoint curEndPoint = [value2 CGPointValue];
+         if (![self isLineOpenFromLocation:curStartPoint toLocation:curEndPoint]) {
+         [followablePath addObject:valueBefore2];
+         currentStartIndex = (j - 1);
+         // NSLog(@"Path Obstructed...");
+         } else if (j == ([tempArray count] - 1) ) {
+         [followablePath addObject:value2];
+         currentStartIndex = [tempArray count] - 1;
+         // NSLog(@"End of path!");
+         break;
+         }
+         }
+         currentStartIndex++;
+         }
 		 */
 		
 		return [followablePath autorelease];
@@ -770,7 +770,7 @@
 	int currentArrayCapacity = tempObjectArray->arrayCapacity;
 	
 	if (currentArrayCount < currentArrayCapacity) { // Making sure the count is less than the capacity
-													// Array already exists, add to it
+        // Array already exists, add to it
 		tempObjectArray->objectIDArray[currentArrayCount] = UID;
 		tempObjectArray->arrayCount += 1;
 	} else {
@@ -797,7 +797,7 @@
 	int currentArrayCapacity = tempObjectArray->arrayCapacity;
 	
 	if (currentArrayCount < currentArrayCapacity) { // Making sure the count is less than the capacity
-													// Array already exists, add to it
+        // Array already exists, add to it
 		tempObjectArray->objectIDArray[currentArrayCount] = objectID;
 		tempObjectArray->arrayCount += 1;
 	} else {

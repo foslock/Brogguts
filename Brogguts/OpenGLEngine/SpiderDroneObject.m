@@ -11,12 +11,13 @@
 
 
 @implementation SpiderDroneObject
-@synthesize mySpiderCraft, droneBayLocation, droneAIState;
+@synthesize droneIndex, mySpiderCraft, droneBayLocation, droneAIState;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftSpiderDroneID withLocation:location isTraveling:traveling];
 	if (self) {
-		renderLayer = -1;
+        droneIndex = 0;
+		renderLayer = 1;
 		isTouchable = NO;
 		droneAIState = kDroneAIStateHidden;
 		droneBayLocation = Vector2fZero;
@@ -73,7 +74,6 @@
 				droneAIState = kDroneAIStateHidden;
 		} 
 	}
-	
 }
 
 - (void)objectWasDestroyed {
