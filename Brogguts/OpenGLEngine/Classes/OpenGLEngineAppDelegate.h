@@ -16,11 +16,15 @@
 	GameController* sharedGameController;
     UIWindow *window;
     EAGLView *glView;
+    BOOL viewInserted;
 	GameCenterSingleton* sharedGCSingleton;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet EAGLView *glView;
+
+- (void)startGLAnimation;
+- (void)stopGLAnimation;
 
 @end
 

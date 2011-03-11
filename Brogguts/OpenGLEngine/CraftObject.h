@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ControllableObject.h"
+#import "AIController.h"
 
 #define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
 #define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
@@ -57,8 +58,12 @@
 	// Player cargo capacity
 	int attributePlayerCurrentCargo;
 	int attributePlayerCargoCapacity;
+    
+    // AI Controller stuff
+    CraftAIInfo craftAIInfo;
 }
 
+@property (readonly) CraftAIInfo craftAIInfo;
 @property (readonly) int attributePlayerCargoCapacity;
 @property (readonly) int attributePlayerCurrentCargo;
 @property (readonly) int attributeHullCurrent;
@@ -67,6 +72,8 @@
 
 - (void)addCargo:(int)cargo;
 - (CGPoint)miningLocation;
+
+- (void)calculateCraftAIInfo;
 
 // Called when the target is in range and the cooling systems are ready
 - (void)attackTarget;

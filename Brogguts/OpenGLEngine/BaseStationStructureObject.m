@@ -27,7 +27,12 @@
 			CraftObject* otherCraft = (CraftObject*)other;
 			[otherCraft cashInBrogguts];
 		}
-	}
+	} else if (objectAlliance == kAllianceEnemy) {
+        if ([other isKindOfClass:[CraftObject class]]) {
+			CraftObject* otherCraft = (CraftObject*)other;
+			[otherCraft cashInBrogguts];
+		}
+    }
 }
 
 @end

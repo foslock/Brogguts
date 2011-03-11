@@ -776,7 +776,7 @@ static GameController* sharedGameController = nil;
 		isFadingSceneOut = YES;
 		fadingRectAlpha = 0.0f;
 	} else {
-		isAlreadyInScene = YES;
+		// isAlreadyInScene = YES;
 		currentScene = [gameScenes objectForKey:transitionName];
 		isFadingSceneIn = YES;
 		fadingRectAlpha = 1.0f;
@@ -879,7 +879,7 @@ static GameController* sharedGameController = nil;
 	[gameScenes setValue:scene forKey:@"BaseCamp"];
 	
 	// Set the starting scene for the game
-	[self transitionToSceneWithName:@"BaseCamp"];
+	// [self transitionToSceneWithName:@"BaseCamp"];
 	
 	/*
 	 [[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];

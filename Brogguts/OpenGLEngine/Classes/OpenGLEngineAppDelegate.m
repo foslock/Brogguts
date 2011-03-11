@@ -9,16 +9,28 @@
 #import "OpenGLEngineAppDelegate.h"
 #import "EAGLView.h"
 #import "GameController.h"
+#import "MainMenuController.h"
 
 @implementation OpenGLEngineAppDelegate
 
 @synthesize window;
 @synthesize glView;
 
-- (void)applicationEnded {
+- (void)startGLAnimation {
+    [window bringSubviewToFront:glView];
+    glView.hidden = NO;
+    [glView startAnimation];
+}
+
+- (void)stopGLAnimation {
+    glView.hidden = YES;
+    [glView stopAnimation];
+}
+
+- (void)applicationEnded { // Custom method called whenever the application ends
     [sharedGameController savePlayerProfile];
 	[sharedGameController saveCurrentSceneWithFilename:@"SavedScene.plist"];
-    [glView stopAnimation];
+    [self stopGLAnimation];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
@@ -26,6 +38,8 @@
 {
 	// Seed the random numbers!
 	srandom(time(NULL));
+    
+    viewInserted = NO;
 	
 	// Set the orientation!
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -44,9 +58,9 @@
 		
 	// Creates and tries to authenticate the local player
 	sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
-	[window addSubview:sharedGCSingleton.view];
-		
-    [glView startAnimation];
+    
+    MainMenuController* mainMenu = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
+    [window addSubview:mainMenu.view];
     return YES;
 }
 
@@ -59,11 +73,11 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [glView startAnimation];
+    // [self startGLAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [glView startAnimation];
+    // [self startGLAnimation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

@@ -12,13 +12,17 @@
 @interface CamelCraftObject : CraftObject {
 	
 	// Variable attributes that are specific to this craft
-	int attributeMiningSpeed;		// Time it takes to mine 1 brogguts (in ms)
+	int attributeMiningCooldown;		// Time it takes to mine 1 brogguts (in ms)
 	
 	// Mining varaibles
 	int miningState;				// The state of the craft, enum vars are in implementation
+    int miningCooldownTimer;        // The timer that decides the cooldown timer
 	int miningBroggutID;			// The ID of the medium broggut that is currently being mined
 	CGPoint miningLocation;			// The center of the broggut currently being mined
+    float miningAIValue;            // Value that the AI values this miner
 }
+
+@property (nonatomic, assign) float miningAIValue;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 

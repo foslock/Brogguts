@@ -36,6 +36,7 @@
 @class TouchableObject;
 @class CraftObject;
 @class ParticleSingleton;
+@class AIController;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -49,6 +50,7 @@
 	
 	// Name of the scene, will be displayed when loaded
 	NSString* sceneName;
+    BOOL isPirateScene;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -58,14 +60,17 @@
 	StarSingleton* sharedStarSingleton;					// Reference to the star controller
 	ParticleSingleton* sharedParticleSingleton;			// Reference to the particle manager
 	
-	// Player's currently controlled ship
+	// Player's currently controlled ships
 	NSMutableArray* controlledShips;
 	NSMutableArray* selectionPointsOne;
 	NSMutableArray* selectionPointsTwo; // Stored in reverse order
 	int selectionTouchHashOne;
 	int selectionTouchHashTwo;
 	BOOL isSelectingShips;
-	
+    
+    // AI Controller for this scene (controlling enemy)
+	AIController* enemyAIController;
+    
 	// The ship (if any) that is currently being commanded
 	CraftObject* commandingShip;
 	
@@ -157,7 +162,7 @@
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName;
 
 // Creates a broggut value text object showing where brogguts were gathered
-- (void)addBroggutValue:(int)value atLocation:(CGPoint)location;
+- (void)addBroggutValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;
 
 // Randomly generates small brogguts and adds them to the scene randomly scattered in 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;

@@ -22,8 +22,6 @@
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27EBC41321605C00579EE5 /* structurefixer.png */; };
 		6F27EE0A1324118B00579EE5 /* AIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F27EE091324118B00579EE5 /* AIController.m */; };
-		6F27F0041325B10D00579EE5 /* structurebasestation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27F0031325B10D00579EE5 /* structurebasestation.png */; };
-		6F27F0061325B11D00579EE5 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27F0051325B11D00579EE5 /* craftant.png */; };
 		6F2CAD3C13171501001A10E3 /* BaseStationStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */; };
 		6F2CAD7213171B58001A10E3 /* TurretStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */; };
 		6F2CAD7513171B7E001A10E3 /* BlockStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */; };
@@ -51,6 +49,18 @@
 		6F2CB9A5131EB7F3001A10E3 /* SpiderDroneObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9A4131EB7F3001A10E3 /* SpiderDroneObject.m */; };
 		6F2CB9D3131EE517001A10E3 /* BroggutsSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */; };
 		6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */; };
+		6F67CBE31329480C0061B1A9 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE01329480C0061B1A9 /* craftant.png */; };
+		6F67CBE41329480C0061B1A9 /* craftbeetle.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE11329480C0061B1A9 /* craftbeetle.png */; };
+		6F67CBE51329480C0061B1A9 /* craftmoth.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE21329480C0061B1A9 /* craftmoth.png */; };
+		6F67CBE7132948170061B1A9 /* structurebasestation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE6132948170061B1A9 /* structurebasestation.png */; };
+		6F67CBEC1329A1DF0061B1A9 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CBEA1329A1DF0061B1A9 /* MainMenuController.m */; };
+		6F67CBED1329A1DF0061B1A9 /* MainMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBEB1329A1DF0061B1A9 /* MainMenuController.xib */; };
+		6F67CBF11329A4D80061B1A9 /* OptionsMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CBEF1329A4D70061B1A9 /* OptionsMenuController.m */; };
+		6F67CBF21329A4D80061B1A9 /* OptionsMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBF01329A4D80061B1A9 /* OptionsMenuController.xib */; };
+		6F67CBF61329A6620061B1A9 /* ProfileMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CBF41329A6610061B1A9 /* ProfileMenuController.m */; };
+		6F67CBF71329A6620061B1A9 /* ProfileMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBF51329A6620061B1A9 /* ProfileMenuController.xib */; };
+		6F67CBFB1329EED40061B1A9 /* SkirmishMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CBF91329EECF0061B1A9 /* SkirmishMenuController.m */; };
+		6F67CBFC1329EED40061B1A9 /* SkirmishMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBFA1329EED20061B1A9 /* SkirmishMenuController.xib */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -131,8 +141,6 @@
 		6F27EBC41321605C00579EE5 /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F27EE081324118B00579EE5 /* AIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIController.h; sourceTree = "<group>"; };
 		6F27EE091324118B00579EE5 /* AIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIController.m; sourceTree = "<group>"; };
-		6F27F0031325B10D00579EE5 /* structurebasestation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurebasestation.png; sourceTree = "<group>"; };
-		6F27F0051325B11D00579EE5 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
 		6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseStationStructureObject.h; sourceTree = "<group>"; };
 		6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseStationStructureObject.m; sourceTree = "<group>"; };
 		6F2CAD7013171B58001A10E3 /* TurretStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TurretStructureObject.h; sourceTree = "<group>"; };
@@ -179,6 +187,22 @@
 		6F2CB9D1131EE517001A10E3 /* BroggutsSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggutsSideBar.h; sourceTree = "<group>"; };
 		6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BroggutsSideBar.m; sourceTree = "<group>"; };
 		6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		6F67CBE01329480C0061B1A9 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
+		6F67CBE11329480C0061B1A9 /* craftbeetle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbeetle.png; sourceTree = "<group>"; };
+		6F67CBE21329480C0061B1A9 /* craftmoth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftmoth.png; sourceTree = "<group>"; };
+		6F67CBE6132948170061B1A9 /* structurebasestation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurebasestation.png; sourceTree = "<group>"; };
+		6F67CBE91329A1DF0061B1A9 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
+		6F67CBEA1329A1DF0061B1A9 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
+		6F67CBEB1329A1DF0061B1A9 /* MainMenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenuController.xib; sourceTree = "<group>"; };
+		6F67CBEE1329A4D70061B1A9 /* OptionsMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionsMenuController.h; sourceTree = "<group>"; };
+		6F67CBEF1329A4D70061B1A9 /* OptionsMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionsMenuController.m; sourceTree = "<group>"; };
+		6F67CBF01329A4D80061B1A9 /* OptionsMenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OptionsMenuController.xib; sourceTree = "<group>"; };
+		6F67CBF31329A6600061B1A9 /* ProfileMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileMenuController.h; sourceTree = "<group>"; };
+		6F67CBF41329A6610061B1A9 /* ProfileMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileMenuController.m; sourceTree = "<group>"; };
+		6F67CBF51329A6620061B1A9 /* ProfileMenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileMenuController.xib; sourceTree = "<group>"; };
+		6F67CBF81329EECD0061B1A9 /* SkirmishMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkirmishMenuController.h; sourceTree = "<group>"; };
+		6F67CBF91329EECF0061B1A9 /* SkirmishMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkirmishMenuController.m; sourceTree = "<group>"; };
+		6F67CBFA1329EED20061B1A9 /* SkirmishMenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkirmishMenuController.xib; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -491,6 +515,25 @@
 			name = "Advanced Craft";
 			sourceTree = "<group>";
 		};
+		6F67CBE81329A19E0061B1A9 /* Menu Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				6F67CBE91329A1DF0061B1A9 /* MainMenuController.h */,
+				6F67CBEA1329A1DF0061B1A9 /* MainMenuController.m */,
+				6F67CBEB1329A1DF0061B1A9 /* MainMenuController.xib */,
+				6F67CBEE1329A4D70061B1A9 /* OptionsMenuController.h */,
+				6F67CBEF1329A4D70061B1A9 /* OptionsMenuController.m */,
+				6F67CBF01329A4D80061B1A9 /* OptionsMenuController.xib */,
+				6F67CBF31329A6600061B1A9 /* ProfileMenuController.h */,
+				6F67CBF41329A6610061B1A9 /* ProfileMenuController.m */,
+				6F67CBF51329A6620061B1A9 /* ProfileMenuController.xib */,
+				6F67CBF81329EECD0061B1A9 /* SkirmishMenuController.h */,
+				6F67CBF91329EECF0061B1A9 /* SkirmishMenuController.m */,
+				6F67CBFA1329EED20061B1A9 /* SkirmishMenuController.xib */,
+			);
+			name = "Menu Controllers";
+			sourceTree = "<group>";
+		};
 		6F6A2C0D12FC7982002A4201 /* GameCenter */ = {
 			isa = PBXGroup;
 			children = (
@@ -555,10 +598,10 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
+				6F67CBE6132948170061B1A9 /* structurebasestation.png */,
 				6F27EBC41321605C00579EE5 /* structurefixer.png */,
 				6F2CADC013172529001A10E3 /* structureblock.png */,
 				6F2CB3481319F592001A10E3 /* structureturret.png */,
-				6F27F0031325B10D00579EE5 /* structurebasestation.png */,
 			);
 			name = Structures;
 			sourceTree = "<group>";
@@ -566,11 +609,13 @@
 		6F8B878D13078E68009CD1BF /* Craft */ = {
 			isa = PBXGroup;
 			children = (
+				6F67CBE01329480C0061B1A9 /* craftant.png */,
+				6F67CBE11329480C0061B1A9 /* craftbeetle.png */,
+				6F67CBE21329480C0061B1A9 /* craftmoth.png */,
 				6F8ACF50131F109000B67BB5 /* craftspider.png */,
 				6F8ACF51131F109000B67BB5 /* craftspiderdrone.png */,
 				6F2CB894131D61DF001A10E3 /* craftcamel.png */,
 				6F2CB139131973A9001A10E3 /* craftmonarch.png */,
-				6F27F0051325B11D00579EE5 /* craftant.png */,
 			);
 			name = Craft;
 			sourceTree = "<group>";
@@ -650,6 +695,7 @@
 				6FCAC7DE12F863A200662BDA /* GameController.m */,
 				6F8B869B13076AE0009CD1BF /* PlayerProfile.h */,
 				6F8B869C13076AE0009CD1BF /* PlayerProfile.m */,
+				6F67CBE81329A19E0061B1A9 /* Menu Controllers */,
 				1D3623240D0F684500981E51 /* OpenGLEngineAppDelegate.h */,
 				1D3623250D0F684500981E51 /* OpenGLEngineAppDelegate.m */,
 			);
@@ -821,9 +867,15 @@
 				6F8ACF52131F109000B67BB5 /* craftspider.png in Resources */,
 				6F8ACF53131F109000B67BB5 /* craftspiderdrone.png in Resources */,
 				6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */,
-				6F27F0041325B10D00579EE5 /* structurebasestation.png in Resources */,
-				6F27F0061325B11D00579EE5 /* craftant.png in Resources */,
 				6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */,
+				6F67CBE31329480C0061B1A9 /* craftant.png in Resources */,
+				6F67CBE41329480C0061B1A9 /* craftbeetle.png in Resources */,
+				6F67CBE51329480C0061B1A9 /* craftmoth.png in Resources */,
+				6F67CBE7132948170061B1A9 /* structurebasestation.png in Resources */,
+				6F67CBED1329A1DF0061B1A9 /* MainMenuController.xib in Resources */,
+				6F67CBF21329A4D80061B1A9 /* OptionsMenuController.xib in Resources */,
+				6F67CBF71329A6620061B1A9 /* ProfileMenuController.xib in Resources */,
+				6F67CBFC1329EED40061B1A9 /* SkirmishMenuController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,6 +940,10 @@
 				6F2CB9A5131EB7F3001A10E3 /* SpiderDroneObject.m in Sources */,
 				6F2CB9D3131EE517001A10E3 /* BroggutsSideBar.m in Sources */,
 				6F27EE0A1324118B00579EE5 /* AIController.m in Sources */,
+				6F67CBEC1329A1DF0061B1A9 /* MainMenuController.m in Sources */,
+				6F67CBF11329A4D80061B1A9 /* OptionsMenuController.m in Sources */,
+				6F67CBF61329A6620061B1A9 /* ProfileMenuController.m in Sources */,
+				6F67CBFB1329EED40061B1A9 /* SkirmishMenuController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
