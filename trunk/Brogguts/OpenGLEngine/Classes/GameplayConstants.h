@@ -93,6 +93,15 @@ enum ObjectIDs { // How objects are indentified
 // 
 // Format => kCraft<name><attribute> 
 
+// Max values
+
+enum MaxmimumAttributeValues {
+    kMaximumEnginesValue = 6,
+    kMaximumWeaponsValue = 6,
+    kMaximumAttackRangeValue = 512,
+    kMaximumAttackCooldownValue = 100,
+};
+
 enum TheAntValues {
 	kCraftAntBoundingBoxWidth = 100, // pixels
 	kCraftAntBoundingBoxHeight = 50,
@@ -109,10 +118,10 @@ enum TheAntValues {
 	kCraftAntSpecialCoolDown = 0, // frames for special to recharge
 	kCraftAntHull = 30,
 	// Special Values
-	kCraftAntCargoSpace = 200, // brogguts
-	kCraftAntCargoSpaceBonus = 100,
+	kCraftAntCargoSpace = 100, // brogguts
+	kCraftAntCargoSpaceBonus = 50,
 	kCraftAntEnginesBonus = 1,
-	kCraftAntMiningSpeed = 1, // (milliseconds / 1 brogguts)
+	kCraftAntMiningCooldown = 6, // (frames / broggut)
 };
 
 enum TheMothValues {
@@ -192,8 +201,8 @@ enum TheCamelValues {
 	kCraftCamelSpecialCoolDown = 500, // frames for special to recharge
 	kCraftCamelHull = 60,
 	// Special Values
-	kCraftCamelCargoSpace = 500, // brogguts
-	kCraftCamelMiningSpeed = 2, // (milliseconds / 1 brogguts)
+	kCraftCamelCargoSpace = 200, // brogguts
+	kCraftCamelMiningCooldown = 3, // (frames / broggut)
 	kCraftCamelTunnelingTime = 300, // milliseconds
 };
 

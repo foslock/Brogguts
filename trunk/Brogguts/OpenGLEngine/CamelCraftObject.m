@@ -22,6 +22,7 @@ enum MiningStates {
 };
 
 @implementation CamelCraftObject
+@synthesize miningAIValue;
 
 - (void)dealloc {
 	[turretPointsArray release];
@@ -34,8 +35,10 @@ enum MiningStates {
 	if (self) {
 		attributePlayerCargoCapacity = kCraftCamelCargoSpace;
 		attributePlayerCurrentCargo = 0;
-		attributeMiningSpeed = kCraftCamelMiningSpeed;
+		attributeMiningCooldown = kCraftCamelMiningCooldown;
+        miningCooldownTimer = 0;
 		miningState = kMiningStateNone;
+        miningAIValue = 0.0f;
 	}
 	return self;
 }
@@ -134,7 +137,7 @@ enum MiningStates {
 
 - (void)cashInBrogguts {
 	if (attributePlayerCurrentCargo > 0) {
-		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation];
+		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation withAlliance:objectAlliance];
 		attributePlayerCurrentCargo = 0;
 		if (miningState == kMiningStateReturning) {
 			[self tryMiningBroggutsWithCenter:miningLocation];
@@ -143,8 +146,13 @@ enum MiningStates {
 }
 
 - (void)returnBroggutsHome {
-	NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
-	[self followPath:homePath isLooped:NO];
+	if (objectAlliance == kAllianceFriendly) {
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
+        [self followPath:homePath isLooped:NO];
+    } else if (objectAlliance == kAllianceEnemy) {
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene enemyBaseLocation]]];
+        [self followPath:homePath isLooped:NO];
+    }
 	[self setMovingAIState:kMovingAIStateMining];
 	miningState = kMiningStateReturning;
 }
@@ -174,9 +182,14 @@ enum MiningStates {
 		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:miningLocation];
 		if (broggut->broggutValue > 0) {
 			// There are still brogguts left...
-			attributePlayerCurrentCargo += CLAMP(attributeMiningSpeed, 0, broggut->broggutValue);
-			attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo, 0, attributePlayerCargoCapacity);
-			broggut->broggutValue -= CLAMP(attributeMiningSpeed, 0, attributePlayerCargoCapacity);
+			if (miningCooldownTimer <= 0) {
+                miningCooldownTimer = attributeMiningCooldown;
+                attributePlayerCurrentCargo += CLAMP(1, 0, broggut->broggutValue);
+                attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo, 0, attributePlayerCargoCapacity);
+                broggut->broggutValue -= CLAMP(1, 0, attributePlayerCargoCapacity);
+            } else {
+                miningCooldownTimer--;
+            }
 		}
 		// Check if the broggut is out
 		if (broggut->broggutValue <= 0) {

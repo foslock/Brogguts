@@ -28,6 +28,7 @@
 #import "CraftObject.h"
 #import "ParticleSingleton.h"
 #import "CraftAndStructures.h"
+#import "AIController.h"
 
 @implementation BroggutScene
 
@@ -46,6 +47,7 @@
 	if (cameraImage) {
 		[cameraImage release];
 	}
+    [enemyAIController release];
 	[broggutCounter release];
 	[metalCounter release];
 	[controlledShips release];
@@ -69,6 +71,7 @@
 	self = [super init];
 	if (self) {
 		self.sceneName = sName;
+        isPirateScene = YES;
 		renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -92,6 +95,8 @@
 		numberOfCurrentShips = 0;
 		numberOfCurrentStructures = 0;
 		numberOfSmallBrogguts = 0;
+        
+        enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isPirateScene];
 		
 		// Set up the sidebar
 		sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
@@ -144,7 +149,7 @@
 #pragma mark -
 #pragma mark Brogguts
 
-- (void)addBroggutValue:(int)value atLocation:(CGPoint)location {
+- (void)addBroggutValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance {
 	if (value > 0) {
 		NSString* string = [NSString stringWithFormat:@"+%i Bgs", value];
 		float stringWidth = [[fontArray objectAtIndex:kFontBlairID] getWidthForString:string];
@@ -155,7 +160,10 @@
 		[obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
 		[obj setFontColor:Color4fMake(1.0f, 1.0f, 0.0f, 1.0f)];
 		[textObjectArray addObject:obj];
-		[[sharedGameController currentPlayerProfile] addBrogguts:value];
+        if (alliance == kAllianceFriendly)
+            [[sharedGameController currentPlayerProfile] addBrogguts:value];
+        else if (alliance == kAllianceEnemy)
+            [enemyAIController addBrogguts:value];
 		[obj release];
 	} else if (value < 0) {
 		NSString* string = [NSString stringWithFormat:@"%i Bgs", value];
@@ -167,7 +175,10 @@
 		[obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
 		[obj setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, 1.0f)];
 		[textObjectArray addObject:obj];
-		[[sharedGameController currentPlayerProfile] addBrogguts:value];
+		if (alliance == kAllianceFriendly)
+            [[sharedGameController currentPlayerProfile] addBrogguts:value];
+        else if (alliance == kAllianceEnemy)
+            [enemyAIController addBrogguts:value];
 		[obj release];
 	}
 	
@@ -435,6 +446,9 @@
 		
 		[renderableDestroyed removeObject:tempObj];
 	}
+    
+    // Update the AI controller
+    [enemyAIController updateAIController];
 }
 
 - (void)renderScene {
@@ -489,6 +503,7 @@
      disablePrimitiveDraw();
      }
      */
+    
 	// Render all of the particles in the manager
 	[sharedParticleSingleton renderParticlesWithScroll:scroll];
 	
@@ -509,7 +524,7 @@
 - (void)sortRenderableObjectsByLayer {
 	if (renderableObjects) {
 		NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
-		// [renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+		[renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
 	}
 }
 
@@ -530,6 +545,7 @@
 	}
 	[renderableObjects addObject:obj];				// Adds to the rendering queue
 	[touchableObjects addObject:obj];				// Adds to the touchable queue
+    [enemyAIController updateArraysWithTouchableObjects:touchableObjects];  // Updates AI controller with new objects
 	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
 }
 
@@ -826,7 +842,7 @@
 	switch (craftID) {
 		case kObjectCraftAntID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal]) {
-				[self addBroggutValue:-kCraftAntCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftAntCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -841,7 +857,7 @@
 		}
 		case kObjectCraftMothID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal]) {
-				[self addBroggutValue:-kCraftMothCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftMothCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -856,7 +872,7 @@
 		}
 		case kObjectCraftBeetleID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal]) {
-				[self addBroggutValue:-kCraftBeetleCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftBeetleCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -871,7 +887,7 @@
 		}
 		case kObjectCraftMonarchID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal]) {
-				[self addBroggutValue:-kCraftMonarchCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftMonarchCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -886,7 +902,7 @@
 		}
 		case kObjectCraftCamelID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal]) {
-				[self addBroggutValue:-kCraftCamelCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftCamelCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -905,7 +921,7 @@
 		}
 		case kObjectCraftSpiderID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal]) {
-				[self addBroggutValue:-kCraftSpiderCostBrogguts atLocation:location];
+				[self addBroggutValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
 				[newCraft setObjectLocation:homeBaseLocation];
 				[newCraft setObjectAlliance:kAllianceFriendly];
@@ -935,7 +951,7 @@
 		}
 		case kObjectStructureBlockID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal]) {
-				[self addBroggutValue:-kStructureBlockCostBrogguts atLocation:location];
+				[self addBroggutValue:-kStructureBlockCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:YES];
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
@@ -947,7 +963,7 @@
 		}
 		case kObjectStructureTurretID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal]) {
-				[self addBroggutValue:-kStructureTurretCostBrogguts atLocation:location];
+				[self addBroggutValue:-kStructureTurretCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:YES];
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
@@ -959,7 +975,7 @@
 		}
 		case kObjectStructureRadarID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal]) {
-				[self addBroggutValue:-kStructureRadarCostBrogguts atLocation:location];
+				[self addBroggutValue:-kStructureRadarCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:YES];
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
@@ -971,7 +987,7 @@
 		}
 		case kObjectStructureFixerID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal]) {
-				[self addBroggutValue:-kStructureFixerCostBrogguts atLocation:location];
+				[self addBroggutValue:-kStructureFixerCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
 				FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:YES];
 				[newStructure setObjectLocation:homeBaseLocation];
 				[newStructure setObjectAlliance:kAllianceFriendly];
