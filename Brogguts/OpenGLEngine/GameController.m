@@ -38,6 +38,10 @@ enum kSceneStorageIndexs {
 	kSceneStorageIndexCargo, // - broggut cargo
 };
 
+NSString* kBaseCampFileName = @"BaseCampSaved.plist";
+NSString* kSavedScenesFileName = @"SavedScenesList.plist";
+NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
+
 #pragma mark -
 #pragma mark Private interface
 
@@ -156,6 +160,16 @@ static GameController* sharedGameController = nil;
 	NSString* documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
 	NSString* filePath = [documentsDirectory stringByAppendingPathComponent:filename];
 	return filePath;
+}
+
+- (BOOL)doesFilenameExist:(NSString*)filename {
+    NSString* filePath = [self documentsPathWithFilename:filename];
+	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+	if (fileExists) {
+		return YES;
+	} else {
+        return NO;
+    }
 }
 
 - (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index {
@@ -326,14 +340,14 @@ static GameController* sharedGameController = nil;
 	}
 	
 	[plistArray insertObject:finalObjectArray atIndex:6];
-	NSString* filePath = [self documentsPathWithFilename:@"BaseCampSaved.plist"];
+	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the Base Camp Scene!");
 	}
 	[plistArray release];
 }
 
-- (void)saveCurrentSceneWithFilename:(NSString*)filename {
+- (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite {
 	// Format for saved scenes:
 	//
 	// ----
@@ -349,6 +363,11 @@ static GameController* sharedGameController = nil;
 	// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
 	// 6 - NSArray - Object array, containing information about both structures and crafts
 	//
+    
+    if ([self doesFilenameExist:filename] && !overwrite) {
+        NSLog(@"Scene filename: %@, already exists", filename);
+        return NO;
+    }
 	
 	NSString* sceneTitle = currentScene.sceneName;
 	BOOL isBaseCamp = YES;
@@ -456,7 +475,7 @@ static GameController* sharedGameController = nil;
 			if (thisCraft.movingAIState == kMovingAIStateMining) {
 				objectIsMining = YES;
 			}
-						
+            
 			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
 			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
 			[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
@@ -480,7 +499,12 @@ static GameController* sharedGameController = nil;
 	NSString* filePath = [self documentsPathWithFilename:filename];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the current Scene!");
+        return NO;
 	}
+    if (!currentScene.isBaseCamp) {
+        [self addFilenameToSceneFileList:filename];
+    }
+    return YES;
 	[plistArray release];
 }
 
@@ -506,11 +530,11 @@ static GameController* sharedGameController = nil;
 	
 	CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
 	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
-	
-	if (baseCamp) {
-		newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
-		self.currentScene = newScene;
-	}
+    
+    newScene = [[BroggutScene alloc] initWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:sceneName];
+    self.currentScene = newScene;
+    self.currentScene.isBaseCamp = baseCamp;
+    
 	// Array used to store locations where small brogguts should be created
 	NSMutableArray* locationArray = [[NSMutableArray alloc] init];
 	
@@ -688,7 +712,7 @@ static GameController* sharedGameController = nil;
 					}
 					case kObjectCraftCamelID: {
 						CamelCraftObject* newCraft = [[CamelCraftObject alloc]
-														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                                                      initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
@@ -706,7 +730,7 @@ static GameController* sharedGameController = nil;
 					}
 					case kObjectCraftRatID: {
 						RatCraftObject* newCraft = [[RatCraftObject alloc]
-														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                                                    initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
@@ -721,7 +745,7 @@ static GameController* sharedGameController = nil;
 					}
 					case kObjectCraftSpiderID: {
 						SpiderCraftObject* newCraft = [[SpiderCraftObject alloc]
-														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                                                       initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
@@ -736,7 +760,7 @@ static GameController* sharedGameController = nil;
 					}
 					case kObjectCraftEagleID: {
 						EagleCraftObject* newCraft = [[EagleCraftObject alloc]
-														initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                                                      initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
 						[newCraft setObjectAlliance:objectAlliance];
 						[newCraft setObjectRotation:objectRotation];
 						[newCraft setObjectLocation:objectCurrentLocation];
@@ -770,17 +794,48 @@ static GameController* sharedGameController = nil;
 	return [newScene autorelease];
 }
 
-- (void)transitionToSceneWithName:(NSString*)sceneName {
-	transitionName = sceneName;
-	if (isAlreadyInScene) { // If already in a scene, fade that one out
-		isFadingSceneOut = YES;
-		fadingRectAlpha = 0.0f;
-	} else {
-		// isAlreadyInScene = YES;
-		currentScene = [gameScenes objectForKey:transitionName];
-		isFadingSceneIn = YES;
-		fadingRectAlpha = 1.0f;
-	}
+- (void)addFilenameToSceneFileList:(NSString*)filename {
+    if ([filename caseInsensitiveCompare:kBaseCampFileName] == NSOrderedSame) { // don't worry about this for basecamp saving
+        return;
+    }
+    NSString* filePath = [self documentsPathWithFilename:kSavedScenesFileName];
+    NSMutableArray* plistArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    
+    BOOL duplicate = NO;
+    for (NSString* other in plistArray) {
+        if ([filename caseInsensitiveCompare:other] == NSOrderedSame) {
+            duplicate = YES;
+        }
+    }
+    if (!duplicate) {
+        [plistArray addObject:filename];
+    } else {
+        NSLog(@"Filename already exists!");
+    }
+    
+    if (![plistArray writeToFile:kSavedScenesFileName atomically:YES]) {
+        NSLog(@"Failed to saved the scene name: %@", filename);
+    }
+    [plistArray release];
+}
+
+- (void)transitionToSceneWithFileName:(NSString*)fileName {
+    BroggutScene* scene = [gameScenes objectForKey:fileName];
+    if (scene) {
+        transitionName = fileName;
+        if (isAlreadyInScene) { // If already in a scene, fade that one out
+            isFadingSceneOut = YES;
+            fadingRectAlpha = 0.0f;
+        } else {
+            // isAlreadyInScene = YES;
+            currentScene = [gameScenes objectForKey:transitionName];
+            isFadingSceneIn = YES;
+            fadingRectAlpha = 1.0f;
+        }
+    } else {
+        BroggutScene* newScene = [self sceneWithFilename:fileName];
+        [gameScenes setValue:newScene forKey:fileName];
+    }
 }
 
 #pragma mark -
@@ -870,13 +925,13 @@ static GameController* sharedGameController = nil;
 	
 	// Load the game scenes
 	gameScenes = [[NSMutableDictionary alloc] init];
-	BroggutScene *scene = [self sceneWithFilename:@"SavedScene.plist"];
+	BroggutScene *scene = [self sceneWithFilename:kBaseCampFileName];
 	if (!scene) {
 		[self createInitialBaseCampLevel];
-		scene = [self sceneWithFilename:@"BaseCampSaved.plist"];
+		scene = [self sceneWithFilename:kBaseCampFileName];
 	}
 	
-	[gameScenes setValue:scene forKey:@"BaseCamp"];
+	[gameScenes setValue:scene forKey:kBaseCampFileName];
 	
 	// Set the starting scene for the game
 	// [self transitionToSceneWithName:@"BaseCamp"];

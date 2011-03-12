@@ -50,7 +50,7 @@
 	
 	// Name of the scene, will be displayed when loaded
 	NSString* sceneName;
-    BOOL isPirateScene;
+    BOOL isBaseCamp;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -147,6 +147,7 @@
 @property (nonatomic, assign) CGRect fullMapBounds;
 @property (nonatomic, assign) CGRect visibleScreenBounds;
 @property (nonatomic, assign) BOOL isShowingOverview;
+@property (nonatomic, assign) BOOL isBaseCamp;
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;

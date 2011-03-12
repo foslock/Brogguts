@@ -36,7 +36,7 @@
 
 - (IBAction)startBaseCamp {
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] transitionToSceneWithName:@"BaseCamp"];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kBaseCampFileName];
 }
 
 - (IBAction)popProfileController {

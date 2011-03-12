@@ -36,7 +36,7 @@
 @synthesize collisionManager;
 @synthesize cameraContainRect, cameraLocation;
 @synthesize fullMapBounds, visibleScreenBounds;
-@synthesize isShowingOverview;
+@synthesize isShowingOverview, isBaseCamp;
 @synthesize commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 @synthesize fontArray, broggutCounter, metalCounter;
@@ -71,7 +71,7 @@
 	self = [super init];
 	if (self) {
 		self.sceneName = sName;
-        isPirateScene = YES;
+        isBaseCamp = YES;
 		renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
 		touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -96,7 +96,7 @@
 		numberOfCurrentStructures = 0;
 		numberOfSmallBrogguts = 0;
         
-        enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isPirateScene];
+        enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
 		
 		// Set up the sidebar
 		sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];

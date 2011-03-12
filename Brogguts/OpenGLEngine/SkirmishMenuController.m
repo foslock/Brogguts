@@ -7,7 +7,7 @@
 //
 
 #import "SkirmishMenuController.h"
-
+#import "MapChoiceController.h"
 
 @implementation SkirmishMenuController
 
@@ -34,7 +34,9 @@
 }
 
 - (IBAction)pushMapChoiceController {
-    
+    MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
+    mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentModalViewController:mapchoice animated:YES];
 }
 - (IBAction)popSkirmishController {
     [self.parentViewController dismissModalViewControllerAnimated:YES];
