@@ -16,7 +16,8 @@
 @synthesize playerExperience;
 
 - (id)init {
-	if (self = [super init])
+    self = [super init];
+	if (self)
 	{
 		playerSpaceYear = 0;
 		broggutCount = PROFILE_BROGGUT_START_COUNT;
@@ -83,7 +84,8 @@
 
 - (id)initWithCoder:(NSCoder*)coder
 {
-	if (self = [super init])
+    self = [super init];
+	if (self)
 	{
 		[self setPlayerSpaceYear:	[coder decodeIntForKey:@"playerSpaceYear"]];
 		[self setBroggutCount:		[coder decodeIntForKey:@"broggutCount"]];

@@ -29,7 +29,12 @@
 
 - (void)applicationEnded { // Custom method called whenever the application ends
     [sharedGameController savePlayerProfile];
-	[sharedGameController saveCurrentSceneWithFilename:@"SavedScene.plist"];
+    if ([[sharedGameController currentScene] isBaseCamp]) {
+        [sharedGameController saveCurrentSceneWithFilename:kBaseCampFileName allowOverwrite:YES];
+    } else {
+        NSString* date = [[NSDate date] string];
+        [sharedGameController saveCurrentSceneWithFilename:date allowOverwrite:NO];
+    }
     [self stopGLAnimation];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }

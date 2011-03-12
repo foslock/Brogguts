@@ -17,6 +17,10 @@
 @class PlayerProfile;
 @class TextObject;
 
+extern NSString* kBaseCampFileName;
+extern NSString* kSavedScenesFileName;
+extern NSString* kNewMapScenesFileName;
+
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.01f
@@ -67,16 +71,18 @@
 - (void)savePlayerProfile;
 
 - (NSString*)documentsPathWithFilename:(NSString*)filename;
+- (BOOL)doesFilenameExist:(NSString*)filename;
 
 - (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index;
 - (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index;
 
 - (void)createInitialBaseCampLevel;
-- (void)saveCurrentSceneWithFilename:(NSString*)filename;
+- (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
 - (BroggutScene*)sceneWithFilename:(NSString*)filename;
+- (void)addFilenameToSceneFileList:(NSString*)filename;
 
-// Transitions from one scene to another
-- (void)transitionToSceneWithName:(NSString*)sceneName;
+// Transitions to the scene with the given filename
+- (void)transitionToSceneWithFileName:(NSString*)fileName;
 
 // Updates the logic within the current scene
 - (void)updateCurrentSceneWithDelta:(float)aDelta;
