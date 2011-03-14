@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>Map Names</key>
-	<array>
-		<string>Map 1</string>
-		<string>Map 2</string>
-		<string>Map 3</string>
-		<string>Map 4</string>
-	</array>
-</dict>
+<array>
+	<string>Map 1</string>
+	<string>Map 2</string>
+	<string>Map 3</string>
+	<string>Map 4</string>
+</array>
 </plist>

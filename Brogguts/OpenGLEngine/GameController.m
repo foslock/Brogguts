@@ -162,7 +162,7 @@ static GameController* sharedGameController = nil;
 	return filePath;
 }
 
-- (BOOL)doesFilenameExist:(NSString*)filename {
+- (BOOL)doesFilenameExistInDocuments:(NSString*)filename {
     NSString* filePath = [self documentsPathWithFilename:filename];
 	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
 	if (fileExists) {
@@ -185,6 +185,33 @@ static GameController* sharedGameController = nil;
 	NSNumber* xNum = [pointArray objectAtIndex:0];
 	NSNumber* yNum = [pointArray objectAtIndex:1];
 	return CGPointMake([xNum floatValue], [yNum floatValue]);
+}
+
+- (void)placeInitialFilesInDocumentsFolder {
+    NSString* oldFilePath = [[NSBundle mainBundle] pathForResource:@"NewMapScenesList" ofType:@"plist"];
+    NSArray* tempMapPlist = [NSArray arrayWithContentsOfFile:oldFilePath];
+    if (tempMapPlist) {
+        for (NSString* mapName in tempMapPlist) {
+            NSString* mapNamePath = [[NSBundle mainBundle] pathForResource:mapName ofType:@"plist"];
+            NSArray* mapArray = [NSArray arrayWithContentsOfFile:mapNamePath];
+            if (mapArray) {
+                NSString* newFileName = [mapName stringByAppendingString:@".plist"];
+                [mapArray writeToFile:[self documentsPathWithFilename:newFileName] atomically:YES];
+            }
+        }
+        NSString* newFilePath = [self documentsPathWithFilename:kNewMapScenesFileName];
+        [tempMapPlist writeToFile:newFilePath atomically:YES];  
+    }
+    
+    if (![self doesFilenameExistInDocuments:kSavedScenesFileName]) {
+        NSArray* newArray = [[NSArray alloc] init];
+        NSString* path = [self documentsPathWithFilename:kSavedScenesFileName];
+        [newArray writeToFile:path atomically:YES];
+    }
+    
+    if (![self doesFilenameExistInDocuments:kBaseCampFileName]) {
+        [self createInitialBaseCampLevel];
+    }
 }
 
 - (void)createInitialBaseCampLevel {
@@ -364,13 +391,13 @@ static GameController* sharedGameController = nil;
 	// 6 - NSArray - Object array, containing information about both structures and crafts
 	//
     
-    if ([self doesFilenameExist:filename] && !overwrite) {
+    if ([self doesFilenameExistInDocuments:filename] && !overwrite) {
         NSLog(@"Scene filename: %@, already exists", filename);
         return NO;
     }
 	
 	NSString* sceneTitle = currentScene.sceneName;
-	BOOL isBaseCamp = YES;
+	BOOL isBaseCamp = currentScene.isBaseCamp;
 	int widthCells = currentScene.widthCells;
 	int heightCells = currentScene.heightCells;
 	int numberOfSmallBrogguts = currentScene.numberOfSmallBrogguts;
@@ -496,7 +523,9 @@ static GameController* sharedGameController = nil;
 	}
 	
 	[plistArray insertObject:finalObjectArray atIndex:6];
-	NSString* filePath = [self documentsPathWithFilename:filename];
+    NSString* fileNameAlone = [filename stringByDeletingPathExtension];
+    NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
+	NSString* filePath = [self documentsPathWithFilename:fileNameExt];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the current Scene!");
         return NO;
@@ -509,7 +538,8 @@ static GameController* sharedGameController = nil;
 }
 
 - (BroggutScene*)sceneWithFilename:(NSString*)filename {
-	NSString* filePath = [self documentsPathWithFilename:filename];
+    NSString* fileNameExt = [filename stringByAppendingString:@".plist"];
+	NSString* filePath = [self documentsPathWithFilename:fileNameExt];
 	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
 	if (!fileExists) {
 		NSLog(@"Scene '%@' not found", filename);
@@ -593,7 +623,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectAlliance:objectAlliance];
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
-						[newScene addTouchableObject:newStructure withColliding:YES];
+						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 						if (newStructure.objectAlliance == kAllianceFriendly) {
 							newScene.homeBaseLocation = objectEndLocation;
 						}
@@ -608,7 +638,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectAlliance:objectAlliance];
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
-						[newScene addTouchableObject:newStructure withColliding:YES];
+						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 						break;
 					}
 					case kObjectStructureTurretID: {
@@ -617,7 +647,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectAlliance:objectAlliance];
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
-						[newScene addTouchableObject:newStructure withColliding:YES];
+						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 						break;
 					}
 					case kObjectStructureRadarID: {
@@ -626,7 +656,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectAlliance:objectAlliance];
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
-						[newScene addTouchableObject:newStructure withColliding:YES];
+						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 						break;
 					}
 					case kObjectStructureFixerID: {
@@ -635,7 +665,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectAlliance:objectAlliance];
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
-						[newScene addTouchableObject:newStructure withColliding:YES];
+						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 						break;
 					}
 					default:
@@ -655,7 +685,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -673,7 +703,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -688,7 +718,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -703,7 +733,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -718,7 +748,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -736,7 +766,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -751,7 +781,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -766,7 +796,7 @@ static GameController* sharedGameController = nil;
 						[newCraft setObjectLocation:objectCurrentLocation];
 						[newCraft setCurrentHull:objectCurrentHull];
 						[newCraft addCargo:objectCurrentCargo];
-						[newScene addTouchableObject:newCraft withColliding:YES];
+						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
@@ -813,7 +843,7 @@ static GameController* sharedGameController = nil;
         NSLog(@"Filename already exists!");
     }
     
-    if (![plistArray writeToFile:kSavedScenesFileName atomically:YES]) {
+    if (![plistArray writeToFile:filePath atomically:YES]) {
         NSLog(@"Failed to saved the scene name: %@", filename);
     }
     [plistArray release];
@@ -821,6 +851,10 @@ static GameController* sharedGameController = nil;
 
 - (void)transitionToSceneWithFileName:(NSString*)fileName {
     BroggutScene* scene = [gameScenes objectForKey:fileName];
+    if (!scene) {
+        BroggutScene* newScene = [self sceneWithFilename:fileName];
+        [gameScenes setValue:newScene forKey:fileName];
+    }
     if (scene) {
         transitionName = fileName;
         if (isAlreadyInScene) { // If already in a scene, fade that one out
@@ -832,9 +866,6 @@ static GameController* sharedGameController = nil;
             isFadingSceneIn = YES;
             fadingRectAlpha = 1.0f;
         }
-    } else {
-        BroggutScene* newScene = [self sceneWithFilename:fileName];
-        [gameScenes setValue:newScene forKey:fileName];
     }
 }
 
@@ -920,17 +951,13 @@ static GameController* sharedGameController = nil;
 	isAlreadyInScene = NO;
 	
 	[self loadPlayerProfile];
+    [self placeInitialFilesInDocumentsFolder];
 	
 	interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
 	
 	// Load the game scenes
 	gameScenes = [[NSMutableDictionary alloc] init];
 	BroggutScene *scene = [self sceneWithFilename:kBaseCampFileName];
-	if (!scene) {
-		[self createInitialBaseCampLevel];
-		scene = [self sceneWithFilename:kBaseCampFileName];
-	}
-	
 	[gameScenes setValue:scene forKey:kBaseCampFileName];
 	
 	// Set the starting scene for the game

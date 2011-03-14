@@ -24,6 +24,8 @@ extern NSString* kNewMapScenesFileName;
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.01f
+#define CRAFT_COLLISION_YESNO NO
+#define STRUCTURE_COLLISION_YESNO YES
 
 // Class responsible for passing touch and game events to the correct game
 // scene.  A game scene is an object which is responsible for a specific
@@ -71,11 +73,12 @@ extern NSString* kNewMapScenesFileName;
 - (void)savePlayerProfile;
 
 - (NSString*)documentsPathWithFilename:(NSString*)filename;
-- (BOOL)doesFilenameExist:(NSString*)filename;
+- (BOOL)doesFilenameExistInDocuments:(NSString*)filename;
 
 - (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index;
 - (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index;
 
+- (void)placeInitialFilesInDocumentsFolder;
 - (void)createInitialBaseCampLevel;
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
 - (BroggutScene*)sceneWithFilename:(NSString*)filename;

@@ -19,6 +19,8 @@
 @synthesize craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
 
 - (void)dealloc {
+    [turretPointsArray release];
+    [lightPointsArray release];
 	[pathPointArray release];
 	[blinkingLightImage release];
 	[super dealloc];
@@ -173,6 +175,8 @@
 		lightBlinkAlpha = 0.0f;
 		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
 		blinkingLightImage.scale = Scale2fMake(0.25f, 0.25f);
+        lightPointsArray = [[NSMutableArray alloc] init];
+        turretPointsArray = [[NSMutableArray alloc] init];
 		[self updateCraftLightLocations];
 		[self updateCraftTurretLocations];
 		pathPointArray = nil;
@@ -297,7 +301,7 @@
         } else {
             yDest -= COLLISION_CELL_HEIGHT;
         }
-        NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO];
+        NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO isStraight:NO];
         [self followPath:newPath isLooped:NO];
         [self setMovingAIState:kMovingAIStateMoving];
     }
@@ -356,7 +360,7 @@
     [self setAttackingAIState:kAttackingAIStateAttacking];
     NSArray* newPath = [[self.currentScene
                          collisionManager]
-                        pathFrom:objectLocation to:target.objectLocation allowPartial:NO];
+                        pathFrom:objectLocation to:target.objectLocation allowPartial:NO isStraight:YES];
     if (newPath)
         [self followPath:newPath isLooped:NO];
 }
@@ -415,7 +419,7 @@
     }
     
     // Update the light blinking positions
-    // [self updateCraftLightLocations];
+    [self updateCraftLightLocations];
     
     // Update turret position
     // [self updateCraftTurretLocations];
@@ -443,7 +447,7 @@
                 if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
                     NSArray* newPath = [[self.currentScene
                                          collisionManager]
-                                        pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO];
+                                        pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO isStraight:NO];
                     [self followPath:newPath isLooped:NO];
                 }
             }
@@ -547,7 +551,7 @@
 }
 
 - (void)objectWasDestroyed {
-    if (isBeingControlled) {
+    if (isBeingControlled && objectAlliance == kAllianceFriendly) {
         // The controlling ship was just destroyed
         [self.currentScene controlNearestShipToLocation:objectLocation];
     }
@@ -577,7 +581,7 @@
                 
                 NSArray* newPath = [[self.currentScene
                                      collisionManager]
-                                    pathFrom:objectLocation to:dragLocation allowPartial:NO];
+                                    pathFrom:objectLocation to:dragLocation allowPartial:NO isStraight:NO];
                 [self followPath:newPath isLooped:NO];
                 [self setMovingAIState:kMovingAIStateMoving];
                 [self setAttackingAIState:kAttackingAIStateNeutral];
@@ -586,7 +590,6 @@
                 if (enemy) {
                     [self setPriorityEnemyTarget:enemy];
                 }
-                
                 if (![self isKindOfClass:[MonarchCraftObject class]]) {
                     if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
                         [self setMovingAIState:kMovingAIStateMoving];

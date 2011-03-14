@@ -9,6 +9,7 @@
 #import "TouchableObject.h"
 #import "BroggutScene.h"
 #import "Image.h"
+#import "CraftAndStructures.h"
 
 @implementation TouchableObject
 @synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad, touchableBounds;
@@ -176,6 +177,14 @@
 	for (TouchableObject* enemy in setCopy) {
 		[enemy targetWasDestroyed:self];
 	}
+    int numberOfSmallBrogguts = 3;
+    CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
+                             objectLocation.y - (objectImage.imageSize.height / 2),
+                             objectImage.imageSize.width,
+                             objectImage.imageSize.height);
+    if (![self isKindOfClass:[SpiderDroneObject class]]) {
+        [[self currentScene] addSmallBrogguts:numberOfSmallBrogguts inBounds:rect withLocationArray:nil];
+    }
 	[super objectWasDestroyed];
 }
 
@@ -201,7 +210,6 @@
 	} else {
 		return;
 	}
-	
 	// NSLog(@"Hovered left object (%i)", uniqueObjectID);
 }
 

@@ -8,10 +8,12 @@
 
 #import "MapChoiceController.h"
 #import "GameController.h"
+#import "OpenGLEngineAppDelegate.h"
 
-enum {
+enum SectionNames {
     kSectionSavedScenes,
     kSectionNewMaps,
+    kSectionExitButton,
 };
 
 @implementation MapChoiceController
@@ -116,7 +118,7 @@ enum {
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -128,6 +130,9 @@ enum {
             break;
         case kSectionNewMaps:
             return numberOfNewMaps;
+            break;
+        case kSectionExitButton:
+            return 1;
             break;
         default:
             return 0;
@@ -150,6 +155,12 @@ enum {
             break;
         case kSectionNewMaps:
             cell.textLabel.text = [newMapNames objectAtIndex:indexPath.row];
+            break;
+        case kSectionExitButton:
+            cell.textLabel.textAlignment = UITextAlignmentCenter;
+            cell.backgroundColor = [UIColor redColor];
+            cell.textLabel.text = @"Back";
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
             break;
         default:
             return 0;
@@ -201,15 +212,32 @@ enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Chose row at %@", indexPath);
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    switch (indexPath.section) {
+        case kSectionSavedScenes: {
+            NSString* name = [savedScenesNames objectAtIndex:indexPath.row];
+            NSLog(@"Load the saved scene with name %@", name);
+            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+            [sharedGameController transitionToSceneWithFileName:name];
+        }
+            break;
+        case kSectionNewMaps: {
+            NSString* name = [newMapNames objectAtIndex:indexPath.row];
+            NSLog(@"Make a new scene with name %@", name);
+            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+            [sharedGameController transitionToSceneWithFileName:name];
+        }
+            break;
+        case kSectionExitButton: {
+            [self.parentViewController dismissModalViewControllerAnimated:YES];
+        }
+            break;
+        default:
+            break;
+    }
+    UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setHighlighted:NO animated:YES];
+    [cell setSelected:NO];
+    [self.parentViewController dismissModalViewControllerAnimated:YES];
 }
 
 @end

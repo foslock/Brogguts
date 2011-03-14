@@ -115,25 +115,25 @@ enum StructureButtonIDs {
 		BroggutScene* scene = [[GameController sharedGameController] currentScene];
 		switch (currentDragButtonID) {
 			case kStructureButtonBlockID:
-				[scene attemptToCreateStructureWithID:kObjectStructureBlockID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureBlockID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonRefineryID:
-				[scene attemptToCreateStructureWithID:kObjectStructureRefineryID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureRefineryID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonCraftUpgradesID:
-				[scene attemptToCreateStructureWithID:kObjectStructureCraftUpgradesID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureCraftUpgradesID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonStructureUpgradesID:
-				[scene attemptToCreateStructureWithID:kObjectStructureStructureUpgradesID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureStructureUpgradesID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonTurretID:
-				[scene attemptToCreateStructureWithID:kObjectStructureTurretID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureTurretID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonRadarID:
-				[scene attemptToCreateStructureWithID:kObjectStructureRadarID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureRadarID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kStructureButtonFixerID:
-				[scene attemptToCreateStructureWithID:kObjectStructureFixerID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateStructureWithID:kObjectStructureFixerID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			default:
 				break;

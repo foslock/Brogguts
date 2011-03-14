@@ -28,12 +28,14 @@
 }
 
 - (void)applicationEnded { // Custom method called whenever the application ends
+    if (applicationSaved) return;
+    applicationSaved = YES;
     [sharedGameController savePlayerProfile];
     if ([[sharedGameController currentScene] isBaseCamp]) {
         [sharedGameController saveCurrentSceneWithFilename:kBaseCampFileName allowOverwrite:YES];
     } else {
-        NSString* date = [[NSDate date] string];
-        [sharedGameController saveCurrentSceneWithFilename:date allowOverwrite:NO];
+        NSString* dateString = [[NSDate date] description];
+        [sharedGameController saveCurrentSceneWithFilename:dateString allowOverwrite:NO];
     }
     [self stopGLAnimation];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
@@ -45,6 +47,7 @@
 	srandom(time(NULL));
     
     viewInserted = NO;
+    applicationSaved = NO;
 	
 	// Set the orientation!
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];

@@ -165,7 +165,7 @@
         if (craft.objectAlliance == kAllianceFriendly) continue;
         switch (craftAICommand) {
             case kCraftAICommandAttack: {
-                NSArray* path = [[myScene collisionManager] pathFrom:craft.objectLocation to:location allowPartial:NO];
+                NSArray* path = [[myScene collisionManager] pathFrom:craft.objectLocation to:location allowPartial:NO isStraight:NO];
                 [craft followPath:path isLooped:NO];
                 if ([craft isKindOfClass:[AntCraftObject class]]) {
                     AntCraftObject* thisAnt = (AntCraftObject*)craft;
@@ -177,7 +177,7 @@
             }
                 break;
             case kCraftAICommandMove: {
-                NSArray* path = [[myScene collisionManager] pathFrom:craft.objectLocation to:location allowPartial:NO];
+                NSArray* path = [[myScene collisionManager] pathFrom:craft.objectLocation to:location allowPartial:NO isStraight:NO];
                 [craft followPath:path isLooped:NO];
                 if ([craft isKindOfClass:[AntCraftObject class]]) {
                     AntCraftObject* thisAnt = (AntCraftObject*)craft;
