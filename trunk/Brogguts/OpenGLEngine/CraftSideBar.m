@@ -108,28 +108,28 @@ enum CraftButtonIDs {
 		BroggutScene* scene = [[GameController sharedGameController] currentScene];
 		switch (currentDragButtonID) {
 			case kCraftButtonAntID:
-				[scene attemptToCreateCraftWithID:kObjectCraftAntID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftAntID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonMothID:
-				[scene attemptToCreateCraftWithID:kObjectCraftMothID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftMothID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonBeetleID:
-				[scene attemptToCreateCraftWithID:kObjectCraftBeetleID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftBeetleID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonMonarchID:
-				[scene attemptToCreateCraftWithID:kObjectCraftMonarchID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftMonarchID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonCamelID:
-				[scene attemptToCreateCraftWithID:kObjectCraftCamelID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftCamelID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonRatID:
-				[scene attemptToCreateCraftWithID:kObjectCraftRatID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftRatID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonSpiderID:
-				[scene attemptToCreateCraftWithID:kObjectCraftSpiderID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftSpiderID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			case kCraftButtonEagleID:
-				[scene attemptToCreateCraftWithID:kObjectCraftEagleID atLocation:absoluteLocation isTraveling:YES];
+				[scene attemptToCreateCraftWithID:kObjectCraftEagleID atLocation:absoluteLocation isTraveling:YES withAlliance:kAllianceFriendly];
 				break;
 			default:
 				break;

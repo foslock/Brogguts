@@ -133,7 +133,7 @@ typedef struct Path_Node_Queue {
 - (BOOL)isLineOpenFromLocation:(CGPoint)startLoc toLocation:(CGPoint)endLoc;
 - (void)setPathNodeIsOpen:(BOOL)open atLocation:(CGPoint)location;
 - (PathNode*)pathNodeForRow:(int)row forColumn:(int)col;
-- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial;
+- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial isStraight:(BOOL)straight;
 
 - (void)addCollidableObject:(CollidableObject*)object;
 - (void)removeCollidableObject:(CollidableObject*)object;

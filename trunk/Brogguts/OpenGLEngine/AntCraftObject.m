@@ -44,34 +44,24 @@ enum MiningStates {
 }
 
 - (void)updateCraftLightLocations { // Too Slow!!
-	[lightPointsArray release];
+	[lightPointsArray removeAllObjects];
 	float radDir = DEGREES_TO_RADIANS(objectRotation);
 	CGPoint lPoint1 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
 								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
 	
 	CGPoint lPoint2 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
 								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint3 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint4 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
-	
-	lightPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:lPoint1],
-						 [NSValue valueWithCGPoint:lPoint2],
-						 [NSValue valueWithCGPoint:lPoint3],
-						 [NSValue valueWithCGPoint:lPoint4],
-						 nil];
+    
+    [lightPointsArray addObject:[NSValue valueWithCGPoint:lPoint1]];
+    [lightPointsArray addObject:[NSValue valueWithCGPoint:lPoint2]];
 }
 
 - (void)updateCraftTurretLocations {
-	[turretPointsArray release];
+	[turretPointsArray removeAllObjects];
 	float radDir = DEGREES_TO_RADIANS(objectRotation);
 	CGPoint tPoint1 = CGPointMake((objectLocation.x) * cosf(radDir),
 								  (objectLocation.y) * sinf(radDir));
-	turretPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:tPoint1],
-						nil];
+	[turretPointsArray addObject:[NSValue valueWithCGPoint:tPoint1]];
 }
 
 - (CGPoint)miningLocation {

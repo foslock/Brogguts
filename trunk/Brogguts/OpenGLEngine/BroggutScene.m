@@ -181,20 +181,19 @@
             [enemyAIController addBrogguts:value];
 		[obj release];
 	}
-	
 }
 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray {
 	for (int i = 0; i < number; i++) {
 		CGPoint curPoint;
-		if ([locationArray count] != 0) {
+		if (locationArray && [locationArray count] != 0) {
 			int randomIndex = arc4random() % [locationArray count];
 			NSArray* numberArray = [locationArray objectAtIndex:randomIndex];
 			curPoint = CGPointMake([[numberArray objectAtIndex:0] floatValue],
 								   [[numberArray objectAtIndex:1] floatValue]);
 		} else {
-			curPoint = CGPointMake(RANDOM_0_TO_1() * bounds.size.width,
-								   RANDOM_0_TO_1() * bounds.size.height);
+			curPoint = CGPointMake(bounds.origin.x + RANDOM_0_TO_1() * bounds.size.width,
+								   bounds.origin.y + RANDOM_0_TO_1() * bounds.size.height);
 		}
 		
 		Image* rockImage = [[Image alloc] initWithImageNamed:kObjectBroggutSmallSprite filter:GL_LINEAR];
@@ -605,13 +604,15 @@
 		objPoint[0] = obj.objectLocation.x * xRatio;
 		objPoint[1] = obj.objectLocation.y * yRatio;
 		if ([obj isKindOfClass:[TouchableObject class]]) {
+            /*
 			// If the object has an "effect circle" then draw it in faded gray
 			Circle newCircle;
 			newCircle.x = objPoint[0];
 			newCircle.y = objPoint[1];
 			newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
 			glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
-			drawCircle( newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
+			drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
+            */
 		}
 		if (obj.objectAlliance == kAllianceNeutral) {
 			glColor4f(1.0f, 1.0f, 0.0f, alpha);
@@ -837,19 +838,23 @@
 	NSLog(@"Failed to create object at location <%.1f,%.1f>", location.x, location.y);
 }
 
-- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
 	// Create a temp at the creation location
 	switch (craftID) {
 		case kObjectCraftAntID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal]) {
-				[self addBroggutValue:-kCraftAntCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftAntCostBrogguts atLocation:location withAlliance:alliance];
 				AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+                if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -857,14 +862,18 @@
 		}
 		case kObjectCraftMothID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal]) {
-				[self addBroggutValue:-kCraftMothCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftMothCostBrogguts atLocation:location withAlliance:alliance];
 				MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+				if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -872,14 +881,18 @@
 		}
 		case kObjectCraftBeetleID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal]) {
-				[self addBroggutValue:-kCraftBeetleCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftBeetleCostBrogguts atLocation:location withAlliance:alliance];
 				BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+				if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -887,14 +900,18 @@
 		}
 		case kObjectCraftMonarchID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal]) {
-				[self addBroggutValue:-kCraftMonarchCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftMonarchCostBrogguts atLocation:location withAlliance:alliance];
 				MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+				if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -902,14 +919,18 @@
 		}
 		case kObjectCraftCamelID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal]) {
-				[self addBroggutValue:-kCraftCamelCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftCamelCostBrogguts atLocation:location withAlliance:alliance];
 				CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+				if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -921,14 +942,18 @@
 		}
 		case kObjectCraftSpiderID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal]) {
-				[self addBroggutValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:alliance];
 				SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
-				[newCraft setObjectLocation:homeBaseLocation];
-				[newCraft setObjectAlliance:kAllianceFriendly];
-				if (numberOfCurrentShips == 0) {
+				if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+				[newCraft setObjectAlliance:alliance];
+				if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
 					[self addControlledCraft:newCraft];
 				}
-				[self addTouchableObject:newCraft withColliding:YES];
+				[self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -943,7 +968,7 @@
 	}
 }
 
-- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling {
+- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
 	switch (structureID) {
 		case kObjectStructureBaseStationID: {
 			NSLog(@"Shouldn't create another base station!");
@@ -951,11 +976,15 @@
 		}
 		case kObjectStructureBlockID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal]) {
-				[self addBroggutValue:-kStructureBlockCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kStructureBlockCostBrogguts atLocation:location withAlliance:alliance];
 				BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:YES];
-				[newStructure setObjectLocation:homeBaseLocation];
-				[newStructure setObjectAlliance:kAllianceFriendly];
-				[self addTouchableObject:newStructure withColliding:YES];
+				if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+				[newStructure setObjectAlliance:alliance];
+				[self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -963,11 +992,15 @@
 		}
 		case kObjectStructureTurretID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal]) {
-				[self addBroggutValue:-kStructureTurretCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kStructureTurretCostBrogguts atLocation:location withAlliance:alliance];
 				TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:YES];
-				[newStructure setObjectLocation:homeBaseLocation];
-				[newStructure setObjectAlliance:kAllianceFriendly];
-				[self addTouchableObject:newStructure withColliding:YES];
+				if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+				[newStructure setObjectAlliance:alliance];
+				[self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -975,11 +1008,15 @@
 		}
 		case kObjectStructureRadarID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal]) {
-				[self addBroggutValue:-kStructureRadarCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kStructureRadarCostBrogguts atLocation:location withAlliance:alliance];
 				RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:YES];
-				[newStructure setObjectLocation:homeBaseLocation];
-				[newStructure setObjectAlliance:kAllianceFriendly];
-				[self addTouchableObject:newStructure withColliding:YES];
+				if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+				[newStructure setObjectAlliance:alliance];
+				[self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -987,11 +1024,15 @@
 		}
 		case kObjectStructureFixerID: {
 			if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal]) {
-				[self addBroggutValue:-kStructureFixerCostBrogguts atLocation:location withAlliance:kAllianceFriendly];
+				[self addBroggutValue:-kStructureFixerCostBrogguts atLocation:location withAlliance:alliance];
 				FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:YES];
-				[newStructure setObjectLocation:homeBaseLocation];
-				[newStructure setObjectAlliance:kAllianceFriendly];
-				[self addTouchableObject:newStructure withColliding:YES];
+				if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+				[newStructure setObjectAlliance:alliance];
+				[self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
 			} else {
 				[self failedToCreateAtLocation:location];
 			}
@@ -1098,7 +1139,7 @@
 							if ([touches count] == 1) isTouchScrolling = NO;
 						}
 						noObjectTouched = NO;
-						continue;
+						break;
 					}
 				}
 			}

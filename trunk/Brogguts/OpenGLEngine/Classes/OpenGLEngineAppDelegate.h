@@ -13,6 +13,7 @@
 @class GameController;
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
+    BOOL applicationSaved;
 	GameController* sharedGameController;
     UIWindow *window;
     EAGLView *glView;

@@ -220,10 +220,10 @@
 - (void)controlNearestShipToLocation:(CGPoint)location;
 
 // Called when the player is trying to create/purchase a craft at the location
-- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+- (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance;
 
 // Called when the player is trying to create/purchase a structure at the location
-- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+- (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

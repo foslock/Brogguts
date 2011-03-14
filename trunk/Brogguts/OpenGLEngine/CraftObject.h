@@ -39,8 +39,8 @@
 	
 	// Turrets and blinking lights
 	Image* blinkingLightImage;
-	NSArray* turretPointsArray;
-	NSArray* lightPointsArray;
+	NSMutableArray* turretPointsArray;
+	NSMutableArray* lightPointsArray;
 	int lightBlinkTimer;
 	float lightBlinkAlpha;
 	

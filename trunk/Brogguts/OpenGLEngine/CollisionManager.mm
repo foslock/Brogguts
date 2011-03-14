@@ -514,11 +514,15 @@
 	node->isOpen = open;
 }
 
-- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial; {
+- (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial isStraight:(BOOL)straight {
 	MediumBroggut* toBroggut = [self broggutCellForLocation:toLocation];
 	if (toBroggut->broggutValue != -1 && !partial) {
 		return nil; // If the final destination is a broggut, and no partial path, then return 'nil'.
 	}
+    if (straight) {
+        NSArray* array = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:toLocation], nil];
+        return array;
+    }
 	int toRow = (toLocation.y / COLLISION_CELL_HEIGHT);
 	int toCol = (toLocation.x / COLLISION_CELL_WIDTH);
 	int fromRow = (fromLocation.y / COLLISION_CELL_HEIGHT);

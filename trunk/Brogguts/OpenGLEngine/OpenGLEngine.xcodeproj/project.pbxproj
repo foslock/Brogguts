@@ -63,6 +63,11 @@
 		6F67CBFC1329EED40061B1A9 /* SkirmishMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBFA1329EED20061B1A9 /* SkirmishMenuController.xib */; };
 		6F67CC06132A844C0061B1A9 /* MapChoiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CC04132A844B0061B1A9 /* MapChoiceController.m */; };
 		6F67CC07132A844C0061B1A9 /* MapChoiceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */; };
+		6F67CC11132D25BE0061B1A9 /* NewMapScenesList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */; };
+		6F67CC1A132D6EE70061B1A9 /* Map 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC19132D6EE70061B1A9 /* Map 1.plist */; };
+		6F67CC1E132D72130061B1A9 /* Map 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1B132D72120061B1A9 /* Map 2.plist */; };
+		6F67CC1F132D72130061B1A9 /* Map 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1C132D72120061B1A9 /* Map 3.plist */; };
+		6F67CC20132D72130061B1A9 /* Map 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1D132D72120061B1A9 /* Map 4.plist */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -208,6 +213,11 @@
 		6F67CC03132A844A0061B1A9 /* MapChoiceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapChoiceController.h; sourceTree = "<group>"; };
 		6F67CC04132A844B0061B1A9 /* MapChoiceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapChoiceController.m; sourceTree = "<group>"; };
 		6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapChoiceController.xib; sourceTree = "<group>"; };
+		6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = NewMapScenesList.plist; sourceTree = "<group>"; };
+		6F67CC19132D6EE70061B1A9 /* Map 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 1.plist"; sourceTree = "<group>"; };
+		6F67CC1B132D72120061B1A9 /* Map 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 2.plist"; sourceTree = "<group>"; };
+		6F67CC1C132D72120061B1A9 /* Map 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 3.plist"; sourceTree = "<group>"; };
+		6F67CC1D132D72120061B1A9 /* Map 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 4.plist"; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -393,6 +403,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6F67CC18132D662E0061B1A9 /* Default Maps */,
 				6F2CB40D131A073C001A10E3 /* testsound.wav */,
 				6F8B878913078E34009CD1BF /* Images */,
 				6F8B878A13078E3F009CD1BF /* Scenes */,
@@ -540,6 +551,18 @@
 				6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */,
 			);
 			name = "Menu Controllers";
+			sourceTree = "<group>";
+		};
+		6F67CC18132D662E0061B1A9 /* Default Maps */ = {
+			isa = PBXGroup;
+			children = (
+				6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */,
+				6F67CC19132D6EE70061B1A9 /* Map 1.plist */,
+				6F67CC1B132D72120061B1A9 /* Map 2.plist */,
+				6F67CC1C132D72120061B1A9 /* Map 3.plist */,
+				6F67CC1D132D72120061B1A9 /* Map 4.plist */,
+			);
+			name = "Default Maps";
 			sourceTree = "<group>";
 		};
 		6F6A2C0D12FC7982002A4201 /* GameCenter */ = {
@@ -885,6 +908,11 @@
 				6F67CBF71329A6620061B1A9 /* ProfileMenuController.xib in Resources */,
 				6F67CBFC1329EED40061B1A9 /* SkirmishMenuController.xib in Resources */,
 				6F67CC07132A844C0061B1A9 /* MapChoiceController.xib in Resources */,
+				6F67CC11132D25BE0061B1A9 /* NewMapScenesList.plist in Resources */,
+				6F67CC1A132D6EE70061B1A9 /* Map 1.plist in Resources */,
+				6F67CC1E132D72130061B1A9 /* Map 2.plist in Resources */,
+				6F67CC1F132D72130061B1A9 /* Map 3.plist in Resources */,
+				6F67CC20132D72130061B1A9 /* Map 4.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

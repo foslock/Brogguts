@@ -8,6 +8,7 @@
 
 #import "BroggutObject.h"
 #import "BroggutScene.h"
+#import "Image.h"
 
 @implementation BroggutObject
 @synthesize broggutValue, broggutType;
@@ -17,6 +18,8 @@
 	if (self) {
 		broggutValue = 0;
 		broggutType = kObjectBroggutSmallID;
+        float randomScale = (RANDOM_0_TO_1() * 0.25f) + 0.75f;
+        objectImage.scale = Scale2fMake(randomScale, randomScale);
 	}
 	return self;
 }
