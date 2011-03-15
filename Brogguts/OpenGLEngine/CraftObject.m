@@ -18,6 +18,11 @@
 @implementation CraftObject
 @synthesize craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
 
+- (id)retain {
+    // NSLog(@"Craft Retained, count: %i", [self retainCount]);
+    return [super retain];
+}
+
 - (void)dealloc {
     if (turretPointsArray) {
         if (turretPointsArray->locations) {
@@ -557,7 +562,7 @@
     
     // Draw the laser attack
     if (attributeWeaponsDamage != 0) {
-        if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+        if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange + maxVelocity)) {
             float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
             if (width != 0.0f) {
                 if (objectAlliance == kAllianceFriendly)

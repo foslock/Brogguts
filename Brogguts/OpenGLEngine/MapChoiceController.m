@@ -27,8 +27,8 @@ enum SectionNames {
         NSString* mapsPath = [sharedGameController documentsPathWithFilename:kNewMapScenesFileName];
         NSArray* savedPlistArray = [NSArray arrayWithContentsOfFile:savedScenePath];
         NSArray* mapsPlistArray = [NSArray arrayWithContentsOfFile:mapsPath];
-        savedScenesNames = [[NSArray alloc] initWithArray:savedPlistArray];
-        newMapNames = [[NSArray alloc] initWithArray:mapsPlistArray];
+        savedScenesNames = [[NSMutableArray alloc] initWithArray:savedPlistArray];
+        newMapNames = [[NSMutableArray alloc] initWithArray:mapsPlistArray];
         numberOfSavedScenes = [savedScenesNames count];
         numberOfNewMaps = [newMapNames count];
     }
@@ -216,7 +216,12 @@ enum SectionNames {
         case kSectionSavedScenes: {
             NSString* name = [savedScenesNames objectAtIndex:indexPath.row];
             NSLog(@"Load the saved scene with name %@", name);
-            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+            NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedScenesFileName];
+            [savedScenesNames removeObjectAtIndex:indexPath.row];
+            if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
+                NSLog(@"Error overwriting previously saved scene: %@", name);
+            }
+            
             [sharedGameController transitionToSceneWithFileName:name];
         }
             break;

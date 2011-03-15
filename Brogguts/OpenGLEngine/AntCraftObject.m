@@ -51,13 +51,20 @@ enum MiningStates {
 }
 
 - (void)updateCraftTurretLocations {
-	
+	// Update turret locations
 }
 
 - (CGPoint)miningLocation {
 	return miningLocation;
 }
-
+/*
+- (void)objectEnteredEffectRadius:(TouchableObject *)other {
+    if (objectAlliance != other.objectAlliance) {
+        NSLog(@"Object entered");
+    }
+    [super objectEnteredEffectRadius:other];
+}
+*/
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location {
 	if (attributePlayerCurrentCargo >= attributePlayerCargoCapacity) {
 		[self returnBroggutsHome];
@@ -91,8 +98,10 @@ enum MiningStates {
 		[self followPath:pathArray isLooped:NO];
 		miningState = kMiningStateApproaching;
 		[self setMovingAIState:kMovingAIStateMining];
-        if (isBeingControlled)
+        if (isBeingControlled) {
             [[self currentScene] removeControlledCraft:self];
+            [self setIsBeingControlled:NO];
+        }
 		return YES;
 	} else {
 		miningState = kMiningStateNone;

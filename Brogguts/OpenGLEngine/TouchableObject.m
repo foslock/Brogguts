@@ -146,8 +146,8 @@
 	if (!other.isHidden && !isTraveling) {
 		if (attackingAIState != kAttackingAIStateAttacking) {
 			if (closestEnemyObject && !closestEnemyObject.destroyNow) {
-				if (GetDistanceBetweenPoints(objectLocation, other.objectLocation) < 
-					GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation)) {
+				if (GetDistanceBetweenPointsSquared(objectLocation, other.objectLocation) < 
+					GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation)) {
 					if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
 						[self setClosestEnemyObject:other];
 					}

@@ -77,6 +77,8 @@
 		objectTable = [[NSMutableDictionary alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+        radialObjectsQueue = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+        startingRadialIndex = 0;
 		radialAffectedObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		
 		valueTextObject = [[TextObject alloc]
@@ -388,8 +390,20 @@
 }
 
 - (void)processAllEffectRadii {
-	for (int i = 0; i < [radialAffectedObjects count]; i++) {
-		TouchableObject* obj1 = [radialAffectedObjects objectAtIndex:i];
+    int startingIndex = startingRadialIndex;
+    for (int i = startingIndex; i < startingIndex + RADIAL_EFFECT_MAX_COUNT; i++) {
+        int realIndex = i;
+        if (realIndex >= [radialAffectedObjects count]) {
+            realIndex -= [radialAffectedObjects count];
+        }
+        // Add objects to the queue
+        [radialObjectsQueue addObject:[radialAffectedObjects objectAtIndex:realIndex]];
+        
+        startingRadialIndex = realIndex;
+    }
+    
+	for (int i = 0; i < [radialObjectsQueue count]; i++) {
+		TouchableObject* obj1 = [radialObjectsQueue objectAtIndex:i];
 		for (int j = 0; j < [radialAffectedObjects count]; j++) {
 			TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
 			if (obj1 == obj2) continue;
@@ -399,6 +413,7 @@
                 [obj2 objectEnteredEffectRadius:obj1];
 		}
 	}
+    [radialObjectsQueue removeAllObjects];
 }
 
 #pragma mark -

@@ -23,7 +23,7 @@
 #define RADIANS_TO_DEGREES(__ANGLE__) ((__ANGLE__) * 180.0 / M_PI)
 
 // Raises the argument to a power of 2
-#define POW2(X) (X * X)
+#define POW2(X) ( (X) * (X) )
 
 // Macro that allows you to clamp a value within the defined bounds
 #define CLAMP(X, A, B) ((X < A) ? A : ((X > B) ? B : X))

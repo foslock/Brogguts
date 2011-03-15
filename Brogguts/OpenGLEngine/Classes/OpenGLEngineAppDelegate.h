@@ -11,9 +11,11 @@
 
 @class EAGLView;
 @class GameController;
+@class MainMenuController;
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
     BOOL applicationSaved;
+    MainMenuController* mainMenuController;
 	GameController* sharedGameController;
     UIWindow *window;
     EAGLView *glView;
