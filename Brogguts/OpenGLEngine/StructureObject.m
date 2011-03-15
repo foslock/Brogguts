@@ -107,9 +107,11 @@
 			image = [[Image alloc] initWithImageNamed:kObjectStructureFixerSprite filter:GL_LINEAR];
 			break;
 		default:
+            image = [[Image alloc] initWithImageNamed:kObjectStructureBlockSprite filter:GL_LINEAR]; // Default to block
 			break;
 	}
 	self = [super initWithImage:image withLocation:location withObjectType:typeID];
+    [image release];
 	if (self) {
 		staticObject = YES;
 		isTouchable = YES;

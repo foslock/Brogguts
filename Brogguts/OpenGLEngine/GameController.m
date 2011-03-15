@@ -207,6 +207,7 @@ static GameController* sharedGameController = nil;
         NSArray* newArray = [[NSArray alloc] init];
         NSString* path = [self documentsPathWithFilename:kSavedScenesFileName];
         [newArray writeToFile:path atomically:YES];
+        [newArray release];
     }
     
     if (![self doesFilenameExistInDocuments:kBaseCampFileName]) {
@@ -331,40 +332,42 @@ static GameController* sharedGameController = nil;
 	}
 	
 	// Create a bunch of enemies to try to kill
-	for (int i = 0; i < 80; i++) {
-		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
-		
-		int objectTypeID = kObjectTypeCraft;
-		int objectID = kObjectCraftAntID;
-		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
-		int objectAlliance = kAllianceEnemy;
-		float objectRotation = 360 * RANDOM_MINUS_1_TO_1();
-		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake(120 * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
-		CGPoint objectCurrentLocation = objectEndLocation;
-		int objectCurrentHull = -1; // Means full
-		BOOL objectIsControlledShip = NO;
-		BOOL objectIsMining = NO;
-		CGPoint objectMiningLocation = CGPointZero;
-		int objectCurrentCargo = 0;
-		
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
-		[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
-		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
-		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
-		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
-		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
-		[finalObjectArray addObject:thisCraftArray];
-		[thisCraftArray release];
-		[objectCurrentPath release];
-	}
+	for (int i = 0; i < 100; i++) {
+        for (int j = 0; j < 1; j++) {
+            NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
+            
+            int objectTypeID = kObjectTypeCraft;
+            int objectID = kObjectCraftAntID;
+            NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+            int objectAlliance = kAllianceEnemy;
+            float objectRotation = 360 * RANDOM_MINUS_1_TO_1();
+            BOOL objectIsTraveling = NO;
+            CGPoint objectEndLocation = CGPointMake((100 + j) * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
+            CGPoint objectCurrentLocation = objectEndLocation;
+            int objectCurrentHull = -1; // Means full
+            BOOL objectIsControlledShip = NO;
+            BOOL objectIsMining = NO;
+            CGPoint objectMiningLocation = CGPointZero;
+            int objectCurrentCargo = 0;
+            
+            [thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+            [thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+            [thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+            [thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+            [thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+            [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+            [self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
+            [self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
+            [thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+            [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+            [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+            [self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
+            [thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
+            [finalObjectArray addObject:thisCraftArray];
+            [thisCraftArray release];
+            [objectCurrentPath release];
+        }
+    }
 	
 	[plistArray insertObject:finalObjectArray atIndex:6];
 	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
@@ -523,18 +526,20 @@ static GameController* sharedGameController = nil;
 	}
 	
 	[plistArray insertObject:finalObjectArray atIndex:6];
+    [finalObjectArray release];
     NSString* fileNameAlone = [filename stringByDeletingPathExtension];
     NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
 	NSString* filePath = [self documentsPathWithFilename:fileNameExt];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the current Scene!");
+        [plistArray release];
         return NO;
 	}
     if (!currentScene.isBaseCamp) {
         [self addFilenameToSceneFileList:filename];
     }
+    [plistArray release];
     return YES;
-	[plistArray release];
 }
 
 - (BroggutScene*)sceneWithFilename:(NSString*)filename {
@@ -630,6 +635,7 @@ static GameController* sharedGameController = nil;
 						if (newStructure.objectAlliance == kAllianceEnemy) {
 							newScene.enemyBaseLocation = objectEndLocation;
 						}
+                        [newStructure release];
 						break;
 					}
 					case kObjectStructureBlockID: {
@@ -639,6 +645,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
 						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                        [newStructure release];
 						break;
 					}
 					case kObjectStructureTurretID: {
@@ -648,6 +655,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
 						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                        [newStructure release];
 						break;
 					}
 					case kObjectStructureRadarID: {
@@ -657,6 +665,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
 						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                        [newStructure release];
 						break;
 					}
 					case kObjectStructureFixerID: {
@@ -666,6 +675,7 @@ static GameController* sharedGameController = nil;
 						[newStructure setObjectLocation:objectCurrentLocation];
 						[newStructure setCurrentHull:objectCurrentHull];
 						[newScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                        [newStructure release];
 						break;
 					}
 					default:
@@ -693,6 +703,7 @@ static GameController* sharedGameController = nil;
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftMothID: {
@@ -708,6 +719,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftBeetleID: {
@@ -723,6 +735,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftMonarchID: {
@@ -738,6 +751,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftCamelID: {
@@ -756,6 +770,7 @@ static GameController* sharedGameController = nil;
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftRatID: {
@@ -771,6 +786,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftSpiderID: {
@@ -786,6 +802,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					case kObjectCraftEagleID: {
@@ -801,6 +818,7 @@ static GameController* sharedGameController = nil;
 							[newScene addControlledCraft:newCraft];
 							[newScene setCameraLocation:objectEndLocation];
 						}
+                        [newCraft release];
 						break;
 					}
 					default:
@@ -914,14 +932,12 @@ static GameController* sharedGameController = nil;
 
 - (CGPoint)adjustTouchOrientationForTouch:(CGPoint)aTouch inScreenBounds:(CGRect)bounds {
 	
-	CGPoint touchLocation;
+	CGPoint touchLocation = CGPointZero;
 	
 	if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
 		touchLocation.x = kPadScreenLandscapeWidth - aTouch.y;
 		touchLocation.y = kPadScreenLandscapeHeight - aTouch.x;
-	}
-	
-	if (interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+	} else if (interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
 		touchLocation.x = aTouch.y;
 		touchLocation.y = aTouch.x;
 	}

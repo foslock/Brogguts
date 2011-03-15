@@ -91,7 +91,8 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
 }
 
 - (id)init {
-    if(self = [super init]) {
+    self = [super init];
+    if (self) {
         
         // Initialize the vertices array.
         iva = calloc(kMax_Images, sizeof(TexturedColoredQuad));

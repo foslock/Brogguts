@@ -202,8 +202,7 @@
 		BroggutObject* tempObj = [[BroggutObject alloc]
 								  initWithImage:rockImage
 								  withLocation:CGPointMake(curPoint.x + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_WIDTH / 2),
-														   curPoint.y + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_HEIGHT / 2))
-								  withObjectType:kObjectBroggutSmallID];
+														   curPoint.y + RANDOM_MINUS_1_TO_1() * (COLLISION_CELL_HEIGHT / 2))];
 		tempObj.objectRotation = 360 * RANDOM_0_TO_1();
 		tempObj.rotationSpeed = RANDOM_MINUS_1_TO_1() * kBroggutSmallMaxRotationSpeed;
 		tempObj.objectVelocity = Vector2fMake(RANDOM_MINUS_1_TO_1() * ((float)kBroggutSmallMaxVelocity / 100.0f),
@@ -330,6 +329,7 @@
 				float yDiff = craft.objectLocation.y - averageY;
 				CGPoint craftDest = CGPointMake(currentTouchLocation.x + xDiff, currentTouchLocation.y + yDiff);
 				[craft stopFollowingCurrentPath];
+                [craft setAttackingAIState:kAttackingAIStateNeutral];
 				[craft accelerateTowardsLocation:craftDest];
 			}
 			cameraLocation = GetMidpointFromPoints(cameraPoint, currentTouchLocation);
@@ -389,7 +389,7 @@
 	for (int i = 0; i < [renderableObjects count]; i++) {
 		CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
 		[tempObj updateObjectLogicWithDelta:aDelta];
-        if ([tempObj isKindOfClass:[BroggutObject class]]) {
+        if (tempObj.objectType == kObjectBroggutSmallID) {
             if (tempObj.objectLocation.x < fullMapBounds.origin.x)
                 tempObj.objectLocation = CGPointMake(fullMapBounds.size.width, tempObj.objectLocation.y);
             if (tempObj.objectLocation.x > fullMapBounds.size.width)

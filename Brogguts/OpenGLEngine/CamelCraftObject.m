@@ -25,8 +25,6 @@ enum MiningStates {
 @synthesize miningAIValue;
 
 - (void)dealloc {
-	[turretPointsArray release];
-	[lightPointsArray release];
 	[super dealloc];
 }
 
@@ -47,7 +45,7 @@ enum MiningStates {
 	if ([super performSpecialAbilityAtLocation:location]) {
 		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
 		if (broggut->broggutValue != -1) {
-			broggut->broggutValue == -1;
+			broggut->broggutValue = -1;
 			[[self.currentScene collisionManager] removeMediumBroggutWithID:broggut->broggutID];
 		}
 		return YES;
@@ -56,34 +54,11 @@ enum MiningStates {
 }
 
 - (void)updateCraftLightLocations {
-	[lightPointsArray release];
-	float radDir = DEGREES_TO_RADIANS(objectRotation);
-	CGPoint lPoint1 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint2 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint3 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint4 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
-	
-	lightPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:lPoint1],
-						[NSValue valueWithCGPoint:lPoint2],
-						[NSValue valueWithCGPoint:lPoint3],
-						[NSValue valueWithCGPoint:lPoint4],
-						nil];
+
 }
 
 - (void)updateCraftTurretLocations {
-	[turretPointsArray release];
-	float radDir = DEGREES_TO_RADIANS(objectRotation);
-	CGPoint tPoint1 = CGPointMake((objectLocation.x) * cosf(radDir),
-								  (objectLocation.y) * sinf(radDir));
-	turretPointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:tPoint1],
-						 nil];
+
 }
 
 - (CGPoint)miningLocation {

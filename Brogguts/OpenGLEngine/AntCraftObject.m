@@ -25,14 +25,13 @@ enum MiningStates {
 @synthesize miningLocation, miningAIValue;
 
 - (void)dealloc {
-	[turretPointsArray release];
-	[lightPointsArray release];
 	[super dealloc];
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftAntID withLocation:location isTraveling:traveling];
 	if (self) {
+        [self createLightLocationsWithCount:1];
 		attributePlayerCargoCapacity = kCraftAntCargoSpace;
 		attributePlayerCurrentCargo = 0;
 		attributeMiningCooldown = kCraftAntMiningCooldown;
@@ -44,24 +43,15 @@ enum MiningStates {
 }
 
 - (void)updateCraftLightLocations { // Too Slow!!
-	[lightPointsArray removeAllObjects];
-	float radDir = DEGREES_TO_RADIANS(objectRotation);
-	CGPoint lPoint1 = CGPointMake(objectLocation.x + (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y + (self.boundingCircle.radius * sinf(radDir)));
-	
-	CGPoint lPoint2 = CGPointMake(objectLocation.x - (self.boundingCircle.radius * cosf(radDir)),
-								  objectLocation.y - (self.boundingCircle.radius * sinf(radDir)));
-    
-    [lightPointsArray addObject:[NSValue valueWithCGPoint:lPoint1]];
-    [lightPointsArray addObject:[NSValue valueWithCGPoint:lPoint2]];
+	for (int i = 0; i < lightPointsArray->pointCount; i++) {
+        PointLocation* curPoint = &lightPointsArray->locations[i];
+        curPoint->x = objectLocation.x;
+        curPoint->y = objectLocation.y;
+    }
 }
 
 - (void)updateCraftTurretLocations {
-	[turretPointsArray removeAllObjects];
-	float radDir = DEGREES_TO_RADIANS(objectRotation);
-	CGPoint tPoint1 = CGPointMake((objectLocation.x) * cosf(radDir),
-								  (objectLocation.y) * sinf(radDir));
-	[turretPointsArray addObject:[NSValue valueWithCGPoint:tPoint1]];
+	
 }
 
 - (CGPoint)miningLocation {
@@ -101,6 +91,8 @@ enum MiningStates {
 		[self followPath:pathArray isLooped:NO];
 		miningState = kMiningStateApproaching;
 		[self setMovingAIState:kMovingAIStateMining];
+        if (isBeingControlled)
+            [[self currentScene] removeControlledCraft:self];
 		return YES;
 	} else {
 		miningState = kMiningStateNone;
@@ -203,10 +195,8 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
-        [[self currentScene] removeControlledCraft:self];
 		[self startMiningBroggutWithLocation:location];
 	}
-	
 	[super touchesEndedAtLocation:location];
 }
 

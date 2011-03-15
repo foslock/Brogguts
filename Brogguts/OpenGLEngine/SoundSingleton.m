@@ -416,7 +416,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 	// If a playlist was found then loop through its tracks and remove the one with a matching
 	// name to the one provided
 	if (playlistTracks) {
-		int indexToRemove;
+		int indexToRemove = 0;
 		
 		// Loop through the tracks in the playlist and set the indexToRemove variable to the index
 		// of the entry that matches the track name.
@@ -798,7 +798,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
         // Set the audio session state to true and report any errors
 		[audioSession setActive:YES error:&audioSessionError];
 		if (audioSessionError) {
-            NSLog(@"ERROR - SoundManager: Unable to set the audio session state to YES with error %d.", result);
+            NSLog(@"ERROR - SoundManager: Unable to set the audio session state to YES with error %ld.", result);
             return;
         }
 		

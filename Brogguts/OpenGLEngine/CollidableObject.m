@@ -81,11 +81,18 @@ static int globalUniqueID = 0;
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+    if (objectVelocity.x != 0 || objectVelocity.y != 0) {
 	objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
 								 objectLocation.y + objectVelocity.y);
+    }
 
-	objectRotation += rotationSpeed;
-	objectImage.rotation = objectRotation;
+    if (rotationSpeed != 0) {
+        objectRotation += rotationSpeed;
+    }
+    
+    if (objectImage.rotation != objectRotation) {
+        objectImage.rotation = objectRotation;
+    }
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
@@ -99,6 +106,11 @@ static int globalUniqueID = 0;
 #endif
 	}
 		
+}
+
+- (BOOL)isOnScreen {
+    CGRect bounds = [[self currentScene] visibleScreenBounds];
+    return CGRectContainsPoint(CGRectInset(bounds, -objectImage.imageSize.width / 2, -objectImage.imageSize.height / 2), objectLocation);
 }
 
 - (void)objectWasDestroyed {

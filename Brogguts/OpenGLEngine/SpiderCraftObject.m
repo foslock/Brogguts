@@ -23,8 +23,10 @@
 		droneArray = [[NSMutableArray alloc] initWithCapacity:SPIDER_NUMBER_OF_DRONES];
 		droneCount = 0;
 		droneCountLimit = SPIDER_NUMBER_OF_DRONES;
+        droneBuildTimer = kCraftSpiderBuildDroneTime;
         for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
             droneBayContainment[i] = NO;
+            [self addNewDroneToBay];
         }
 	}
 	return self;
@@ -69,10 +71,16 @@
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
 	
-	if (droneCount < droneCountLimit) {
-		[self addNewDroneToBay];
-	}
-	
+    if (droneBuildTimer <= 0) {
+        droneBuildTimer = kCraftSpiderBuildDroneTime;
+        if (droneCount < droneCountLimit) {
+            [self addNewDroneToBay];
+            [[self currentScene] addBroggutValue:-kCraftSpiderDroneCostBrogguts atLocation:objectLocation withAlliance:kAllianceFriendly];
+        }
+	} else if (!isTraveling) {
+        droneBuildTimer -= 1;
+    }
+    
 	// This ship does not rotate
 	objectImage.rotation = 0;
 }
@@ -98,6 +106,13 @@
 		newDrone.mySpiderCraft = self;
 		newDrone.objectAlliance = self.objectAlliance;
         newDrone.droneIndex = droneIndex;
+        if (closestEnemyObject) {
+            [newDrone setPriorityEnemyTarget:closestEnemyObject];
+            [newDrone stopFollowingCurrentPath];
+            if (newDrone.droneAIState == kDroneAIStateHidden) {
+                [newDrone setDroneAIState:kDroneAIStateApproaching];
+            }
+        }
 		[newDrone release];
 		droneCount++;
 	}
