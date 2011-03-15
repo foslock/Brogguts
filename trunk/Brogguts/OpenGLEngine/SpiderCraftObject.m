@@ -32,6 +32,13 @@
 	return self;
 }
 
+- (void)setObjectAlliance:(int)alliance {
+    for (SpiderDroneObject* drone in droneArray) {
+		[drone setObjectAlliance:alliance];
+    }
+    [super setObjectAlliance:alliance];
+}
+
 - (void)setClosestEnemyObject:(TouchableObject *)target {
 	[super setClosestEnemyObject:target];
 	for (SpiderDroneObject* drone in droneArray) {
@@ -104,7 +111,7 @@
 		newDrone.droneBayLocation = Vector2fMake(xBay, yBay);
 		newDrone.isHidden = YES;
 		newDrone.mySpiderCraft = self;
-		newDrone.objectAlliance = self.objectAlliance;
+		newDrone.objectAlliance = objectAlliance;
         newDrone.droneIndex = droneIndex;
         if (closestEnemyObject) {
             [newDrone setPriorityEnemyTarget:closestEnemyObject];

@@ -78,6 +78,7 @@ typedef struct AI_State_Details {
 
 // Update the controller with the touchable objects from broggut scene 
 - (void)updateArraysWithTouchableObjects:(NSArray*)array;
+- (void)removeObjectsInArray:(NSArray*)array;
 
 - (void)addBrogguts:(int)brogs;
 - (void)addMetal:(int)metal;

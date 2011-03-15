@@ -81,6 +81,16 @@
     }
 }
 
+- (void)removeObjectsInArray:(NSArray*)array {
+    for (CraftObject* craft in array) {
+        [craftArray removeObject:craft];
+    }
+    
+    for (StructureObject* structure in array) {
+        [structureArray removeObject:structure];
+    }
+}
+
 - (void)addBrogguts:(int)brogs {
 	enemyBroggutCount += brogs;
 }

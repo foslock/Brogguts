@@ -69,7 +69,8 @@ typedef struct Path_Node_Queue {
 #define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
 #define INITIAL_TABLE_CAPACITY 100		// Initial capacity of the table holding all CollidableObjects
 #define COLLISION_DETECTION_FREQ 3		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
-#define RADIAL_EFFECT_CHECK_FREQ 10		// " " to check radial effects
+#define RADIAL_EFFECT_CHECK_FREQ 3		// " " to check radial effects
+#define RADIAL_EFFECT_MAX_COUNT 10      // Maximum number of objects to check for radial effects
 
 @interface CollisionManager : NSObject {
 	NSMutableDictionary* objectTable;	// This keeps tracks of all objects that have been added, indexed by their UID
@@ -77,6 +78,8 @@ typedef struct Path_Node_Queue {
 										// is added to the dictionary.
 	
 	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
+    NSMutableArray* radialObjectsQueue;     // Queue of objects that need to be checked for radial effects
+    int startingRadialIndex;                // Index of object that should be added to the radial queue next
 	
 	ObjectIDArray* cellHashTable;		// Table that contains an array for each cell on the screen, index is the location "hashed"
 										// and the contents is an array of UIDs for each object in that cell

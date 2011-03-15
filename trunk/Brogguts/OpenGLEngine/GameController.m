@@ -22,6 +22,29 @@
 #pragma mark -
 #pragma mark Scene storage 
 
+// Propert List format
+// ----
+// index - type - description
+//
+// 0 - NSString - Scene title/name
+// 1 - NSNumber (BOOL) - Whether the scene is base camp or not
+// 2 - NSNumber (int) - The width of the scene (in units of cells, not pixels)
+// 3 - NSNumber (int) - Height in cells
+// 4 - NSNumber (int) - Number of small brogguts floating in scene
+// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
+// 6 - NSArray - Object array, containing information about both structures and crafts
+//
+
+enum kSceneStorageGlobals {
+    kSceneStorageGlobalName,
+    kSceneStorageGlobalBaseCamp,
+    kSceneStorageGlobalWidthCells,
+    kSceneStorageGlobalHeightCells,
+    kSceneStorageGlobalSmallBrogguts,
+    kSceneStorageGlobalMediumBroggutArray,
+    kSceneStorageGlobalObjectArray,
+};
+
 enum kSceneStorageIndexs {
 	kSceneStorageIndexTypeID, // - object type ID
 	kSceneStorageIndexID, // - object ID
@@ -223,11 +246,11 @@ static GameController* sharedGameController = nil;
 	int numberOfSmallBrogguts = 500;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
-	[plistArray insertObject:sceneTitle atIndex:0];
-	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:1];
-	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:2];
-	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:3];
-	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:4];
+	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
+	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
+	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
+	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
 	
 	// Save all the other crap, medium brogguts first
 	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
@@ -250,7 +273,7 @@ static GameController* sharedGameController = nil;
 			[thisBroggutInfo release];
 		}
 	}
-	[plistArray insertObject:broggutArray atIndex:5];
+	[plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
 	[broggutArray release];
 	
 	// Save structures, namely the base stations
@@ -369,7 +392,7 @@ static GameController* sharedGameController = nil;
         }
     }
 	
-	[plistArray insertObject:finalObjectArray atIndex:6];
+	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
 	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the Base Camp Scene!");
@@ -404,13 +427,13 @@ static GameController* sharedGameController = nil;
 	int widthCells = currentScene.widthCells;
 	int heightCells = currentScene.heightCells;
 	int numberOfSmallBrogguts = currentScene.numberOfSmallBrogguts;
-	
+
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
-	[plistArray insertObject:sceneTitle atIndex:0];
-	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:1];
-	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:2];
-	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:3];
-	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:4];
+	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
+	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
+	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
+	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
 	
 	// Save all the other crap, medium brogguts first
 	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
@@ -430,7 +453,7 @@ static GameController* sharedGameController = nil;
 			[thisBroggutInfo release];
 		}
 	}
-	[plistArray insertObject:broggutArray atIndex:5];
+	[plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
 	[broggutArray release];
 	
 	// Save structures, namely the base stations
@@ -525,7 +548,7 @@ static GameController* sharedGameController = nil;
 		}
 	}
 	
-	[plistArray insertObject:finalObjectArray atIndex:6];
+	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
     [finalObjectArray release];
     NSString* fileNameAlone = [filename stringByDeletingPathExtension];
     NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
@@ -555,13 +578,13 @@ static GameController* sharedGameController = nil;
 	BroggutScene* newScene;
 	
 	// First four objects in the array are as follows:
-	NSString* sceneName = [array objectAtIndex:0];					// 0: NSString - Name of the scene/level
-	BOOL baseCamp = [[array objectAtIndex:1] boolValue];			// 1: BOOL - BaseCamp
-	int cellsWide = [[array objectAtIndex:2] intValue];				// 2: int - Width (in cells) of the map
-	int cellsHigh = [[array objectAtIndex:3] intValue];				// 3: int - Height (in cells) of the map
-	int numberOfSmallBrogguts = [[array objectAtIndex:4] intValue];	// 4: int - Number of small brogguts to be created
-	NSArray* broggutArray = [array objectAtIndex:5];				// 6: NSArray - the information for all of the medium brogguts
-	NSArray* objectArray = [array objectAtIndex:6];					// 7: NSArray - " " objects
+	NSString* sceneName = [array objectAtIndex:kSceneStorageGlobalName];                            // 0: NSString - Name of the scene/level
+	BOOL baseCamp = [[array objectAtIndex:kSceneStorageGlobalBaseCamp] boolValue];                  // 1: BOOL - BaseCamp
+	int cellsWide = [[array objectAtIndex:kSceneStorageGlobalWidthCells] intValue];                 // 2: int - Width (in cells) of the map
+	int cellsHigh = [[array objectAtIndex:kSceneStorageGlobalHeightCells] intValue];				// 3: int - Height (in cells) of the map
+	int numberOfSmallBrogguts = [[array objectAtIndex:kSceneStorageGlobalSmallBrogguts] intValue];	// 4: int - Number of small brogguts to be created
+	NSArray* broggutArray = [array objectAtIndex:kSceneStorageGlobalMediumBroggutArray];			// 6: NSArray - the information for all of the medium brogguts
+	NSArray* objectArray = [array objectAtIndex:kSceneStorageGlobalObjectArray];					// 7: NSArray - " " objects
 	
 	CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
 	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
@@ -698,7 +721,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -717,7 +739,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
                         [newCraft release];
 						break;
@@ -749,7 +770,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
                         [newCraft release];
 						break;
@@ -765,7 +785,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
 						if (objectIsMining) {
 							[newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
@@ -784,7 +803,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
                         [newCraft release];
 						break;
@@ -800,7 +818,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
                         [newCraft release];
 						break;
@@ -816,7 +833,6 @@ static GameController* sharedGameController = nil;
 						[newScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
 						if (objectIsControlledShip) {
 							[newScene addControlledCraft:newCraft];
-							[newScene setCameraLocation:objectEndLocation];
 						}
                         [newCraft release];
 						break;
@@ -872,6 +888,7 @@ static GameController* sharedGameController = nil;
     if (!scene) {
         BroggutScene* newScene = [self sceneWithFilename:fileName];
         [gameScenes setValue:newScene forKey:fileName];
+        scene = newScene;
     }
     if (scene) {
         transitionName = fileName;
@@ -880,7 +897,9 @@ static GameController* sharedGameController = nil;
             fadingRectAlpha = 0.0f;
         } else {
             // isAlreadyInScene = YES;
+            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
             currentScene = [gameScenes objectForKey:transitionName];
+            [currentScene sceneDidAppear];
             isFadingSceneIn = YES;
             fadingRectAlpha = 1.0f;
         }
@@ -973,11 +992,6 @@ static GameController* sharedGameController = nil;
 	
 	// Load the game scenes
 	gameScenes = [[NSMutableDictionary alloc] init];
-	BroggutScene *scene = [self sceneWithFilename:kBaseCampFileName];
-	[gameScenes setValue:scene forKey:kBaseCampFileName];
-	
-	// Set the starting scene for the game
-	// [self transitionToSceneWithName:@"BaseCamp"];
 	
 	/*
 	 [[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];

@@ -14,8 +14,8 @@
     GameController* sharedGameController;
     int numberOfSavedScenes;
     int numberOfNewMaps;
-    NSArray* savedScenesNames;
-    NSArray* newMapNames;
+    NSMutableArray* savedScenesNames;
+    NSMutableArray* newMapNames;
 }
 
 @end

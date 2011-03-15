@@ -21,6 +21,7 @@
 		isTouchable = NO;
 		droneAIState = kDroneAIStateHidden;
 		droneBayLocation = Vector2fZero;
+        // isCheckedForRadialEffect = YES;
 	}
 	return self;
 }

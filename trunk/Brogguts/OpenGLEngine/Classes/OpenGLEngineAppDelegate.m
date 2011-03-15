@@ -23,6 +23,7 @@
 }
 
 - (void)stopGLAnimation {
+    [window bringSubviewToFront:mainMenuController.view];
     glView.hidden = YES;
     [glView stopAnimation];
 }
@@ -67,8 +68,8 @@
 	// Creates and tries to authenticate the local player
 	sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
     
-    MainMenuController* mainMenu = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
-    [window addSubview:mainMenu.view];
+    mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
+    [window addSubview:mainMenuController.view];
     return YES;
 }
 
@@ -94,6 +95,7 @@
 
 - (void)dealloc
 {
+    [mainMenuController release];
     [window release];
     [glView release];
     [super dealloc];

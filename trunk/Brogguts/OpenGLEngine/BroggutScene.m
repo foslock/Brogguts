@@ -146,6 +146,20 @@
 	return self;
 }
 
+- (void)sceneDidAppear {
+    if ([controlledShips count] != 0) {
+        float averageX = 0.0f;
+        float averageY = 0.0f;
+        for (CraftObject* craft in controlledShips) {
+			averageX += craft.objectLocation.x / ((float)[controlledShips count]);
+			averageY += craft.objectLocation.y / ((float)[controlledShips count]);
+		}
+		CGPoint cameraPoint = CGPointMake(averageX, averageY);
+        cameraLocation = cameraPoint;
+        [self setMiddleOfVisibleScreenToCamera];
+    }
+}
+
 #pragma mark -
 #pragma mark Brogguts
 
@@ -406,20 +420,26 @@
 			[renderableDestroyed addObject:tempObj];
 		}
 	}
-	
-	if (frameCounter % (COLLISION_DETECTION_FREQ + 1) == 0) {
+    
+    // Check for collisions
+    if (frameCounter % (COLLISION_DETECTION_FREQ + 1) == 0) {
 		[collisionManager processAllCollisionsWithScreenBounds:visibleScreenBounds];
 	} else {
 		[collisionManager updateAllObjectsInTableInScreenBounds:visibleScreenBounds];
 	}
 	
+    // Check for radial effects
 	if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == 0) {
 		[collisionManager processAllEffectRadii];
 	}
+    
+    // Update the AI controller
+    [enemyAIController updateAIController];
 	
 	// Destroy all objects in the destory array, and remove them from other arrays
 	for (int i = 0; i < [renderableDestroyed count]; i++) {
 		CollidableObject* tempObj = [renderableDestroyed objectAtIndex:i];
+        [enemyAIController removeObjectsInArray:renderableDestroyed];
 		[renderableObjects removeObject:tempObj];
 		if (tempObj.isCheckedForCollisions) {
 			[collisionManager removeCollidableObject:tempObj];
@@ -427,11 +447,17 @@
 		if (tempObj.isTextObject) {
 			[textObjectArray removeObject:tempObj];
 		}
+        if ([tempObj isKindOfClass:[TouchableObject class]]) {
+            TouchableObject* touchObj = (TouchableObject*)tempObj;
+            if (touchObj.isCheckedForRadialEffect) {
+                [collisionManager removeRadialAffectedObject:touchObj];
+            }
+        }
 		[tempObj objectWasDestroyed];
 		if ([tempObj isKindOfClass:[CraftObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
 			// It is a ship
 			// If was being controlled, remove it
-			[controlledShips removeObject:tempObj];
+			[self removeControlledCraft:(CraftObject*)tempObj];
 			numberOfCurrentShips--;
 		}
 		if ([tempObj isKindOfClass:[StructureObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
@@ -443,11 +469,10 @@
 			numberOfSmallBrogguts--;
 		}
 		
+        [tempObj setObjectLocation:CGPointMake(-INT_MAX, -INT_MAX)];
 		[renderableDestroyed removeObject:tempObj];
+        // NSLog(@"Object deleted, retain count: %i", [tempObj retainCount]);
 	}
-    
-    // Update the AI controller
-    [enemyAIController updateAIController];
 }
 
 - (void)renderScene {
