@@ -170,7 +170,7 @@ static StarSingleton* sharedStarinstance = nil;
 - (void)scrollStarsWithVector:(Vector2f)moveVector {
 	for (int i = 0; i < starCount; i++) {
 		StarParticle* currentStar = &starArray[i];
-		Vector2f scaledVector;
+		Vector2f scaledVector = Vector2fZero;
 		float distance = currentStar->distanceValue;
 		switch (currentStar->starLayer) {
 			case kStarTopLayerID:

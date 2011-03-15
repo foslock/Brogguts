@@ -162,7 +162,10 @@
 // Set default values, etc.
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName;
 
-// Creates a broggut value text object showing where brogguts were gathered
+// Called when the scene was just revealed, not necessarily right after loaded
+- (void)sceneDidAppear;
+
+// Creates a broggut value text object showing where brogguts were gathered (and adds value to total brogguts)
 - (void)addBroggutValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;
 
 // Randomly generates small brogguts and adds them to the scene randomly scattered in 

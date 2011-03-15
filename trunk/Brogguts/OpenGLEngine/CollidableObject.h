@@ -69,5 +69,7 @@
 
 - (void)objectWasDestroyed;
 
+- (BOOL)isOnScreen;
+
 
 @end

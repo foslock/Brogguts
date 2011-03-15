@@ -133,7 +133,7 @@
 
 - (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText {
 	
-	CGPoint point;
+	CGPoint point = CGPointZero;
 
 	// Calculate the width and height in pixels of the text
 	int textWidth = [self getWidthForString:aText];

@@ -242,6 +242,7 @@ enum TheSpiderValues {
 	kCraftSpiderSpecialCoolDown = 500, // frames for special to recharge
 	kCraftSpiderHull = 100,
 	// Special Values
+    kCraftSpiderBuildDroneTime = 1000,
 	kCraftSpiderEnginesBonus = 2,
 };
 
@@ -252,8 +253,8 @@ enum TheSpiderDroneValues {
 	kCraftSpiderDroneUpgradeUnlockYears = 0, // No upgrade
 	kCraftSpiderDroneUpgradeCost = 0, // brogguts
 	kCraftSpiderDroneUpgradeTime = 0, // seconds
-	kCraftSpiderDroneCostBrogguts = 100,
-	kCraftSpiderDroneCostMetal = 10,
+	kCraftSpiderDroneCostBrogguts = 50,
+	kCraftSpiderDroneCostMetal = 0,
 	kCraftSpiderDroneEngines = 6,
 	kCraftSpiderDroneWeapons = 1,
 	kCraftSpiderDroneAttackRange = 32, // pixels

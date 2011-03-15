@@ -19,8 +19,20 @@
 @synthesize craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
 
 - (void)dealloc {
-    [turretPointsArray release];
-    [lightPointsArray release];
+    if (turretPointsArray) {
+        if (turretPointsArray->locations) {
+            free(turretPointsArray->locations);
+        }
+        free(turretPointsArray);
+    }
+    
+    if (lightPointsArray) {
+        if (lightPointsArray->locations) {
+            free(lightPointsArray->locations);
+        }
+        free(lightPointsArray);
+    }
+    
 	[pathPointArray release];
 	[blinkingLightImage release];
 	[super dealloc];
@@ -164,9 +176,11 @@
 			image = [[Image alloc] initWithImageNamed:kObjectCraftEagleSprite filter:GL_LINEAR];
 			break;
 		default:
-			break;
+            image = [[Image alloc] initWithImageNamed:kObjectCraftAntSprite filter:GL_LINEAR];
+            break;
 	}
 	self = [super initWithImage:image withLocation:location withObjectType:typeID];
+    [image release];
 	if (self) {
 		// Initialize the craft
 		[self initCraftWithID:typeID];
@@ -175,10 +189,10 @@
 		lightBlinkAlpha = 0.0f;
 		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
 		blinkingLightImage.scale = Scale2fMake(0.25f, 0.25f);
-        lightPointsArray = [[NSMutableArray alloc] init];
-        turretPointsArray = [[NSMutableArray alloc] init];
-		[self updateCraftLightLocations];
-		[self updateCraftTurretLocations];
+        
+        lightPointsArray = NULL;
+        turretPointsArray = NULL;
+        
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
@@ -205,17 +219,43 @@
 	return self;
 }
 
+- (void)createLightLocationsWithCount:(int)lightCount {
+    if (lightPointsArray) {
+        if (lightPointsArray->locations) {
+            free(lightPointsArray->locations);
+        }
+        free(lightPointsArray);
+    }
+    
+    lightPointsArray = (PointArray*)malloc( sizeof(*lightPointsArray) );
+    lightPointsArray->pointCount = lightCount;
+    lightPointsArray->locations = (PointLocation*)malloc(lightCount * sizeof(PointLocation) );
+}
+
+- (void)createTurretLocationsWithCount:(int)turretCount {
+    if (turretPointsArray) {
+        if (turretPointsArray->locations) {
+            free(turretPointsArray->locations);
+        }
+        free(turretPointsArray);
+    }
+    
+    turretPointsArray = (PointArray*)malloc( sizeof(*turretPointsArray) );
+    turretPointsArray->pointCount = turretCount;
+    turretPointsArray->locations = (PointLocation*)malloc(turretCount * sizeof(PointLocation) );
+}
+
 - (void)calculateCraftAIInfo {
     
     float attackValue = (attributeEngines / (float)kMaximumEnginesValue) +
-        (attributeAttackRange / (float)kMaximumAttackRangeValue) +
-        (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
-        (attributeAttackCooldown / (float)kMaximumAttackCooldownValue);
+    (attributeAttackRange / (float)kMaximumAttackRangeValue) +
+    (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
+    (attributeAttackCooldown / (float)kMaximumAttackCooldownValue);
     
     float defenseValue = (attributeAttackRange / (float)kMaximumAttackRangeValue) +
-        (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
-        (attributeAttackCooldown / (float)kMaximumAttackCooldownValue) +
-        (attributeHullCurrent / (float)attributeHullCapacity);
+    (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
+    (attributeAttackCooldown / (float)kMaximumAttackCooldownValue) +
+    (attributeHullCurrent / (float)attributeHullCapacity);
     
     craftAIInfo.computedAttackValue = attackValue / 4.0f;
     craftAIInfo.computedDefendValue = defenseValue / 4.0f;
@@ -270,7 +310,8 @@
 }
 
 - (void)accelerateTowardsLocation:(CGPoint)location {
-    [[ParticleSingleton sharedParticleSingleton] createParticles:1 withType:kParticleTypeShipThruster atLocation:objectLocation];
+    if ([self isOnScreen] && objectType != kObjectCraftSpiderDroneID)
+        [[ParticleSingleton sharedParticleSingleton] createParticles:1 withType:kParticleTypeShipThruster atLocation:objectLocation];
     [super accelerateTowardsLocation:location];
 }
 
@@ -358,11 +399,26 @@
     [self setClosestEnemyObject:target];
     [target blinkSelectionCircle];
     [self setAttackingAIState:kAttackingAIStateAttacking];
-    NSArray* newPath = [[self.currentScene
-                         collisionManager]
-                        pathFrom:objectLocation to:target.objectLocation allowPartial:NO isStraight:YES];
-    if (newPath)
+    if (objectType != kObjectCraftSpiderDroneID) {
+        if (GetDistanceBetweenPointsSquared(objectLocation, target.objectLocation) > POW2(attributeAttackRange)) {
+            float distance = attributeAttackRange - maxVelocity;
+            float pointDir = atan2f(objectLocation.y - target.objectLocation.y,
+                                    objectLocation.x - target.objectLocation.x);
+            float xDist = distance * cosf(pointDir);
+            float yDist = distance * sinf(pointDir);
+            CGPoint followPoint = CGPointMake(target.objectLocation.x + xDist,
+                                              target.objectLocation.y + yDist);
+            NSArray* newPath = [[self.currentScene
+                                 collisionManager]
+                                pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
+            [self followPath:newPath isLooped:NO];
+        }
+    } else {
+        NSArray* newPath = [[self.currentScene
+                             collisionManager]
+                            pathFrom:objectLocation to:target.objectLocation allowPartial:NO isStraight:YES];
         [self followPath:newPath isLooped:NO];
+    }
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
@@ -440,14 +496,21 @@
     }
     
     // If too far away to attack, and in ATTACKING state, move towards your target
-    if (attackingAIState == kAttackingAIStateAttacking && !([self isKindOfClass:[SpiderDroneObject class]])) {
+    if (attackingAIState == kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
         if (!isFollowingPath && closestEnemyObject) {
             if (movingAIState == kMovingAIStateStill) {
                 [self setMovingAIState:kMovingAIStateMoving];
-                if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
+                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
+                    float distance = attributeAttackRange - maxVelocity;
+                    float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
+                                            objectLocation.x - closestEnemyObject.objectLocation.x);
+                    float xDist = distance * cosf(pointDir);
+                    float yDist = distance * sinf(pointDir);
+                    CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
+                                                      closestEnemyObject.objectLocation.y + yDist);
                     NSArray* newPath = [[self.currentScene
                                          collisionManager]
-                                        pathFrom:objectLocation to:closestEnemyObject.objectLocation allowPartial:NO isStraight:NO];
+                                        pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
                     [self followPath:newPath isLooped:NO];
                 }
             }
@@ -457,7 +520,7 @@
     // If the closest target is too far away, and not in ATTACKING state, set it to nil
     if (attackingAIState != kAttackingAIStateAttacking && !([self isKindOfClass:[SpiderDroneObject class]])) {
         if (closestEnemyObject) {
-            if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) > attributeAttackRange) {
+            if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
                 [self setClosestEnemyObject:nil];
             }
         }
@@ -482,6 +545,9 @@
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    if (![self isOnScreen]) {
+        return;
+    }
     [super renderCenteredAtPoint:aPoint withScrollVector:vector];
     enablePrimitiveDraw();
     
@@ -515,8 +581,8 @@
     
     // Render blinking lights
     if (lightPointsArray) {
-        for (int i = 0; i < [lightPointsArray count]; i++) {
-            CGPoint curPoint = [[lightPointsArray objectAtIndex:i] CGPointValue];
+        for (int i = 0; i < lightPointsArray->pointCount; i++) {
+            PointLocation curPoint = lightPointsArray->locations[i];
             if (self.objectAlliance == kAllianceFriendly) {
                 if (!isTraveling)
                     blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
@@ -525,7 +591,7 @@
             } else {
                 blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
             }
-            [blinkingLightImage renderCenteredAtPoint:curPoint withScrollVector:vector];
+            [blinkingLightImage renderCenteredAtPoint:CGPointMake(curPoint.x, curPoint.y) withScrollVector:vector];
         }
     }
     

@@ -22,6 +22,9 @@
 // Macro which converts radians into degrees
 #define RADIANS_TO_DEGREES(__ANGLE__) ((__ANGLE__) * 180.0 / M_PI)
 
+// Raises the argument to a power of 2
+#define POW2(X) (X * X)
+
 // Macro that allows you to clamp a value within the defined bounds
 #define CLAMP(X, A, B) ((X < A) ? A : ((X > B) ? B : X))
 
@@ -81,12 +84,19 @@ static inline float GetDistanceBetweenPoints(CGPoint startLocation, CGPoint endL
 	return sqrtf((dx * dx) + (dy * dy));
 }
 
+static inline float GetDistanceBetweenPointsSquared(CGPoint startLocation, CGPoint endLocation) {
+	float dx = fabsf(endLocation.x - startLocation.x);
+	float dy = fabsf(endLocation.y - startLocation.y);
+	return (dx * dx) + (dy * dy);
+}
+
 static inline BOOL AreCGPointsEqual(CGPoint p1, CGPoint p2, float maxDifference) {
 	return ( (fabs(p1.x - p2.x) < maxDifference) && (fabs(p1.y - p2.y) < maxDifference) );
 }
 
 static inline BOOL CircleContainsPoint(Circle circle, CGPoint point) {
-	if (GetDistanceBetweenPoints(CGPointMake(circle.x, circle.y), point) <= circle.radius) {
+    float radius = circle.radius;
+	if (GetDistanceBetweenPointsSquared(CGPointMake(circle.x, circle.y), point) <= POW2(radius)) {
 		return YES;
 	}
 	return NO;

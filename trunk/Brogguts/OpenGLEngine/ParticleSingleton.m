@@ -106,8 +106,9 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 		NSLog(@"That particle type is invalid");
 		return;
 	}
-		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:particleType];
-		[emitter addParticles:count atLocation:location];
+    
+	ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:particleType];
+	[emitter addParticles:count atLocation:location];
 }
 
 @end

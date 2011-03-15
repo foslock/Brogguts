@@ -17,6 +17,16 @@
 @class MonarchCraftObject;
 @class Image;
 
+typedef struct Point_Location {
+    float x;
+    float y;
+} PointLocation;
+
+typedef struct Point_Array {
+    PointLocation* locations;
+    int pointCount;
+} PointArray;
+
 @interface CraftObject : ControllableObject {
 	// Path variables
 	NSMutableArray* pathPointArray;		// Array containing the points that this craft should follow
@@ -39,8 +49,8 @@
 	
 	// Turrets and blinking lights
 	Image* blinkingLightImage;
-	NSMutableArray* turretPointsArray;
-	NSMutableArray* lightPointsArray;
+	PointArray* turretPointsArray;
+	PointArray* lightPointsArray;
 	int lightBlinkTimer;
 	float lightBlinkAlpha;
 	
@@ -69,6 +79,9 @@
 @property (readonly) int attributeHullCurrent;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+- (void)createLightLocationsWithCount:(int)lightCount;
+- (void)createTurretLocationsWithCount:(int)turretCount;
+
 
 - (void)addCargo:(int)cargo;
 - (CGPoint)miningLocation;

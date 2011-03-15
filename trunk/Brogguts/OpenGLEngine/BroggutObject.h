@@ -14,6 +14,8 @@
 	int broggutType;
 }
 
+- (id)initWithImage:(Image *)image withLocation:(CGPoint)location;
+
 @property (nonatomic, assign) int broggutValue;
 @property (nonatomic, assign) int broggutType;
 

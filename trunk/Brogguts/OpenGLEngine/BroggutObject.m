@@ -13,8 +13,8 @@
 @implementation BroggutObject
 @synthesize broggutValue, broggutType;
 
-- (id)initWithImage:(Image *)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
-	self = [super initWithImage:image withLocation:location withObjectType:objecttype];
+- (id)initWithImage:(Image *)image withLocation:(CGPoint)location {
+	self = [super initWithImage:image withLocation:location withObjectType:kObjectBroggutSmallID];
 	if (self) {
 		broggutValue = 0;
 		broggutType = kObjectBroggutSmallID;
@@ -37,6 +37,13 @@
 		}
 	}
 	[super collidedWithOtherObject:other];
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    if (![self isOnScreen]) {
+        return;
+    }
+    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
 }
 
 @end
