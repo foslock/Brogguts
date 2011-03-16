@@ -337,7 +337,7 @@
 			averageY += craft.objectLocation.y / ((float)[controlledShips count]);
 		}
 		CGPoint cameraPoint = CGPointMake(averageX, averageY);
-		if (isTouchScrolling) {
+		if (isTouchScrolling && !isShowingOverview) {
 			for (CraftObject* craft in controlledShips) {
 				float xDiff = craft.objectLocation.x - averageX;
 				float yDiff = craft.objectLocation.y - averageY;
@@ -380,10 +380,14 @@
 	// Update alpha of the overview map
 	if (isFadingOverviewIn) {
 		overviewAlpha += OVERVIEW_FADE_IN_RATE;
+        if (overviewAlpha >= 1.0f) {
+            isFadingOverviewIn = NO;
+        }
 	} else if (isFadingOverviewOut) {
 		overviewAlpha -= OVERVIEW_FADE_IN_RATE;
 		if (overviewAlpha <= 0.0f) {
 			isShowingOverview = NO; // Ending fade out
+            isFadingOverviewOut = NO;
 		}
 	} else if (!isShowingOverview) {
 		overviewAlpha = 0.0f;
@@ -573,6 +577,11 @@
 	[self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
 }
 
+- (void)addCollidableObject:(CollidableObject*)obj {
+    [collisionManager addCollidableObject:obj];
+    [renderableObjects addObject:obj];
+}
+
 - (void)addTextObject:(TextObject*)obj {
 	[textObjectArray addObject:obj];
 }
@@ -630,14 +639,14 @@
 		objPoint[1] = obj.objectLocation.y * yRatio;
 		if ([obj isKindOfClass:[TouchableObject class]]) {
             /*
-			// If the object has an "effect circle" then draw it in faded gray
-			Circle newCircle;
-			newCircle.x = objPoint[0];
-			newCircle.y = objPoint[1];
-			newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
-			glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
-			drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
-            */
+             // If the object has an "effect circle" then draw it in faded gray
+             Circle newCircle;
+             newCircle.x = objPoint[0];
+             newCircle.y = objPoint[1];
+             newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
+             glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
+             drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
+             */
 		}
 		if (obj.objectAlliance == kAllianceNeutral) {
 			glColor4f(1.0f, 1.0f, 0.0f, alpha);
@@ -1104,15 +1113,6 @@
 			continue;
 		}
 		
-		// Check if there are more than 2 touches (bring up overview)
-		if ([touches count] >= 3) {
-			if (!isShowingOverview)
-				[self fadeOverviewMapIn];
-			else
-				[self fadeOverviewMapOut];
-			break;
-		}
-		
 		// Check if there are more than 1 touches (start selection area)
 		if ([touches count] == 2) {
 			if ([touch hash] == [[touchesArray objectAtIndex:0] hash]) {
@@ -1194,6 +1194,18 @@
 				[sideBar touchesMovedToLocation:toPoint from:fromPoint];
 				continue;
 			}
+		}
+        
+        // Check if there are more than 2 touches (bring up overview)
+		if ([touches count] >= 3) {
+            float dy = originalTouchLocation.y - previousOrigTouchLocation.y;
+            if (fabsf(dy) > OVERVIEW_MIN_FINGER_DISTANCE && !isFadingOverviewIn && !isFadingOverviewOut) {
+                if (!isShowingOverview)
+                    [self fadeOverviewMapIn];
+                else
+                    [self fadeOverviewMapOut];
+                break;
+            }
 		}
 		
 		// If the touch is a selection touch

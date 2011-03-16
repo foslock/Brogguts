@@ -22,25 +22,13 @@
 #pragma mark -
 #pragma mark Scene storage 
 
-// Propert List format
-// ----
-// index - type - description
-//
-// 0 - NSString - Scene title/name
-// 1 - NSNumber (BOOL) - Whether the scene is base camp or not
-// 2 - NSNumber (int) - The width of the scene (in units of cells, not pixels)
-// 3 - NSNumber (int) - Height in cells
-// 4 - NSNumber (int) - Number of small brogguts floating in scene
-// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
-// 6 - NSArray - Object array, containing information about both structures and crafts
-//
-
 enum kSceneStorageGlobals {
     kSceneStorageGlobalName,
     kSceneStorageGlobalBaseCamp,
     kSceneStorageGlobalWidthCells,
     kSceneStorageGlobalHeightCells,
     kSceneStorageGlobalSmallBrogguts,
+    kSceneStorageGlobalAIController,
     kSceneStorageGlobalMediumBroggutArray,
     kSceneStorageGlobalObjectArray,
 };
@@ -238,6 +226,52 @@ static GameController* sharedGameController = nil;
     }
 }
 
+- (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name {
+    NSString* sceneTitle = name;
+	BOOL isBaseCamp = NO;
+	int widthCells = width;
+	int heightCells = height;
+	int numberOfSmallBrogguts = 0;
+	
+	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
+	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
+	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
+	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
+	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
+    NSArray* tempArray = [[NSArray alloc] init];
+    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
+    [tempArray release];
+    
+    NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
+	for (int j = 0; j < heightCells; j++) {
+		for (int i = 0; i < widthCells; i++) {
+			int straightIndex = i + (j * widthCells);
+			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
+			NSNumber* broggutValue;
+			NSNumber* broggutAge;
+            broggutValue = [NSNumber numberWithInt:-1];
+            broggutAge = [NSNumber numberWithInt:0];
+			[thisBroggutInfo insertObject:broggutValue atIndex:0];
+			[thisBroggutInfo insertObject:broggutAge atIndex:1];
+			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
+			[thisBroggutInfo release];
+		}
+	}
+	[plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
+	[broggutArray release];
+    
+    NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
+    [plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
+    [finalObjectArray release];
+    NSString* fileName = [name stringByAppendingString:@".plist"];
+	NSString* filePath = [self documentsPathWithFilename:fileName];
+	if (![plistArray writeToFile:filePath atomically:YES]) {
+		NSLog(@"Cannot save the empty Scene!");
+	}
+	[plistArray release];
+}
+
 - (void)createInitialBaseCampLevel {
 	NSString* sceneTitle = @"Base Camp";
 	BOOL isBaseCamp = YES;
@@ -251,6 +285,9 @@ static GameController* sharedGameController = nil;
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
+    NSArray* tempArray = [[NSArray alloc] init];
+    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
+    [tempArray release];
 	
 	// Save all the other crap, medium brogguts first
 	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
@@ -393,6 +430,7 @@ static GameController* sharedGameController = nil;
     }
 	
 	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
+    [finalObjectArray release];
 	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the Base Camp Scene!");
@@ -401,22 +439,6 @@ static GameController* sharedGameController = nil;
 }
 
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite {
-	// Format for saved scenes:
-	//
-	// ----
-	// Propert List format
-	// ----
-	// index - type - description
-	//
-	// 0 - NSString - Scene title/name
-	// 1 - NSNumber (BOOL) - Whether the scene is base camp or not
-	// 2 - NSNumber (int) - The width of the scene (in units of cells, not pixels)
-	// 3 - NSNumber (int) - Height in cells
-	// 4 - NSNumber (int) - Number of small brogguts floating in scene
-	// 5 - NSArray - Broggut cell array, containing information about each cell's broggut (or lack of)
-	// 6 - NSArray - Object array, containing information about both structures and crafts
-	//
-    
     if ([self doesFilenameExistInDocuments:filename] && !overwrite) {
         NSLog(@"Scene filename: %@, already exists", filename);
         return NO;
@@ -434,6 +456,9 @@ static GameController* sharedGameController = nil;
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
+    NSArray* tempArray = [[NSArray alloc] init];
+    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
+    [tempArray release];
 	
 	// Save all the other crap, medium brogguts first
 	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
@@ -585,6 +610,8 @@ static GameController* sharedGameController = nil;
 	int numberOfSmallBrogguts = [[array objectAtIndex:kSceneStorageGlobalSmallBrogguts] intValue];	// 4: int - Number of small brogguts to be created
 	NSArray* broggutArray = [array objectAtIndex:kSceneStorageGlobalMediumBroggutArray];			// 6: NSArray - the information for all of the medium brogguts
 	NSArray* objectArray = [array objectAtIndex:kSceneStorageGlobalObjectArray];					// 7: NSArray - " " objects
+    NSArray* AIArray = [array objectAtIndex:kSceneStorageGlobalAIController];                       // 8: NSArray - AI Controller information;
+    (void)AIArray;
 	
 	CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
 	CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
