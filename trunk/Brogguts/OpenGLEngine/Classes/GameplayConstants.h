@@ -21,6 +21,10 @@
 #define BROGGUTS
 
 //
+// Initial Scene information
+//
+
+//
 // Font information
 //
 
@@ -69,6 +73,7 @@ enum ObjectIDs { // How objects are indentified
 	kObjectBroggutSmallID,
 	kObjectBroggutMediumID,
 	kObjectBroggutLargeID,
+    kObjectTriggerID,
 	kObjectCraftAntID,
 	kObjectCraftMothID,
 	kObjectCraftBeetleID,

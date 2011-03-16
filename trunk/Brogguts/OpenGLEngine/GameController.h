@@ -24,7 +24,7 @@ extern NSString* kNewMapScenesFileName;
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.01f
-#define CRAFT_COLLISION_YESNO NO
+#define CRAFT_COLLISION_YESNO YES
 #define STRUCTURE_COLLISION_YESNO YES
 
 // Class responsible for passing touch and game events to the correct game
@@ -79,6 +79,7 @@ extern NSString* kNewMapScenesFileName;
 - (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index;
 
 - (void)placeInitialFilesInDocumentsFolder;
+- (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name;
 - (void)createInitialBaseCampLevel;
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
 - (BroggutScene*)sceneWithFilename:(NSString*)filename;

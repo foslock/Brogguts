@@ -18,6 +18,7 @@
 #define OVERVIEW_FADE_IN_RATE 0.025f
 #define SIDEBAR_WIDTH 192.0f
 #define OVERVIEW_MAX_ALPHA 1.0f
+#define OVERVIEW_MIN_FINGER_DISTANCE 8.0f
 #define SELECTION_MIN_DISTANCE 20.0f
 
 @class Image;
@@ -30,6 +31,7 @@
 @class StarSingleton;
 @class BitmapFont;
 @class TextObject;
+@class CollidableObject;
 @class ControllableObject;
 @class SideBarController;
 @class CollisionManager;
@@ -191,6 +193,9 @@
 
 // Adds an touchable object to the scene
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides;
+
+// Adds an collidable object to the scene
+- (void)addCollidableObject:(CollidableObject*)obj;
 
 // Adds a text object to the scene
 - (void)addTextObject:(TextObject*)obj;

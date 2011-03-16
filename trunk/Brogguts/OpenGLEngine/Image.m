@@ -41,6 +41,8 @@
 NSString* kObjectBroggutSmallSprite = @"smallbroggut.png";
 NSString* kObjectBroggutMediumSprite = @"mediumbroggut.png";
 
+NSString* kObjectTriggerSprite = @"spritetrigger.png";
+
 NSString* kObjectCraftAntSprite = @"craftant.png";
 NSString* kObjectCraftMothSprite = @"craftmoth.png";
 NSString* kObjectCraftBeetleSprite = @"craftbeetle.png";
