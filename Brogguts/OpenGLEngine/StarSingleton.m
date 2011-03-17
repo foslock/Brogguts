@@ -23,7 +23,7 @@ static StarSingleton* sharedStarinstance = nil;
 #ifdef STARS
 	@synchronized (self) {
 		if (sharedStarinstance == nil) {
-			[[self alloc] initWithSmallBroggutCapacity:INITIAL_NUMBER_OF_STARS];
+			[[self alloc] initWithStarCount:INITIAL_NUMBER_OF_STARS];
 		}
 	}
 	return sharedStarinstance;
@@ -88,14 +88,14 @@ static StarSingleton* sharedStarinstance = nil;
 	[super dealloc];
 }
 
-- (id)initWithSmallBroggutCapacity:(int)capacity {
+- (id)initWithStarCount:(int)capacity {
 	self = [super init];
 	if (self) {
 		starCount = 0;
 		starMax = capacity;
 		
 		sharedGameController = [GameController sharedGameController];
-		starTextureArray = [[NSMutableArray alloc] initWithCapacity:INITIAL_NUMBER_OF_STARS];
+		starTextureArray = [[NSMutableArray alloc] init];
 		
 		// Testing star textures
 		Image* starImage = [[Image alloc] initWithImageNamed:@"starTexture.png" filter:GL_LINEAR];
@@ -112,7 +112,8 @@ static StarSingleton* sharedStarinstance = nil;
 }
 
 - (void)randomizeStars {
-	for (int i = 0; i < INITIAL_NUMBER_OF_STARS; i++) {
+    starCount = 0;
+	for (int i = 0; i < starMax; i++) {
 		int x, y;
 		x = kPadScreenLandscapeWidth * RANDOM_0_TO_1();
 		y = kPadScreenLandscapeHeight * RANDOM_0_TO_1();
@@ -123,9 +124,9 @@ static StarSingleton* sharedStarinstance = nil;
 - (void)addStarAtLocation:(CGPoint)location {	
 	if (starCount == starMax) {
 		// DO NOTHING
-		// Too many brogguts on the dance floor
+		// Too many stars on the dance floor
 	} else {
-		// Turn the broggut at the last index of the array into an active broggut
+		// Turn the star at the last index of the array into an active star
 		int currentStarIndex = starCount;
 		
 		StarParticle* currentStar = &starArray[currentStarIndex];
@@ -158,9 +159,9 @@ static StarSingleton* sharedStarinstance = nil;
 		currentSprite->x = location.x;
 		currentSprite->y = location.y;
 		currentSprite->size = currentStar->particleSize;
-		float red = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
-		float green = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
-		float blue = CLAMP(RANDOM_0_TO_1() + 0.65f, 0, 1.0f);
+		float red = CLAMP(RANDOM_0_TO_1() + 0.85f, 0, 1.0f);
+		float green = CLAMP(RANDOM_0_TO_1() + 0.55f, 0, 1.0f);
+		float blue = CLAMP(RANDOM_0_TO_1() + 0.45f, 0, 1.0f);
 		currentSprite->color = Color4fMake(red, green, blue, ((float)currentStar->brightness) / 100.0f);
 		
 		starCount++;
@@ -225,9 +226,7 @@ static StarSingleton* sharedStarinstance = nil;
 	glColorPointer(4, GL_FLOAT, sizeof(StarSprite),(GLvoid*) (sizeof(GLfloat)*3));
 	
 	// Bind to the particles texture
-	// THIS WILL BE SLOW, ONLY RE-BIND TEXTURE WHEN ABSOLUTELY NECESSARY!
-	int textureIndex = (arc4random() % [starTextureArray count]);
-	Image* pickedTex = [starTextureArray objectAtIndex:textureIndex];
+	Image* pickedTex = [starTextureArray objectAtIndex:0];
 	glBindTexture(GL_TEXTURE_2D, pickedTex.textureName);
 	
 	// Enable the point size array

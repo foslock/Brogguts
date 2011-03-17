@@ -140,15 +140,18 @@
 }
 
 - (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
-	if (isCurrentlyHoveredOver) {
-		// Draw "selection circle"
-		if (objectAlliance == kAllianceFriendly) {
-			glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-		} else {
-			glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
-		}
-		drawDashedCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
-	}
+	// Draw "selection circle"
+    glLineWidth(2.0f);
+    if (objectAlliance == kAllianceFriendly) {
+        Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
+        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+    } else {
+        Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
+        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+    }
+    glLineWidth(1.0f);
 }
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
@@ -203,7 +206,11 @@
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
 	enablePrimitiveDraw();
-	[self drawHoverSelectionWithScroll:vector];
+    
+	if (isCurrentlyHoveredOver && !isBlinkingSelectionCircle) {
+        [self drawHoverSelectionWithScroll:vector];
+    }
+    
 	disablePrimitiveDraw();
 }
 

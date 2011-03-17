@@ -29,7 +29,7 @@ typedef struct {
 } StarParticle;
 
 #define STAR_TEXTURE_COUNT 1
-#define INITIAL_NUMBER_OF_STARS 300
+#define INITIAL_NUMBER_OF_STARS 400
 
 @interface StarSingleton : NSObject {
 	GameController* sharedGameController;
@@ -45,7 +45,7 @@ typedef struct {
 
 + (StarSingleton*)sharedStarSingleton;
 
-- (id)initWithSmallBroggutCapacity:(int)capacity;
+- (id)initWithStarCount:(int)capacity;
 
 - (void)randomizeStars;
 

@@ -28,6 +28,7 @@ enum ParticleTypes {
 - (void)updateParticlesWithDelta:(GLfloat)aDelta;
 - (void)renderParticlesWithScroll:(Vector2f)scroll;
 
+- (void)resetAllEmitters;
 - (void)createParticles:(int)count withType:(int)particleType atLocation:(CGPoint)location;
 
 @end

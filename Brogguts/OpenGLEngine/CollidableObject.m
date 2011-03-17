@@ -45,13 +45,18 @@ static int globalUniqueID = 0;
 		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
 		hasBeenCheckedForCollisions = NO;		// Var that is used to make sure duplicate collisions aren't checked
 		isCheckedForMultipleCollisions = NO;	// Set to YES if you want multiple objects checking collisions with this one.
+        isPaddedForCollisions = YES;            // If there should be a shrunken radius for collisions
 		isTextObject = NO;
 		staticObject = NO;
 		
 		// Set bounding information
 		boundingCircle.x = location.x;
 		boundingCircle.y = location.y;
-		boundingCircle.radius = (image.imageSize.width / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
+        if (isPaddedForCollisions) {
+            boundingCircle.radius = (image.imageSize.width / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
+        } else {
+            boundingCircle.radius = (image.imageSize.width / 2);
+        }
 	}
 	return self;
 }
@@ -65,12 +70,16 @@ static int globalUniqueID = 0;
 	if (!other.isCheckedForMultipleCollisions) other.hasBeenCheckedForCollisions = YES;
 	
 	// NSLog(@"Object (%i) collided with Object (%i) at location: <%.0f,%.0f>", uniqueObjectID, other.uniqueObjectID, objectLocation.x, objectLocation.y);
-	
 }
 
 - (Circle)boundingCircle {
 	boundingCircle.x = objectLocation.x;
 	boundingCircle.y = objectLocation.y;
+    if (isPaddedForCollisions) {
+        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
+    } else {
+        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2);
+    }
 	return boundingCircle;
 }
 

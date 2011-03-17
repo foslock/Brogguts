@@ -101,6 +101,13 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 	}
 }
 
+- (void)resetAllEmitters {
+    for (int i = 0; i < [particleEmitterArray count]; i++) {
+		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:i];
+		[emitter setParticleCount:0];
+	}
+}
+
 - (void)createParticles:(int)count withType:(int)particleType atLocation:(CGPoint)location {
 	if (particleType >= PARTICLE_TYPE_COUNT) {
 		NSLog(@"That particle type is invalid");

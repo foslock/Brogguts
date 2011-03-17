@@ -24,13 +24,12 @@
 
 - (void)stopGLAnimation {
     [window bringSubviewToFront:mainMenuController.view];
+    [mainMenuController dismissModalViewControllerAnimated:NO];
     glView.hidden = YES;
     [glView stopAnimation];
 }
 
-- (void)applicationEnded { // Custom method called whenever the application ends
-    if (applicationSaved) return;
-    applicationSaved = YES;
+- (void)saveSceneAndPlayer {
     [sharedGameController savePlayerProfile];
     if ([[sharedGameController currentScene] isBaseCamp]) {
         [sharedGameController saveCurrentSceneWithFilename:kBaseCampFileName allowOverwrite:YES];
@@ -38,6 +37,12 @@
         NSString* dateString = [[NSDate date] description];
         [sharedGameController saveCurrentSceneWithFilename:dateString allowOverwrite:NO];
     }
+}
+
+- (void)applicationEnded { // Custom method called whenever the application ends
+    if (applicationSaved) return;
+    applicationSaved = YES;
+    [self saveSceneAndPlayer];
     [self stopGLAnimation];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }

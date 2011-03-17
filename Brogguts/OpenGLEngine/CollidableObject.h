@@ -21,6 +21,7 @@
 	float objectRotation;
 	float rotationSpeed;
 	BOOL isHidden;
+    BOOL isPaddedForCollisions;
 	BOOL isCheckedForCollisions;
 	BOOL isCheckedForMultipleCollisions;
 	BOOL hasBeenCheckedForCollisions;

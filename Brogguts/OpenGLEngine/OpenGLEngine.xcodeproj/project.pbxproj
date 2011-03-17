@@ -19,6 +19,29 @@
 		28FD14FE0DC6FC130079059D /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.m */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		6F0E3272133115410037C789 /* TutorialSceneTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3271133115410037C789 /* TutorialSceneTwo.m */; };
+		6F0E3275133123F00037C789 /* Tutorial 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E3274133123F00037C789 /* Tutorial 2.plist */; };
+		6F0E3278133159E90037C789 /* TutorialSceneThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3277133159E90037C789 /* TutorialSceneThree.m */; };
+		6F0E327A13315D310037C789 /* Tutorial 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E327913315D310037C789 /* Tutorial 3.plist */; };
+		6F0E327D1331691E0037C789 /* NotificationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E327C1331691E0037C789 /* NotificationObject.m */; };
+		6F0E328113316B890037C789 /* structurerefinery.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328013316B890037C789 /* structurerefinery.png */; };
+		6F0E328313316E350037C789 /* spritenotificationarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328213316E350037C789 /* spritenotificationarrow.png */; };
+		6F0E328713316FA00037C789 /* Tutorial 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328613316FA00037C789 /* Tutorial 4.plist */; };
+		6F0E328A13316FC40037C789 /* TutorialSceneFour.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E328913316FC20037C789 /* TutorialSceneFour.m */; };
+		6F0E328C13317B220037C789 /* Map 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328B13317B220037C789 /* Map 1.plist */; };
+		6F0E328E13317B3F0037C789 /* Map 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328D13317B3F0037C789 /* Map 2.plist */; };
+		6F0E32901331806E0037C789 /* Tutorial 5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E328F1331806E0037C789 /* Tutorial 5.plist */; };
+		6F0E32931331810A0037C789 /* TutorialSceneFive.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3292133181050037C789 /* TutorialSceneFive.m */; };
+		6F0E329A1331A3B40037C789 /* Tutorial 11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32941331A3AD0037C789 /* Tutorial 11.plist */; };
+		6F0E329B1331A3B40037C789 /* Tutorial 10.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32951331A3AE0037C789 /* Tutorial 10.plist */; };
+		6F0E329C1331A3B40037C789 /* Tutorial 9.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32961331A3AF0037C789 /* Tutorial 9.plist */; };
+		6F0E329D1331A3B40037C789 /* Tutorial 8.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32971331A3B00037C789 /* Tutorial 8.plist */; };
+		6F0E329E1331A3B40037C789 /* Tutorial 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32981331A3B10037C789 /* Tutorial 7.plist */; };
+		6F0E329F1331A3B40037C789 /* Tutorial 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32991331A3B20037C789 /* Tutorial 6.plist */; };
+		6F0E32A21331A4EA0037C789 /* TutorialSceneSix.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32A11331A4E50037C789 /* TutorialSceneSix.m */; };
+		6F0E32A51331B9190037C789 /* TutorialSceneSeven.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */; };
+		6F0E32A81331BAB70037C789 /* TutorialSceneEight.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */; };
+		6F0E32AB1331BE650037C789 /* TutorialSceneTen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27EBC41321605C00579EE5 /* structurefixer.png */; };
 		6F27EE0A1324118B00579EE5 /* AIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F27EE091324118B00579EE5 /* AIController.m */; };
@@ -69,10 +92,6 @@
 		6F67CC06132A844C0061B1A9 /* MapChoiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CC04132A844B0061B1A9 /* MapChoiceController.m */; };
 		6F67CC07132A844C0061B1A9 /* MapChoiceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */; };
 		6F67CC11132D25BE0061B1A9 /* NewMapScenesList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */; };
-		6F67CC1A132D6EE70061B1A9 /* Map 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC19132D6EE70061B1A9 /* Map 1.plist */; };
-		6F67CC1E132D72130061B1A9 /* Map 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1B132D72120061B1A9 /* Map 2.plist */; };
-		6F67CC1F132D72130061B1A9 /* Map 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1C132D72120061B1A9 /* Map 3.plist */; };
-		6F67CC20132D72130061B1A9 /* Map 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CC1D132D72120061B1A9 /* Map 4.plist */; };
 		6F6A2C1112FC7992002A4201 /* GameCenterSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */; };
 		6F6A2C2412FC79AD002A4201 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6A2C2312FC79AD002A4201 /* GameKit.framework */; };
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
@@ -149,6 +168,39 @@
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLEngine_Prefix.pch; sourceTree = "<group>"; };
+		6F0E3270133115410037C789 /* TutorialSceneTwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneTwo.h; sourceTree = "<group>"; };
+		6F0E3271133115410037C789 /* TutorialSceneTwo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneTwo.m; sourceTree = "<group>"; };
+		6F0E327313311FAB0037C789 /* TutorialFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialFiles.h; sourceTree = "<group>"; };
+		6F0E3274133123F00037C789 /* Tutorial 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 2.plist"; sourceTree = "<group>"; };
+		6F0E3276133159E80037C789 /* TutorialSceneThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneThree.h; sourceTree = "<group>"; };
+		6F0E3277133159E90037C789 /* TutorialSceneThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneThree.m; sourceTree = "<group>"; };
+		6F0E327913315D310037C789 /* Tutorial 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 3.plist"; sourceTree = "<group>"; };
+		6F0E327B1331691E0037C789 /* NotificationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationObject.h; sourceTree = "<group>"; };
+		6F0E327C1331691E0037C789 /* NotificationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationObject.m; sourceTree = "<group>"; };
+		6F0E328013316B890037C789 /* structurerefinery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurerefinery.png; sourceTree = "<group>"; };
+		6F0E328213316E350037C789 /* spritenotificationarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritenotificationarrow.png; sourceTree = "<group>"; };
+		6F0E328613316FA00037C789 /* Tutorial 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 4.plist"; sourceTree = "<group>"; };
+		6F0E328813316FC00037C789 /* TutorialSceneFour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneFour.h; sourceTree = "<group>"; };
+		6F0E328913316FC20037C789 /* TutorialSceneFour.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneFour.m; sourceTree = "<group>"; };
+		6F0E328B13317B220037C789 /* Map 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 1.plist"; sourceTree = "<group>"; };
+		6F0E328D13317B3F0037C789 /* Map 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 2.plist"; sourceTree = "<group>"; };
+		6F0E328F1331806E0037C789 /* Tutorial 5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 5.plist"; sourceTree = "<group>"; };
+		6F0E3291133181040037C789 /* TutorialSceneFive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneFive.h; sourceTree = "<group>"; };
+		6F0E3292133181050037C789 /* TutorialSceneFive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneFive.m; sourceTree = "<group>"; };
+		6F0E32941331A3AD0037C789 /* Tutorial 11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 11.plist"; sourceTree = "<group>"; };
+		6F0E32951331A3AE0037C789 /* Tutorial 10.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 10.plist"; sourceTree = "<group>"; };
+		6F0E32961331A3AF0037C789 /* Tutorial 9.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 9.plist"; sourceTree = "<group>"; };
+		6F0E32971331A3B00037C789 /* Tutorial 8.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 8.plist"; sourceTree = "<group>"; };
+		6F0E32981331A3B10037C789 /* Tutorial 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 7.plist"; sourceTree = "<group>"; };
+		6F0E32991331A3B20037C789 /* Tutorial 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 6.plist"; sourceTree = "<group>"; };
+		6F0E32A01331A4DD0037C789 /* TutorialSceneSix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneSix.h; sourceTree = "<group>"; };
+		6F0E32A11331A4E50037C789 /* TutorialSceneSix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneSix.m; sourceTree = "<group>"; };
+		6F0E32A31331B90F0037C789 /* TutorialSceneSeven.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneSeven.h; sourceTree = "<group>"; };
+		6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneSeven.m; sourceTree = "<group>"; };
+		6F0E32A61331BAAC0037C789 /* TutorialSceneEight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneEight.h; sourceTree = "<group>"; };
+		6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneEight.m; sourceTree = "<group>"; };
+		6F0E32A91331BE4C0037C789 /* TutorialSceneTen.h */ = {isa = PBXFileReference; fileEncoding = 4; path = TutorialSceneTen.h; sourceTree = "<group>"; };
+		6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneTen.m; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F27EBC41321605C00579EE5 /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F27EE081324118B00579EE5 /* AIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIController.h; sourceTree = "<group>"; };
@@ -226,10 +278,6 @@
 		6F67CC04132A844B0061B1A9 /* MapChoiceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapChoiceController.m; sourceTree = "<group>"; };
 		6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapChoiceController.xib; sourceTree = "<group>"; };
 		6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = NewMapScenesList.plist; sourceTree = "<group>"; };
-		6F67CC19132D6EE70061B1A9 /* Map 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 1.plist"; sourceTree = "<group>"; };
-		6F67CC1B132D72120061B1A9 /* Map 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 2.plist"; sourceTree = "<group>"; };
-		6F67CC1C132D72120061B1A9 /* Map 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 3.plist"; sourceTree = "<group>"; };
-		6F67CC1D132D72120061B1A9 /* Map 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 4.plist"; sourceTree = "<group>"; };
 		6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterSingleton.h; sourceTree = "<group>"; };
 		6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterSingleton.m; sourceTree = "<group>"; };
 		6F6A2C2312FC79AD002A4201 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -549,6 +597,16 @@
 			isa = PBXGroup;
 			children = (
 				6F3AF23113303837008CFB79 /* Tutorial 1.plist */,
+				6F0E3274133123F00037C789 /* Tutorial 2.plist */,
+				6F0E327913315D310037C789 /* Tutorial 3.plist */,
+				6F0E328613316FA00037C789 /* Tutorial 4.plist */,
+				6F0E328F1331806E0037C789 /* Tutorial 5.plist */,
+				6F0E32991331A3B20037C789 /* Tutorial 6.plist */,
+				6F0E32981331A3B10037C789 /* Tutorial 7.plist */,
+				6F0E32971331A3B00037C789 /* Tutorial 8.plist */,
+				6F0E32961331A3AF0037C789 /* Tutorial 9.plist */,
+				6F0E32951331A3AE0037C789 /* Tutorial 10.plist */,
+				6F0E32941331A3AD0037C789 /* Tutorial 11.plist */,
 			);
 			name = "Tutorial Maps";
 			sourceTree = "<group>";
@@ -579,10 +637,8 @@
 			isa = PBXGroup;
 			children = (
 				6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */,
-				6F67CC19132D6EE70061B1A9 /* Map 1.plist */,
-				6F67CC1B132D72120061B1A9 /* Map 2.plist */,
-				6F67CC1C132D72120061B1A9 /* Map 3.plist */,
-				6F67CC1D132D72120061B1A9 /* Map 4.plist */,
+				6F0E328B13317B220037C789 /* Map 1.plist */,
+				6F0E328D13317B3F0037C789 /* Map 2.plist */,
 			);
 			name = "Default Maps";
 			sourceTree = "<group>";
@@ -642,6 +698,7 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6F0E328213316E350037C789 /* spritenotificationarrow.png */,
 				6F8E25D61330318400DCD662 /* spritetrigger.png */,
 				6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */,
 				6F8B842F13072035009CD1BF /* Default-Landscape.png */,
@@ -652,6 +709,7 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
+				6F0E328013316B890037C789 /* structurerefinery.png */,
 				6F67CBE6132948170061B1A9 /* structurebasestation.png */,
 				6F27EBC41321605C00579EE5 /* structurefixer.png */,
 				6F2CADC013172529001A10E3 /* structureblock.png */,
@@ -728,13 +786,15 @@
 			name = "Medium Brogguts";
 			sourceTree = "<group>";
 		};
-		6F8E25D01330196C00DCD662 /* Trigger Objects */ = {
+		6F8E25D01330196C00DCD662 /* Scene Objects */ = {
 			isa = PBXGroup;
 			children = (
 				6F8E25D113302F3C00DCD662 /* TriggerObject.h */,
 				6F8E25D213302F3C00DCD662 /* TriggerObject.m */,
+				6F0E327B1331691E0037C789 /* NotificationObject.h */,
+				6F0E327C1331691E0037C789 /* NotificationObject.m */,
 			);
-			name = "Trigger Objects";
+			name = "Scene Objects";
 			sourceTree = "<group>";
 		};
 		6F8E25D8133036D100DCD662 /* Tutorial Scenes */ = {
@@ -744,6 +804,22 @@
 				6F3AF23413303935008CFB79 /* TutorialScene.m */,
 				6F3AF23613306F5F008CFB79 /* TutorialSceneOne.h */,
 				6F3AF23713306F5F008CFB79 /* TutorialSceneOne.m */,
+				6F0E3270133115410037C789 /* TutorialSceneTwo.h */,
+				6F0E3271133115410037C789 /* TutorialSceneTwo.m */,
+				6F0E3276133159E80037C789 /* TutorialSceneThree.h */,
+				6F0E3277133159E90037C789 /* TutorialSceneThree.m */,
+				6F0E328813316FC00037C789 /* TutorialSceneFour.h */,
+				6F0E328913316FC20037C789 /* TutorialSceneFour.m */,
+				6F0E3291133181040037C789 /* TutorialSceneFive.h */,
+				6F0E3292133181050037C789 /* TutorialSceneFive.m */,
+				6F0E32A01331A4DD0037C789 /* TutorialSceneSix.h */,
+				6F0E32A11331A4E50037C789 /* TutorialSceneSix.m */,
+				6F0E32A31331B90F0037C789 /* TutorialSceneSeven.h */,
+				6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */,
+				6F0E32A61331BAAC0037C789 /* TutorialSceneEight.h */,
+				6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */,
+				6F0E32A91331BE4C0037C789 /* TutorialSceneTen.h */,
+				6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */,
 			);
 			name = "Tutorial Scenes";
 			sourceTree = "<group>";
@@ -758,6 +834,7 @@
 				6FF665031305D11900EB76A8 /* Primitives.h */,
 				6FCAC74B12F7D29700662BDA /* Global.h */,
 				6F2CB54F131ACDCE001A10E3 /* CraftAndStructures.h */,
+				6F0E327313311FAB0037C789 /* TutorialFiles.h */,
 			);
 			name = Constants;
 			sourceTree = "<group>";
@@ -839,7 +916,7 @@
 		6FE75B2B13036ECB00A3C6EF /* Object Management */ = {
 			isa = PBXGroup;
 			children = (
-				6F8E25D01330196C00DCD662 /* Trigger Objects */,
+				6F8E25D01330196C00DCD662 /* Scene Objects */,
 				6F8B82361306E8BE009CD1BF /* Objects */,
 				6F8B8E08130C8322009CD1BF /* Crafts */,
 				6F2CAD38131714E0001A10E3 /* Structures */,
@@ -960,14 +1037,24 @@
 				6F67CBFC1329EED40061B1A9 /* SkirmishMenuController.xib in Resources */,
 				6F67CC07132A844C0061B1A9 /* MapChoiceController.xib in Resources */,
 				6F67CC11132D25BE0061B1A9 /* NewMapScenesList.plist in Resources */,
-				6F67CC1A132D6EE70061B1A9 /* Map 1.plist in Resources */,
-				6F67CC1E132D72130061B1A9 /* Map 2.plist in Resources */,
-				6F67CC1F132D72130061B1A9 /* Map 3.plist in Resources */,
-				6F67CC20132D72130061B1A9 /* Map 4.plist in Resources */,
 				6F650D89132EA22300DC3BDB /* craftspider.png in Resources */,
 				6F650D8A132EA22300DC3BDB /* craftspiderdrone.png in Resources */,
 				6F8E25D71330318400DCD662 /* spritetrigger.png in Resources */,
 				6F3AF23213303837008CFB79 /* Tutorial 1.plist in Resources */,
+				6F0E3275133123F00037C789 /* Tutorial 2.plist in Resources */,
+				6F0E327A13315D310037C789 /* Tutorial 3.plist in Resources */,
+				6F0E328113316B890037C789 /* structurerefinery.png in Resources */,
+				6F0E328313316E350037C789 /* spritenotificationarrow.png in Resources */,
+				6F0E328713316FA00037C789 /* Tutorial 4.plist in Resources */,
+				6F0E328C13317B220037C789 /* Map 1.plist in Resources */,
+				6F0E328E13317B3F0037C789 /* Map 2.plist in Resources */,
+				6F0E32901331806E0037C789 /* Tutorial 5.plist in Resources */,
+				6F0E329A1331A3B40037C789 /* Tutorial 11.plist in Resources */,
+				6F0E329B1331A3B40037C789 /* Tutorial 10.plist in Resources */,
+				6F0E329C1331A3B40037C789 /* Tutorial 9.plist in Resources */,
+				6F0E329D1331A3B40037C789 /* Tutorial 8.plist in Resources */,
+				6F0E329E1331A3B40037C789 /* Tutorial 7.plist in Resources */,
+				6F0E329F1331A3B40037C789 /* Tutorial 6.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1040,6 +1127,15 @@
 				6F8E25D313302F3C00DCD662 /* TriggerObject.m in Sources */,
 				6F3AF23513303935008CFB79 /* TutorialScene.m in Sources */,
 				6F3AF23813306F5F008CFB79 /* TutorialSceneOne.m in Sources */,
+				6F0E3272133115410037C789 /* TutorialSceneTwo.m in Sources */,
+				6F0E3278133159E90037C789 /* TutorialSceneThree.m in Sources */,
+				6F0E327D1331691E0037C789 /* NotificationObject.m in Sources */,
+				6F0E328A13316FC40037C789 /* TutorialSceneFour.m in Sources */,
+				6F0E32931331810A0037C789 /* TutorialSceneFive.m in Sources */,
+				6F0E32A21331A4EA0037C789 /* TutorialSceneSix.m in Sources */,
+				6F0E32A51331B9190037C789 /* TutorialSceneSeven.m in Sources */,
+				6F0E32A81331BAB70037C789 /* TutorialSceneEight.m in Sources */,
+				6F0E32AB1331BE650037C789 /* TutorialSceneTen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

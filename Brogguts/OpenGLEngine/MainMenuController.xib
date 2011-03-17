@@ -36,7 +36,7 @@
 					<object class="IBUIButton" id="790913373">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">269</int>
-						<string key="NSFrame">{{133, 598}, {139, 56}}</string>
+						<string key="NSFrame">{{46, 598}, {139, 56}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="280334584"/>
@@ -67,7 +67,7 @@
 					<object class="IBUIButton" id="280334584">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">269</int>
-						<string key="NSFrame">{{429, 598}, {166, 56}}</string>
+						<string key="NSFrame">{{287, 598}, {166, 56}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="998190287"/>
@@ -88,10 +88,10 @@
 					<object class="IBUIButton" id="998190287">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">269</int>
-						<string key="NSFrame">{{755, 598}, {150, 56}}</string>
+						<string key="NSFrame">{{571, 598}, {150, 56}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="948104606"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -106,10 +106,31 @@
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="169897701"/>
 					</object>
+					<object class="IBUIButton" id="948104606">
+						<reference key="NSNextResponder" ref="766721923"/>
+						<int key="NSvFlags">269</int>
+						<string key="NSFrame">{{828, 598}, {150, 56}}</string>
+						<reference key="NSSuperview" ref="766721923"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<bool key="IBUIOpaque">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<reference key="IBUIFont" ref="244742255"/>
+						<int key="IBUIButtonType">1</int>
+						<string key="IBUINormalTitle">TUTORIAL</string>
+						<reference key="IBUIHighlightedTitleColor" ref="685199324"/>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="169897701"/>
+					</object>
 					<object class="IBUILabel" id="293552984">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{367, 262}, {291, 98}}</string>
+						<string key="NSFrame">{{306, 218}, {412, 139}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="790913373"/>
@@ -121,7 +142,7 @@
 						<string key="IBUIText">Brogguts</string>
 						<object class="NSFont" key="IBUIFont">
 							<string key="NSName">Helvetica</string>
-							<double key="NSSize">72</double>
+							<double key="NSSize">96</double>
 							<int key="NSfFlags">16</int>
 						</object>
 						<object class="NSColor" key="IBUITextColor">
@@ -189,6 +210,24 @@
 					</object>
 					<int key="connectionID">9</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">loadSkirmishViewController</string>
+						<reference key="source" ref="948104606"/>
+						<reference key="destination" ref="841351856"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">13</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">startTutorialLevels</string>
+						<reference key="source" ref="948104606"/>
+						<reference key="destination" ref="841351856"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">14</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -213,10 +252,11 @@
 						<int key="objectID">2</int>
 						<reference key="object" ref="766721923"/>
 						<array class="NSMutableArray" key="children">
+							<reference ref="948104606"/>
 							<reference ref="790913373"/>
-							<reference ref="293552984"/>
-							<reference ref="280334584"/>
 							<reference ref="998190287"/>
+							<reference ref="280334584"/>
+							<reference ref="293552984"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -240,12 +280,18 @@
 						<reference key="object" ref="293552984"/>
 						<reference key="parent" ref="766721923"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">12</int>
+						<reference key="object" ref="948104606"/>
+						<reference key="parent" ref="766721923"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-1.CustomClassName">MainMenuController</string>
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="10.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="2.IBEditorWindowLastContentRect">{{353, 156}, {1024, 768}}</string>
 				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -256,7 +302,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">10</int>
+			<int key="maxID">14</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -267,6 +313,7 @@
 						<string key="loadOptionsViewController">id</string>
 						<string key="loadProfileViewController">id</string>
 						<string key="loadSkirmishViewController">id</string>
+						<string key="startTutorialLevels">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="loadOptionsViewController">
@@ -279,6 +326,10 @@
 						</object>
 						<object class="IBActionInfo" key="loadSkirmishViewController">
 							<string key="name">loadSkirmishViewController</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="startTutorialLevels">
+							<string key="name">startTutorialLevels</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

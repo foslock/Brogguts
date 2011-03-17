@@ -14,6 +14,7 @@
 }
 
 - (IBAction)loadOptionsViewController;
+- (IBAction)startTutorialLevels;
 - (IBAction)loadProfileViewController;
 - (IBAction)loadSkirmishViewController;
 

@@ -10,6 +10,21 @@
 #import "GameController.h"
 #import "TriggerObject.h"
 
+NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
+    @"Tutorial 1",
+    @"Tutorial 2",
+    @"Tutorial 3",
+    @"Tutorial 4",
+    @"Tutorial 5",
+    @"Tutorial 6",
+    @"Tutorial 7",
+    @"Tutorial 8",
+    @"Tutorial 9",
+    @"Tutorial 10",
+    @"Tutorial 11",
+};
+
+
 @implementation TutorialScene
 
 - (void)dealloc {
@@ -17,11 +32,23 @@
     [super dealloc];
 }
 
-- (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString *)sName withNextScene:(NSString*)nextName {
-    self = [super initWithScreenBounds:screenBounds withFullMapBounds:mapBounds withName:sName];
+- (id)initWithTutorialIndex:(int)tutIndex {
+    self = [super initWithFileName:kTutorialSceneFileNames[tutIndex]];
     if (self) {
-        nextSceneName = [nextName copy];
+        if (tutIndex >= TUTORIAL_SCENES_COUNT - 1) {
+            nextSceneName = kBaseCampFileName;
+        } else {
+            nextSceneName = kTutorialSceneFileNames[tutIndex+1];
+        }
+        isTutorial = YES;
+        tutorialIndex = tutIndex;
         isObjectiveComplete = NO;
+        
+        // Turn off the complicated stuff
+        isShowingSidebar = NO;
+        isShowingBroggutCount = NO;
+        isShowingMetalCount = NO;
+        isAllowingOverview = NO;
     }
     return self;
 }
@@ -30,7 +57,10 @@
     if ([self checkObjective]) {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
-            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName];
+            if (tutorialIndex < TUTORIAL_SCENES_COUNT - 1) {
+                [[GameController sharedGameController] loadTutorialLevelsForIndex:tutorialIndex + 1];
+            }
+            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:YES];
             return;
         }
     }

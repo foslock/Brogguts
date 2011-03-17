@@ -8,15 +8,21 @@
 
 #import <Foundation/Foundation.h>
 #import "BroggutScene.h"
+#import "NotificationObject.h"
+
+#define TUTORIAL_SCENES_COUNT 11
+
+extern NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT];
 
 @class TriggerObject;
 
 @interface TutorialScene : BroggutScene {
+    int tutorialIndex; 
     NSString* nextSceneName;
     BOOL isObjectiveComplete;
 }
 
-- (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString *)sName withNextScene:(NSString*)nextName;
+- (id)initWithTutorialIndex:(int)tutIndex;
 - (BOOL)checkObjective;
 
 @end

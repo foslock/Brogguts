@@ -106,12 +106,12 @@ static inline void drawLine(CGPoint loc1, CGPoint loc2, Vector2f scroll) {
 	// then use GL_LINE_LOOP to render them
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINES, 0, 2);
-
+    
 	free(vertices);
 }
 
 static inline void drawLines(float* vertices, int count, Vector2f scroll) {
-
+    
 	glPushMatrix();
 	
 	// Set up the vertex pointer to the array of vertices we have created and
@@ -119,7 +119,7 @@ static inline void drawLines(float* vertices, int count, Vector2f scroll) {
 	glTranslatef(-scroll.x, -scroll.y, 0.0f);
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, count);
-
+    
 	glPopMatrix();
 }
 

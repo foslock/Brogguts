@@ -222,14 +222,14 @@ enum SectionNames {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
             
-            [sharedGameController transitionToSceneWithFileName:name];
+            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO];
         }
             break;
         case kSectionNewMaps: {
             NSString* name = [newMapNames objectAtIndex:indexPath.row];
             NSLog(@"Make a new scene with name %@", name);
             [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-            [sharedGameController transitionToSceneWithFileName:name];
+            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO];
         }
             break;
         case kSectionExitButton: {

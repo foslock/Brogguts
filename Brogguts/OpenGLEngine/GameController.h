@@ -17,13 +17,43 @@
 @class PlayerProfile;
 @class TextObject;
 
+#pragma mark -
+#pragma mark Scene storage 
+
+enum kSceneStorageGlobals {
+    kSceneStorageGlobalName,
+    kSceneStorageGlobalBaseCamp,
+    kSceneStorageGlobalWidthCells,
+    kSceneStorageGlobalHeightCells,
+    kSceneStorageGlobalSmallBrogguts,
+    kSceneStorageGlobalAIController,
+    kSceneStorageGlobalMediumBroggutArray,
+    kSceneStorageGlobalObjectArray,
+};
+
+enum kSceneStorageIndexs {
+	kSceneStorageIndexTypeID, // - object type ID
+	kSceneStorageIndexID, // - object ID
+	kSceneStorageIndexPath, // - Current path
+	kSceneStorageIndexAlliance, // - Alliance
+	kSceneStorageIndexRotation, // - Rotation
+	kSceneStorageIndexTraveling, // - isTraveling
+	kSceneStorageIndexEndLoc, // - ^^ end location
+	kSceneStorageIndexCurrentLoc, // - Current location
+	kSceneStorageIndexHull, // - Current Hull
+	kSceneStorageIndexControlledShip, // - isControlledShip
+	kSceneStorageIndexMining, // - if mining
+	kSceneStorageIndexMiningLoc, // - mining location
+	kSceneStorageIndexCargo, // - broggut cargo
+};
+
 extern NSString* kBaseCampFileName;
 extern NSString* kSavedScenesFileName;
 extern NSString* kNewMapScenesFileName;
 
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
-#define FADING_RECT_ALPHA_RATE 0.01f
+#define FADING_RECT_ALPHA_RATE 0.015f
 #define CRAFT_COLLISION_YESNO YES
 #define STRUCTURE_COLLISION_YESNO YES
 
@@ -50,6 +80,8 @@ extern NSString* kNewMapScenesFileName;
 	BOOL isFadingSceneIn;
 	BOOL isFadingSceneOut;
 	float fadingRectAlpha;
+    BOOL isTutorial;
+    BOOL isReturningToMenu;
 	
     // Game controller iVars	
     NSDictionary *gameScenes;						// Dictionary of the different game scenes
@@ -82,11 +114,12 @@ extern NSString* kNewMapScenesFileName;
 - (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name;
 - (void)createInitialBaseCampLevel;
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
-- (BroggutScene*)sceneWithFilename:(NSString*)filename;
 - (void)addFilenameToSceneFileList:(NSString*)filename;
 
 // Transitions to the scene with the given filename
-- (void)transitionToSceneWithFileName:(NSString*)fileName;
+- (void)returnToMainMenu;
+- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial;
+- (void)loadTutorialLevelsForIndex:(int)index;
 
 // Updates the logic within the current scene
 - (void)updateCurrentSceneWithDelta:(float)aDelta;

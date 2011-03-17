@@ -4,8 +4,8 @@
 // Device Specific Information
 //
 
-#define kPadScreenLandscapeWidth 1024
-#define kPadScreenLandscapeHeight 768 // Without status bar
+#define kPadScreenLandscapeWidth 1024.0f
+#define kPadScreenLandscapeHeight 768.0f // Without status bar
 
 //
 // Testing Definitions
@@ -20,9 +20,6 @@
 #define GRID
 #define BROGGUTS
 
-//
-// Initial Scene information
-//
 
 //
 // Font information
@@ -74,6 +71,7 @@ enum ObjectIDs { // How objects are indentified
 	kObjectBroggutMediumID,
 	kObjectBroggutLargeID,
     kObjectTriggerID,
+    kObjectNotificationID,
 	kObjectCraftAntID,
 	kObjectCraftMothID,
 	kObjectCraftBeetleID,
@@ -162,7 +160,7 @@ enum TheBeetleValues {
 	kCraftBeetleAttackRange = 200, // pixels
 	kCraftBeetleAttackCooldown = 60, // frames for weapon to recharge
 	kCraftBeetleSpecialCoolDown = 500, // frames for special to recharge
-	kCraftBeetleHull = 30,
+	kCraftBeetleHull = 50,
 	// Special Values
 	kCraftBeetleSelfRepairSpeed = 1, // HP / seconds
 };
