@@ -20,6 +20,7 @@
 #define OVERVIEW_MAX_ALPHA 1.0f
 #define OVERVIEW_MIN_FINGER_DISTANCE 8.0f
 #define SELECTION_MIN_DISTANCE 20.0f
+#define SCENE_NAME_OBJECT_TIME 5.0f
 
 @class Image;
 @class ImageRenderSingleton;
@@ -52,7 +53,14 @@
 	
 	// Name of the scene, will be displayed when loaded
 	NSString* sceneName;
+    
+    // Booleans regarding the scene's status and what to display
     BOOL isBaseCamp;
+    BOOL isTutorial;
+    BOOL isShowingSidebar;
+    BOOL isShowingBroggutCount;
+    BOOL isShowingMetalCount;
+    BOOL isAllowingOverview;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -117,8 +125,8 @@
 	CGRect visibleScreenBounds;	// Stores the dynamic bounds of the visible window (viewport)
 	
 	// Dealing with text objects
-	NSMutableArray* textObjectArray; // Array containing all of the objects that want to render fonts
-	NSMutableArray* fontArray;		// Array containing the all the bitmap fonts used
+	NSMutableArray* textObjectArray;    // Array containing all of the objects that want to render fonts
+	NSMutableArray* fontArray;          // Array containing the all the bitmap fonts used
 	
 	// Frame counter
 	int frameCounter;			// The counter for frames (use for functions you want to call NOT every frame with "%" operator
@@ -150,6 +158,7 @@
 @property (nonatomic, assign) CGRect visibleScreenBounds;
 @property (nonatomic, assign) BOOL isShowingOverview;
 @property (nonatomic, assign) BOOL isBaseCamp;
+@property (nonatomic, assign) BOOL isTutorial;
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
@@ -160,6 +169,9 @@
 
 #pragma mark -
 #pragma mark Selectors
+
+// Get a scene from a file
+- (id)initWithFileName:(NSString*)filename;
 
 // Set default values, etc.
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName;
@@ -172,6 +184,10 @@
 
 // Randomly generates small brogguts and adds them to the scene randomly scattered in 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;
+
+// Font widths and heights
+- (float)getWidthForFontID:(int)fontID withString:(NSString*)string;
+- (float)getHeightForFontID:(int)fontID withString:(NSString*)string;
 
 // Handles scrolling all of the objects when the view moves
 - (void)scrollScreenWithVector:(Vector2f)scrollVector;

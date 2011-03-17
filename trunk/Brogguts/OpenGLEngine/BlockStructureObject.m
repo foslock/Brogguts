@@ -14,7 +14,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureBlockID withLocation:location isTraveling:traveling];
 	if (self) {
-		isCheckedForRadialEffect = NO;
+
 	}
 	return self;
 }

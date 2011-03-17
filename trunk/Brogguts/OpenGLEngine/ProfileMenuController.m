@@ -9,6 +9,7 @@
 #import "ProfileMenuController.h"
 #import "GameController.h"
 #import "OpenGLEngineAppDelegate.h"
+#import "TutorialFiles.h"
 
 @implementation ProfileMenuController
 
@@ -35,9 +36,8 @@
 }
 
 - (IBAction)startBaseCamp {
-    [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
-    [[GameController sharedGameController] transitionToSceneWithFileName:fileNameAlone];
+    [[GameController sharedGameController] transitionToSceneWithFileName:fileNameAlone isTutorial:NO];
 }
 
 - (IBAction)popProfileController {

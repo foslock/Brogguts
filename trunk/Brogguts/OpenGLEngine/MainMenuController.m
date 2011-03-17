@@ -7,6 +7,8 @@
 //
 
 #import "MainMenuController.h"
+#import "GameController.h"
+#import "TutorialScene.h"
 #import "OptionsMenuController.h"
 #import "ProfileMenuController.h"
 #import "SkirmishMenuController.h"
@@ -33,6 +35,11 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (IBAction)startTutorialLevels {
+    [[GameController sharedGameController] loadTutorialLevelsForIndex:6];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[6] isTutorial:YES];
 }
 
 - (IBAction)loadOptionsViewController {

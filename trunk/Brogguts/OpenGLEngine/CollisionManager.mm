@@ -390,29 +390,43 @@
 }
 
 - (void)processAllEffectRadii {
-    int startingIndex = startingRadialIndex;
-    for (int i = startingIndex; i < startingIndex + RADIAL_EFFECT_MAX_COUNT; i++) {
-        int realIndex = i;
-        if (realIndex >= [radialAffectedObjects count]) {
-            realIndex -= [radialAffectedObjects count];
+    if ([radialAffectedObjects count] > RADIAL_EFFECT_MAX_COUNT) {
+        int startingIndex = startingRadialIndex;
+        for (int i = startingIndex; i < startingIndex + RADIAL_EFFECT_MAX_COUNT; i++) {
+            int realIndex = i;
+            if (realIndex >= [radialAffectedObjects count]) {
+                realIndex -= [radialAffectedObjects count];
+            }
+            // Add objects to the queue
+            [radialObjectsQueue addObject:[radialAffectedObjects objectAtIndex:realIndex]];
+            
+            startingRadialIndex = realIndex;
         }
-        // Add objects to the queue
-        [radialObjectsQueue addObject:[radialAffectedObjects objectAtIndex:realIndex]];
         
-        startingRadialIndex = realIndex;
+        for (int i = 0; i < [radialObjectsQueue count]; i++) {
+            TouchableObject* obj1 = [radialObjectsQueue objectAtIndex:i];
+            for (int j = 0; j < [radialAffectedObjects count]; j++) {
+                TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
+                if (obj1 == obj2) continue;
+                if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
+                    [obj1 objectEnteredEffectRadius:obj2];
+                if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
+                    [obj2 objectEnteredEffectRadius:obj1];
+            }
+        }
+    } else {
+        for (int i = 0; i < [radialAffectedObjects count]; i++) {
+            TouchableObject* obj1 = [radialAffectedObjects objectAtIndex:i];
+            for (int j = 0; j < [radialAffectedObjects count]; j++) {
+                TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
+                if (obj1 == obj2) continue;
+                if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
+                    [obj1 objectEnteredEffectRadius:obj2];
+                if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
+                    [obj2 objectEnteredEffectRadius:obj1];
+            }
+        } 
     }
-    
-	for (int i = 0; i < [radialObjectsQueue count]; i++) {
-		TouchableObject* obj1 = [radialObjectsQueue objectAtIndex:i];
-		for (int j = 0; j < [radialAffectedObjects count]; j++) {
-			TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:j];
-			if (obj1 == obj2) continue;
-            if (CircleContainsPoint([obj1 effectRadiusCircle], obj2.objectLocation))
-                [obj1 objectEnteredEffectRadius:obj2];
-            if (CircleContainsPoint([obj2 effectRadiusCircle], obj1.objectLocation))
-                [obj2 objectEnteredEffectRadius:obj1];
-		}
-	}
     [radialObjectsQueue removeAllObjects];
 }
 
