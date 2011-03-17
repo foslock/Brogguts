@@ -45,7 +45,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         isObjectiveComplete = NO;
         
         // Turn off the complicated stuff
-        isShowingSidebar = NO;
+        isAllowingSidebar = NO;
         isShowingBroggutCount = NO;
         isShowingMetalCount = NO;
         isAllowingOverview = NO;

@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "Image.h"
 
 @implementation TutorialSceneTen
 
@@ -25,9 +26,16 @@
         isAllowingOverview = YES;
         CGPoint triggerLoc = [self middleOfEntireMap];
         mothTrigger = [[TriggerObject alloc] initWithLocation:triggerLoc];
+        [self setCameraLocation:triggerLoc];
+        [self setMiddleOfVisibleScreenToCamera];
         mothTrigger.numberOfObjectsNeeded = 16;
         mothTrigger.objectIDNeeded = kObjectCraftMothID;
+        mothTrigger.objectImage.scale = Scale2fMake(4.0f, 4.0f);
         [self addCollidableObject:mothTrigger];
+        NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:mothTrigger.objectLocation withDuration:-1.0f];
+        [notiObj attachToObject:mothTrigger];
+        [self addCollidableObject:notiObj];
+        [notiObj release];
         
         for (int row = -1; row < 1; row++) {
             for (int col = -1; col < 1; col++) {

@@ -11,10 +11,13 @@
 
 @class TriggerObject;
 @class CraftObject;
+@class FingerObject;
 
 @interface TutorialSceneThree : TutorialScene {
     TriggerObject* antTrigger;
     CraftObject* myCraft;
+    FingerObject* fingerOne;
+    FingerObject* fingerTwo;
 }
 
 @end

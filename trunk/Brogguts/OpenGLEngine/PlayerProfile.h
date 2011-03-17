@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define PROFILE_BROGGUT_START_COUNT 100000
-#define PROFILE_METAL_START_COUNT 100000
-#define BROGGUT_DISPLAY_CHANGE_RATE 2
+#define PROFILE_BROGGUT_START_COUNT 200
+#define PROFILE_METAL_START_COUNT 100
+#define BROGGUT_DISPLAY_CHANGE_RATE 4
 
 @interface PlayerProfile : NSObject <NSCoding> {
 	int playerSpaceYear;

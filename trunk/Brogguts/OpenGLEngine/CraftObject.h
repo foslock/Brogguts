@@ -73,6 +73,7 @@ typedef struct Point_Array {
     CraftAIInfo craftAIInfo;
 }
 
+@property (readonly) BOOL isFollowingPath;
 @property (readonly) CraftAIInfo craftAIInfo;
 @property (readonly) int attributePlayerCargoCapacity;
 @property (readonly) int attributePlayerCurrentCargo;

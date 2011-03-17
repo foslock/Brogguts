@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "Image.h"
 
 @implementation TutorialSceneFive
 
@@ -33,6 +34,7 @@
         
         antTrigger = [[TriggerObject alloc] initWithLocation:triggerLoc];
         antTrigger.numberOfObjectsNeeded = 2;
+        antTrigger.objectImage.scale = Scale2fMake(2.0f, 2.0f);
         antTrigger.objectIDNeeded = kObjectCraftAntID;
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:antTrigger.objectLocation withDuration:-1.0f];
         [self addCollidableObject:notiObj];

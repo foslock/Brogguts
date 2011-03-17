@@ -38,8 +38,8 @@
 }
 
 - (IBAction)startTutorialLevels {
-    [[GameController sharedGameController] loadTutorialLevelsForIndex:6];
-    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[6] isTutorial:YES];
+    [[GameController sharedGameController] loadTutorialLevelsForIndex:0];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[0] isTutorial:YES];
 }
 
 - (IBAction)loadOptionsViewController {

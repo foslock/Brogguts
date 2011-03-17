@@ -79,14 +79,7 @@
 	if (isBlinkingSelectionCircle) {
 		int modTime = blinkingSelectionCircleTimer % CIRCLE_BLINK_FREQUENCY;
 		if (modTime < (CIRCLE_BLINK_FREQUENCY / 2)) {
-			if (objectAlliance == kAllianceFriendly) {
-				glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-			} else {
-				glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
-			}
-			enablePrimitiveDraw();
-			drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
-			disablePrimitiveDraw();
+			[self drawHoverSelectionWithScroll:vector];
 		}
 	}
 }
@@ -177,6 +170,7 @@
 	for (TouchableObject* enemy in setCopy) {
 		[enemy targetWasDestroyed:self];
 	}
+    /*
     int numberOfSmallBrogguts = 3;
     CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
                              objectLocation.y - (objectImage.imageSize.height / 2),
@@ -185,6 +179,7 @@
     if (![self isKindOfClass:[SpiderDroneObject class]]) {
         [[self currentScene] addSmallBrogguts:numberOfSmallBrogguts inBounds:rect withLocationArray:nil];
     }
+    */
 	[super objectWasDestroyed];
 }
 

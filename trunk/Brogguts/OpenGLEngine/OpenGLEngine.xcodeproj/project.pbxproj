@@ -42,6 +42,11 @@
 		6F0E32A51331B9190037C789 /* TutorialSceneSeven.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */; };
 		6F0E32A81331BAB70037C789 /* TutorialSceneEight.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */; };
 		6F0E32AB1331BE650037C789 /* TutorialSceneTen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */; };
+		6F0E32AE13324BBD0037C789 /* TutorialSceneNine.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32AD13324BA70037C789 /* TutorialSceneNine.m */; };
+		6F0E32B11332657A0037C789 /* TutorialSceneEleven.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32B0133265640037C789 /* TutorialSceneEleven.m */; };
+		6F0E32B3133268A30037C789 /* spritefinger.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32B2133268A30037C789 /* spritefinger.png */; };
+		6F0E32B6133268C90037C789 /* FingerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32B5133268C70037C789 /* FingerObject.m */; };
+		6F0E32B8133270900037C789 /* spritetouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32B7133270900037C789 /* spritetouch.png */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F27EBC41321605C00579EE5 /* structurefixer.png */; };
 		6F27EE0A1324118B00579EE5 /* AIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F27EE091324118B00579EE5 /* AIController.m */; };
@@ -199,8 +204,16 @@
 		6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneSeven.m; sourceTree = "<group>"; };
 		6F0E32A61331BAAC0037C789 /* TutorialSceneEight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneEight.h; sourceTree = "<group>"; };
 		6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneEight.m; sourceTree = "<group>"; };
-		6F0E32A91331BE4C0037C789 /* TutorialSceneTen.h */ = {isa = PBXFileReference; fileEncoding = 4; path = TutorialSceneTen.h; sourceTree = "<group>"; };
+		6F0E32A91331BE4C0037C789 /* TutorialSceneTen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneTen.h; sourceTree = "<group>"; };
 		6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneTen.m; sourceTree = "<group>"; };
+		6F0E32AC13324B8F0037C789 /* TutorialSceneNine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneNine.h; sourceTree = "<group>"; };
+		6F0E32AD13324BA70037C789 /* TutorialSceneNine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneNine.m; sourceTree = "<group>"; };
+		6F0E32AF1332655E0037C789 /* TutorialSceneEleven.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneEleven.h; sourceTree = "<group>"; };
+		6F0E32B0133265640037C789 /* TutorialSceneEleven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneEleven.m; sourceTree = "<group>"; };
+		6F0E32B2133268A30037C789 /* spritefinger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritefinger.png; sourceTree = "<group>"; };
+		6F0E32B4133268C60037C789 /* FingerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerObject.h; sourceTree = "<group>"; };
+		6F0E32B5133268C70037C789 /* FingerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FingerObject.m; sourceTree = "<group>"; };
+		6F0E32B7133270900037C789 /* spritetouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetouch.png; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F27EBC41321605C00579EE5 /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F27EE081324118B00579EE5 /* AIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIController.h; sourceTree = "<group>"; };
@@ -698,6 +711,8 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6F0E32B7133270900037C789 /* spritetouch.png */,
+				6F0E32B2133268A30037C789 /* spritefinger.png */,
 				6F0E328213316E350037C789 /* spritenotificationarrow.png */,
 				6F8E25D61330318400DCD662 /* spritetrigger.png */,
 				6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */,
@@ -793,6 +808,8 @@
 				6F8E25D213302F3C00DCD662 /* TriggerObject.m */,
 				6F0E327B1331691E0037C789 /* NotificationObject.h */,
 				6F0E327C1331691E0037C789 /* NotificationObject.m */,
+				6F0E32B4133268C60037C789 /* FingerObject.h */,
+				6F0E32B5133268C70037C789 /* FingerObject.m */,
 			);
 			name = "Scene Objects";
 			sourceTree = "<group>";
@@ -818,8 +835,12 @@
 				6F0E32A41331B9110037C789 /* TutorialSceneSeven.m */,
 				6F0E32A61331BAAC0037C789 /* TutorialSceneEight.h */,
 				6F0E32A71331BAAF0037C789 /* TutorialSceneEight.m */,
+				6F0E32AC13324B8F0037C789 /* TutorialSceneNine.h */,
+				6F0E32AD13324BA70037C789 /* TutorialSceneNine.m */,
 				6F0E32A91331BE4C0037C789 /* TutorialSceneTen.h */,
 				6F0E32AA1331BE5B0037C789 /* TutorialSceneTen.m */,
+				6F0E32AF1332655E0037C789 /* TutorialSceneEleven.h */,
+				6F0E32B0133265640037C789 /* TutorialSceneEleven.m */,
 			);
 			name = "Tutorial Scenes";
 			sourceTree = "<group>";
@@ -1055,6 +1076,8 @@
 				6F0E329D1331A3B40037C789 /* Tutorial 8.plist in Resources */,
 				6F0E329E1331A3B40037C789 /* Tutorial 7.plist in Resources */,
 				6F0E329F1331A3B40037C789 /* Tutorial 6.plist in Resources */,
+				6F0E32B3133268A30037C789 /* spritefinger.png in Resources */,
+				6F0E32B8133270900037C789 /* spritetouch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1136,6 +1159,9 @@
 				6F0E32A51331B9190037C789 /* TutorialSceneSeven.m in Sources */,
 				6F0E32A81331BAB70037C789 /* TutorialSceneEight.m in Sources */,
 				6F0E32AB1331BE650037C789 /* TutorialSceneTen.m in Sources */,
+				6F0E32AE13324BBD0037C789 /* TutorialSceneNine.m in Sources */,
+				6F0E32B11332657A0037C789 /* TutorialSceneEleven.m in Sources */,
+				6F0E32B6133268C90037C789 /* FingerObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1183,7 +1209,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
@@ -1199,7 +1225,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
