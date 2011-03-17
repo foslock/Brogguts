@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "FingerObject.h"
 
 @implementation TutorialSceneThree
 
@@ -29,12 +30,61 @@
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
         [self addCollidableObject:antTrigger];
+        
+        FingerObject* tempFingerOne = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+                                                                                              myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)
+                                                                  withEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
+                                                                                              myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)
+                                                                          repeats:YES];
+        fingerOne = tempFingerOne;
+        [self addCollidableObject:tempFingerOne];
+        [tempFingerOne release];
+        
+        FingerObject* tempFingerTwo = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+                                                                                              myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)
+                                                                  withEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
+                                                                                              myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)
+                                                                          repeats:YES];
+        fingerTwo = tempFingerTwo;
+        [self addCollidableObject:tempFingerTwo];
+        [tempFingerTwo release];
     }
     return self;
 }
 
+- (void)updateSceneWithDelta:(float)aDelta {
+    if (!myCraft.isBeingControlled) {
+        [fingerOne setStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+                                                myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)];
+        [fingerTwo setStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+                                                myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)];
+        [fingerOne setEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
+                                              myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)];
+        [fingerTwo setEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
+                                              myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)];
+        fingerOne.isHidden = NO;
+        fingerTwo.isHidden = NO;
+    } else {
+        fingerOne.isHidden = YES;
+        fingerTwo.isHidden = YES;
+    }
+    [super updateSceneWithDelta:aDelta];
+}
+
 - (BOOL)checkObjective {
     return ([antTrigger isComplete] && myCraft.isBeingControlled);
+}
+
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
+    [super touchesBegan:touches withEvent:event view:aView];
+    fingerOne.isHidden = YES;
+    fingerTwo.isHidden = YES;
+}
+
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
+    [super touchesEnded:touches withEvent:event view:aView];
+    fingerOne.isHidden = NO;
+    fingerTwo.isHidden = NO;
 }
 
 @end

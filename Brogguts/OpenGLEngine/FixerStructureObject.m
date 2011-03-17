@@ -25,7 +25,8 @@
 		isRepairingCraft = NO;
 		closeFriendlyCraft = [[NSMutableArray alloc] initWithCapacity:REPAIR_MAX_CRAFT_COUNT];
 		repairingCraft = [[NSMutableArray alloc] initWithCapacity:REPAIR_MAX_CRAFT_COUNT];
-		attributeRepairAmount = kStructureFixerRepairRate;
+		attributeRepairAmount = kStructureFixerRepairAmount;
+        attributeRepairCooldown = kStructureFixerRepairCooldown;
 		attributeRepairMaxCount = kStructureFixerFriendlyTargetLimit;
 		attributeRepairRange = kStructureFixerRepairRange;
 		effectRadius = attributeRepairRange;
@@ -55,14 +56,19 @@
 		[sorter release];
 		[repairingCraft removeAllObjects];
 		int shipCount = CLAMP([closeFriendlyCraft count], 0, attributeRepairMaxCount);
-		for (int i = 0; i < shipCount; i++) {
-			CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
-			if (GetDistanceBetweenPoints(objectLocation, craft.objectLocation) <= attributeRepairRange && 
-				![craft isHullFull]) {
-				[craft repairCraft:attributeRepairAmount];
-				[repairingCraft addObject:craft];
-			}
-		}
+        if (repairCountdownTimer <= 0) {
+            for (int i = 0; i < shipCount; i++) {
+                CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
+                if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) <= POW2(attributeRepairRange) && 
+                    ![craft isHullFull]) {
+                    [craft repairCraft:attributeRepairAmount];
+                    [repairingCraft addObject:craft];
+                }
+            }
+            repairCountdownTimer = attributeRepairCooldown / shipCount;
+        } else {
+            repairCountdownTimer--;
+        }
 	}
 	
 	[super updateObjectLogicWithDelta:aDelta];

@@ -47,7 +47,7 @@
     self.sceneName = sName;
     isBaseCamp = NO;
     isTutorial = NO;
-    isShowingSidebar = YES;
+    isAllowingSidebar = YES;
     isShowingBroggutCount = YES;
     isShowingMetalCount = YES;
     isAllowingOverview = YES;
@@ -675,24 +675,14 @@
                 [craft setAttackingAIState:kAttackingAIStateNeutral];
                 [craft accelerateTowardsLocation:craftDest];
             }
-            cameraLocation = GetMidpointFromPoints(cameraPoint, currentTouchLocation);
+            if (!isTouchMovingOverview)
+                cameraLocation = GetMidpointFromPoints(cameraPoint, currentTouchLocation);
         } else {
-            cameraLocation = cameraPoint;
+            if (!isTouchMovingOverview)
+                cameraLocation = cameraPoint;
         }
     }
     
-    /*
-     BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-     if (controllingShip.isTouchable && closestBrog && !closestBrog.destroyNow) {
-     if (GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 75) {
-     if ( (controllingShip.attributePlayerCurrentCargo + closestBrog.broggutValue) < controllingShip.attributePlayerCargoCapacity) {
-     [controllingShip addCargo:closestBrog.broggutValue];
-     [closestBrog setDestroyNow:YES];
-     [sharedParticleSingleton createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
-     }
-     }
-     }
-     */
     // Update the current broggut count
     NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentPlayerProfile].broggutCount];
     [broggutCounter setObjectText:brogCount];
@@ -853,16 +843,6 @@
         glColor4f(0.1f, 1.0f, 0.1f, 0.75f);
         [self renderSelectionAreaWithPoints:selectionPointsOne andPoints:selectionPointsTwo];
     }
-    /*
-     // Draw a line to the closest broggut
-     BroggutObject* closestBrog = [collisionManager closestSmallBroggutToLocation:controllingShip.objectLocation];
-     if (closestBrog && GetDistanceBetweenPoints(controllingShip.objectLocation, closestBrog.objectLocation) < 100) {
-     enablePrimitiveDraw();
-     glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
-     drawLine(controllingShip.objectLocation, closestBrog.objectLocation, scroll);
-     disablePrimitiveDraw();
-     }
-     */
     
     // Render all of the particles in the manager
     [sharedParticleSingleton renderParticlesWithScroll:scroll];
@@ -875,7 +855,7 @@
     }
     
     // Render the sidebar button (and sidebar, if activated)
-    if (isShowingSidebar)
+    if (isAllowingSidebar)
         [sideBar renderSideBar];
 }
 
@@ -943,6 +923,9 @@
 }
 
 - (void)renderOverviewMapWithAlpha:(float)alpha {
+    if (isTouchMovingOverview) {
+        alpha /= 1.4f;
+    }
     // Disable the color array and switch off texturing
     enablePrimitiveDraw();
     
@@ -1022,7 +1005,10 @@
                                      visibleScreenBounds.size.width * xRatio,
                                      visibleScreenBounds.size.height * yRatio);
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
-    
+    if (isTouchMovingOverview) {
+        viewportRect = CGRectInset(viewportRect, -5.0f, -5.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, alpha - 0.5f);
+    }
     drawRect(CGRectInset(viewportRect, 1.0f, 1.0f), Vector2fZero);
     
     // Switch the color array back on and enable textures.  This is the default state
@@ -1050,6 +1036,44 @@
     drawLines(cPoints, pointCount, Vector2fZero);
     disablePrimitiveDraw();
     free(cPoints);
+}
+
+- (BOOL)attemptToSelectCraftWithinRect:(CGRect)selectionRect {
+    NSMutableArray* tempShips = [[NSMutableArray alloc] init];
+    BOOL anySelected = NO;
+    // Go through all friendly craft and check if we can select them
+    for (int i = 0; i < [touchableObjects count]; i++) {
+        TouchableObject* object = [touchableObjects objectAtIndex:i];
+        if ([object isKindOfClass:[CraftObject class]] && ![object isKindOfClass:[SpiderDroneObject class]]) {
+            if (object.isTouchable) {
+                if (CGRectContainsPoint([self visibleScreenBounds], object.objectLocation)) {
+                    if (object.objectAlliance == kAllianceFriendly) {
+                        if (CGRectContainsPoint(selectionRect, object.objectLocation)) {
+                            CraftObject* craft = (CraftObject*)object;
+                            [tempShips addObject:craft]; // Select ship
+                            anySelected = YES;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if ([tempShips count] > 0) {
+        // Deselect all current ships
+        for (CraftObject* craft in controlledShips) {
+            [craft setIsBeingControlled:NO];
+        }
+        [controlledShips removeAllObjects];
+        for (CraftObject* craft in tempShips) {
+            [controlledShips addObject:craft];
+            [craft blinkSelectionCircle];
+            [craft setIsBeingControlled:YES];
+        }
+    }
+    [tempShips release];
+    return anySelected;
 }
 
 - (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo {
@@ -1206,7 +1230,6 @@
 }
 
 - (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
-    // Create a temp at the creation location
     switch (craftID) {
         case kObjectCraftAntID: {
             if ([[sharedGameController currentPlayerProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal]) {
@@ -1463,7 +1486,7 @@
         }
         
         // Check if the touch is in the button to bring out the sidebar
-        if (isShowingSidebar) {
+        if (isAllowingSidebar) {
             if (CGRectContainsPoint([sideBar buttonRect], [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero])) {
                 if (![sideBar isSideBarShowing]) {
                     [sideBar moveSideBarIn];
@@ -1474,8 +1497,28 @@
             }
         }
         
+        if (isAllowingOverview) {
+            if (isShowingOverview) {
+                if (!isTouchMovingOverview) {
+                    float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
+                    float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
+                    CGRect viewportRect = CGRectMake(visibleScreenBounds.origin.x * xRatio,
+                                                     visibleScreenBounds.origin.y * yRatio,
+                                                     visibleScreenBounds.size.width * xRatio,
+                                                     visibleScreenBounds.size.height * yRatio);
+                    CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+                    if (CGRectContainsPoint(viewportRect, localTouchLoc)) {
+                        isTouchMovingOverview = YES;
+                        movingOverviewTouchHash = [touch hash];
+                        currentOverViewPoint = localTouchLoc;
+                        break;
+                    }
+                }
+            }
+        }
+        
         // If it is somewhere else, scroll using this touch
-        if (!isSelectingShips && [currentObjectsTouching count] == 0 && !isTouchScrolling && (!isShowingOverview || isFadingOverviewOut)) {
+        if ([touches count] == 1 && !isSelectingShips && [currentObjectsTouching count] == 0 && !isTouchScrolling && (!isShowingOverview || isFadingOverviewOut)) {
             isTouchScrolling = YES;
             movingTouchHash = [touch hash];
             currentTouchLocation = touchLocation;
@@ -1535,11 +1578,30 @@
         if ([touches count] >= 3 && isAllowingOverview) {
             float dy = originalTouchLocation.y - previousOrigTouchLocation.y;
             if (fabsf(dy) > OVERVIEW_MIN_FINGER_DISTANCE && !isFadingOverviewIn && !isFadingOverviewOut) {
+                [selectionPointsOne removeAllObjects];
+                [selectionPointsTwo removeAllObjects];
+                selectionTouchHashOne = -1;
+                selectionTouchHashTwo = -1;
+                isSelectingShips = NO;
                 if (!isShowingOverview)
                     [self fadeOverviewMapIn];
                 else
                     [self fadeOverviewMapOut];
                 break;
+            }
+        }
+        
+        if (isAllowingOverview) {
+            if (isShowingOverview) {
+                if (isTouchMovingOverview && movingOverviewTouchHash == [touch hash]) {
+                    float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
+                    float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
+                    CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+                    currentOverViewPoint = localTouchLoc;
+                    [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
+                    [self setMiddleOfVisibleScreenToCamera];
+                    break;
+                }
             }
         }
         
@@ -1631,6 +1693,24 @@
         if (currentHoverObj) {
             [currentHoverObj touchesHoveredLeft];
             [currentObjectsHovering removeObjectForKey:[NSNumber numberWithInt:[touch hash]]];
+        }
+        
+        if (isAllowingOverview) {
+            if (isShowingOverview) {
+                if (isTouchMovingOverview && movingOverviewTouchHash == [touch hash]) {
+                    isTouchMovingOverview = NO;
+                    float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
+                    float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
+                    CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+                    currentOverViewPoint = localTouchLoc;
+                    if ([self attemptToSelectCraftWithinRect:[self visibleScreenBounds]]) {
+                        [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
+                        [self setMiddleOfVisibleScreenToCamera];
+                        [self fadeOverviewMapOut];
+                    }
+                    break;
+                }
+            }
         }
         
         // If the touch is a selection touch

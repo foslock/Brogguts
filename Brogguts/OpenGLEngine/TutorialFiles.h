@@ -8,5 +8,6 @@
 #import "TutorialSceneSix.h"
 #import "TutorialSceneSeven.h"
 #import "TutorialSceneEight.h"
-
+#import "TutorialSceneNine.h"
 #import "TutorialSceneTen.h"
+#import "TutorialSceneEleven.h"

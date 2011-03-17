@@ -21,6 +21,7 @@
 	int attributeRepairAmount;
 	int attributeRepairMaxCount;
 	int attributeRepairRange;
+    int attributeRepairCooldown;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

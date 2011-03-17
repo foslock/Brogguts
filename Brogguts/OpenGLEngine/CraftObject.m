@@ -16,12 +16,7 @@
 #import "CraftAndStructures.h"
 
 @implementation CraftObject
-@synthesize craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
-
-- (id)retain {
-    // NSLog(@"Craft Retained, count: %i", [self retainCount]);
-    return [super retain];
-}
+@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
 
 - (void)dealloc {
     if (turretPointsArray) {
@@ -332,8 +327,46 @@
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
     [super attackedByEnemy:enemy withDamage:damage];
     attributeHullCurrent -= damage;
-    if (movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
-        && !isBeingControlled && !isBeingDragged) {
+    if (attributeHullCurrent <= 0) {
+        destroyNow = YES;
+        return YES;
+    }
+    BOOL returnedAttack = NO;
+    if (attackingAIState != kAttackingAIStateAttacking && !isBeingControlled && !isBeingDragged) {
+        if ([enemy isKindOfClass:[CraftObject class]]) {
+            CraftObject* enemyCraft = (CraftObject*)enemy;
+            [enemyCraft calculateCraftAIInfo];
+            NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
+            [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
+            float totalCraftPower = 0.0f;
+            for (int i = 0; i < [nearbyCraftArray count]; i++) {
+                CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
+                if ([obj isKindOfClass:[CraftObject class]]) {
+                    CraftObject* craft = (CraftObject*)obj;
+                    if (craft.objectAlliance == objectAlliance) {
+                        [craft calculateCraftAIInfo];
+                        totalCraftPower += craft.craftAIInfo.averageCraftValue;
+                    }
+                }
+            }
+            if (totalCraftPower > enemyCraft.craftAIInfo.averageCraftValue) {
+                returnedAttack = YES;
+                for (int i = 0; i < [nearbyCraftArray count]; i++) {
+                    CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
+                    if ([obj isKindOfClass:[CraftObject class]]) {
+                        CraftObject* craft = (CraftObject*)obj;
+                        if (craft.objectAlliance == objectAlliance) {
+                            [craft setPriorityEnemyTarget:enemy];
+                        }
+                    }
+                }
+            }
+            [nearbyCraftArray release];
+        }
+    }
+    
+    if (!returnedAttack && movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
+               && !isBeingControlled && !isBeingDragged) {
         // Move away from the attacker
         float xDest = objectLocation.x;
         float yDest = objectLocation.y;
@@ -350,10 +383,6 @@
         NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO isStraight:NO];
         [self followPath:newPath isLooped:NO];
         [self setMovingAIState:kMovingAIStateMoving];
-    }
-    if (attributeHullCurrent <= 0) {
-        destroyNow = YES;
-        return YES;
     }
     return NO;
 }
@@ -405,7 +434,7 @@
     [target blinkSelectionCircle];
     [self setAttackingAIState:kAttackingAIStateAttacking];
     if (objectType != kObjectCraftSpiderDroneID) {
-        if (GetDistanceBetweenPointsSquared(objectLocation, target.objectLocation) > POW2(attributeAttackRange)) {
+        if (GetDistanceBetweenPointsSquared(objectLocation, target.objectLocation) >= POW2(attributeAttackRange)) {
             float distance = attributeAttackRange - maxVelocity;
             float pointDir = atan2f(objectLocation.y - target.objectLocation.y,
                                     objectLocation.x - target.objectLocation.x);
@@ -503,21 +532,18 @@
     // If too far away to attack, and in ATTACKING state, move towards your target
     if (attackingAIState == kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
         if (!isFollowingPath && closestEnemyObject) {
-            if (movingAIState == kMovingAIStateStill) {
-                [self setMovingAIState:kMovingAIStateMoving];
-                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
-                    float distance = attributeAttackRange - maxVelocity;
-                    float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
-                                            objectLocation.x - closestEnemyObject.objectLocation.x);
-                    float xDist = distance * cosf(pointDir);
-                    float yDist = distance * sinf(pointDir);
-                    CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
-                                                      closestEnemyObject.objectLocation.y + yDist);
-                    NSArray* newPath = [[self.currentScene
-                                         collisionManager]
-                                        pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
-                    [self followPath:newPath isLooped:NO];
-                }
+            if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) >= POW2(attributeAttackRange)) {
+                float distance = attributeAttackRange - maxVelocity;
+                float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
+                                        objectLocation.x - closestEnemyObject.objectLocation.x);
+                float xDist = distance * cosf(pointDir);
+                float yDist = distance * sinf(pointDir);
+                CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
+                                                  closestEnemyObject.objectLocation.y + yDist);
+                NSArray* newPath = [[self.currentScene
+                                     collisionManager]
+                                    pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
+                [self followPath:newPath isLooped:NO];
             }
         }
     }

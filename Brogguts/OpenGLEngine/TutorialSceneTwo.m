@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "FingerObject.h"
 
 @implementation TutorialSceneTwo
 
@@ -25,9 +26,17 @@
         antTrigger.numberOfObjectsNeeded = 1;
         antTrigger.objectIDNeeded = kObjectCraftAntID;
         AntCraftObject* newAnt = [[AntCraftObject alloc] initWithLocation:antLoc isTraveling:NO];
+        myCraft = newAnt;
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
         [self addCollidableObject:antTrigger];
+        
+        FingerObject* fingerObj = [[FingerObject alloc] initWithStartLocation:antLoc withEndLocation:triggerLoc repeats:YES];
+        finger = fingerObj;
+        [fingerObj attachStartObject:newAnt];
+        [fingerObj attachEndObject:antTrigger];
+        [self addCollidableObject:fingerObj];
+        [fingerObj release];
     }
     return self;
 }
@@ -35,5 +44,12 @@
 - (BOOL)checkObjective {
     return [antTrigger isComplete];
 }
+
+- (void)updateSceneWithDelta:(float)aDelta {
+    if (myCraft.isFollowingPath) {
+        finger.isHidden = YES;
+    }
+    [super updateSceneWithDelta:aDelta];
+}                                                                                   
 
 @end

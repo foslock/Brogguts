@@ -685,12 +685,17 @@ static GameController* sharedGameController = nil;
         }
             break;
         case 8: {
-            // TutorialSceneNine* newTut = [[TutorialSceneNine alloc] init];
-            // [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            TutorialSceneNine* newTut = [[TutorialSceneNine alloc] init];
+            [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
         }
             break;
         case 9: {
             TutorialSceneTen* newTut = [[TutorialSceneTen alloc] init];
+            [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+        }
+            break;
+        case 10: {
+            TutorialSceneEleven* newTut = [[TutorialSceneEleven alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
         }
             break;

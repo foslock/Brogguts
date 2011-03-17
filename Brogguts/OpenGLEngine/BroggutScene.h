@@ -57,7 +57,7 @@
     // Booleans regarding the scene's status and what to display
     BOOL isBaseCamp;
     BOOL isTutorial;
-    BOOL isShowingSidebar;
+    BOOL isAllowingSidebar;
     BOOL isShowingBroggutCount;
     BOOL isShowingMetalCount;
     BOOL isAllowingOverview;
@@ -102,6 +102,9 @@
 	int movingTouchHash;		// Holds the unique hash value given to a touch on the screen.  
 								// This allows us to track the same touch during touchesMoved events
 	BOOL isTouchScrolling;		// YES if a touch is being tracked for scrolling the screen/controlling the current ship
+    BOOL isTouchMovingOverview; // YES is a touch is moving the overview around
+    int movingOverviewTouchHash;// Hash for the touch moving the overview around
+    CGPoint currentOverViewPoint;// Location of the center of the overview view box
 	
 	// Object management
 	NSMutableArray* renderableObjects;			 // The array of objects that need to be updated and rendered
@@ -221,6 +224,9 @@
 
 // Render the selection area
 - (void)renderSelectionAreaWithPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;
+
+// Attempt to select craft inside of the given rect
+- (BOOL)attemptToSelectCraftWithinRect:(CGRect)selectionRect;
 
 // Try to select the ships between the two arrays of points
 - (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;

@@ -89,6 +89,7 @@ enum ObjectIDs { // How objects are indentified
 	kObjectStructureTurretID,
 	kObjectStructureRadarID,
 	kObjectStructureFixerID,
+    kObjectFingerObjectID,
 };
 
 // 
@@ -413,7 +414,8 @@ enum TheFixerValues {
 	kStructureFixerHull = 50,
 	// Special Values
 	kStructureFixerRepairRange = 512,
-	kStructureFixerRepairRate = 1, // HP per 100 frames
+    kStructureFixerRepairAmount = 2,
+	kStructureFixerRepairCooldown = 100, // HP per 100 frames
 	kStructureFixerFriendlyTargetLimit = 1,
 	kStructureFixerFriendlyTargetLimitBonus = 1,
 };
