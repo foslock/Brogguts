@@ -9,6 +9,7 @@
 #import "AntCraftObject.h"
 #import "CollisionManager.h"
 #import "BroggutScene.h"
+#import "BroggutObject.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "ParticleSingleton.h"
@@ -58,13 +59,13 @@ enum MiningStates {
 	return miningLocation;
 }
 /*
-- (void)objectEnteredEffectRadius:(TouchableObject *)other {
-    if (objectAlliance != other.objectAlliance) {
-        NSLog(@"Object entered");
-    }
-    [super objectEnteredEffectRadius:other];
-}
-*/
+ - (void)objectEnteredEffectRadius:(TouchableObject *)other {
+ if (objectAlliance != other.objectAlliance) {
+ NSLog(@"Object entered");
+ }
+ [super objectEnteredEffectRadius:other];
+ }
+ */
 - (void)tryMiningBroggutsWithCenter:(CGPoint)location {
 	if (attributePlayerCurrentCargo >= attributePlayerCargoCapacity) {
 		[self returnBroggutsHome];
@@ -148,6 +149,20 @@ enum MiningStates {
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
+    
+    if ([self isOnScreen]) {
+        BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
+        if (isTouchable && closestBrog && !closestBrog.destroyNow) {
+            if (GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange / 2)) {
+                if ( (attributePlayerCurrentCargo + closestBrog.broggutValue) < attributePlayerCargoCapacity) {
+                    [self addCargo:closestBrog.broggutValue];
+                    [closestBrog setDestroyNow:YES];
+                    [[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+                }
+            }
+        }
+    }
+    
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -186,6 +201,18 @@ enum MiningStates {
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    
+    // Draw a line to the closest broggut
+    if ([self isOnScreen]) {
+        BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
+        if (closestBrog && GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange)) {
+            enablePrimitiveDraw();
+            glColor4f(1.0f, 1.0f, 0.0f, 0.75f);
+            drawLine(objectLocation, closestBrog.objectLocation, vector);
+            disablePrimitiveDraw();
+        }
+    }
+    
 	if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}

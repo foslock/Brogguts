@@ -9,6 +9,7 @@
 #import "CamelCraftObject.h"
 #import "CollisionManager.h"
 #import "BroggutScene.h"
+#import "BroggutObject.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "ParticleSingleton.h"
@@ -144,6 +145,18 @@ enum MiningStates {
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
+    
+    BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
+    if (isTouchable && closestBrog && !closestBrog.destroyNow) {
+        if (GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange)) {
+            if ( (attributePlayerCurrentCargo + closestBrog.broggutValue) < attributePlayerCargoCapacity) {
+                [self addCargo:closestBrog.broggutValue];
+                [closestBrog setDestroyNow:YES];
+                [[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
+            }
+        }
+    }
+    
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -184,9 +197,19 @@ enum MiningStates {
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	if (isBeingDragged) {
+    if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}
+    
+    // Draw a line to the closest broggut
+    BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
+    if (closestBrog && GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange + 10.0f)) {
+        enablePrimitiveDraw();
+        glColor4f(1.0f, 1.0f, 0.0f, 0.75f);
+        drawLine(objectLocation, closestBrog.objectLocation, vector);
+        disablePrimitiveDraw();
+    }
+	
 	if (miningState == kMiningStateMining) {
 		enablePrimitiveDraw();
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
