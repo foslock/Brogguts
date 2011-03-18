@@ -25,6 +25,7 @@
     self = [super initWithImage:image withLocation:location withObjectType:kObjectTriggerID];
     [image release];
     if (self) {
+        isRenderedInOverview = NO;
         isPaddedForCollisions = NO;
         pulsingUp = NO;
         pulsingDown = YES;
@@ -55,8 +56,9 @@
             for (int i = 0; i < [nearbyObjects count]; i++) {
                 CollidableObject* obj = [nearbyObjects objectAtIndex:i];
                 if (obj.objectType == objectIDNeeded) {
-                    if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2(self.boundingCircle.radius))
+                    if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2(self.boundingCircle.radius)) {
                         count++;
+                    }
                 }
             }
             if (count >= numberOfObjectsNeeded) {

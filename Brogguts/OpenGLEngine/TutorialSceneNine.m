@@ -11,6 +11,7 @@
 #import "PlayerProfile.h"
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
+#import "FingerObject.h"
 #import "CraftAndStructures.h"
 
 @implementation TutorialSceneNine
@@ -47,7 +48,7 @@
 
 - (BOOL)checkObjective {
     // Really check for mining brogguts
-    if ([[sharedGameController currentPlayerProfile] broggutCount] > 400) {
+    if ([[sharedGameController currentPlayerProfile] broggutCount] > 0) {
         return YES;
     } else {
         return NO;

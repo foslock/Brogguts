@@ -10,7 +10,7 @@
 #import "Image.h"
 
 @implementation FingerObject
-@synthesize startLocation, endLocation;
+@synthesize doesScrollWithScreen, startLocation, endLocation;
 
 - (void)dealloc {
     [touchImage release];
@@ -22,12 +22,14 @@
     self = [super initWithImage:image withLocation:startLoc withObjectType:kObjectFingerObjectID];
     [image release];
     if (self) {
+        isRenderedInOverview = NO;
         touchImage = [[Image alloc] initWithImageNamed:@"spritetouch.png" filter:GL_LINEAR];
         touchImage.color = Color4fMake(1.0f, 1.0f, 1.0f, 0.5f);
         renderLayer = -10;
         startLocation = startLoc;
         endLocation = endLoc;
         objectImage.scale = Scale2fMake(2.0f, 2.0f);
+        doesScrollWithScreen = YES;
         fingerMovementTimer = FINGER_PRESS_RELEASE_FRAMES;
         isPressingDown = YES;
         isReleasingUp = NO;
@@ -95,10 +97,21 @@
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-    if (isMovingAcross && !isHidden)
-        [touchImage renderCenteredAtPoint:aPoint withScrollVector:vector];
-    
-    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
+    if (isHidden) {
+        return;
+    }
+    if (doesScrollWithScreen) {
+        if (isMovingAcross)
+            [touchImage renderCenteredAtPoint:aPoint withScrollVector:vector];
+        if (objectImage) 
+            [objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
+    } else {
+        if (isMovingAcross)
+            [touchImage renderCenteredAtPoint:aPoint];
+        if (objectImage) {
+            [objectImage renderCenteredAtPoint:aPoint];
+        }
+    }
 }
 
 @end

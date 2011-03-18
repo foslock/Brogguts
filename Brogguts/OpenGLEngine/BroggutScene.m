@@ -951,6 +951,9 @@
     GLfloat objPoint[2];
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* obj = [renderableObjects objectAtIndex:i];
+        if (!obj.isRenderedInOverview) {
+            continue;
+        }
         objPoint[0] = obj.objectLocation.x * xRatio;
         objPoint[1] = obj.objectLocation.y * yRatio;
         if ([obj isKindOfClass:[TouchableObject class]]) {
@@ -1576,8 +1579,9 @@
         
         // Check if there are more than 2 touches (bring up overview)
         if ([touches count] >= 3 && isAllowingOverview) {
-            float dy = originalTouchLocation.y - previousOrigTouchLocation.y;
-            if (fabsf(dy) > OVERVIEW_MIN_FINGER_DISTANCE && !isFadingOverviewIn && !isFadingOverviewOut) {
+            float dy = touchLocation.y - prevTouchLocation.y;
+            if (fabsf(dy) > OVERVIEW_MIN_FINGER_DISTANCE
+                && !isFadingOverviewIn && !isFadingOverviewOut) {
                 [selectionPointsOne removeAllObjects];
                 [selectionPointsTwo removeAllObjects];
                 selectionTouchHashOne = -1;

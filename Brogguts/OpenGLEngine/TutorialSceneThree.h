@@ -18,6 +18,7 @@
     CraftObject* myCraft;
     FingerObject* fingerOne;
     FingerObject* fingerTwo;
+    FingerObject* fingerThree;
 }
 
 @end

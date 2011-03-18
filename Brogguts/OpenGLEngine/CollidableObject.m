@@ -20,7 +20,7 @@ static int globalUniqueID = 0;
 @synthesize isHidden, isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
-@synthesize hasBeenCheckedForCollisions;
+@synthesize isRenderedInOverview, hasBeenCheckedForCollisions;
 @synthesize objectAlliance, objectType;
 @synthesize staticObject;
 
@@ -41,6 +41,7 @@ static int globalUniqueID = 0;
 		objectAlliance = kAllianceNeutral;
 		objectVelocity = Vector2fZero;
 		rotationSpeed = 0.0f;
+        isRenderedInOverview = YES;
 		isHidden = NO;							// Defaults to being drawn
 		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
 		hasBeenCheckedForCollisions = NO;		// Var that is used to make sure duplicate collisions aren't checked
@@ -114,7 +115,6 @@ static int globalUniqueID = 0;
 		disablePrimitiveDraw();
 #endif
 	}
-		
 }
 
 - (BOOL)isOnScreen {

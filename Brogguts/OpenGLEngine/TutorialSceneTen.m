@@ -10,6 +10,7 @@
 #import "GameController.h"
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
+#import "FingerObject.h"
 #import "CraftAndStructures.h"
 #import "Image.h"
 
@@ -30,7 +31,7 @@
         [self setMiddleOfVisibleScreenToCamera];
         mothTrigger.numberOfObjectsNeeded = 16;
         mothTrigger.objectIDNeeded = kObjectCraftMothID;
-        mothTrigger.objectImage.scale = Scale2fMake(4.0f, 4.0f);
+        mothTrigger.objectImage.scale = Scale2fMake(3.0f, 3.0f);
         [self addCollidableObject:mothTrigger];
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:mothTrigger.objectLocation withDuration:-1.0f];
         [notiObj attachToObject:mothTrigger];
@@ -81,12 +82,44 @@
                 [mothCraftFour release];
             }
         }
+        
+        FingerObject* tempFingerOne = [[FingerObject alloc] initWithStartLocation:CGPointMake(750, 700) withEndLocation:CGPointMake(750, 600) repeats:YES];
+        fingerOne = tempFingerOne;
+        [self addCollidableObject:tempFingerOne];
+        [tempFingerOne setDoesScrollWithScreen:NO];
+        [tempFingerOne release];
+        
+        FingerObject* tempFingerTwo = [[FingerObject alloc] initWithStartLocation:CGPointMake(825, 700) withEndLocation:CGPointMake(825, 600) repeats:YES];
+        fingerTwo = tempFingerTwo;
+        [self addCollidableObject:tempFingerTwo];
+        [tempFingerTwo setDoesScrollWithScreen:NO];
+        [tempFingerTwo release];
+        
+        FingerObject* tempFingerThree = [[FingerObject alloc] initWithStartLocation:CGPointMake(900, 700) withEndLocation:CGPointMake(900, 600) repeats:YES];
+        fingerThree = tempFingerThree;
+        [self addCollidableObject:tempFingerThree];
+        [tempFingerThree setDoesScrollWithScreen:NO];
+        [tempFingerThree release];
     }
     return self;
 }
 
 - (BOOL)checkObjective {
     return [mothTrigger isComplete];
+}
+
+- (void)updateSceneWithDelta:(float)aDelta {
+    [super updateSceneWithDelta:aDelta];
+    
+    if (!isShowingOverview && [controlledShips count] == 0) {
+        fingerOne.isHidden = NO;
+        fingerTwo.isHidden = NO;
+        fingerThree.isHidden = NO;
+    } else {
+        fingerOne.isHidden = YES;
+        fingerTwo.isHidden = YES;
+        fingerThree.isHidden = YES;
+    }
 }
 
 @end

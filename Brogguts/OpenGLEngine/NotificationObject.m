@@ -19,6 +19,7 @@
     self = [super initWithImage:image withLocation:location withObjectType:kObjectNotificationID];
     [image release];
     if (self) {
+        isRenderedInOverview = NO;
         notificationDuration = duration;
         notificationTimer = duration;
         objectAttachedTo = nil;

@@ -10,9 +10,13 @@
 #import "TutorialScene.h"
 
 @class TriggerObject;
+@class FingerObject;
 
 @interface TutorialSceneTen : TutorialScene {
     TriggerObject* mothTrigger;
+    FingerObject* fingerOne;
+    FingerObject* fingerTwo;
+    FingerObject* fingerThree;
 }
 
 @end

@@ -23,11 +23,13 @@
     BOOL isPressingDown;
     BOOL isReleasingUp;
     BOOL isMovingAcross;
+    BOOL doesScrollWithScreen;
     Image* touchImage;
     CollidableObject* startObject;
     CollidableObject* endObject;
 }
 
+@property (nonatomic, assign) BOOL doesScrollWithScreen;
 @property (nonatomic, assign) CGPoint startLocation;
 @property (nonatomic, assign) CGPoint endLocation;
 
