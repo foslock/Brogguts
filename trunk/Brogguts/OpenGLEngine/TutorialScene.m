@@ -59,8 +59,10 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
             isObjectiveComplete = YES;
             if (tutorialIndex < TUTORIAL_SCENES_COUNT - 1) {
                 [[GameController sharedGameController] loadTutorialLevelsForIndex:tutorialIndex + 1];
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:YES];
+            } else {
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:NO];
             }
-            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:YES];
             return;
         }
     }

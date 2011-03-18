@@ -21,6 +21,7 @@
 	float objectRotation;
 	float rotationSpeed;
 	BOOL isHidden;
+    BOOL isRenderedInOverview;
     BOOL isPaddedForCollisions;
 	BOOL isCheckedForCollisions;
 	BOOL isCheckedForMultipleCollisions;
@@ -44,6 +45,7 @@
 @property (nonatomic, assign) float rotationSpeed;
 @property (nonatomic, assign) float objectRotation;
 @property (nonatomic, assign) BOOL isHidden;
+@property (nonatomic, assign) BOOL isRenderedInOverview;
 @property (nonatomic, assign) BOOL isCheckedForCollisions;
 @property (nonatomic, assign) BOOL isCheckedForMultipleCollisions;
 @property (nonatomic, assign) BOOL hasBeenCheckedForCollisions;

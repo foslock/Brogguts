@@ -9,6 +9,8 @@
 #import "TouchableObject.h"
 #import "BroggutScene.h"
 #import "Image.h"
+#import "Global.h"
+#import "Primitives.h"
 #import "CraftAndStructures.h"
 
 @implementation TouchableObject
@@ -79,7 +81,9 @@
 	if (isBlinkingSelectionCircle) {
 		int modTime = blinkingSelectionCircleTimer % CIRCLE_BLINK_FREQUENCY;
 		if (modTime < (CIRCLE_BLINK_FREQUENCY / 2)) {
+            enablePrimitiveDraw();
 			[self drawHoverSelectionWithScroll:vector];
+            disablePrimitiveDraw();
 		}
 	}
 }

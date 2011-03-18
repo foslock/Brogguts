@@ -48,6 +48,11 @@
         fingerTwo = tempFingerTwo;
         [self addCollidableObject:tempFingerTwo];
         [tempFingerTwo release];
+        
+        FingerObject* tempFingerThree = [[FingerObject alloc] initWithStartLocation:antTrigger.objectLocation withEndLocation:antTrigger.objectLocation repeats:YES];
+        fingerThree = tempFingerThree;
+        [self addCollidableObject:tempFingerThree];
+        [tempFingerThree release];
     }
     return self;
 }
@@ -64,7 +69,9 @@
                                               myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)];
         fingerOne.isHidden = NO;
         fingerTwo.isHidden = NO;
+        fingerThree.isHidden = YES;
     } else {
+        fingerThree.isHidden = NO;
         fingerOne.isHidden = YES;
         fingerTwo.isHidden = YES;
     }
@@ -73,18 +80,6 @@
 
 - (BOOL)checkObjective {
     return ([antTrigger isComplete] && myCraft.isBeingControlled);
-}
-
-- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
-    [super touchesBegan:touches withEvent:event view:aView];
-    fingerOne.isHidden = YES;
-    fingerTwo.isHidden = YES;
-}
-
-- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
-    [super touchesEnded:touches withEvent:event view:aView];
-    fingerOne.isHidden = NO;
-    fingerTwo.isHidden = NO;
 }
 
 @end
