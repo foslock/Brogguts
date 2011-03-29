@@ -107,7 +107,7 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
         // Initialize the texture to render count
         for (int i = 0; i < RENDERING_LAYER_COUNT; i++) {
             // Initialize the vertices array.
-            iva[i] = calloc(kMax_Images, sizeof(TexturedColoredVertex));
+            iva[i] = calloc(kMax_Images, sizeof(TexturedColoredQuad)); // A quad is four verticies
             
             // Initialize the indices array.  This array will be used to specify the indexes into
             // the interleaved vertex array.  This array will allow us to just specify the specific
@@ -124,7 +124,9 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
             
             // Initialize the contents of the imageCountForTexture array. We want to make sure that
             // the memory contents for this array are clean before we get started.
-            memset(imageCountForTexture[i], 0, kMax_Images);
+            for (int j = 0; j < kMax_Images; j++) {
+                imageCountForTexture[i][j] = 0;
+            }
         }		
 	}
     return self;
@@ -145,7 +147,7 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
 
 - (void)addTexturedColoredQuadToRenderQueue:(TexturedColoredQuad*)aTCQ texture:(uint)aTexture withLayer:(GLuint)layer {
     GLuint newLayer = CLAMP(layer, 0, RENDERING_LAYER_COUNT - 1);
-	memcpy((TexturedColoredQuad*)(iva[newLayer] + ivaIndex[newLayer]), aTCQ, sizeof(TexturedColoredQuad));
+	memcpy((TexturedColoredQuad*)(iva[newLayer]) + ivaIndex[newLayer], aTCQ, sizeof(TexturedColoredQuad));
 	
 	// Add the texture used for this image to the list of textures to be rendered
 	
@@ -241,17 +243,19 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
     
 	// Check to see if the texture for this image has already been added to the queue
     BOOL textureFound = NO;
-    for(int index=0; index < renderTextureCount[layer]; index++) {
+    for(int index = 0; index < renderTextureCount[layer]; index++) {
         if(texturesToRender[layer][index] == aTextureName) {
             textureFound = YES;
             break;
         }
     }
     
-	if(!textureFound)
+	if(!textureFound) {
         // This is the first time this texture has been placed on the queue, so add this texture to the
         // texturesToRender array
-        texturesToRender[layer][renderTextureCount[layer]++] = aTextureName;
+        int renderIndex = renderTextureCount[layer]++;
+        texturesToRender[layer][renderIndex] = aTextureName;
+    }
 	
     // Add this new images ivaIndex to the textureIndices array
     textureIndices[layer][aTextureName][imageCountForTexture[layer][aTextureName]] = ivaIndex[layer];
