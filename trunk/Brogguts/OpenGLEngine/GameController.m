@@ -261,8 +261,8 @@ static GameController* sharedGameController = nil;
 - (void)createInitialBaseCampLevel {
 	NSString* sceneTitle = @"Base Camp";
 	BOOL isBaseCamp = YES;
-	int widthCells = 64;
-	int heightCells = 48;
+	int widthCells = 32;
+	int heightCells = 24;
 	int numberOfSmallBrogguts = 500;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
@@ -283,8 +283,8 @@ static GameController* sharedGameController = nil;
 			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
 			NSNumber* broggutValue;
 			NSNumber* broggutAge;
-			if (i > 17 && i < 47 && j > 14 && j < 34) {
-				broggutValue = [NSNumber numberWithInt:600];
+			if ( (i > 14 && i < 17) || (j > 10 && j < 13) ) {
+				broggutValue = [NSNumber numberWithInt:400];
 				broggutAge = [NSNumber numberWithInt:1];
 			} else {
 				broggutValue = [NSNumber numberWithInt:-1];
@@ -302,16 +302,24 @@ static GameController* sharedGameController = nil;
 	// Save structures, namely the base stations
 	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
 	// Create the initial base station: 
-	{
+    for (int i = 0; i < 2; i++) {
 		NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
 		
 		int objectTypeID = kObjectTypeStructure;
 		int objectID = kObjectStructureBaseStationID;
 		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
 		int objectAlliance = kAllianceFriendly;
+        if (i == 1) {
+            objectAlliance = kAllianceEnemy;
+        }
 		float objectRotation = 0.0f;
 		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake(COLLISION_CELL_WIDTH / 2, COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectEndLocation = CGPointMake(COLLISION_CELL_WIDTH / 2,
+                                                COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
+        if (i == 1) {
+            objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH * widthCells) - COLLISION_CELL_WIDTH / 2,
+                                            COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
+        }
 		CGPoint objectCurrentLocation = objectEndLocation;
 		int objectCurrentHull = -1; // Means full
 		BOOL objectIsControlledShip = NO;
@@ -342,19 +350,30 @@ static GameController* sharedGameController = nil;
 	}
 	
 	// Create the initial ANT craft for the player: 
-	{
+	for (int i = 0; i < 2; i++) {
 		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
 		
 		int objectTypeID = kObjectTypeCraft;
 		int objectID = kObjectCraftAntID;
 		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
 		int objectAlliance = kAllianceFriendly;
+		if (i == 1) {
+            objectAlliance = kAllianceEnemy;
+        }
 		float objectRotation = 0.0f;
 		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake(5 * COLLISION_CELL_WIDTH / 2, 5 * COLLISION_CELL_HEIGHT / 2);
+		CGPoint objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH / 2) * 5,
+                                                COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
+        if (i == 1) {
+            objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH * widthCells) - ( (COLLISION_CELL_WIDTH / 2) * 5),
+                                            COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
+        }
 		CGPoint objectCurrentLocation = objectEndLocation;
 		int objectCurrentHull = -1; // Means full
 		BOOL objectIsControlledShip = YES;
+        if (i == 1) {
+            objectIsControlledShip = NO;
+        }
 		BOOL objectIsMining = NO;
 		CGPoint objectMiningLocation = CGPointZero;
 		int objectCurrentCargo = 0;
@@ -376,7 +395,7 @@ static GameController* sharedGameController = nil;
 		[thisCraftArray release];
 		[objectCurrentPath release];
 	}
-	
+	/*
 	// Create a bunch of enemies to try to kill
 	for (int i = 0; i < 100; i++) {
         for (int j = 0; j < 1; j++) {
@@ -414,7 +433,7 @@ static GameController* sharedGameController = nil;
             [objectCurrentPath release];
         }
     }
-	
+	*/
 	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
     [finalObjectArray release];
 	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
@@ -723,6 +742,7 @@ static GameController* sharedGameController = nil;
             isFadingSceneIn = NO;
 			fadingRectAlpha += FADING_RECT_ALPHA_RATE;
 		} else {
+            isFadingSceneOut = NO;
             isAlreadyInScene = NO;
             if (!isReturningToMenu) {
                 [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial];

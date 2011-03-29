@@ -13,6 +13,7 @@
 @interface NotificationObject : CollidableObject {
     float notificationDuration;
     float notificationTimer;
+    CGPoint notificationLocation;
     CollidableObject* objectAttachedTo;
 }
 

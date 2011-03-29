@@ -8,6 +8,7 @@
 
 #import "FingerObject.h"
 #import "Image.h"
+#import "ImageRenderSingleton.h"
 
 @implementation FingerObject
 @synthesize doesScrollWithScreen, startLocation, endLocation;
@@ -25,7 +26,7 @@
         isRenderedInOverview = NO;
         touchImage = [[Image alloc] initWithImageNamed:@"spritetouch.png" filter:GL_LINEAR];
         touchImage.color = Color4fMake(1.0f, 1.0f, 1.0f, 0.5f);
-        renderLayer = -10;
+        self.renderLayer = kLayerHUDLayer;
         startLocation = startLoc;
         endLocation = endLoc;
         objectImage.scale = Scale2fMake(2.0f, 2.0f);
@@ -94,6 +95,10 @@
         }
     }
     [super updateObjectLogicWithDelta:aDelta];
+}
+
+- (BOOL)isOnScreen {
+    return YES;
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {

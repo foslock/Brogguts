@@ -39,11 +39,4 @@
 	[super collidedWithOtherObject:other];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-    if (![self isOnScreen]) {
-        return;
-    }
-    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
-}
-
 @end

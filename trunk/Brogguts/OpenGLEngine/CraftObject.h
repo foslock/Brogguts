@@ -13,6 +13,7 @@
 #define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
 #define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
 #define LIGHT_BLINK_FADE_SPEED 0.05f // Rate at which the blinking light fades out
+#define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
 
 @class MonarchCraftObject;
 @class Image;
@@ -38,6 +39,7 @@ typedef struct Point_Array {
 	// Attacking vars
 	int attackCooldownTimer;
 	CGPoint attackLaserTargetPosition;
+    int attackMovingCooldownTimer;
 	
 	// Special Ability vars
 	BOOL isSpecialAbilityCooling;

@@ -66,6 +66,7 @@ extern NSString* kObjectStructureFixerSprite;
 	NSString *imageFileType;			// when caching Texture2D objects.
     Texture2D *texture;				    // Texture2D object which has been created with the image provided to create this
 										// image instance
+    GLuint renderLayer;                 // Layer the image is rendered in
     CGSize fullTextureSize;			    // Width and Height of the actual texture which is ^2
     CGSize textureSize;				    // Width and height of the texture this image is actually using
     CGSize imageSize;				    // Width and height of the image within the the texture this instance represents
@@ -97,6 +98,7 @@ extern NSString* kObjectStructureFixerSprite;
 @property (nonatomic, retain) NSString *imageFileName;
 @property (nonatomic, retain) NSString *imageFileType;
 @property (nonatomic, retain) Texture2D *texture;
+@property (nonatomic, assign) GLuint renderLayer;
 @property (nonatomic, assign) CGSize fullTextureSize;
 @property (nonatomic, assign) CGSize textureSize;
 @property (nonatomic, assign) CGSize textureRatio;

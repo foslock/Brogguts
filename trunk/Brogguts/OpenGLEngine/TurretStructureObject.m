@@ -42,7 +42,6 @@
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
-	
 	// Attack if able!
 	if (attackCooldownTimer > 0) {
 		attackCooldownTimer--;
@@ -53,10 +52,9 @@
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
-	enablePrimitiveDraw();
-	[self drawHoverSelectionWithScroll:vector];
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
+    [super renderOverObjectWithScroll:scroll];
+    enablePrimitiveDraw();
 	
 	// Draw the laser attack
 	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= effectRadius) {
@@ -67,7 +65,7 @@
 			if (objectAlliance == kAllianceEnemy)
 				glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
 			glLineWidth(width);
-			drawLine(objectLocation, attackLaserTargetPosition, vector);
+			drawLine(objectLocation, attackLaserTargetPosition, scroll);
 			glLineWidth(1.0f);
 		}
 	}

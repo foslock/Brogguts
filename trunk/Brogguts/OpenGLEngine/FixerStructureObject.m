@@ -74,18 +74,18 @@
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
-	
-	enablePrimitiveDraw();
-	for (CraftObject* craft in repairingCraft) {
-		glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-		glLineWidth(4.0f);
-		drawLine(objectLocation, craft.objectLocation, vector);
-		glLineWidth(1.0f);
-	}
-	disablePrimitiveDraw();
-	
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
+    [super renderOverObjectWithScroll:scroll];
+    if ([repairingCraft count] > 0) {
+        enablePrimitiveDraw();
+        for (CraftObject* craft in repairingCraft) {
+            glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+            glLineWidth(4.0f);
+            drawLine(objectLocation, craft.objectLocation, scroll);
+            glLineWidth(1.0f);
+        }
+        disablePrimitiveDraw();
+    }
 }
 
 @end

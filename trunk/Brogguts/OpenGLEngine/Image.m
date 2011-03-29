@@ -16,27 +16,6 @@
 
 #pragma mark -
 #pragma mark Objects filenames interface
-/*
- kObjectBroggutSmallID,
- kObjectBroggutMediumID,
- kObjectBroggutLargeID,
- kObjectCraftAntID,
- kObjectCraftMothID,
- kObjectCraftBeetleID,
- kObjectCraftMonarchID,
- kObjectCraftCamelID,
- kObjectCraftRatID,
- kObjectCraftSpiderID,
- kObjectCraftEagleID,
- kObjectStructureBaseStationID,
- kObjectStructureBlockID,
- kObjectStructureRefineryID,
- kObjectStructureCraftUpgradesID,
- kObjectStructureStructureUpgradesID,
- kObjectStructureTurretID,
- kObjectStructureRadarID,
- kObjectStructureFixerID,
- */
 
 NSString* kObjectBroggutSmallSprite = @"smallbroggut.png";
 NSString* kObjectBroggutMediumSprite = @"mediumbroggut.png";
@@ -86,6 +65,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 @synthesize imageFileName;
 @synthesize imageFileType;
 @synthesize texture;
+@synthesize renderLayer;
 @synthesize fullTextureSize;
 @synthesize textureSize;
 @synthesize textureRatio;
@@ -287,6 +267,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 	imageDetails->texturedColoredQuad->vertex2.vertexColor =
 	imageDetails->texturedColoredQuad->vertex3.vertexColor =
 	imageDetails->texturedColoredQuad->vertex4.vertexColor = color;
+    imageDetails->imageLayer = renderLayer;
 	
 	// Add this image to the render queue.  This will cause this image to be rendered the next time
     // the renderManager is asked to render.  It also copies the data over to the image renderer
@@ -354,6 +335,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 	// Set the image name to the name of the image file used to create the texture.  This is also
     // the key within the texture manager for grabbing a texture from the cache.
     self.imageFileName = aImageName;
+    renderLayer = kLayerBottomLayer;
 	
 	// Create a Texture2D instance using the image file with the specified name.  Retain a
 	// copy as the Texture2D class autoreleases the instance returned.
@@ -423,10 +405,16 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 	
     // Set the imageDetails textureName
     imageDetails->textureName = textureName;
+    imageDetails->imageLayer = renderLayer;
     
     // Mark the image as dirty which means that the images matrix will be transformed
     // with the results loaded into the images IVA pointer
     dirty = YES;   
+}
+
+- (void)setRenderLayer:(GLuint)layer {
+    renderLayer = layer;
+    imageDetails->imageLayer = renderLayer;
 }
 
 - (void)setRenderPoint:(CGPoint)aPoint {

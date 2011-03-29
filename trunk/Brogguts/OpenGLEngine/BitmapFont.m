@@ -96,22 +96,23 @@
 	return self;
 }
 
-- (void)renderTextObject:(TextObject*)obj {
-	[self renderStringAt:obj.objectLocation text:obj.objectText];
+- (void)renderTextObject:(TextObject*)obj{
+	[self renderStringAt:obj.objectLocation text:obj.objectText onLayer:obj.renderLayer];
 }
 
-- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText {
+- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer {
     
 	// Grab the scale that we will be using
 	float xScale = fontImage.scale.x;
 	float yScale = fontImage.scale.y;
 	
 	// Loop through all the characters in the text to be rendered
-	for(int i=0; i<[aText length]; i++) {
+	for(int i = 0; i < [aText length]; i++) {
 		
 		// Grab the character value of the current character.  We take off 32 as the first
 		// 32 characters of the fonts are not used
 		unichar charID = [aText characterAtIndex:i] - 32;
+        Image* charImage = charsArray[charID].image;
 		
 		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.
 		// This will cause the characters to all sit on the line correctly with tails below the line.  The commonHeight which has
@@ -121,17 +122,18 @@
 		CGPoint renderPoint = CGPointMake(x, y);
 		
 		// Set the color of this character based on the fontColor
-		charsArray[charID].image.color = fontColor;
+		charImage.color = fontColor;
+        charImage.renderLayer = layer;
 		
 		// Render the current character at the renderPoint
-		[charsArray[charID].image renderAtPoint:renderPoint];
+		[charImage renderAtPoint:renderPoint];
 	
 		// Move x based on the amount to advance for the current char
 		aPoint.x += charsArray[charID].xAdvance * xScale;
 	}
 }
 
-- (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText {
+- (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer {
 	
 	CGPoint point = CGPointZero;
 
@@ -184,7 +186,7 @@
 	
 	// Now we have calcualted the point to render the text, use the standard render method to actually render the text
 	// at the point calculated
-	[self renderStringAt:point text:aText];
+	[self renderStringAt:point text:aText onLayer:layer];
 }
 
 - (int)getWidthForString:(NSString*)string {
@@ -249,7 +251,7 @@
 	NSString *line;
 		
 	// Loop through all the lines in the lines array processing each one
-	while(line = [nse nextObject]) {
+	while((line = [nse nextObject])) {
 		// Check to see if the start of the line is something we are interested in
         if([line hasPrefix:@"common"]) {
             [self parseCommon:line];

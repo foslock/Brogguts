@@ -13,6 +13,7 @@
 #import "BroggutScene.h"
 #import "SideBarController.h"
 #import "BitmapFont.h"
+#import "ImageRenderSingleton.h"
 
 @implementation SideBarObject
 @synthesize myController, scrollTouchTimer;
@@ -75,7 +76,7 @@
 		
 		CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
 		// Draw button text
-		[[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText]];
+		[[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText] onLayer:kLayerHUDLayer];
 	}
 	disablePrimitiveDraw();
 }

@@ -203,15 +203,13 @@
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
-	enablePrimitiveDraw();
-    
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
+    [super renderOverObjectWithScroll:scroll];
 	if (isCurrentlyHoveredOver && !isBlinkingSelectionCircle) {
-        [self drawHoverSelectionWithScroll:vector];
+        enablePrimitiveDraw();
+        [self drawHoverSelectionWithScroll:scroll];
+        disablePrimitiveDraw();
     }
-    
-	disablePrimitiveDraw();
 }
 
 - (void)moveTowardsLocation:(CGPoint)location {

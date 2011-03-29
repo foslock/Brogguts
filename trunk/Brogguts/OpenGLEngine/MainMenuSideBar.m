@@ -69,6 +69,7 @@
 		[newMenu release];
 	}
     if (buttonID == 4) {
+        [myController moveSideBarOut];
 		[[GameController sharedGameController] returnToMainMenu];
 	}
 }

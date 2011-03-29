@@ -109,13 +109,6 @@
     [metalCounter setScrollWithBounds:NO];
     [textObjectArray addObject:metalCounter];
     
-    CGPoint nameLoc = CGPointMake((kPadScreenLandscapeWidth - [self getWidthForFontID:kFontBlairID withString:sceneName]) / 2,
-                                  kPadScreenLandscapeHeight - 64);
-    TextObject* nameObject = [[TextObject alloc] initWithFontID:kFontBlairID Text:sceneName withLocation:nameLoc withDuration:SCENE_NAME_OBJECT_TIME];
-    [nameObject setScrollWithBounds:NO];
-    [self addTextObject:nameObject];
-    [nameObject release];
-    
     // Grab an instance of the render manager
     sharedGameController = [GameController sharedGameController];
     sharedImageRenderSingleton = [ImageRenderSingleton sharedImageRenderSingleton];
@@ -461,6 +454,14 @@
 }
 
 - (void)sceneDidAppear {
+    
+    CGPoint nameLoc = CGPointMake((kPadScreenLandscapeWidth - [self getWidthForFontID:kFontBlairID withString:sceneName]) / 2,
+                                  kPadScreenLandscapeHeight - 64);
+    TextObject* nameObject = [[TextObject alloc] initWithFontID:kFontBlairID Text:sceneName withLocation:nameLoc withDuration:SCENE_NAME_OBJECT_TIME];
+    [nameObject setScrollWithBounds:NO];
+    [self addTextObject:nameObject];
+    [nameObject release];
+    
     if ([controlledShips count] != 0) {
         float averageX = 0.0f;
         float averageY = 0.0f;
@@ -489,6 +490,7 @@
         [obj setScrollWithBounds:YES];
         [obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
         [obj setFontColor:Color4fMake(1.0f, 1.0f, 0.0f, 1.0f)];
+        [obj setRenderLayer:kLayerTopLayer];
         [textObjectArray addObject:obj];
         if (alliance == kAllianceFriendly)
             [[sharedGameController currentPlayerProfile] addBrogguts:value];
@@ -504,6 +506,7 @@
         [obj setScrollWithBounds:YES];
         [obj setObjectVelocity:Vector2fMake(0.0f, 0.4f)];
         [obj setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, 1.0f)];
+        [obj setRenderLayer:kLayerTopLayer];
         [textObjectArray addObject:obj];
         if (alliance == kAllianceFriendly)
             [[sharedGameController currentPlayerProfile] addBrogguts:value];
@@ -546,7 +549,7 @@
         } else {
             tempObj.broggutValue = kBroggutAncientSmallMinValue + (arc4random() % (kBroggutAncientSmallMaxValue - kBroggutAncientSmallMinValue));
         }
-        
+        [tempObj setCurrentScene:self];
         [collisionManager addCollidableObject:tempObj];
         numberOfSmallBrogguts++;
         [renderableObjects insertObject:tempObj atIndex:0]; // Insert the broggut at the beginning so it is rendered first
@@ -813,7 +816,7 @@
     [sharedStarSingleton renderStars];
     
     enablePrimitiveDraw();
-    // Draw the grid that collisions are based off of
+    // Draw the grid that collisions are based in
     [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.08f];
     disablePrimitiveDraw();
     
@@ -829,14 +832,38 @@
             [tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID]];
     }
     
-    // Render images to screen
-    [sharedImageRenderSingleton renderImages];
-    
     // Render all objects (excluding text objects)
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
-        [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
+        if ([tempObj isOnScreen])
+            [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
     }
+    
+    // Render images
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerBottomLayer];
+    
+    // Render all primitives under
+    for (int i = 0; i < [renderableObjects count]; i++) {
+        CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
+        if ([tempObj isOnScreen])
+            [tempObj renderUnderObjectWithScroll:scroll];
+    }
+    
+    // Render images
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerMiddleLayer];
+    
+    // Render all primitives over
+    for (int i = 0; i < [renderableObjects count]; i++) {
+        CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
+        if ([tempObj isOnScreen])
+            [tempObj renderOverObjectWithScroll:scroll];
+    }
+    
+    // Render all of the particles in the manager
+    [sharedParticleSingleton renderParticlesWithScroll:scroll];
+    
+    // Render images
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerTopLayer];
     
     // Draw the selection area
     if (isSelectingShips) {
@@ -844,15 +871,15 @@
         [self renderSelectionAreaWithPoints:selectionPointsOne andPoints:selectionPointsTwo];
     }
     
-    // Render all of the particles in the manager
-    [sharedParticleSingleton renderParticlesWithScroll:scroll];
-    
     // Render the map overview if present
     if (isShowingOverview) {
         [self renderOverviewMapWithAlpha:overviewAlpha];
     } else {
         overviewAlpha = 0.0f;
     }
+    
+    // Render images
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDLayer];
     
     // Render the sidebar button (and sidebar, if activated)
     if (isAllowingSidebar)
@@ -862,14 +889,8 @@
 #pragma mark -
 #pragma mark Managing Objects
 
-- (void)sortRenderableObjectsByLayer {
-    if (renderableObjects) {
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"renderLayer" ascending:NO];
-        [renderableObjects sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    }
-}
-
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
+    [obj setCurrentScene:self];
     if ([obj isKindOfClass:[CraftObject class]] && obj.objectAlliance == kAllianceFriendly) {
         // It is a ship
         numberOfCurrentShips++;
@@ -887,15 +908,16 @@
     [renderableObjects addObject:obj];				// Adds to the rendering queue
     [touchableObjects addObject:obj];				// Adds to the touchable queue
     [enemyAIController updateArraysWithTouchableObjects:touchableObjects];  // Updates AI controller with new objects
-    [self sortRenderableObjectsByLayer];			// Resort the objects so they are drawn in the correct layer
 }
 
 - (void)addCollidableObject:(CollidableObject*)obj {
+    [obj setCurrentScene:self];
     [collisionManager addCollidableObject:obj];
     [renderableObjects addObject:obj];
 }
 
 - (void)addTextObject:(TextObject*)obj {
+    [obj setCurrentScene:self];
     [textObjectArray addObject:obj];
 }
 

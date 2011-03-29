@@ -21,6 +21,7 @@
 	Color4f fontColor;		// Color the font will be drawn with
 	Scale2f fontScale;		// Scale the font will be drawn with
 }
+
 @property (nonatomic, assign) BOOL isTextHidden;
 @property (nonatomic, assign) BOOL scrollWithBounds;
 @property (nonatomic, assign) int fontID;

@@ -10,12 +10,13 @@
 #import "BroggutScene.h"
 #import "GameController.h"
 #import "Image.h"
+#import "ImageRenderSingleton.h"
 
 static int globalUniqueID = 0;
 
 @implementation CollidableObject
 
-@synthesize objectRotation;
+@synthesize currentScene, objectRotation;
 @synthesize renderLayer;
 @synthesize isHidden, isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
 @synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
@@ -33,9 +34,11 @@ static int globalUniqueID = 0;
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype {
 	self = [super init];
 	if (self) {
+        currentScene = nil;
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
-		renderLayer = 1;
+        objectImage.scale = Scale2fMake(OBJECT_GLOBAL_SCALE_FACTOR, OBJECT_GLOBAL_SCALE_FACTOR);
+		self.renderLayer = kLayerBottomLayer;
 		objectLocation = location;
 		objectType = objecttype;
 		objectAlliance = kAllianceNeutral;
@@ -62,10 +65,6 @@ static int globalUniqueID = 0;
 	return self;
 }
 
-- (BroggutScene*)currentScene {
-	return [[GameController sharedGameController] currentScene];
-}
-
 - (void)collidedWithOtherObject:(CollidableObject*)other { // Called ONCE for each object, ON each object in the collision
 	if (!isCheckedForMultipleCollisions) hasBeenCheckedForCollisions = YES;
 	if (!other.isCheckedForMultipleCollisions) other.hasBeenCheckedForCollisions = YES;
@@ -84,18 +83,30 @@ static int globalUniqueID = 0;
 	return boundingCircle;
 }
 
+- (BroggutScene*)currentScene {
+    if (!currentScene) {
+        currentScene = [[GameController sharedGameController] currentScene];
+    }
+    return currentScene;
+}
+
 - (void)setObjectRotation:(float)rot {
 	objectRotation = rot;
 	if (objectRotation > 360.0f) objectRotation -= 360.0f;
 	if (objectRotation < 0.0f) objectRotation += 360.0f;
 }
 
+- (void)setRenderLayer:(GLuint)layer {
+    renderLayer = layer;
+    objectImage.renderLayer = renderLayer;
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     if (objectVelocity.x != 0 || objectVelocity.y != 0) {
-	objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
-								 objectLocation.y + objectVelocity.y);
+        objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
+                                     objectLocation.y + objectVelocity.y);
     }
-
+    
     if (rotationSpeed != 0) {
         objectRotation += rotationSpeed;
     }
@@ -108,13 +119,20 @@ static int globalUniqueID = 0;
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
 	if (objectImage && !isHidden) {
 		[objectImage renderCenteredAtPoint:aPoint withScrollVector:vector];
+    }
+}
+
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
+    // OVERRIDE
+}
+
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
 #ifdef BOUNDING_DEBUG
-		enablePrimitiveDraw();
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, vector);
-		disablePrimitiveDraw();
+    enablePrimitiveDraw();
+    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    drawCircle(self.boundingCircle, CIRCLE_SEGMENTS_COUNT, scroll);
+    disablePrimitiveDraw();
 #endif
-	}
 }
 
 - (BOOL)isOnScreen {

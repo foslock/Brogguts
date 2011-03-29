@@ -8,6 +8,8 @@
 
 #import "SpiderDroneObject.h"
 #import "SpiderCraftObject.h"
+#import "ImageRenderSingleton.h"
+#import "Image.h"
 
 
 @implementation SpiderDroneObject
@@ -17,7 +19,7 @@
 	self = [super initWithTypeID:kObjectCraftSpiderDroneID withLocation:location isTraveling:traveling];
 	if (self) {
         droneIndex = 0;
-		renderLayer = 1;
+		objectImage.renderLayer = kLayerBottomLayer;
 		isTouchable = NO;
 		droneAIState = kDroneAIStateHidden;
 		droneBayLocation = Vector2fZero;
