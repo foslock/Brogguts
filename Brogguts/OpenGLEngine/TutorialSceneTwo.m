@@ -12,6 +12,7 @@
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
 #import "FingerObject.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneTwo
 

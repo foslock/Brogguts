@@ -9,6 +9,7 @@
 #import "TutorialScene.h"
 #import "GameController.h"
 #import "TriggerObject.h"
+#import "TextObject.h"
 
 NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     @"Tutorial 1",
@@ -28,6 +29,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
 @implementation TutorialScene
 
 - (void)dealloc {
+    [helpText release];
     [nextSceneName release];
     [super dealloc];
 }
@@ -36,13 +38,18 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     self = [super initWithFileName:kTutorialSceneFileNames[tutIndex]];
     if (self) {
         if (tutIndex >= TUTORIAL_SCENES_COUNT - 1) {
-            nextSceneName = kBaseCampFileName;
+            nextSceneName = [[kBaseCampFileName stringByDeletingPathExtension] copy];
         } else {
             nextSceneName = kTutorialSceneFileNames[tutIndex+1];
         }
         isTutorial = YES;
         tutorialIndex = tutIndex;
         isObjectiveComplete = NO;
+        helpText = [[TextObject alloc] initWithFontID:kFontBlairID
+                                                 Text:@"" 
+                                         withLocation:CGPointMake(COLLISION_CELL_WIDTH / 2, visibleScreenBounds.size.height - (COLLISION_CELL_HEIGHT / 2)) 
+                                         withDuration:-1.0f];
+        [self addTextObject:helpText];
         
         // Turn off the complicated stuff
         isAllowingSidebar = NO;

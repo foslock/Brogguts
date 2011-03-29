@@ -32,7 +32,7 @@
 		isCurrentlyHoveredOver = NO;
 		isCheckedForRadialEffect = NO;
 		isPartOfASquad = NO;
-		effectRadius = objectImage.imageSize.width / 2;
+		effectRadius = (objectImage.imageSize.width * objectImage.scale.x) / 2;
 		closestEnemyObject = nil;
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
 		isBlinkingSelectionCircle = NO;
@@ -46,7 +46,7 @@
 	Circle tempBoundingCircle;
 	tempBoundingCircle.x = objectLocation.x;
 	tempBoundingCircle.y = objectLocation.y;
-	tempBoundingCircle.radius = objectImage.imageSize.width / 2; // Same as the bounding circle for now
+	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x)/ 2; // Same as the bounding circle for now
 	return tempBoundingCircle;
 }
 
@@ -76,13 +76,13 @@
 	}
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	[super renderCenteredAtPoint:aPoint withScrollVector:vector];
-	if (isBlinkingSelectionCircle) {
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
+    [super renderOverObjectWithScroll:scroll];
+    if (isBlinkingSelectionCircle) {
 		int modTime = blinkingSelectionCircleTimer % CIRCLE_BLINK_FREQUENCY;
 		if (modTime < (CIRCLE_BLINK_FREQUENCY / 2)) {
             enablePrimitiveDraw();
-			[self drawHoverSelectionWithScroll:vector];
+			[self drawHoverSelectionWithScroll:scroll];
             disablePrimitiveDraw();
 		}
 	}

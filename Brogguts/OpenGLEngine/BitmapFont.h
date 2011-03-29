@@ -82,11 +82,11 @@ enum {
 - (void)renderTextObject:(TextObject*)obj;
 
 // Renders the string provided at the designated point
-- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText;
+- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer;
 
 // Renders the string provided justified within the frame provided.  The justification used is defined by the 
 // justification enum supplied
-- (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText;
+- (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer;
 
 // Returns the width of the string provided
 - (int)getWidthForString:(NSString*)string;

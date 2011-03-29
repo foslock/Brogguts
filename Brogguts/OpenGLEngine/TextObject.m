@@ -8,6 +8,7 @@
 
 #import "TextObject.h"
 #import "BitmapFont.h"
+#import "ImageRenderSingleton.h"
 
 @implementation TextObject
 @synthesize isTextHidden, fontID, objectText, scrollWithBounds;
@@ -21,7 +22,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
-		renderLayer = -10;
+        self.renderLayer = kLayerHUDLayer;
 		isTextHidden = NO;
 		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
 		fontID = fontid;
@@ -54,7 +55,7 @@
 	if (isTextHidden) return;
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:objectLocation text:self.objectText];
+	[font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
 	[font setFontColor:savedColor];
 }
 
@@ -63,7 +64,7 @@
 	CGPoint location = CGPointMake(objectLocation.x - scroll.x, objectLocation.y - scroll.y);
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:location text:self.objectText];
+	[font renderStringAt:location text:self.objectText onLayer:renderLayer];
 	[font setFontColor:savedColor];
 }
 

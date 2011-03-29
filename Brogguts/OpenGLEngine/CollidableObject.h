@@ -10,6 +10,7 @@
 
 #define BOUNDING_BOX_X_PADDING 10
 #define BOUNDING_BOX_Y_PADDING 10
+#define OBJECT_GLOBAL_SCALE_FACTOR 0.75f
 #define COLLISION_ELASTICITY 1.0f
 
 @class Image;
@@ -17,7 +18,8 @@
 
 @interface CollidableObject : NSObject {
 	Image* objectImage;
-	int renderLayer;
+    BroggutScene* currentScene;
+    GLuint renderLayer;
 	float objectRotation;
 	float rotationSpeed;
 	BOOL isHidden;
@@ -41,7 +43,8 @@
 }
 
 @property (readonly) Image* objectImage;
-@property (nonatomic, assign) int renderLayer;
+@property (nonatomic, assign) BroggutScene* currentScene;
+@property (nonatomic, assign) GLuint renderLayer;
 @property (nonatomic, assign) float rotationSpeed;
 @property (nonatomic, assign) float objectRotation;
 @property (nonatomic, assign) BOOL isHidden;
@@ -62,13 +65,13 @@
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 
-- (BroggutScene*)currentScene;
-
 - (void)collidedWithOtherObject:(CollidableObject*)other;
 
 - (void)updateObjectLogicWithDelta:(float)aDelta;
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector;
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll;
+- (void)renderOverObjectWithScroll:(Vector2f)scroll;
 
 - (void)objectWasDestroyed;
 

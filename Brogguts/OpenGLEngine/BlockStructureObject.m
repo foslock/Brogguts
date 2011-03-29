@@ -7,14 +7,15 @@
 //
 
 #import "BlockStructureObject.h"
-
+#import "Image.h"
+#import "Global.h"
 
 @implementation BlockStructureObject
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureBlockID withLocation:location isTraveling:traveling];
 	if (self) {
-
+        objectImage.scale = Scale2fMake(1.0f, 1.0f);
 	}
 	return self;
 }

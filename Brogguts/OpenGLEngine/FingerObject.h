@@ -10,7 +10,7 @@
 #import "CollidableObject.h"
 #import "Global.h"
 
-#define FINGER_MOVEMENT_FRAMES 100
+#define FINGER_MOVEMENT_FRAMES 150
 #define FINGER_PRESS_RELEASE_FRAMES 75
 
 @class Image;

@@ -9,6 +9,7 @@
 #import "CraftObject.h"
 #import "Image.h"
 #import "GameController.h"
+#import "ImageRenderSingleton.h"
 #import "BroggutScene.h"
 #import "StructureObject.h"
 #import "CollisionManager.h"
@@ -189,6 +190,7 @@
 		lightBlinkAlpha = 0.0f;
 		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
 		blinkingLightImage.scale = Scale2fMake(0.25f, 0.25f);
+        blinkingLightImage.renderLayer = kLayerTopLayer;
         
         lightPointsArray = NULL;
         turretPointsArray = NULL;
@@ -199,7 +201,7 @@
 		hasCurrentPathFinished = YES;
 		[self setMovingAIState:kMovingAIStateStill];
 		[self setAttackingAIState:kAttackingAIStateNeutral];
-		renderLayer = 0;
+		objectImage.renderLayer = kLayerMiddleLayer;
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
 		attributePlayerCargoCapacity = 200;
@@ -366,7 +368,7 @@
     }
     
     if (!returnedAttack && movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
-               && !isBeingControlled && !isBeingDragged) {
+        && !isBeingControlled && !isBeingDragged) {
         // Move away from the attacker
         float xDest = objectLocation.x;
         float yDest = objectLocation.y;
@@ -500,12 +502,16 @@
     }
     
     // Update the light blinking
-    if (lightBlinkTimer == 0) {
+    if (lightBlinkTimer <= 0) {
         lightBlinkTimer = LIGHT_BLINK_FREQUENCY;
         lightBlinkAlpha = LIGHT_BLINK_BRIGHTNESS;
     } else {
         lightBlinkTimer--;
-        lightBlinkAlpha -= LIGHT_BLINK_FADE_SPEED;
+        if (lightBlinkAlpha > 0) {
+            lightBlinkAlpha -= LIGHT_BLINK_FADE_SPEED;
+        } else {
+            lightBlinkAlpha = 0.0f;
+        }
     }
     
     // Update the light blinking positions
@@ -532,20 +538,28 @@
     // If too far away to attack, and in ATTACKING state, move towards your target
     if (attackingAIState == kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
         if (!isFollowingPath && closestEnemyObject) {
-            if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) >= POW2(attributeAttackRange)) {
-                float distance = attributeAttackRange - maxVelocity;
-                float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
-                                        objectLocation.x - closestEnemyObject.objectLocation.x);
-                float xDist = distance * cosf(pointDir);
-                float yDist = distance * sinf(pointDir);
-                CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
-                                                  closestEnemyObject.objectLocation.y + yDist);
-                NSArray* newPath = [[self.currentScene
-                                     collisionManager]
-                                    pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
-                [self followPath:newPath isLooped:NO];
+            if (attackMovingCooldownTimer <= 0) {
+                attackMovingCooldownTimer = CRAFT_ATTACK_MOVING_TIME;
+                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) >= POW2(attributeAttackRange)) {
+                    float distance = attributeAttackRange - maxVelocity;
+                    float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
+                                            objectLocation.x - closestEnemyObject.objectLocation.x);
+                    float xDist = distance * cosf(pointDir);
+                    float yDist = distance * sinf(pointDir);
+                    CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
+                                                      closestEnemyObject.objectLocation.y + yDist);
+                    NSArray* newPath = [[self.currentScene
+                                         collisionManager]
+                                        pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
+                    [self followPath:newPath isLooped:NO];
+                }
             }
         }
+    }
+    
+    // Reduce the timer to allow the craft to follow its target
+    if (attackMovingCooldownTimer > 0) {
+        attackMovingCooldownTimer--;
     }
     
     // If the closest target is too far away, and not in ATTACKING state, set it to nil
@@ -575,15 +589,31 @@
     glLineWidth(1.0f);
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-    if (![self isOnScreen]) {
-        return;
+- (void)renderOverObjectWithScroll:(Vector2f)scroll {
+    [super renderOverObjectWithScroll:scroll];
+    
+    // Render blinking lights
+    if (lightPointsArray) {
+        disablePrimitiveDraw();
+        for (int i = 0; i < lightPointsArray->pointCount; i++) {
+            PointLocation curPoint = lightPointsArray->locations[i];
+            if (self.objectAlliance == kAllianceFriendly) {
+                if (!isTraveling)
+                    blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+                else
+                    blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
+            } else {
+                blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
+            }
+            [blinkingLightImage renderCenteredAtPoint:CGPointMake(curPoint.x, curPoint.y) withScrollVector:scroll];
+        }
     }
-    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
-    enablePrimitiveDraw();
+    
     
     if (isCurrentlyHoveredOver || isBeingControlled && !isBlinkingSelectionCircle) {
-        [self drawHoverSelectionWithScroll:vector];
+        enablePrimitiveDraw();
+        [self drawHoverSelectionWithScroll:scroll];
+        disablePrimitiveDraw();
     }
     
     // Draw the laser attack
@@ -596,36 +626,26 @@
                 if (objectAlliance == kAllianceEnemy)
                     glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
                 glLineWidth(width);
-                drawLine(objectLocation, attackLaserTargetPosition, vector);
+                enablePrimitiveDraw();
+                drawLine(objectLocation, attackLaserTargetPosition, scroll);
+                disablePrimitiveDraw();
                 glLineWidth(1.0f);
             }
         }
     }
     
+}
+
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
+    [super renderUnderObjectWithScroll:scroll];
     // Draw dragging line
+    enablePrimitiveDraw();
     if (isBeingDragged) {
         glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
         float distance = GetDistanceBetweenPoints(objectLocation, dragLocation);
         int segments = distance / 50;
-        drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), vector);
+        drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), scroll);
     }
-    
-    // Render blinking lights
-    if (lightPointsArray) {
-        for (int i = 0; i < lightPointsArray->pointCount; i++) {
-            PointLocation curPoint = lightPointsArray->locations[i];
-            if (self.objectAlliance == kAllianceFriendly) {
-                if (!isTraveling)
-                    blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
-                else
-                    blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
-            } else {
-                blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
-            }
-            [blinkingLightImage renderCenteredAtPoint:CGPointMake(curPoint.x, curPoint.y) withScrollVector:vector];
-        }
-    }
-    
 #ifdef DRAW_PATH
     if (isFollowingPath) {
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

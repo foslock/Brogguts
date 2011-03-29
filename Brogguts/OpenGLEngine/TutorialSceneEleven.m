@@ -20,6 +20,7 @@
     if (self) {
         isAllowingOverview = YES;
         isShowingBroggutCount = YES;
+        isAllowingSidebar = YES;
         
         CGPoint homeLoc = CGPointMake(COLLISION_CELL_WIDTH / 2, COLLISION_CELL_HEIGHT / 2);
         CGPoint antLoc = CGPointMake(8 * COLLISION_CELL_WIDTH / 2, 8 * COLLISION_CELL_HEIGHT / 2);

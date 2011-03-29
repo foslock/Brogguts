@@ -58,14 +58,12 @@
 		6F2CADA213171EA6001A10E3 /* MonarchCraftObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADA113171EA6001A10E3 /* MonarchCraftObject.m */; };
 		6F2CADB313171F11001A10E3 /* RadarStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADB213171F11001A10E3 /* RadarStructureObject.m */; };
 		6F2CADB613171F23001A10E3 /* FixerStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CADB513171F23001A10E3 /* FixerStructureObject.m */; };
-		6F2CADC113172529001A10E3 /* structureblock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CADC013172529001A10E3 /* structureblock.png */; };
 		6F2CAE6113172D9A001A10E3 /* MainMenuSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */; };
 		6F2CAEF313173BA7001A10E3 /* SideBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAEF213173BA7001A10E3 /* SideBarButton.m */; };
 		6F2CB13A131973A9001A10E3 /* craftmonarch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB139131973A9001A10E3 /* craftmonarch.png */; };
 		6F2CB2A81319EC26001A10E3 /* particlebroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A51319EC26001A10E3 /* particlebroggut.png */; };
 		6F2CB2A91319EC26001A10E3 /* particleshippart.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A61319EC26001A10E3 /* particleshippart.png */; };
 		6F2CB2AA1319EC26001A10E3 /* particleshipthruster.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB2A71319EC26001A10E3 /* particleshipthruster.png */; };
-		6F2CB3491319F592001A10E3 /* structureturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB3481319F592001A10E3 /* structureturret.png */; };
 		6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F2CB40D131A073C001A10E3 /* testsound.wav */; };
 		6F2CB471131A24B9001A10E3 /* CraftSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB470131A24B9001A10E3 /* CraftSideBar.m */; };
 		6F2CB5E0131AED6D001A10E3 /* StructureSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */; };
@@ -82,9 +80,7 @@
 		6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */; };
 		6F650D89132EA22300DC3BDB /* craftspider.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F650D87132EA22300DC3BDB /* craftspider.png */; };
 		6F650D8A132EA22300DC3BDB /* craftspiderdrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F650D88132EA22300DC3BDB /* craftspiderdrone.png */; };
-		6F67CBE31329480C0061B1A9 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE01329480C0061B1A9 /* craftant.png */; };
 		6F67CBE41329480C0061B1A9 /* craftbeetle.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE11329480C0061B1A9 /* craftbeetle.png */; };
-		6F67CBE51329480C0061B1A9 /* craftmoth.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE21329480C0061B1A9 /* craftmoth.png */; };
 		6F67CBE7132948170061B1A9 /* structurebasestation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE6132948170061B1A9 /* structurebasestation.png */; };
 		6F67CBEC1329A1DF0061B1A9 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F67CBEA1329A1DF0061B1A9 /* MainMenuController.m */; };
 		6F67CBED1329A1DF0061B1A9 /* MainMenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBEB1329A1DF0061B1A9 /* MainMenuController.xib */; };
@@ -124,9 +120,14 @@
 		6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E85130C91D5009CD1BF /* defaultTexture.png */; };
 		6F8E25D313302F3C00DCD662 /* TriggerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8E25D213302F3C00DCD662 /* TriggerObject.m */; };
 		6F8E25D71330318400DCD662 /* spritetrigger.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8E25D61330318400DCD662 /* spritetrigger.png */; };
+		6F966DBC1337DE20000D33C6 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F966DBB1337DE20000D33C6 /* craftant.png */; };
+		6F966DBE1337DE30000D33C6 /* craftmoth.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F966DBD1337DE30000D33C6 /* craftmoth.png */; };
+		6F966DC01337E150000D33C6 /* Map 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F966DBF1337E150000D33C6 /* Map 3.plist */; };
 		6FAD51F51304579100E5E98F /* gothic.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F31304579100E5E98F /* gothic.fnt */; };
 		6FAD51F61304579100E5E98F /* gothic.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F41304579100E5E98F /* gothic.png */; };
 		6FAD539C13049A6400E5E98F /* TouchableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FAD539B13049A6400E5E98F /* TouchableObject.m */; };
+		6FBA2E48134167610019D700 /* structureblock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FBA2E47134167610019D700 /* structureblock.png */; };
+		6FBA2E4A134167D10019D700 /* structureturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FBA2E49134167D10019D700 /* structureturret.png */; };
 		6FC98B2112FB1FB4003F9D9A /* starTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FC98B2012FB1FB4003F9D9A /* starTexture.png */; };
 		6FCAC69712F75BB500662BDA /* GameplayConstants.h in Resources */ = {isa = PBXBuildFile; fileRef = 6FCAC69612F75BB500662BDA /* GameplayConstants.h */; };
 		6FCAC71712F7CDB300662BDA /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCAC71612F7CDB300662BDA /* Image.m */; };
@@ -234,7 +235,6 @@
 		6F2CADB213171F11001A10E3 /* RadarStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarStructureObject.m; sourceTree = "<group>"; };
 		6F2CADB413171F23001A10E3 /* FixerStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixerStructureObject.h; sourceTree = "<group>"; };
 		6F2CADB513171F23001A10E3 /* FixerStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FixerStructureObject.m; sourceTree = "<group>"; };
-		6F2CADC013172529001A10E3 /* structureblock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureblock.png; sourceTree = "<group>"; };
 		6F2CAE5F13172D9A001A10E3 /* MainMenuSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuSideBar.h; sourceTree = "<group>"; };
 		6F2CAE6013172D9A001A10E3 /* MainMenuSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuSideBar.m; sourceTree = "<group>"; };
 		6F2CAEF113173BA7001A10E3 /* SideBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarButton.h; sourceTree = "<group>"; };
@@ -243,7 +243,6 @@
 		6F2CB2A51319EC26001A10E3 /* particlebroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlebroggut.png; sourceTree = "<group>"; };
 		6F2CB2A61319EC26001A10E3 /* particleshippart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleshippart.png; sourceTree = "<group>"; };
 		6F2CB2A71319EC26001A10E3 /* particleshipthruster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleshipthruster.png; sourceTree = "<group>"; };
-		6F2CB3481319F592001A10E3 /* structureturret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureturret.png; sourceTree = "<group>"; };
 		6F2CB40D131A073C001A10E3 /* testsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = testsound.wav; sourceTree = "<group>"; };
 		6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftSideBar.h; sourceTree = "<group>"; };
 		6F2CB470131A24B9001A10E3 /* CraftSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftSideBar.m; sourceTree = "<group>"; };
@@ -271,9 +270,7 @@
 		6F5B456213285A7F008EC9CD /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		6F650D87132EA22300DC3BDB /* craftspider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspider.png; sourceTree = "<group>"; };
 		6F650D88132EA22300DC3BDB /* craftspiderdrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspiderdrone.png; sourceTree = "<group>"; };
-		6F67CBE01329480C0061B1A9 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
 		6F67CBE11329480C0061B1A9 /* craftbeetle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbeetle.png; sourceTree = "<group>"; };
-		6F67CBE21329480C0061B1A9 /* craftmoth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftmoth.png; sourceTree = "<group>"; };
 		6F67CBE6132948170061B1A9 /* structurebasestation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurebasestation.png; sourceTree = "<group>"; };
 		6F67CBE91329A1DF0061B1A9 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		6F67CBEA1329A1DF0061B1A9 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
@@ -332,10 +329,15 @@
 		6F8E25D113302F3C00DCD662 /* TriggerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerObject.h; sourceTree = "<group>"; };
 		6F8E25D213302F3C00DCD662 /* TriggerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TriggerObject.m; sourceTree = "<group>"; };
 		6F8E25D61330318400DCD662 /* spritetrigger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetrigger.png; sourceTree = "<group>"; };
+		6F966DBB1337DE20000D33C6 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
+		6F966DBD1337DE30000D33C6 /* craftmoth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftmoth.png; sourceTree = "<group>"; };
+		6F966DBF1337E150000D33C6 /* Map 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 3.plist"; sourceTree = "<group>"; };
 		6FAD51F31304579100E5E98F /* gothic.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gothic.fnt; sourceTree = "<group>"; };
 		6FAD51F41304579100E5E98F /* gothic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gothic.png; sourceTree = "<group>"; };
 		6FAD539A13049A6400E5E98F /* TouchableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchableObject.h; sourceTree = "<group>"; };
 		6FAD539B13049A6400E5E98F /* TouchableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchableObject.m; sourceTree = "<group>"; };
+		6FBA2E47134167610019D700 /* structureblock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureblock.png; sourceTree = "<group>"; };
+		6FBA2E49134167D10019D700 /* structureturret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureturret.png; sourceTree = "<group>"; };
 		6FC98B2012FB1FB4003F9D9A /* starTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = starTexture.png; sourceTree = "<group>"; };
 		6FCAC69612F75BB500662BDA /* GameplayConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameplayConstants.h; path = Classes/GameplayConstants.h; sourceTree = "<group>"; };
 		6FCAC71512F7CDB300662BDA /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
@@ -652,6 +654,7 @@
 				6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */,
 				6F0E328B13317B220037C789 /* Map 1.plist */,
 				6F0E328D13317B3F0037C789 /* Map 2.plist */,
+				6F966DBF1337E150000D33C6 /* Map 3.plist */,
 			);
 			name = "Default Maps";
 			sourceTree = "<group>";
@@ -724,11 +727,11 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
+				6FBA2E47134167610019D700 /* structureblock.png */,
+				6FBA2E49134167D10019D700 /* structureturret.png */,
 				6F0E328013316B890037C789 /* structurerefinery.png */,
 				6F67CBE6132948170061B1A9 /* structurebasestation.png */,
 				6F27EBC41321605C00579EE5 /* structurefixer.png */,
-				6F2CADC013172529001A10E3 /* structureblock.png */,
-				6F2CB3481319F592001A10E3 /* structureturret.png */,
 			);
 			name = Structures;
 			sourceTree = "<group>";
@@ -736,9 +739,9 @@
 		6F8B878D13078E68009CD1BF /* Craft */ = {
 			isa = PBXGroup;
 			children = (
-				6F67CBE01329480C0061B1A9 /* craftant.png */,
+				6F966DBB1337DE20000D33C6 /* craftant.png */,
+				6F966DBD1337DE30000D33C6 /* craftmoth.png */,
 				6F67CBE11329480C0061B1A9 /* craftbeetle.png */,
-				6F67CBE21329480C0061B1A9 /* craftmoth.png */,
 				6F2CB894131D61DF001A10E3 /* craftcamel.png */,
 				6F650D87132EA22300DC3BDB /* craftspider.png */,
 				6F650D88132EA22300DC3BDB /* craftspiderdrone.png */,
@@ -1038,19 +1041,15 @@
 				6F8B8E52130C8FCB009CD1BF /* shipPartsParticle.pex in Resources */,
 				6F8B8E53130C8FCB009CD1BF /* shipThrusterParticle.pex in Resources */,
 				6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */,
-				6F2CADC113172529001A10E3 /* structureblock.png in Resources */,
 				6F2CB13A131973A9001A10E3 /* craftmonarch.png in Resources */,
 				6F2CB2A81319EC26001A10E3 /* particlebroggut.png in Resources */,
 				6F2CB2A91319EC26001A10E3 /* particleshippart.png in Resources */,
 				6F2CB2AA1319EC26001A10E3 /* particleshipthruster.png in Resources */,
-				6F2CB3491319F592001A10E3 /* structureturret.png in Resources */,
 				6F2CB40E131A073C001A10E3 /* testsound.wav in Resources */,
 				6F2CB895131D61DF001A10E3 /* craftcamel.png in Resources */,
 				6F27EBC51321605C00579EE5 /* structurefixer.png in Resources */,
 				6F5B456313285A7F008EC9CD /* Default-Landscape~ipad.png in Resources */,
-				6F67CBE31329480C0061B1A9 /* craftant.png in Resources */,
 				6F67CBE41329480C0061B1A9 /* craftbeetle.png in Resources */,
-				6F67CBE51329480C0061B1A9 /* craftmoth.png in Resources */,
 				6F67CBE7132948170061B1A9 /* structurebasestation.png in Resources */,
 				6F67CBED1329A1DF0061B1A9 /* MainMenuController.xib in Resources */,
 				6F67CBF21329A4D80061B1A9 /* OptionsMenuController.xib in Resources */,
@@ -1078,6 +1077,11 @@
 				6F0E329F1331A3B40037C789 /* Tutorial 6.plist in Resources */,
 				6F0E32B3133268A30037C789 /* spritefinger.png in Resources */,
 				6F0E32B8133270900037C789 /* spritetouch.png in Resources */,
+				6F966DBC1337DE20000D33C6 /* craftant.png in Resources */,
+				6F966DBE1337DE30000D33C6 /* craftmoth.png in Resources */,
+				6F966DC01337E150000D33C6 /* Map 3.plist in Resources */,
+				6FBA2E48134167610019D700 /* structureblock.png in Resources */,
+				6FBA2E4A134167D10019D700 /* structureturret.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

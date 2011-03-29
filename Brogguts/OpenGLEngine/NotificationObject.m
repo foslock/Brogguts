@@ -19,6 +19,7 @@
     self = [super initWithImage:image withLocation:location withObjectType:kObjectNotificationID];
     [image release];
     if (self) {
+        notificationLocation = location;
         isRenderedInOverview = NO;
         notificationDuration = duration;
         notificationTimer = duration;
@@ -34,6 +35,7 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {    
     [super updateObjectLogicWithDelta:aDelta];
+    
     if (notificationDuration != -1.0f) {
         if (notificationTimer > 0.0f) {
             notificationTimer -= aDelta;
@@ -45,26 +47,25 @@
     if (objectAttachedTo) {
         self.objectLocation = objectAttachedTo.objectLocation;
     }
-}
-
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-    if (![self isOnScreen]) {
-        CGRect visibleBounds = [[self currentScene] visibleScreenBounds];
-        float xLowLimit = visibleBounds.origin.x + objectImage.imageSize.width;
-        float yLowLimit = visibleBounds.origin.y + objectImage.imageSize.height;
-        float xHighLimit = visibleBounds.origin.x + visibleBounds.size.width - objectImage.imageSize.width;
-        float yHighLimit = visibleBounds.origin.y + visibleBounds.size.height - objectImage.imageSize.height;
-        
-        float xPos = CLAMP(objectLocation.x, xLowLimit, xHighLimit);
-        float yPos = CLAMP(objectLocation.y, yLowLimit, yHighLimit);
-        CGPoint drawLocation = CGPointMake(xPos, yPos);
     
-        float radDir = atan2f(objectLocation.y - yPos, objectLocation.x - xPos);
-        self.objectRotation = RADIANS_TO_DEGREES(radDir);
-        
-        [super renderCenteredAtPoint:drawLocation withScrollVector:vector];
+    CGRect visibleBounds = [[self currentScene] visibleScreenBounds];
+    float xLowLimit = visibleBounds.origin.x + objectImage.imageSize.width;
+    float yLowLimit = visibleBounds.origin.y + objectImage.imageSize.height;
+    float xHighLimit = visibleBounds.origin.x + visibleBounds.size.width - objectImage.imageSize.width;
+    float yHighLimit = visibleBounds.origin.y + visibleBounds.size.height - objectImage.imageSize.height;
+    
+    float xPos = CLAMP(notificationLocation.x, xLowLimit, xHighLimit);
+    float yPos = CLAMP(notificationLocation.y, yLowLimit, yHighLimit);
+    self.objectLocation = CGPointMake(xPos, yPos);
+    
+    float radDir = atan2f(notificationLocation.y - yPos, notificationLocation.x - xPos);
+    self.objectRotation = RADIANS_TO_DEGREES(radDir);
+    
+    if (CGRectContainsPoint(visibleBounds, notificationLocation)) {
+        isHidden = YES;
+    } else {
+        isHidden = NO;
     }
 }
-
 
 @end

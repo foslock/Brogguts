@@ -68,6 +68,7 @@ typedef struct {
     TexturedColoredQuad *texturedColoredQuad;
     TexturedColoredQuad *texturedColoredQuadIVA;
     GLuint textureName;
+    GLuint imageLayer;
 } ImageDetails;
 
 // Stores a single frame of an animation which is used within the Animation class
