@@ -101,20 +101,20 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        iva = calloc(RENDERING_LAYER_COUNT, sizeof(*iva));
-        ivaIndices = calloc(RENDERING_LAYER_COUNT, sizeof(*ivaIndices));
+        iva = calloc(RENDERING_LAYER_COUNT, sizeof(TexturedColoredVertex*));
+        ivaIndices = calloc(RENDERING_LAYER_COUNT, sizeof(GLushort*));
         
         // Initialize the texture to render count
         for (int i = 0; i < RENDERING_LAYER_COUNT; i++) {
             // Initialize the vertices array.
-            iva[i] = calloc(kMax_Images, sizeof(**iva));
+            iva[i] = calloc(kMax_Images, sizeof(TexturedColoredVertex));
             
             // Initialize the indices array.  This array will be used to specify the indexes into
             // the interleaved vertex array.  This array will allow us to just specify the specific
             // interleaved array elements we want glDrawElements to render.  We multiply by 6 as
             // we are using GL_TRIANGLE to render and we therefore define two triangles each with 
             // three vertices to make a quad.
-            ivaIndices[i] = calloc(kMax_Images * 6, sizeof(**ivaIndices));
+            ivaIndices[i] = calloc(kMax_Images * 6, sizeof(GLushort));
             
             // Initialize the IVA index
             ivaIndex[i] = 0;
@@ -145,7 +145,7 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
 
 - (void)addTexturedColoredQuadToRenderQueue:(TexturedColoredQuad*)aTCQ texture:(uint)aTexture withLayer:(GLuint)layer {
     GLuint newLayer = CLAMP(layer, 0, RENDERING_LAYER_COUNT - 1);
-	memcpy((TexturedColoredQuad*)iva[newLayer] + ivaIndex[newLayer], aTCQ, sizeof(TexturedColoredQuad));
+	memcpy((TexturedColoredQuad*)(iva[newLayer] + ivaIndex[newLayer]), aTCQ, sizeof(TexturedColoredQuad));
 	
 	// Add the texture used for this image to the list of textures to be rendered
 	
@@ -165,9 +165,9 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
     renderLayer = CLAMP(renderLayer, 0, RENDERING_LAYER_COUNT - 1);
     
     // Populate the vertex, texcoord and colorpointers with our interleaved vertex data
-    glVertexPointer(2, GL_FLOAT, sizeof(TexturedColoredVertex), &iva[renderLayer][0].geometryVertex);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedColoredVertex), &iva[renderLayer][0].textureVertex);
-    glColorPointer(4, GL_FLOAT, sizeof(TexturedColoredVertex), &iva[renderLayer][0].vertexColor);
+    glVertexPointer(2, GL_FLOAT, sizeof(TexturedColoredVertex), &(iva[renderLayer][0].geometryVertex) );
+    glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedColoredVertex), &(iva[renderLayer][0].textureVertex) );
+    glColorPointer(4, GL_FLOAT, sizeof(TexturedColoredVertex), &(iva[renderLayer][0].vertexColor) );
 	// NSLog(@"Rendering Layer (%i) with <%i> images", renderLayer, renderTextureCount[renderLayer]);
     
     // Loop through the texture index array rendering the images as necessary
@@ -228,12 +228,12 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
     }
 	
     // Point the texturedColoredQuadIVA to the current location in the render managers IVA queue
-    aImageDetails->texturedColoredQuadIVA = (TexturedColoredQuad*)iva[newLayer] + ivaIndex[newLayer];
+    aImageDetails->texturedColoredQuadIVA = (TexturedColoredQuad*)(iva[newLayer]) + ivaIndex[newLayer];
     
     // Copy the images base texturedColoredQuad into the assigned IVA index.  This is necessary to make sure
 	// the texture and color informaiton is loaded into the IVA.  The geometry from the image is loaded
 	// when the image is transformed within the Image render method.
-    memcpy(aImageDetails->texturedColoredQuadIVA, aImageDetails->texturedColoredQuad,sizeof(TexturedColoredQuad));
+    memcpy(aImageDetails->texturedColoredQuadIVA, aImageDetails->texturedColoredQuad, sizeof(TexturedColoredQuad));
 }
 
 - (void)addToTextureList:(uint)aTextureName withLayer:(int)layer {

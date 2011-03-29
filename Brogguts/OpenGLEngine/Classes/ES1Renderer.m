@@ -52,7 +52,8 @@
     [sharedGameController renderCurrentScene];
     
     // Ask the context to present the renderbuffer to the screen
-    [context presentRenderbuffer:GL_RENDERBUFFER_OES];}
+    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
 
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
 {	
