@@ -283,7 +283,7 @@ static GameController* sharedGameController = nil;
 			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
 			NSNumber* broggutValue;
 			NSNumber* broggutAge;
-			if ( (i > 14 && i < 17) || (j > 10 && j < 13) ) {
+			if ( (i > 4 && i < 27) && ((i > 14 && i < 17) || (j > 10 && j < 13)) ) {
 				broggutValue = [NSNumber numberWithInt:400];
 				broggutAge = [NSNumber numberWithInt:1];
 			} else {

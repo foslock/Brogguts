@@ -14,6 +14,9 @@
 #import "BroggutGenerator.h"
 #import "TextObject.h"
 #import "ParticleSingleton.h"
+#import "Image.h"
+#import "TextureSingleton.h"
+#import "ImageRenderSingleton.h"
 
 @implementation CollisionManager
 
@@ -48,6 +51,7 @@
 	}
 	[valueTextObject release];
 	[generator release];
+    [mediumBroggutImageArray release];
 	[radialAffectedObjects release];
 	[bufferNearbyObjects release];
 	[objectTableValues release];
@@ -122,6 +126,16 @@
 			broggut->broggutEdge = kMediumBroggutEdgeUp; // Default to drawing the broggut
 		}
 		generator = [[BroggutGenerator alloc] initWithBroggutArray:broggutArray];
+        mediumBroggutImageArray = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
+        for (int i = 0; i < MEDIUM_BROGGUT_IMAGE_COUNT; i++) {
+            // Make an Image and put it into the array
+            NSString* texName = [NSString stringWithFormat:@"broggutTextureNumber%i",i];
+            UIImage* thisImage = [generator imageForRandomMediumBroggut];
+            [[TextureSingleton sharedTextureSingleton] addTextureWithImage:thisImage withName:texName filter:GL_LINEAR];
+            Image* newBroggutImage = [[Image alloc] initWithImageNamed:texName filter:GL_LINEAR];
+            [newBroggutImage setRenderLayer:kLayerBottomLayer];
+            [mediumBroggutImageArray addObject:newBroggutImage];
+        }
 #endif
 #ifdef GRID
 		// Fill the vertex array for the grid
@@ -311,20 +325,34 @@
 			if (broggut->broggutValue != -1) {
 				// There is a broggut here, so render it!
 				CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
+                /*
 				CGRect rectBounds = CGRectMake(currentPoint.x, currentPoint.y, COLLISION_CELL_WIDTH, COLLISION_CELL_HEIGHT);
+                
 				if (!CGRectIntersectsRect(bounds, rectBounds)) {
 					continue;
 				}
+                
+                
 				if (broggut->broggutEdge == kMediumBroggutEdgeNone) {
 					glColor4f(1.0f, 1.0f, 1.0f, 0.2f);
 					drawFilledRect(rectBounds, scroll);
 					continue;
 				}
+                
 				
 				float* mediumBroggutVerts;
 				int count = [generator verticesOfMediumBroggutAtIndex:straightIndex intoArray:&mediumBroggutVerts];
 				glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 				drawLines(mediumBroggutVerts, count, scroll);
+                 
+                */
+                int fakeRandom = i * j;
+                int texIndex = fakeRandom % MEDIUM_BROGGUT_IMAGE_COUNT;
+                Image* image = [mediumBroggutImageArray objectAtIndex:texIndex];
+                CGPoint newPoint = CGPointMake(currentPoint.x - scroll.x - BROGGUT_PADDING,
+                                               currentPoint.y - scroll.y - BROGGUT_PADDING);
+                [image renderAtPoint:newPoint];
+                
 			}
 		}
 	}

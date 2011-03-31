@@ -71,6 +71,7 @@ typedef struct Path_Node_Queue {
 #define COLLISION_DETECTION_FREQ 3		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
 #define RADIAL_EFFECT_CHECK_FREQ 3		// " " to check radial effects
 #define RADIAL_EFFECT_MAX_COUNT 10      // Maximum number of objects to check for radial effects
+#define MEDIUM_BROGGUT_IMAGE_COUNT 10   // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {
 	NSMutableDictionary* objectTable;	// This keeps tracks of all objects that have been added, indexed by their UID
@@ -98,6 +99,7 @@ typedef struct Path_Node_Queue {
 	
 	BroggutArray* broggutArray;			// A 1D array of brogguts mapped to 2D
 	BroggutGenerator* generator;		// The generator the makes the medium brogguts
+    NSMutableArray* mediumBroggutImageArray;   // Array of the images that will be used for the medium brogguts
 	
 	// Path finding array of nodes
 	PathNode* pathNodeArray;			// A 1D array of pathnodes mapped to 2D

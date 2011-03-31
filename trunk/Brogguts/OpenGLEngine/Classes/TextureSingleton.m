@@ -77,7 +77,7 @@ static TextureSingleton* sharedTextureSingleton = nil;
 
 - (id)init {
 	// Initialize a dictionary
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		cachedTextures = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -88,7 +88,7 @@ static TextureSingleton* sharedTextureSingleton = nil;
     // Try to get a texture from cachedTextures with the supplied key.
     Texture2D *cachedTexture;
 	
-	if(cachedTexture = [cachedTextures objectForKey:aName]) {
+	if((cachedTexture = [cachedTextures objectForKey:aName])) {
 		return cachedTexture;
 	}
 	
@@ -103,6 +103,20 @@ static TextureSingleton* sharedTextureSingleton = nil;
 	
 	// Return the texture which is autoreleased as the caller is responsible for it
     return [cachedTexture autorelease];
+}
+
+- (void)addTextureWithImage:(UIImage*)image withName:(NSString*)aName filter:(GLenum)aFilter {
+    // Try to get a texture from cachedTextures with the supplied key.
+    Texture2D *cachedTexture;
+	
+	if((cachedTexture = [cachedTextures objectForKey:aName])) {
+        NSLog(@"A texture with the name %@ already exists", aName);
+		return; // Already exists
+	}
+	
+	cachedTexture = [[Texture2D alloc] initWithImage:[image retain] filter:aFilter];
+	[cachedTextures setObject:cachedTexture forKey:aName];
+    [image release];
 }
 
 - (BOOL)releaseTextureWithName:(NSString*)aName {

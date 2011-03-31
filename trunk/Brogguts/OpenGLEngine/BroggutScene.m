@@ -1,9 +1,9 @@
 //
-//  AbstractState.m
-//  SLQTSOR
+//  BroggutScene.m
+//  Brogguts
 //
-//  Created by Michael Daley on 01/06/2009.
-//  Copyright 2009 Michael Daley. All rights reserved.
+//  Created by Foster Lockwood
+//  Copyright 2009 Games in Dorms. All rights reserved.
 //
 
 #import "BroggutScene.h"
@@ -30,6 +30,14 @@
 #import "CraftAndStructures.h"
 #import "AIController.h"
 
+// Things that need to be sent over the GameCenter controller
+// 1 - Creation of craft or structure (happens occasionally)
+// 2 - Destruction of craft or structure (happens occasionally)
+// 3 - Change in any medium broggut value (happens occasionally)
+// 4 - Change in position of any craft or structure
+
+#define GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE 10 // The number of frames between each update for synchronized objects
+
 @implementation BroggutScene
 
 @synthesize sceneName;
@@ -42,6 +50,7 @@
 @synthesize fontArray, broggutCounter, metalCounter;
 @synthesize touchableObjects;
 @synthesize widthCells, heightCells, numberOfSmallBrogguts;
+@synthesize isMultiplayerMatch;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     self.sceneName = sName;
@@ -51,6 +60,7 @@
     isShowingBroggutCount = YES;
     isShowingMetalCount = YES;
     isAllowingOverview = YES;
+    isMultiplayerMatch = NO;
     renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -140,13 +150,13 @@
         
         // First four objects in the array are as follows:
         NSString* thisSceneName = [array objectAtIndex:kSceneStorageGlobalName];                            // 0: NSString - Name of the scene/level
-        BOOL baseCamp = [[array objectAtIndex:kSceneStorageGlobalBaseCamp] boolValue];                  // 1: BOOL - BaseCamp
-        int cellsWide = [[array objectAtIndex:kSceneStorageGlobalWidthCells] intValue];                 // 2: int - Width (in cells) of the map
-        int cellsHigh = [[array objectAtIndex:kSceneStorageGlobalHeightCells] intValue];				// 3: int - Height (in cells) of the map
+        BOOL baseCamp = [[array objectAtIndex:kSceneStorageGlobalBaseCamp] boolValue];                      // 1: BOOL - BaseCamp
+        int cellsWide = [[array objectAtIndex:kSceneStorageGlobalWidthCells] intValue];                     // 2: int - Width (in cells) of the map
+        int cellsHigh = [[array objectAtIndex:kSceneStorageGlobalHeightCells] intValue];                    // 3: int - Height (in cells) of the map
         int newNumberOfSmallBrogguts = [[array objectAtIndex:kSceneStorageGlobalSmallBrogguts] intValue];	// 4: int - Number of small brogguts to be created
-        NSArray* broggutArray = [array objectAtIndex:kSceneStorageGlobalMediumBroggutArray];			// 6: NSArray - the information for all of the medium brogguts
-        NSArray* objectArray = [array objectAtIndex:kSceneStorageGlobalObjectArray];					// 7: NSArray - " " objects
-        NSArray* AIArray = [array objectAtIndex:kSceneStorageGlobalAIController];                       // 8: NSArray - AI Controller information;
+        NSArray* broggutArray = [array objectAtIndex:kSceneStorageGlobalMediumBroggutArray];                // 6: NSArray - the information for all of the medium brogguts
+        NSArray* objectArray = [array objectAtIndex:kSceneStorageGlobalObjectArray];                        // 7: NSArray - " " objects
+        NSArray* AIArray = [array objectAtIndex:kSceneStorageGlobalAIController];                           // 8: NSArray - AI Controller information;
         (void)AIArray;
         
         CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
@@ -214,7 +224,8 @@
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
-                            [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             if (newStructure.objectAlliance == kAllianceFriendly) {
                                 self.homeBaseLocation = objectEndLocation;
                             }
@@ -230,7 +241,8 @@
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
-                            [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             [newStructure release];
                             break;
                         }
@@ -240,7 +252,8 @@
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
-                            [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             [newStructure release];
                             break;
                         }
@@ -250,7 +263,8 @@
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
-                            [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             [newStructure release];
                             break;
                         }
@@ -260,7 +274,8 @@
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
-                            [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             [newStructure release];
                             break;
                         }
@@ -281,7 +296,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -299,7 +315,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -314,7 +331,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -329,7 +347,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -344,7 +363,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -362,7 +382,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -377,7 +398,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -392,7 +414,8 @@
                             [newCraft setObjectLocation:objectCurrentLocation];
                             [newCraft setCurrentHull:objectCurrentHull];
                             [newCraft addCargo:objectCurrentCargo];
-                            [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                            // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                             if (objectIsControlledShip) {
                                 [self addControlledCraft:newCraft];
                             }
@@ -475,6 +498,7 @@
     }
     // Just to be sure
     [sharedStarSingleton randomizeStars];
+    [sharedGameCenterSingleton setCurrentScene:self];
 }
 
 #pragma mark -
@@ -550,6 +574,13 @@
             tempObj.broggutValue = kBroggutAncientSmallMinValue + (arc4random() % (kBroggutAncientSmallMaxValue - kBroggutAncientSmallMinValue));
         }
         [tempObj setCurrentScene:self];
+        
+        if (arc4random() % 2 == 1) {
+            [tempObj setRenderLayer:kLayerBottomLayer];
+        } else {
+            [tempObj setRenderLayer:kLayerMiddleLayer];
+        }
+        
         [collisionManager addCollidableObject:tempObj];
         numberOfSmallBrogguts++;
         [renderableObjects insertObject:tempObj atIndex:0]; // Insert the broggut at the beginning so it is rendered first
@@ -802,6 +833,33 @@
         [renderableDestroyed removeObject:tempObj];
         // NSLog(@"Object deleted, retain count: %i", [tempObj retainCount]);
     }
+    
+    if (!isBaseCamp && isMultiplayerMatch && [sharedGameCenterSingleton matchStarted]) {
+        if (frameCounter % (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE + 1) == 0) {
+            [self updateRemoteObjectsWithDelta:aDelta];
+        }
+    }
+}
+
+- (void)updateRemoteObjectsWithDelta:(float)aDelta {
+    int count = [touchableObjects count];
+    for (int i = 0; i < count; i++) {
+        TouchableObject* thisObject = [touchableObjects objectAtIndex:i];
+        if (thisObject.destroyNow) continue;
+        if (thisObject.objectVelocity.x == 0.0f &&
+            thisObject.objectVelocity.y == 0.0f) continue;
+        
+        ComplexEntityPacket packet;
+        packet.objectID = thisObject.uniqueObjectID;
+        packet.position = Vector2fMake(thisObject.objectLocation.x, thisObject.objectLocation.y);
+        packet.rotation = thisObject.objectRotation;
+        packet.velocity = thisObject.objectVelocity;
+        BOOL required = NO;
+        if ([thisObject isOnScreen]) {
+            required = YES;
+        }
+        [sharedGameCenterSingleton sendComplexPacket:packet isRequired:required];
+    }
 }
 
 - (void)renderScene {
@@ -908,6 +966,19 @@
     [renderableObjects addObject:obj];				// Adds to the rendering queue
     [touchableObjects addObject:obj];				// Adds to the touchable queue
     [enemyAIController updateArraysWithTouchableObjects:touchableObjects];  // Updates AI controller with new objects
+}
+
+- (void)createLocalTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
+    // Send the creation message to the other player
+    if (isMultiplayerMatch) {
+        CreationPacket packet;
+        packet.objectID = obj.uniqueObjectID;
+        packet.objectTypeID = obj.objectType;
+        packet.position = Vector2fMake(obj.objectLocation.x, obj.objectLocation.y);
+        [sharedGameCenterSingleton sendCreationPacket:packet isRequired:YES];
+    }
+    
+    [self addTouchableObject:obj withColliding:collides];
 }
 
 - (void)addCollidableObject:(CollidableObject*)obj {
@@ -1269,7 +1340,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1288,7 +1360,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1307,7 +1380,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1326,7 +1400,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1345,7 +1420,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1368,7 +1444,8 @@
                 if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
                     [self addControlledCraft:newCraft];
                 }
-                [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                // [self addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1399,7 +1476,8 @@
                     [newStructure setObjectLocation:enemyBaseLocation];
                 }
                 [newStructure setObjectAlliance:alliance];
-                [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1415,7 +1493,8 @@
                     [newStructure setObjectLocation:enemyBaseLocation];
                 }
                 [newStructure setObjectAlliance:alliance];
-                [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1431,7 +1510,8 @@
                     [newStructure setObjectLocation:enemyBaseLocation];
                 }
                 [newStructure setObjectAlliance:alliance];
-                [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }
@@ -1447,7 +1527,8 @@
                     [newStructure setObjectLocation:enemyBaseLocation];
                 }
                 [newStructure setObjectAlliance:alliance];
-                [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                // [self addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             } else {
                 [self failedToCreateAtLocation:location];
             }

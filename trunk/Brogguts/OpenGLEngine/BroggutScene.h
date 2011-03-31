@@ -1,9 +1,9 @@
 //
-//  AbstractState.h
-//  SLQTSOR
+//  BroggutScene.h
+//  Brogguts
 //
-//  Created by Michael Daley on 01/06/2009.
-//  Copyright 2009 Michael Daley. All rights reserved.
+//  Created by Foster Lockwood
+//  Copyright 2009 Games in Dorms. All rights reserved.
 //
 
 #import <OpenGLES/EAGL.h>
@@ -61,6 +61,7 @@
     BOOL isShowingBroggutCount;
     BOOL isShowingMetalCount;
     BOOL isAllowingOverview;
+    BOOL isMultiplayerMatch;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -162,6 +163,7 @@
 @property (nonatomic, assign) BOOL isShowingOverview;
 @property (nonatomic, assign) BOOL isBaseCamp;
 @property (nonatomic, assign) BOOL isTutorial;
+@property (nonatomic, assign) BOOL isMultiplayerMatch;
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
@@ -213,6 +215,9 @@
 // Adds an touchable object to the scene
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides;
 
+// Makes sure to send a message to the remote opponent about the object
+- (void)createLocalTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides;
+
 // Adds an collidable object to the scene
 - (void)addCollidableObject:(CollidableObject*)obj;
 
@@ -221,6 +226,9 @@
 
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
+
+// Called to send packets about all the objects that need to be updated remotely
+- (void)updateRemoteObjectsWithDelta:(float)aDelta;
 
 // Render the selection area
 - (void)renderSelectionAreaWithPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;

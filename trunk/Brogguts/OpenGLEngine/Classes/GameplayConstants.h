@@ -12,7 +12,16 @@
 //  - Comment out a line to remove that functionality from the game
 //
 
-// #define MULTIPLAYER
+// Sandbox Apple IDs
+//
+// Username: brogguts@gmail.com
+// Password: hippos123
+//
+// Username: foslock@hotmail.com
+// Password: hippos123
+//
+
+#define MULTIPLAYER
 // #define BOUNDING_DEBUG
 // #define DRAW_PATH
 #define STARS

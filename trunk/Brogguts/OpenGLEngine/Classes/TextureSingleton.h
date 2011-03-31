@@ -27,6 +27,9 @@
 // reference to this new Texture2D instance is returned.
 - (Texture2D*)textureWithFileName:(NSString*)aName filter:(GLenum)aFilter;
 
+// Adds a texture to the cache with the given UIimage and the name as the key
+- (void)addTextureWithImage:(UIImage*)image withName:(NSString*)aName filter:(GLenum)aFilter;
+
 // Selector that releases a cached texture which has a matching key to |aTextureName|.
 - (BOOL)releaseTextureWithName:(NSString*)aName;
 
