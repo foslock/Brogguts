@@ -13,13 +13,16 @@
 #import "TouchableObject.h"
 #import "CraftAndStructures.h"
 #import "Image.h"
+#import "CollisionManager.h"
+#import "GameplayConstants.h"
+#import "CraftAndStructures.h"
 
 static GameCenterSingleton* sharedGCSingleton = nil;
 
 @implementation GameCenterSingleton
 @synthesize currentScene, currentMatch;
 @synthesize otherPlayerID, localPlayerID;
-@synthesize matchStarted;
+@synthesize matchStarted, gameStarted;
 
 + (GameCenterSingleton*)sharedGCSingleton
 {
@@ -73,6 +76,17 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 }
 
 - (void)dealloc {
+    if (creationPacketQueue)
+        free(creationPacketQueue);
+    if (simplePacketQueue)
+        free(simplePacketQueue);
+    if (complexPacketQueue)
+        free(complexPacketQueue);
+    if (broggutPacketQueue)
+        free(broggutPacketQueue);
+    if (destructionPacketQueue)
+        free(destructionPacketQueue);
+    
 	[localPlayerID release];
 	[otherPlayerID release];
 	[currentMatch release];
@@ -102,6 +116,20 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			sharedGameController = [GameController sharedGameController];
             objectsReceivedArray = [[NSMutableDictionary alloc] init];
 			matchStarted = NO;
+            gameStarted = NO;
+            queuedPacketsSent = NO;
+            
+            creationPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*creationPacketQueue));
+            creationQueueCount = 0;
+            simplePacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*simplePacketQueue));
+            simpleQueueCount = 0;
+            complexPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*complexPacketQueue));
+            complexQueueCount = 0;
+            broggutPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*broggutPacketQueue));
+            broggutQueueCount = 0;
+            destructionPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*destructionPacketQueue));
+            destructionQueueCount = 0;
+            
 		} else {
 			NSLog(@"Game Center is not available on this platform.");
 		}
@@ -202,8 +230,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         else
         {
 			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Activity"
-														message:[NSString stringWithFormat:@"There are %i players online",activity]
-														delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                            message:[NSString stringWithFormat:@"There are %i players online",activity]
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
 			[alert show];
 			[alert release];
             // Use the activity value to display activity to the player.
@@ -244,7 +272,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         else if (match != nil)
         {
             self.currentMatch = match; // Use a retaining property to retain the match.
-								  // Start the match.
+            // Start the match.
 			currentMatch.delegate = self;
         }
     }];
@@ -270,9 +298,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 {
     [self dismissModalViewControllerAnimated:YES];
     self.currentMatch = match; // Use a retaining property to retain the match.
-							   // Start the game using the match.
 	currentMatch.delegate = self;
-
+    
+    // Start the game using the match.
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
     [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName isTutorial:NO];
     [[[GameController sharedGameController] currentScene] setIsMultiplayerMatch:YES];
@@ -309,11 +337,120 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     return newPoint;
 }
 
+- (void)processQueuedPackets {
+    // Go through each queue and make stuff!
+    
+    int counter = 0;
+    while (counter < creationQueueCount) {
+        CreationPacket thisPacket = creationPacketQueue[counter++];
+        [self creationPacketReceived:thisPacket];
+    }
+    
+    counter = 0;
+    while (counter < simpleQueueCount) {
+        SimpleEntityPacket thisPacket = simplePacketQueue[counter++];
+        [self simplePacketReceived:thisPacket];
+    }
+    
+    counter = 0;
+    while (counter < complexQueueCount) {
+        ComplexEntityPacket thisPacket = complexPacketQueue[counter++];
+        [self complexPacketReceived:thisPacket];
+    }
+    
+    counter = 0;
+    while (counter < broggutQueueCount) {
+        BroggutUpdatePacket thisPacket = broggutPacketQueue[counter++];
+        [self broggutUpdatePacketReceived:thisPacket];
+    }
+    
+    counter = 0;
+    while (counter < destructionQueueCount) {
+        DestructionPacket thisPacket = destructionPacketQueue[counter++];
+        [self destructionPacketReceived:thisPacket];
+    }
+    
+    // Reset all counts
+    creationQueueCount = 0;
+    simpleQueueCount = 0;
+    complexQueueCount = 0;
+    broggutQueueCount = 0;
+    destructionQueueCount = 0;
+}
+
+- (void)sendQueuedPackets {
+    if (queuedPacketsSent) {
+        return; // Only call this once at the beginning of the match
+    } else {
+        queuedPacketsSent = YES;
+    }
+    // Go through each queue and send the packets waiting!
+    
+    int counter = 0;
+    while (counter < creationQueueCount) {
+        CreationPacket thisPacket = creationPacketQueue[counter++];
+        [self sendCreationPacket:thisPacket isRequired:YES];
+    }
+    
+    counter = 0;
+    while (counter < simpleQueueCount) {
+        SimpleEntityPacket thisPacket = simplePacketQueue[counter++];
+        [self sendSimplePacket:thisPacket isRequired:NO];
+    }
+    
+    counter = 0;
+    while (counter < complexQueueCount) {
+        ComplexEntityPacket thisPacket = complexPacketQueue[counter++];
+        [self complexPacketReceived:thisPacket];
+        [self sendComplexPacket:thisPacket isRequired:NO];
+    }
+    
+    counter = 0;
+    while (counter < broggutQueueCount) {
+        BroggutUpdatePacket thisPacket = broggutPacketQueue[counter++];
+        [self sendBroggutUpdatePacket:thisPacket isRequired:YES];
+    }
+    
+    counter = 0;
+    while (counter < destructionQueueCount) {
+        DestructionPacket thisPacket = destructionPacketQueue[counter++];
+        [self sendDestructionPacket:thisPacket isRequired:YES];
+    }
+    
+    // Reset all counts
+    creationQueueCount = 0;
+    simpleQueueCount = 0;
+    complexQueueCount = 0;
+    broggutQueueCount = 0;
+    destructionQueueCount = 0;
+}
+
 // SENDING DATA
 
-- (void)sendSimplePacket:(SimpleEntityPacket)packet isRequired:(BOOL)required {
+- (void)sendMatchPacket:(MatchPacket)packet isRequired:(BOOL)required {
 	if (currentMatch && matchStarted) {
-		NSError *error;
+		NSError *error = nil;
+		packet.packetType = kPacketTypeMatchPacket;
+		NSData *data = [NSData dataWithBytes:&packet length:sizeof(MatchPacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
+		[currentMatch sendData:data 
+					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+				  withDataMode:mode
+						 error:&error];
+		if (error != nil)
+		{
+			NSLog(@"Can't send the match packet");
+			// handle the error
+		}
+	}
+}
+
+- (void)sendSimplePacket:(SimpleEntityPacket)packet isRequired:(BOOL)required {
+	if (currentMatch && matchStarted && gameStarted) {
+		NSError *error = nil;
 		packet.packetType = kPacketTypeSimpleEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(SimpleEntityPacket)];
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
@@ -329,12 +466,21 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the simple packet");
 			// handle the error
 		}
-	}
+	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
+        // If the game is still loading for the other player
+        packet.packetType = kPacketTypeSimpleEntity;
+        if (simpleQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            SimpleEntityPacket* packetPointer = &simplePacketQueue[simpleQueueCount++];
+            (*packetPointer) = packet;
+        } else {
+            NSLog(@"Simple packet queue is full!");
+        }
+    }
 }
 
 - (void)sendComplexPacket:(ComplexEntityPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted) {
-		NSError *error;
+	if (currentMatch && matchStarted && gameStarted) {
+		NSError *error = nil;
 		packet.packetType = kPacketTypeComplexEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(ComplexEntityPacket)];
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
@@ -350,12 +496,21 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the complex packet");
 			// handle the error
 		}
-	}
+	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
+        // If the game is still loading for the other player
+        packet.packetType = kPacketTypeComplexEntity;
+        if (complexQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            ComplexEntityPacket* packetPointer = &complexPacketQueue[complexQueueCount++];
+            (*packetPointer) = packet;
+        } else {
+            NSLog(@"Complex packet queue is full!");
+        }
+    }
 }
 
 - (void)sendCreationPacket:(CreationPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted) {
-		NSError *error;
+	if (currentMatch && matchStarted && gameStarted) {
+		NSError *error = nil;
 		packet.packetType = kPacketTypeCreationPacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(CreationPacket)];
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
@@ -368,15 +523,24 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 						 error:&error];
 		if (error != nil)
 		{
-			NSLog(@"Can't send the creation packet");
+			NSLog(@"Can't send the creation packet: %@", error);
 			// handle the error
 		}
-	}
+	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
+        // If the game is still loading for the other player
+        packet.packetType = kPacketTypeCreationPacket;
+        if (creationQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            CreationPacket* packetPointer = &creationPacketQueue[creationQueueCount++];
+            (*packetPointer) = packet;
+        } else {
+            NSLog(@"Creation packet queue is full!");
+        }
+    }
 }
 
 - (void)sendDestructionPacket:(DestructionPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted) {
-		NSError *error;
+	if (currentMatch && matchStarted && gameStarted) {
+		NSError *error = nil;
 		packet.packetType = kPacketTypeDestructionPacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(DestructionPacket)];
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
@@ -392,12 +556,21 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the destruction packet");
 			// handle the error
 		}
-	}
+	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
+        // If the game is still loading for the other player
+        packet.packetType = kPacketTypeDestructionPacket;
+        if (destructionQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            DestructionPacket* packetPointer = &destructionPacketQueue[destructionQueueCount++];
+            (*packetPointer) = packet;
+        } else {
+            NSLog(@"Destruction packet queue is full!");
+        }
+    }
 }
 
 - (void)sendBroggutUpdatePacket:(BroggutUpdatePacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted) {
-		NSError *error;
+	if (currentMatch && matchStarted && gameStarted) {
+		NSError *error = nil;
 		packet.packetType = kPacketTypeBroggutUpdatePacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(BroggutUpdatePacket)];
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
@@ -413,7 +586,16 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the broggut update packet");
 			// handle the error
 		}
-	}
+	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
+        // If the game is still loading for the other player
+        packet.packetType = kPacketTypeBroggutUpdatePacket;
+        if (broggutQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            BroggutUpdatePacket* packetPointer = &broggutPacketQueue[broggutQueueCount++];
+            (*packetPointer) = packet;
+        } else {
+            NSLog(@"Broggut packet queue is full!");
+        }
+    }
 }
 
 // RECEIVING DATA
@@ -421,42 +603,209 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 - (void)match:(GKMatch*)match didReceiveData:(NSData*)data fromPlayer:(NSString*)playerID
 {
 	const void* dataBytes = [data bytes];
+    MatchPacket receivedMatchPacket = *(MatchPacket*)dataBytes;
     SimpleEntityPacket receivedSimplePacket = *(SimpleEntityPacket*)dataBytes;
 	ComplexEntityPacket receivedComplexPacket = *(ComplexEntityPacket*)dataBytes;
     CreationPacket receivedCreationPacket = *(CreationPacket*)dataBytes;
     DestructionPacket receivedDestructionPacket = *(DestructionPacket*)dataBytes;
     BroggutUpdatePacket receivedBroggutPacket = *(BroggutUpdatePacket*)dataBytes;
-	
+    
+	if ((receivedMatchPacket).packetType == kPacketTypeMatchPacket) {
+        // Got a match initiation packet
+        [self matchPacketReceived:receivedMatchPacket];
+		return;
+	}
     if ((receivedSimplePacket).packetType == kPacketTypeSimpleEntity) {
-        [self simplePacketReceived:receivedSimplePacket];
+        // Get current queue location
+        if (simpleQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            SimpleEntityPacket* packetPointer = &simplePacketQueue[simpleQueueCount++];
+            (*packetPointer) = receivedSimplePacket;
+        } else {
+            NSLog(@"Simple packet queue is full!");
+        }
 		return;
 	}
 	if ((receivedComplexPacket).packetType == kPacketTypeComplexEntity) {
-		[self complexPacketReceived:receivedComplexPacket];
+        if (complexQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            ComplexEntityPacket* packetPointer = &complexPacketQueue[complexQueueCount++];
+            (*packetPointer) = receivedComplexPacket;
+        } else {
+            NSLog(@"Complex packet queue is full!");
+        }
 		return;
 	}
     if ((receivedCreationPacket).packetType == kPacketTypeCreationPacket) {
-		[self creationPacketReceived:receivedCreationPacket];
+        if (creationQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            CreationPacket* packetPointer = &creationPacketQueue[creationQueueCount++];
+            (*packetPointer) = receivedCreationPacket;
+        } else {
+            NSLog(@"Creation packet queue is full!");
+        }
 		return;
 	}
     if ((receivedDestructionPacket).packetType == kPacketTypeDestructionPacket) {
-		[self destructionPacketReceived:receivedDestructionPacket];
+        if (destructionQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            DestructionPacket* packetPointer = &destructionPacketQueue[destructionQueueCount++];
+            (*packetPointer) = receivedDestructionPacket;
+        } else {
+            NSLog(@"Destruction packet queue is full!");
+        }
 		return;
 	}
     if ((receivedBroggutPacket).packetType == kPacketTypeBroggutUpdatePacket) {
-		[self broggutUpdatePacketReceived:receivedBroggutPacket];
+        if (broggutQueueCount < PACKET_QUEUE_CAPACITY - 1) {
+            BroggutUpdatePacket* packetPointer = &broggutPacketQueue[broggutQueueCount++];
+            (*packetPointer) = receivedBroggutPacket;
+        } else {
+            NSLog(@"Broggut update packet queue is full!");
+        }
 		return;
 	}
+}
+
+- (void)matchPacketReceived:(MatchPacket)packet {
+    switch (packet.matchMarker) {
+        case kMatchMarkerRequestStart: {
+            MatchPacket packet;
+            packet.matchMarker = kMatchMarkerConfirmStart;
+            [self sendMatchPacket:packet isRequired:YES];
+        }
+            break;
+        case kMatchMarkerConfirmStart:
+            gameStarted = YES;
+            [self sendQueuedPackets];
+            break;   
+        default:
+            break;
+    }
 }
 
 - (void)creationPacketReceived:(CreationPacket)packet {
     CGPoint location = [self translatedPointForMultiplayer:packet.position];
     NSNumber* index = [NSNumber numberWithInt:packet.objectID];
-    TouchableObject* obj = [[AntCraftObject alloc] initWithLocation:location isTraveling:NO];
-    obj.objectImage.flipHorizontally = YES;
-    [currentScene addTouchableObject:obj withColliding:CRAFT_COLLISION_YESNO];
-    [objectsReceivedArray setObject:obj forKey:index];
-    NSLog(@"Creation packet received");
+    
+    switch (packet.objectTypeID) {
+        case kObjectCraftAntID: {
+            AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftMothID: {
+            MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftBeetleID: {
+            BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftMonarchID: {
+            MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftCamelID: {
+            CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftRatID: {
+            RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftSpiderID: {
+            SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectCraftEagleID: {
+            EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            newCraft.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newCraft forKey:index];
+            break;
+        }
+        case kObjectStructureBaseStationID: {
+            BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [currentScene setEnemyBaseLocation:location];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
+            break;
+        }
+        case kObjectStructureBlockID: {
+            BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
+            break;
+        }
+        case kObjectStructureTurretID: {
+            TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
+            break;
+        }
+        case kObjectStructureRadarID: {
+            RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
+            break;
+        }
+        case kObjectStructureFixerID: {
+            FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
+            break;
+        }
+        case kObjectStructureRefineryID: {
+            
+            break;
+        }
+        case kObjectStructureCraftUpgradesID: {
+            
+            break;
+        }
+        case kObjectStructureStructureUpgradesID: {
+            
+            break;
+        }
+        default:
+            NSLog(@"Tried to create craft or structure with invalid type ID (%i)", packet.objectTypeID);
+            break;
+    }
 }
 
 - (void)destructionPacketReceived:(DestructionPacket)packet {
@@ -465,11 +814,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     TouchableObject* obj = [objectsReceivedArray objectForKey:index];
     [obj setDestroyNow:YES];
     [objectsReceivedArray removeObjectForKey:index];
-    NSLog(@"Destruction packet received");
 }
 
 - (void)broggutUpdatePacketReceived:(BroggutUpdatePacket)packet {
-    NSLog(@"Broggut update packet received");
+    MediumBroggut* broggut = [[currentScene collisionManager] broggutCellForLocation:packet.broggutPoint];
+    broggut->broggutValue = packet.newValue;
 }
 
 - (void)simplePacketReceived:(SimpleEntityPacket)packet {
@@ -478,7 +827,6 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     if (obj) {
         obj.objectLocation = [self translatedPointForMultiplayer:packet.position];
     }
-    NSLog(@"Simple packet received");
 }
 
 - (void)complexPacketReceived:(ComplexEntityPacket)packet {
@@ -486,10 +834,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     TouchableObject* obj = [objectsReceivedArray objectForKey:index];
     if (obj) {
         obj.objectLocation = [self translatedPointForMultiplayer:packet.position];
-        obj.objectVelocity = packet.velocity;
+        // obj.objectVelocity = packet.velocity;
         obj.objectRotation = packet.rotation;
     }
-    NSLog(@"Complex packet received");
 }
 
 @end

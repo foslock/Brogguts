@@ -9,6 +9,7 @@ enum RemoteEntityTypes {
 };
 
 enum PacketTypes {
+    kPacketTypeMatchPacket,
     kPacketTypeCreationPacket,
     kPacketTypeDestructionPacket,
     kPacketTypeBroggutUpdatePacket,
@@ -16,6 +17,16 @@ enum PacketTypes {
 	kPacketTypeRotatingEntity, 
 	kPacketTypeComplexEntity, // Position vector, velocity vector, rotation, rotation speed
 };
+
+enum MatchMarkerTypes {
+    kMatchMarkerRequestStart,
+    kMatchMarkerConfirmStart,
+};
+
+typedef struct Match_Packet {
+    int packetType;
+    int matchMarker;
+} MatchPacket;
 
 typedef struct Creation_Packet {
     int packetType;
@@ -31,7 +42,7 @@ typedef struct Destruction_Packet {
 
 typedef struct Broggut_Packet {
     int packetType;
-    int broggutIndex;
+    CGPoint broggutPoint;
     int newValue;
 } BroggutUpdatePacket;
 

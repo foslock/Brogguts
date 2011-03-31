@@ -3087,30 +3087,6 @@
 			<integer>2</integer>
 			<integer>15</integer>
 			<array/>
-			<integer>1</integer>
-			<real>0</real>
-			<false/>
-			<array>
-				<real>4032</real>
-				<real>1600</real>
-			</array>
-			<array>
-				<real>4032</real>
-				<real>1600</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
-			<false/>
-			<array>
-				<real>0</real>
-				<real>0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>2</integer>
-			<integer>15</integer>
-			<array/>
 			<integer>0</integer>
 			<real>0</real>
 			<false/>
@@ -3148,30 +3124,6 @@
 			</array>
 			<integer>-1</integer>
 			<true/>
-			<false/>
-			<array>
-				<real>0</real>
-				<real>0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>1</integer>
-			<integer>6</integer>
-			<array/>
-			<integer>1</integer>
-			<real>0</real>
-			<false/>
-			<array>
-				<real>3776</real>
-				<real>1600</real>
-			</array>
-			<array>
-				<real>3776</real>
-				<real>1600</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
 			<false/>
 			<array>
 				<real>0</real>

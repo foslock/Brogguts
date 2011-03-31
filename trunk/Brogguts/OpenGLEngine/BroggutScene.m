@@ -127,6 +127,12 @@
     sharedStarSingleton = [StarSingleton sharedStarSingleton];
     sharedParticleSingleton = [ParticleSingleton sharedParticleSingleton];
     
+    if ([sharedGameCenterSingleton currentMatch]) {
+        isMultiplayerMatch = YES;
+    } else {
+        isMultiplayerMatch = NO;
+    }
+    
     frameCounter = 0;
     
     cameraImage = [[Image alloc] initWithImageNamed:@"starTexture.png" filter:GL_LINEAR];
@@ -680,6 +686,12 @@
 #pragma mark Update/Render
 
 - (void)updateSceneWithDelta:(GLfloat)aDelta {
+    if (isMultiplayerMatch && ![sharedGameCenterSingleton gameStarted]) {
+        MatchPacket packet;
+        packet.matchMarker = kMatchMarkerRequestStart;
+        [sharedGameCenterSingleton sendMatchPacket:packet isRequired:YES];
+        return;
+    }
     
     // Update the frame counter used by the scene
     if (++frameCounter >= FRAME_COUNTER_MAX) {
@@ -860,6 +872,7 @@
         }
         [sharedGameCenterSingleton sendComplexPacket:packet isRequired:required];
     }
+    [sharedGameCenterSingleton processQueuedPackets];
 }
 
 - (void)renderScene {
