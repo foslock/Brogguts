@@ -9,23 +9,42 @@ enum RemoteEntityTypes {
 };
 
 enum PacketTypes {
+    kPacketTypeCreationPacket,
+    kPacketTypeDestructionPacket,
+    kPacketTypeBroggutUpdatePacket,
 	kPacketTypeSimpleEntity, // Just X and Y values
 	kPacketTypeRotatingEntity, 
 	kPacketTypeComplexEntity, // Position vector, velocity vector, rotation, rotation speed
 };
 
+typedef struct Creation_Packet {
+    int packetType;
+    int objectTypeID;
+    int objectID;
+    Vector2f position;
+} CreationPacket;
+
+typedef struct Destruction_Packet {
+    int packetType;
+    int objectID;
+} DestructionPacket;
+
+typedef struct Broggut_Packet {
+    int packetType;
+    int broggutIndex;
+    int newValue;
+} BroggutUpdatePacket;
+
 typedef struct Simple_Entity {
 	int packetType;
 	int objectID;
-	float x;
-	float y;
+	Vector2f position;
 } SimpleEntityPacket;
 
 typedef struct Rotating_Entity {
 	int packetType;
 	int objectID;
-	float x;
-	float y;
+	Vector2f position;
 	float rotation;
 } RotatingEntityPacket;
 

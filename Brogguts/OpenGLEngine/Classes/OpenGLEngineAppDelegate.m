@@ -34,8 +34,10 @@
     if ([[sharedGameController currentScene] isBaseCamp]) {
         [sharedGameController saveCurrentSceneWithFilename:kBaseCampFileName allowOverwrite:YES];
     } else {
-        NSString* dateString = [[NSDate date] description];
-        [sharedGameController saveCurrentSceneWithFilename:dateString allowOverwrite:NO];
+        if (![[sharedGameController currentScene] isMultiplayerMatch]) {
+            NSString* dateString = [[NSDate date] description];
+            [sharedGameController saveCurrentSceneWithFilename:dateString allowOverwrite:NO];
+        }
     }
 }
 
@@ -57,8 +59,8 @@
 	
 	// Set the orientation!
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	
-	// Get current orientation
+    
+    // Get current orientation
 	UIInterfaceOrientation orientation = [[UIDevice currentDevice] orientation];
 	
 	// If the device is already landscape, set it to the current
@@ -69,8 +71,8 @@
 	}
 	
 	sharedGameController = [GameController sharedGameController];
-		
-	// Creates and tries to authenticate the local player
+    
+    // Creates and tries to authenticate the local player
 	sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
     
     mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];

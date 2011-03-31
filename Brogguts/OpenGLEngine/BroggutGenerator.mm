@@ -5,9 +5,11 @@
 //  Created by James F Lockwood on 2/13/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
-
+#import <CoreFoundation/CoreFoundation.h>
 #import "BroggutGenerator.h"
 #import "GameController.h"
+
+static NSString* kMediumBroggutImageSprite = @"spritetrash";
 
 @implementation BroggutGenerator
 
@@ -68,8 +70,52 @@
 }
 
 - (int)verticesOfMediumBroggutAtIndex:(int)index intoArray:(float**)array{
-	(*array) = verticies[index];
+    (*array) = verticies[index];
 	return (VERTICIES_PER_BROGGUT * 2) - 4;
 }
+
+
+- (UIImage*)imageForRandomMediumBroggut {
+    NSString* path = [[NSBundle mainBundle] pathForResource:kMediumBroggutImageSprite ofType:@"png"];
+    UIImage* trashTexture = [[UIImage alloc] initWithContentsOfFile:path];
+    
+    CGSize size = CGSizeMake(COLLISION_CELL_WIDTH + (BROGGUT_PADDING * 2),
+                             COLLISION_CELL_HEIGHT + (BROGGUT_PADDING * 2));
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGRect drawRect = CGRectMake((RANDOM_0_TO_1() * COLLISION_CELL_WIDTH) - COLLISION_CELL_WIDTH,
+                                 (RANDOM_0_TO_1() * COLLISION_CELL_HEIGHT) - COLLISION_CELL_HEIGHT,
+                                 COLLISION_CELL_WIDTH * 4,
+                                 COLLISION_CELL_HEIGHT * 4);
+    
+    float* thisArray;
+    [self generateVerticiesForRow:0 forColumn:0];
+    int vertexCount = [self verticesOfMediumBroggutAtIndex:0 intoArray:&thisArray];
+    int vertexIndex = 0;
+    
+    CGContextBeginPath(context);
+    CGContextSetLineWidth(context, 1.5f);
+    CGContextSetRGBStrokeColor(context, 1.0f, 1.0f, 1.0f, 1.0f);
+    for (int i = 0; i < vertexCount; i++) {
+        float pointx = thisArray[vertexIndex++] + BROGGUT_PADDING;
+        float pointy = thisArray[vertexIndex++] + BROGGUT_PADDING;
+        if (i == 0) {
+            CGContextMoveToPoint(context, pointx, pointy);
+        }
+        CGContextAddLineToPoint(context, pointx, pointy);
+    }
+    CGContextClosePath(context);
+    CGContextClip(context);
+    
+    // Draw the image in the clipping space
+    CGContextDrawImage(context, drawRect, [trashTexture CGImage]);
+        
+    // drawing commands go here
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    [trashTexture release];
+    return newImage;
+}
+
 
 @end

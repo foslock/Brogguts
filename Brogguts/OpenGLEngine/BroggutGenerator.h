@@ -27,4 +27,6 @@
 
 - (int)verticesOfMediumBroggutAtIndex:(int)index intoArray:(float**)array;
 
+- (UIImage*)imageForRandomMediumBroggut;
+
 @end

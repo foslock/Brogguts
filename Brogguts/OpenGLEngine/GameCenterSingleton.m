@@ -7,11 +7,17 @@
 //
 
 #import "GameCenterSingleton.h"
+#import "GameController.h"
+#import "BroggutScene.h"
+#import "OpenGLEngineAppDelegate.h"
+#import "TouchableObject.h"
+#import "CraftAndStructures.h"
+#import "Image.h"
 
 static GameCenterSingleton* sharedGCSingleton = nil;
 
 @implementation GameCenterSingleton
-@synthesize currentMatch;
+@synthesize currentScene, currentMatch;
 @synthesize otherPlayerID, localPlayerID;
 @synthesize matchStarted;
 
@@ -70,13 +76,19 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	[localPlayerID release];
 	[otherPlayerID release];
 	[currentMatch release];
+    [hostedFileName release];
 	[super dealloc];
 }
 
 // Handling Rotation
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-	return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 // Normal methods
@@ -88,6 +100,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			[self authenticateLocalPlayer];
 			[self.view setBackgroundColor:[UIColor clearColor]];
 			sharedGameController = [GameController sharedGameController];
+            objectsReceivedArray = [[NSMutableDictionary alloc] init];
 			matchStarted = NO;
 		} else {
 			NSLog(@"Game Center is not available on this platform.");
@@ -179,7 +192,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	}];
 }
 
-- (IBAction)findAllActivity
+- (void)findAllActivity
 {
     [[GKMatchmaker sharedMatchmaker] queryActivityWithCompletionHandler:^(NSInteger activity, NSError *error) {
         if (error)
@@ -198,8 +211,15 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     }];
 }
 
-- (IBAction)hostMatch:(id)sender
+- (void)hostMatchWithHostedFileName:(NSString*)filename
 {
+    if (hostedFileName)
+        [hostedFileName release];
+    
+    hostedFileName = [filename copy];
+    
+    [[((OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate]) window] addSubview:self.view];
+    
     GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
     request.minPlayers = 2;
     request.maxPlayers = 2;
@@ -210,7 +230,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     [self presentModalViewController:mmvc animated:YES];
 }
 
-- (IBAction)findProgrammaticMatch:(id)sender
+- (void)findProgrammaticMatch
 {
     GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
     request.minPlayers = 2;
@@ -234,6 +254,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 {
 	NSLog(@"Match finding cancelled!");
     [self dismissModalViewControllerAnimated:YES];
+    [self.view removeFromSuperview];
     // implement any specific code in your application here.
 }
 
@@ -241,6 +262,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 {
 	NSLog(@"Match finding failed!");
     [self dismissModalViewControllerAnimated:YES];
+    [self.view removeFromSuperview];
     // Display the error to the user.
 }
 
@@ -251,6 +273,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 							   // Start the game using the match.
 	currentMatch.delegate = self;
 
+    [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName isTutorial:NO];
+    [[[GameController sharedGameController] currentScene] setIsMultiplayerMatch:YES];
 	[self.view removeFromSuperview];
 }
 
@@ -261,7 +286,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     {
         case GKPlayerStateConnected:
             // handle a new player connection.
-			NSLog(@"Player connected: %s", playerID);
+			NSLog(@"Player connected: %@", playerID);
 			self.otherPlayerID = playerID;
 			break;
         case GKPlayerStateDisconnected:
@@ -278,16 +303,26 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     }
 }
 
+- (CGPoint)translatedPointForMultiplayer:(Vector2f)point {
+    CGRect bounds = [currentScene fullMapBounds];
+    CGPoint newPoint = CGPointMake(bounds.size.width - point.x, point.y);
+    return newPoint;
+}
+
 // SENDING DATA
 
-- (void)sendSimplePacket:(SimpleEntityPacket)packet {
+- (void)sendSimplePacket:(SimpleEntityPacket)packet isRequired:(BOOL)required {
 	if (currentMatch && matchStarted) {
 		NSError *error;
 		packet.packetType = kPacketTypeSimpleEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(SimpleEntityPacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
 		[currentMatch sendData:data 
 					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
-				  withDataMode:GKMatchSendDataUnreliable
+				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
 		{
@@ -297,18 +332,85 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	}
 }
 
-- (void)sendComplexPacket:(ComplexEntityPacket)packet {
+- (void)sendComplexPacket:(ComplexEntityPacket)packet isRequired:(BOOL)required  {
 	if (currentMatch && matchStarted) {
 		NSError *error;
 		packet.packetType = kPacketTypeComplexEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(ComplexEntityPacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
 		[currentMatch sendData:data 
 					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
-				  withDataMode:GKMatchSendDataUnreliable
+				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
 		{
-			NSLog(@"Can't send the complex packet!");
+			NSLog(@"Can't send the complex packet");
+			// handle the error
+		}
+	}
+}
+
+- (void)sendCreationPacket:(CreationPacket)packet isRequired:(BOOL)required  {
+	if (currentMatch && matchStarted) {
+		NSError *error;
+		packet.packetType = kPacketTypeCreationPacket;
+		NSData *data = [NSData dataWithBytes:&packet length:sizeof(CreationPacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
+		[currentMatch sendData:data 
+					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+				  withDataMode:mode
+						 error:&error];
+		if (error != nil)
+		{
+			NSLog(@"Can't send the creation packet");
+			// handle the error
+		}
+	}
+}
+
+- (void)sendDestructionPacket:(DestructionPacket)packet isRequired:(BOOL)required  {
+	if (currentMatch && matchStarted) {
+		NSError *error;
+		packet.packetType = kPacketTypeDestructionPacket;
+		NSData *data = [NSData dataWithBytes:&packet length:sizeof(DestructionPacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
+		[currentMatch sendData:data 
+					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+				  withDataMode:mode
+						 error:&error];
+		if (error != nil)
+		{
+			NSLog(@"Can't send the destruction packet");
+			// handle the error
+		}
+	}
+}
+
+- (void)sendBroggutUpdatePacket:(BroggutUpdatePacket)packet isRequired:(BOOL)required  {
+	if (currentMatch && matchStarted) {
+		NSError *error;
+		packet.packetType = kPacketTypeBroggutUpdatePacket;
+		NSData *data = [NSData dataWithBytes:&packet length:sizeof(BroggutUpdatePacket)];
+        GKMatchSendDataMode mode = GKMatchSendDataReliable;
+        if (!required) {
+            mode = GKMatchSendDataUnreliable;
+        }
+		[currentMatch sendData:data 
+					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+				  withDataMode:mode
+						 error:&error];
+		if (error != nil)
+		{
+			NSLog(@"Can't send the broggut update packet");
 			// handle the error
 		}
 	}
@@ -318,20 +420,76 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 
 - (void)match:(GKMatch*)match didReceiveData:(NSData*)data fromPlayer:(NSString*)playerID
 {
+	const void* dataBytes = [data bytes];
+    SimpleEntityPacket receivedSimplePacket = *(SimpleEntityPacket*)dataBytes;
+	ComplexEntityPacket receivedComplexPacket = *(ComplexEntityPacket*)dataBytes;
+    CreationPacket receivedCreationPacket = *(CreationPacket*)dataBytes;
+    DestructionPacket receivedDestructionPacket = *(DestructionPacket*)dataBytes;
+    BroggutUpdatePacket receivedBroggutPacket = *(BroggutUpdatePacket*)dataBytes;
 	
-    SimpleEntityPacket receivedSimplePacket = *(SimpleEntityPacket*)[data bytes];
-	ComplexEntityPacket receivedComplexPacket = *(ComplexEntityPacket*)[data bytes];
-	
-    if (((SimpleEntityPacket)receivedSimplePacket).packetType == kPacketTypeSimpleEntity) {
+    if ((receivedSimplePacket).packetType == kPacketTypeSimpleEntity) {
+        [self simplePacketReceived:receivedSimplePacket];
+		return;
+	}
+	if ((receivedComplexPacket).packetType == kPacketTypeComplexEntity) {
+		[self complexPacketReceived:receivedComplexPacket];
+		return;
+	}
+    if ((receivedCreationPacket).packetType == kPacketTypeCreationPacket) {
+		[self creationPacketReceived:receivedCreationPacket];
+		return;
+	}
+    if ((receivedDestructionPacket).packetType == kPacketTypeDestructionPacket) {
+		[self destructionPacketReceived:receivedDestructionPacket];
+		return;
+	}
+    if ((receivedBroggutPacket).packetType == kPacketTypeBroggutUpdatePacket) {
+		[self broggutUpdatePacketReceived:receivedBroggutPacket];
+		return;
+	}
+}
 
-		// handle a simple packet.
-		return;
-	}
-	if (((ComplexEntityPacket)receivedComplexPacket).packetType == kPacketTypeComplexEntity) {
-		// handle a simple packet.
-		NSLog(@"Received a complex packet!");
-		return;
-	}
-}	
+- (void)creationPacketReceived:(CreationPacket)packet {
+    CGPoint location = [self translatedPointForMultiplayer:packet.position];
+    NSNumber* index = [NSNumber numberWithInt:packet.objectID];
+    TouchableObject* obj = [[AntCraftObject alloc] initWithLocation:location isTraveling:NO];
+    obj.objectImage.flipHorizontally = YES;
+    [currentScene addTouchableObject:obj withColliding:CRAFT_COLLISION_YESNO];
+    [objectsReceivedArray setObject:obj forKey:index];
+    NSLog(@"Creation packet received");
+}
+
+- (void)destructionPacketReceived:(DestructionPacket)packet {
+    int objectID = packet.objectID;
+    NSNumber* index = [NSNumber numberWithInt:objectID];
+    TouchableObject* obj = [objectsReceivedArray objectForKey:index];
+    [obj setDestroyNow:YES];
+    [objectsReceivedArray removeObjectForKey:index];
+    NSLog(@"Destruction packet received");
+}
+
+- (void)broggutUpdatePacketReceived:(BroggutUpdatePacket)packet {
+    NSLog(@"Broggut update packet received");
+}
+
+- (void)simplePacketReceived:(SimpleEntityPacket)packet {
+    NSNumber* index = [NSNumber numberWithInt:packet.objectID];
+    TouchableObject* obj = [objectsReceivedArray objectForKey:index];
+    if (obj) {
+        obj.objectLocation = [self translatedPointForMultiplayer:packet.position];
+    }
+    NSLog(@"Simple packet received");
+}
+
+- (void)complexPacketReceived:(ComplexEntityPacket)packet {
+    NSNumber* index = [NSNumber numberWithInt:packet.objectID];
+    TouchableObject* obj = [objectsReceivedArray objectForKey:index];
+    if (obj) {
+        obj.objectLocation = [self translatedPointForMultiplayer:packet.position];
+        obj.objectVelocity = packet.velocity;
+        obj.objectRotation = packet.rotation;
+    }
+    NSLog(@"Complex packet received");
+}
 
 @end

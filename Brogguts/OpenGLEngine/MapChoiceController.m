@@ -9,6 +9,7 @@
 #import "MapChoiceController.h"
 #import "GameController.h"
 #import "OpenGLEngineAppDelegate.h"
+#import "GameCenterSingleton.h"
 
 enum SectionNames {
     kSectionSavedScenes,
@@ -221,15 +222,13 @@ enum SectionNames {
             if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            
             [sharedGameController transitionToSceneWithFileName:name isTutorial:NO];
         }
             break;
         case kSectionNewMaps: {
             NSString* name = [newMapNames objectAtIndex:indexPath.row];
             NSLog(@"Make a new scene with name %@", name);
-            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO];
+            [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
         }
             break;
         case kSectionExitButton: {
@@ -242,7 +241,6 @@ enum SectionNames {
     UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setHighlighted:NO animated:YES];
     [cell setSelected:NO];
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
 }
 
 @end
