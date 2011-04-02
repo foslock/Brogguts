@@ -251,7 +251,7 @@
 - (BOOL)addParticleWithPosition:(CGPoint)location {
 	
 	// If we have already reached the maximum number of particles then do nothing
-	if(particleCount == MAXIMUM_PARTICLE_COUNT)
+	if(particleCount >= MAXIMUM_PARTICLE_COUNT)
 		return NO;
 	
 	// Take the next particle out of the particle pool we have created and initialize it
@@ -264,7 +264,7 @@
 			particle->deltaColor = Color4fMake(0.0f, 0.0f, 0.0f, -0.01f);
 			particle->timeToLive = 200;
 			particle->particleSize = 32.0f;
-			particle->particleSizeDelta = 0.0f;
+			particle->particleSizeDelta = -0.1f;
 			break;
 		case kParticleTypeSpark:
 			particle->position = Vector2fMake(location.x, location.y);
@@ -278,11 +278,11 @@
 		case kParticleTypeShipThruster:
 			particle->position = Vector2fMake(location.x, location.y);
 			particle->velocity = Vector2fZero;
-			particle->timeToLive = 200;
+			particle->timeToLive = 75;
 			particle->color = Color4fMake(0.5f, 0.5f, 1.0f, 1.0f);
 			particle->deltaColor = Color4fMake(-0.01f, -0.01f, 0.0f, 0.0f);
 			particle->particleSize = 16.0f;
-			particle->particleSizeDelta = -0.1f;
+			particle->particleSizeDelta = -0.3f;
 			break;
 		default:
 			return NO;

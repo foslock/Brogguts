@@ -10,7 +10,11 @@
 #import <OpenAL/alc.h>
 #import <AVFoundation/AVFoundation.h>
 
-#define kFadeInterval (1.0f/60.0)  // Causes the music volume to be updated 60 times per second when music is fading
+#define TOTAL_SOUND_FILE_COUNT 3
+
+extern const NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT];
+
+#define kFadeInterval (1.0f/60.0f)  // Causes the music volume to be updated 60 times per second when music is fading
 
 // SoundSingleton provides a basic wrapper for OpenAL and AVAudioPlayer.  It is a singleton
 // class that allows sound clips to be loaded and cached with a key and then played back

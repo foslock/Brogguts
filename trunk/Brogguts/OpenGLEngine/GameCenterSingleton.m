@@ -89,8 +89,10 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     
 	[localPlayerID release];
 	[otherPlayerID release];
+    [otherPlayerArrayID release];
 	[currentMatch release];
     [hostedFileName release];
+    [currentMatch disconnect];
 	[super dealloc];
 }
 
@@ -118,6 +120,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			matchStarted = NO;
             gameStarted = NO;
             queuedPacketsSent = NO;
+            otherPlayerArrayID = nil;
             
             creationPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*creationPacketQueue));
             creationQueueCount = 0;
@@ -154,6 +157,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
 		if (error == nil)
 		{
+            localPlayerID = [[GKLocalPlayer localPlayer] playerID];
 			NSLog(@"Authentication was successful!");
 			// Insert code here to handle a successful authentication.
 		}
@@ -302,8 +306,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     
     // Start the game using the match.
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName isTutorial:NO];
-    [[[GameController sharedGameController] currentScene] setIsMultiplayerMatch:YES];
+    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName isTutorial:NO isNew:YES];
 	[self.view removeFromSuperview];
 }
 
@@ -315,11 +318,15 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         case GKPlayerStateConnected:
             // handle a new player connection.
 			NSLog(@"Player connected: %@", playerID);
-			self.otherPlayerID = playerID;
+            if ([playerID caseInsensitiveCompare:localPlayerID] != NSOrderedSame) {
+                self.otherPlayerID = playerID;
+                otherPlayerArrayID = [[NSArray alloc] initWithObjects:otherPlayerID, nil];
+            }
 			break;
         case GKPlayerStateDisconnected:
 			NSLog(@"Other player left, disconnecting...");
 			[currentMatch disconnect];
+            [currentScene otherPlayerDisconnected];
             // a player just disconnected.
 			break;
     }
@@ -347,6 +354,12 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     }
     
     counter = 0;
+    while (counter < destructionQueueCount) {
+        DestructionPacket thisPacket = destructionPacketQueue[counter++];
+        [self destructionPacketReceived:thisPacket];
+    }
+    
+    counter = 0;
     while (counter < simpleQueueCount) {
         SimpleEntityPacket thisPacket = simplePacketQueue[counter++];
         [self simplePacketReceived:thisPacket];
@@ -362,12 +375,6 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     while (counter < broggutQueueCount) {
         BroggutUpdatePacket thisPacket = broggutPacketQueue[counter++];
         [self broggutUpdatePacketReceived:thisPacket];
-    }
-    
-    counter = 0;
-    while (counter < destructionQueueCount) {
-        DestructionPacket thisPacket = destructionPacketQueue[counter++];
-        [self destructionPacketReceived:thisPacket];
     }
     
     // Reset all counts
@@ -393,6 +400,12 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     }
     
     counter = 0;
+    while (counter < destructionQueueCount) {
+        DestructionPacket thisPacket = destructionPacketQueue[counter++];
+        [self sendDestructionPacket:thisPacket isRequired:YES];
+    }
+    
+    counter = 0;
     while (counter < simpleQueueCount) {
         SimpleEntityPacket thisPacket = simplePacketQueue[counter++];
         [self sendSimplePacket:thisPacket isRequired:NO];
@@ -401,7 +414,6 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     counter = 0;
     while (counter < complexQueueCount) {
         ComplexEntityPacket thisPacket = complexPacketQueue[counter++];
-        [self complexPacketReceived:thisPacket];
         [self sendComplexPacket:thisPacket isRequired:NO];
     }
     
@@ -411,13 +423,23 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         [self sendBroggutUpdatePacket:thisPacket isRequired:YES];
     }
     
-    counter = 0;
-    while (counter < destructionQueueCount) {
-        DestructionPacket thisPacket = destructionPacketQueue[counter++];
-        [self sendDestructionPacket:thisPacket isRequired:YES];
-    }
-    
     // Reset all counts
+    creationQueueCount = 0;
+    simpleQueueCount = 0;
+    complexQueueCount = 0;
+    broggutQueueCount = 0;
+    destructionQueueCount = 0;
+}
+
+- (void)disconnectFromGame {
+    [currentMatch disconnect];
+    currentMatch = nil;
+    currentScene = nil;
+    otherPlayerID = nil;
+    otherPlayerArrayID = nil;
+    matchStarted = NO;
+    gameStarted = NO;
+    queuedPacketsSent = NO;
     creationQueueCount = 0;
     simpleQueueCount = 0;
     complexQueueCount = 0;
@@ -437,7 +459,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -458,7 +480,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -488,7 +510,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -518,7 +540,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -548,7 +570,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -578,7 +600,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             mode = GKMatchSendDataUnreliable;
         }
 		[currentMatch sendData:data 
-					 toPlayers:[NSArray arrayWithObject:otherPlayerID]
+					 toPlayers:otherPlayerArrayID
 				  withDataMode:mode
 						 error:&error];
 		if (error != nil)
@@ -681,112 +703,139 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 }
 
 - (void)creationPacketReceived:(CreationPacket)packet {
+    NSLog(@"Creation Packet received");
     CGPoint location = [self translatedPointForMultiplayer:packet.position];
     NSNumber* index = [NSNumber numberWithInt:packet.objectID];
     
     switch (packet.objectTypeID) {
         case kObjectCraftAntID: {
             AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftMothID: {
             MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftBeetleID: {
             BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftMonarchID: {
             MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftCamelID: {
             CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftRatID: {
             RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftSpiderID: {
             SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectCraftEagleID: {
             EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:NO];
+            [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
+            newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
             break;
         }
         case kObjectStructureBaseStationID: {
             BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
             [currentScene setEnemyBaseLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureBlockID: {
             BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureTurretID: {
             TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureRadarID: {
             RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureFixerID: {
             FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
             [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
@@ -817,8 +866,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 }
 
 - (void)broggutUpdatePacketReceived:(BroggutUpdatePacket)packet {
-    MediumBroggut* broggut = [[currentScene collisionManager] broggutCellForLocation:packet.broggutPoint];
-    broggut->broggutValue = packet.newValue;
+    CGPoint newPoint = [self translatedPointForMultiplayer:Vector2fMake(packet.broggutLocation.x, packet.broggutLocation.y)];
+    MediumBroggut* broggut = [[currentScene collisionManager] broggutCellForLocation:newPoint];
+    [[currentScene collisionManager] setBroggutValue:packet.newValue withID:broggut->broggutID isRemote:YES];
 }
 
 - (void)simplePacketReceived:(SimpleEntityPacket)packet {
@@ -833,7 +883,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     NSNumber* index = [NSNumber numberWithInt:packet.objectID];
     TouchableObject* obj = [objectsReceivedArray objectForKey:index];
     if (obj) {
-        obj.objectLocation = [self translatedPointForMultiplayer:packet.position];
+        obj.remoteLocation = [self translatedPointForMultiplayer:packet.position];
         // obj.objectVelocity = packet.velocity;
         obj.objectRotation = packet.rotation;
     }

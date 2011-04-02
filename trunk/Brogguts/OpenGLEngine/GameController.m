@@ -20,6 +20,7 @@
 #import "TextObject.h"
 #import "BitmapFont.h"
 #import "TutorialFiles.h"
+#import "GameCenterSingleton.h"
 
 NSString* kBaseCampFileName = @"BaseCampSaved.plist";
 NSString* kSavedScenesFileName = @"SavedScenesList.plist";
@@ -628,15 +629,17 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)returnToMainMenu {
-    isReturningToMenu = YES;
-    isFadingSceneOut = YES;
-    fadingRectAlpha = 0.0f;
+    if (!isReturningToMenu) {
+        isReturningToMenu = YES;
+        isFadingSceneOut = YES;
+        fadingRectAlpha = 0.0f;
+    }
 }
 
-- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial {
+- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial isNew:(BOOL)isNewScene {
     BroggutScene* scene = [gameScenes objectForKey:fileName];
     isTutorial = tutorial;
-    if (!scene) {
+    if (!scene || isNewScene) {
         BroggutScene* newScene = [[BroggutScene alloc] initWithFileName:fileName];
         [gameScenes setValue:newScene forKey:fileName];
         [newScene release];
@@ -650,6 +653,7 @@ static GameController* sharedGameController = nil;
             isFadingSceneOut = YES;
             fadingRectAlpha = 0.0f;
         } else {
+            [currentScene sceneDidDisappear];
             [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
             currentScene = [gameScenes objectForKey:transitionName];
             [[ParticleSingleton sharedParticleSingleton] resetAllEmitters];
@@ -745,13 +749,14 @@ static GameController* sharedGameController = nil;
             isFadingSceneOut = NO;
             isAlreadyInScene = NO;
             if (!isReturningToMenu) {
-                [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial];
+                [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial isNew:YES];
             } else {
-                isReturningToMenu = NO;
+                [currentScene sceneDidDisappear];
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] saveSceneAndPlayer];
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] stopGLAnimation];
                 currentScene = nil;
             }
+            isReturningToMenu = NO;
 		}
 	}
 	[currentPlayerProfile updateProfile];

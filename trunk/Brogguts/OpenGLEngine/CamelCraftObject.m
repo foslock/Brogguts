@@ -171,10 +171,12 @@ enum MiningStates {
 		if (broggut->broggutValue > 0) {
 			// There are still brogguts left...
 			if (miningCooldownTimer <= 0) {
+                int broggutChangeAmount = CLAMP(1, 0, broggut->broggutValue);
                 miningCooldownTimer = attributeMiningCooldown;
-                attributePlayerCurrentCargo += CLAMP(1, 0, broggut->broggutValue);
+                attributePlayerCurrentCargo += broggutChangeAmount;
                 attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo, 0, attributePlayerCargoCapacity);
-                broggut->broggutValue -= CLAMP(1, 0, attributePlayerCargoCapacity);
+                int currentValue = broggut->broggutValue - broggutChangeAmount;
+                [[self.currentScene collisionManager] setBroggutValue:currentValue withID:broggut->broggutID isRemote:NO];
             } else {
                 miningCooldownTimer--;
             }

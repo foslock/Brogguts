@@ -31,7 +31,10 @@
 	BOOL isTextObject;
 	BOOL destroyNow;
 	BOOL staticObject;
+    BOOL isRemoteObject;
 	
+    CGPoint remoteLocation;     // Used only for remote objects, this is the position received, and will be used in the object movement smoothing
+    
 	CGPoint objectLocation;
 	Vector2f objectVelocity;
 	int uniqueObjectID;			// The unique ID for a specific object, no two should ever have the same one
@@ -55,6 +58,8 @@
 @property (nonatomic, assign) BOOL destroyNow;
 @property (nonatomic, assign) BOOL isTextObject;
 @property (nonatomic, assign) BOOL staticObject;
+@property (nonatomic, assign) BOOL isRemoteObject;
+@property (nonatomic, assign) CGPoint remoteLocation;
 @property (nonatomic, assign) CGPoint objectLocation;
 @property (nonatomic, assign) Vector2f objectVelocity;
 @property (nonatomic, assign) int uniqueObjectID;

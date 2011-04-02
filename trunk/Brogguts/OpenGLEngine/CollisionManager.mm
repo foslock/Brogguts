@@ -10,6 +10,7 @@
 #import "CollidableObject.h"
 #import "TouchableObject.h"
 #import "GameController.h"
+#import "BroggutScene.h"
 #import "BroggutObject.h"
 #import "BroggutGenerator.h"
 #import "TextObject.h"
@@ -17,8 +18,10 @@
 #import "Image.h"
 #import "TextureSingleton.h"
 #import "ImageRenderSingleton.h"
+#import "GameCenterSingleton.h"
 
 @implementation CollisionManager
+@synthesize currentScene;
 
 - (void)dealloc {
 	if (cellHashTable) {
@@ -239,15 +242,27 @@
 	return broggut->broggutValue;
 }
 
-- (void)setBroggutValue:(int)newValue withID:(int)brogID {
+- (void)setBroggutValue:(int)newValue withID:(int)brogID isRemote:(BOOL)remote {
 	if (brogID >= (broggutArray->bWidth * broggutArray->bHeight)) {
 		NSLog(@"Invalid BROGGUT ID");
 		return;
 	}
 	MediumBroggut* broggut = &broggutArray->array[brogID];
+    if (newValue <= 0) {
+        newValue = -1;
+    }
 	broggut->broggutValue = newValue;
-	int col = brogID % numberOfColumns;
+    int col = brogID % numberOfColumns;
 	int row = brogID / numberOfColumns;
+    // If it is a multiplayer game, send the update
+    if (!remote && currentScene.isMultiplayerMatch) {
+        BroggutUpdatePacket packet;
+        packet.broggutLocation = CGPointMake( (COLLISION_CELL_WIDTH / 2) + (COLLISION_CELL_WIDTH) * col,
+                                             (COLLISION_CELL_HEIGHT / 2) + (COLLISION_CELL_HEIGHT) * row);
+        packet.newValue = newValue;
+        [[GameCenterSingleton sharedGCSingleton] sendBroggutUpdatePacket:packet isRequired:YES];
+    }
+	
 	PathNode* node = [self pathNodeForRow:row forColumn:col];
 	if (newValue == -1) {
 		node->isOpen = YES;

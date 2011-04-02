@@ -9,6 +9,12 @@
 #import "SoundSingleton.h"
 #import "MyOpenALSupport.h"
 
+const NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
+    @"testsound.wav",
+    @"lightsound.wav",
+    @"doorclose.wav",
+};
+
 #pragma mark -
 #pragma mark Private interface
 
@@ -195,6 +201,11 @@ static SoundSingleton* sharedSoundSingleton = nil;
 		stopMusicAfterFade = YES;
 		usePlaylist = NO;
 		loopLastPlaylistTrack = NO;
+        
+        for (int i = 0; i < TOTAL_SOUND_FILE_COUNT; i++) {
+            NSString* fileName = [NSString stringWithFormat:@"%@",kSoundFileNames[i]];
+            [self loadSoundWithKey:fileName soundFile:fileName];
+        }
 	}
     return self;
 }
@@ -203,6 +214,10 @@ static SoundSingleton* sharedSoundSingleton = nil;
 - (void)shutdownSoundManager {
 	@synchronized(self) {
 		if(sharedSoundSingleton != nil) {
+            for (int i = 0; i < TOTAL_SOUND_FILE_COUNT; i++) {
+                NSString* fileName = [NSString stringWithFormat:@"%@",kSoundFileNames[i]];
+                [self removeSoundWithKey:fileName];
+            }
 			[self dealloc];
 		}
 	}
@@ -365,7 +380,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 	
 	NSString *path = [musicLibrary objectForKey:aTrackName];
 	if (!path) {
-		NSLog(@"WARNING - SoundManager: Track '%@' does not exist in the music library and cannot be added to the play list.");
+		NSLog(@"WARNING - SoundManager: Track '%@' does not exist in the music library and cannot be added to the play list.", aTrackName);
 		return;
 	}
 	
@@ -568,7 +583,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 	
 	// If the backgroundMusicPlayer object is nil then there was an error
 	if(!musicPlayer) {
-		NSLog(@"ERROR - SoundManager: Could not play music for key '%d'", error);
+		NSLog(@"ERROR - SoundManager: Could not play music for key '%@'", aMusicKey);
 		return;
 	}
 	

@@ -6,6 +6,7 @@
 
 #define kPadScreenLandscapeWidth 1024.0f
 #define kPadScreenLandscapeHeight 768.0f // Without status bar
+#define kFrameRateTarget 60.0f
 
 //
 // Testing Definitions
@@ -15,7 +16,7 @@
 // Sandbox Apple IDs
 //
 // Username: brogguts@gmail.com
-// Password: hippos123
+// Password: brogguts123
 //
 // Username: foslock@hotmail.com
 // Password: hippos123

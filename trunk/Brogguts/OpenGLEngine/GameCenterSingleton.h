@@ -12,6 +12,14 @@
 
 #define PACKET_QUEUE_CAPACITY 500
 
+// Things that need to be sent over the GameCenter controller
+// 1 - Creation of craft or structure (happens occasionally)
+// 2 - Destruction of craft or structure (happens occasionally)
+// 3 - Change in any medium broggut value (happens occasionally)
+// 4 - Change in position of any craft or structure
+
+#define GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE 10 // The number of frames between each update for synchronized objects
+
 @class GameController;
 @class BroggutScene;
 
@@ -22,6 +30,7 @@
 	GKLocalPlayer* localPlayer;
 	NSString* localPlayerID;
 	NSString* otherPlayerID;
+    NSArray* otherPlayerArrayID;
     NSString* hostedFileName; 
 	GKMatch* currentMatch;
     
@@ -62,6 +71,7 @@
 - (void)findProgrammaticMatch;
 - (void)match:(GKMatch*)match player:(NSString*)playerID didChangeState:(GKPlayerConnectionState)state;
 - (CGPoint)translatedPointForMultiplayer:(Vector2f)point;
+- (void)disconnectFromGame;
 
 - (void)processQueuedPackets;
 - (void)sendQueuedPackets;

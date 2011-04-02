@@ -472,33 +472,34 @@
             specialAbilityCooldownTimer = 0;
         }
     }
-    
-    // Get the current point we should be following
-    if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
-        NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
-        CGPoint moveTowardsPoint = [pointValue CGPointValue];
-        // If the craft has reached the point...
-        if (AreCGPointsEqual(objectLocation, moveTowardsPoint, attributeEngines)) {
-            pathPointNumber++;
-        }
-        if (pathPointNumber < [pathPointArray count]) {
+    if (!isRemoteObject) {
+        // Get the current point we should be following
+        if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
             NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
-            moveTowardsPoint = [pointValue CGPointValue];
-        } else {
-            if (isPathLooped) {
-                pathPointNumber = 0;
+            CGPoint moveTowardsPoint = [pointValue CGPointValue];
+            // If the craft has reached the point...
+            if (AreCGPointsEqual(objectLocation, moveTowardsPoint, attributeEngines)) {
+                pathPointNumber++;
+            }
+            if (pathPointNumber < [pathPointArray count]) {
+                NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
+                moveTowardsPoint = [pointValue CGPointValue];
             } else {
-                isFollowingPath = NO;
-                hasCurrentPathFinished = YES;
-                [self setMovingAIState:kMovingAIStateStill];
-                if (isTraveling) {
-                    [self setIsTraveling:NO];
+                if (isPathLooped) {
+                    pathPointNumber = 0;
+                } else {
+                    isFollowingPath = NO;
+                    hasCurrentPathFinished = YES;
+                    [self setMovingAIState:kMovingAIStateStill];
+                    if (isTraveling) {
+                        [self setIsTraveling:NO];
+                    }
                 }
             }
+            [self accelerateTowardsLocation:moveTowardsPoint];
+        } else {
+            [self decelerate];
         }
-        [self accelerateTowardsLocation:moveTowardsPoint];
-    } else {
-        [self decelerate];
     }
     
     // Update the light blinking

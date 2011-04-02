@@ -10,6 +10,9 @@
 #import "EAGLView.h"
 #import "GameController.h"
 #import "MainMenuController.h"
+#import "SplashScreenViewController.h"
+#import "GameCenterSingleton.h"
+#import "SoundSingleton.h"
 
 @implementation OpenGLEngineAppDelegate
 
@@ -44,6 +47,7 @@
 - (void)applicationEnded { // Custom method called whenever the application ends
     if (applicationSaved) return;
     applicationSaved = YES;
+    [[GameCenterSingleton sharedGCSingleton] disconnectFromGame];
     [self saveSceneAndPlayer];
     [self stopGLAnimation];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
@@ -56,6 +60,8 @@
     
     viewInserted = NO;
     applicationSaved = NO;
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 	
 	// Set the orientation!
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -69,14 +75,17 @@
 	} else {
 		[[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:NO];
 	}
-	
-	sharedGameController = [GameController sharedGameController];
     
-    // Creates and tries to authenticate the local player
-	sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
+    // Initialize the game controller
+    sharedGameController = [GameController sharedGameController];
+    // Initialize the sound manager
+    sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
     
     mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
     [window addSubview:mainMenuController.view];
+    
+    SplashScreenViewController* splash = [[SplashScreenViewController alloc] initWithNibName:@"SplashScreenViewController" bundle:nil];
+    [mainMenuController presentModalViewController:splash animated:NO];
     return YES;
 }
 

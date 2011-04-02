@@ -30,14 +30,6 @@
 #import "CraftAndStructures.h"
 #import "AIController.h"
 
-// Things that need to be sent over the GameCenter controller
-// 1 - Creation of craft or structure (happens occasionally)
-// 2 - Destruction of craft or structure (happens occasionally)
-// 3 - Change in any medium broggut value (happens occasionally)
-// 4 - Change in position of any craft or structure
-
-#define GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE 10 // The number of frames between each update for synchronized objects
-
 @implementation BroggutScene
 
 @synthesize sceneName;
@@ -53,6 +45,20 @@
 @synthesize isMultiplayerMatch;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
+    // Grab an instance of the render manager
+    sharedGameController = [GameController sharedGameController];
+    sharedImageRenderSingleton = [ImageRenderSingleton sharedImageRenderSingleton];
+    sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
+    sharedGameCenterSingleton = [GameCenterSingleton sharedGCSingleton];
+    sharedStarSingleton = [StarSingleton sharedStarSingleton];
+    sharedParticleSingleton = [ParticleSingleton sharedParticleSingleton];
+    
+    if ([sharedGameCenterSingleton currentMatch]) {
+        isMultiplayerMatch = YES;
+    } else {
+        isMultiplayerMatch = NO;
+    }
+    
     self.sceneName = sName;
     isBaseCamp = NO;
     isTutorial = NO;
@@ -60,7 +66,6 @@
     isShowingBroggutCount = YES;
     isShowingMetalCount = YES;
     isAllowingOverview = YES;
-    isMultiplayerMatch = NO;
     renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -69,6 +74,7 @@
     currentObjectsHovering = [[NSMutableDictionary alloc] initWithCapacity:11];
     currentTouchesInSideBar = [[NSMutableDictionary alloc] initWithCapacity:11];
     collisionManager = [[CollisionManager alloc] initWithContainingRect:mapBounds WithCellWidth:COLLISION_CELL_WIDTH withHeight:COLLISION_CELL_HEIGHT];
+    [collisionManager setCurrentScene:self];
     widthCells = mapBounds.size.width / COLLISION_CELL_WIDTH;
     heightCells = mapBounds.size.height / COLLISION_CELL_HEIGHT;
     visibleScreenBounds = screenBounds;
@@ -85,7 +91,8 @@
     numberOfCurrentStructures = 0;
     numberOfSmallBrogguts = 0;
     
-    enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
+    if (!isMultiplayerMatch)
+        enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
     
     // Set up the sidebar
     sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
@@ -118,20 +125,6 @@
                     initWithFontID:kFontBlairID Text:metalCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 240, visibleScreenBounds.size.height - 64) withDuration:-1.0f];
     [metalCounter setScrollWithBounds:NO];
     [textObjectArray addObject:metalCounter];
-    
-    // Grab an instance of the render manager
-    sharedGameController = [GameController sharedGameController];
-    sharedImageRenderSingleton = [ImageRenderSingleton sharedImageRenderSingleton];
-    sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
-    sharedGameCenterSingleton = [GameCenterSingleton sharedGCSingleton];
-    sharedStarSingleton = [StarSingleton sharedStarSingleton];
-    sharedParticleSingleton = [ParticleSingleton sharedParticleSingleton];
-    
-    if ([sharedGameCenterSingleton currentMatch]) {
-        isMultiplayerMatch = YES;
-    } else {
-        isMultiplayerMatch = NO;
-    }
     
     frameCounter = 0;
     
@@ -507,6 +500,11 @@
     [sharedGameCenterSingleton setCurrentScene:self];
 }
 
+- (void)sceneDidDisappear {
+    [sharedGameCenterSingleton disconnectFromGame];
+    [[sharedGameController currentPlayerProfile] endSkirmishSuccessfully:NO];
+}
+
 #pragma mark -
 #pragma mark Brogguts
 
@@ -806,7 +804,9 @@
     }
     
     // Update the AI controller
-    [enemyAIController updateAIController];
+    if (!isMultiplayerMatch) {
+        [enemyAIController updateAIController];
+    }
     
     // Destroy all objects in the destory array, and remove them from other arrays
     for (int i = 0; i < [renderableDestroyed count]; i++) {
@@ -842,9 +842,13 @@
         }
         
         [tempObj setObjectLocation:CGPointMake(-INT_MAX, -INT_MAX)];
-        [renderableDestroyed removeObject:tempObj];
-        // NSLog(@"Object deleted, retain count: %i", [tempObj retainCount]);
+        if (!tempObj.isRemoteObject) {
+            DestructionPacket packet;
+            packet.objectID = tempObj.uniqueObjectID;
+            [sharedGameCenterSingleton sendDestructionPacket:packet isRequired:YES];
+        }
     }
+    [renderableDestroyed removeAllObjects];
     
     if (!isBaseCamp && isMultiplayerMatch && [sharedGameCenterSingleton matchStarted]) {
         if (frameCounter % (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE + 1) == 0) {
@@ -910,6 +914,9 @@
             [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
     }
     
+    // Render particles underneath everything
+    [sharedParticleSingleton renderParticlesOnLayer:kParticleLayerBottom WithScroll:scroll];
+    
     // Render images
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerBottomLayer];
     
@@ -919,6 +926,9 @@
         if ([tempObj isOnScreen])
             [tempObj renderUnderObjectWithScroll:scroll];
     }
+    
+    // Render particles under middle
+    [sharedParticleSingleton renderParticlesOnLayer:kParticleLayerMiddle WithScroll:scroll];
     
     // Render images
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerMiddleLayer];
@@ -930,8 +940,8 @@
             [tempObj renderOverObjectWithScroll:scroll];
     }
     
-    // Render all of the particles in the manager
-    [sharedParticleSingleton renderParticlesWithScroll:scroll];
+    // Render particles under middle
+    [sharedParticleSingleton renderParticlesOnLayer:kParticleLayerTop WithScroll:scroll];
     
     // Render images
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerTopLayer];
@@ -1563,6 +1573,18 @@
             NSLog(@"Tried to create structure with invalid ID (%i)", structureID);
             break;
     }
+}
+
+#pragma mark -
+#pragma mark Match Control
+
+- (void)otherPlayerDisconnected {
+    if (isMultiplayerMatch)
+        [[GameController sharedGameController] returnToMainMenu];
+}
+
+- (void)checkWinCondition {
+    
 }
 
 #pragma mark -
