@@ -20,6 +20,7 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		6F03122C134669C200292047 /* lightsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F03122B134669C200292047 /* lightsound.wav */; };
+		6F0E019D1347CBD0008E1E1D /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E019C1347CBD0008E1E1D /* icon.png */; };
 		6F0E3272133115410037C789 /* TutorialSceneTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3271133115410037C789 /* TutorialSceneTwo.m */; };
 		6F0E3275133123F00037C789 /* Tutorial 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E3274133123F00037C789 /* Tutorial 2.plist */; };
 		6F0E3278133159E90037C789 /* TutorialSceneThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3277133159E90037C789 /* TutorialSceneThree.m */; };
@@ -181,6 +182,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLEngine_Prefix.pch; sourceTree = "<group>"; };
 		6F03122B134669C200292047 /* lightsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lightsound.wav; sourceTree = "<group>"; };
+		6F0E019C1347CBD0008E1E1D /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		6F0E3270133115410037C789 /* TutorialSceneTwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneTwo.h; sourceTree = "<group>"; };
 		6F0E3271133115410037C789 /* TutorialSceneTwo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneTwo.m; sourceTree = "<group>"; };
 		6F0E327313311FAB0037C789 /* TutorialFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialFiles.h; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6F0E019C1347CBD0008E1E1D /* icon.png */,
 				6F797E2D134660B700B168D1 /* Sounds */,
 				6F67CC18132D662E0061B1A9 /* Default Maps */,
 				6F3AF23013303825008CFB79 /* Tutorial Maps */,
@@ -1131,6 +1134,7 @@
 				6FD777C31345573A00F734D5 /* splashmask.png in Resources */,
 				6F797E301346613C00B168D1 /* doorclose.wav in Resources */,
 				6F03122C134669C200292047 /* lightsound.wav in Resources */,
+				6F0E019D1347CBD0008E1E1D /* icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
