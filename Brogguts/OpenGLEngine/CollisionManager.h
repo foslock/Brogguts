@@ -20,6 +20,7 @@ enum BroggutEdgeValues {
 @class BroggutGenerator;
 @class TextObject;
 @class TouchableObject;
+@class BroggutScene;
 
 typedef struct Object_ID_Array {
 	int* objectIDArray; // Array of objects in that cell
@@ -74,6 +75,9 @@ typedef struct Path_Node_Queue {
 #define MEDIUM_BROGGUT_IMAGE_COUNT 10   // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {
+    BroggutScene* currentScene;         // Reference to the current scene
+    
+    
 	NSMutableDictionary* objectTable;	// This keeps tracks of all objects that have been added, indexed by their UID
 	NSMutableArray* objectTableValues;	// This array is kept so enumeration is easy through the dictionary, updated whenever an object
 										// is added to the dictionary.
@@ -107,6 +111,8 @@ typedef struct Path_Node_Queue {
 	PathNodeQueue pathNodeQueueClosed;	// A queue that can contain path nodes (the closed list)
 }
 
+@property (nonatomic, assign) BroggutScene* currentScene;
+
 - (id)initWithContainingRect:(CGRect)bounds WithCellWidth:(float)width withHeight:(float)height;
 
 - (void)remakeGenerator;
@@ -120,7 +126,7 @@ typedef struct Path_Node_Queue {
 - (CGPoint)getLocationOfClosestMediumBroggutToPoint:(CGPoint)location;
 - (int)getBroggutValueAtLocation:(CGPoint)location;
 - (int)getBroggutValueWithID:(int)brogID;
-- (void)setBroggutValue:(int)newValue withID:(int)brogID;
+- (void)setBroggutValue:(int)newValue withID:(int)brogID isRemote:(BOOL)remote;
 
 - (void)updateMediumBroggutEdgeAtLocation:(CGPoint)location;
 - (void)updateAllMediumBroggutsEdges;

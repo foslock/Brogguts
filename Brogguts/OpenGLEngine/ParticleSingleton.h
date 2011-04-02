@@ -19,6 +19,14 @@ enum ParticleTypes {
 	kParticleTypeBuildLocation,
 };
 
+enum ParticleLayers {
+    kParticleLayerBottom,
+    kParticleLayerMiddle,
+    kParticleLayerTop,
+};
+
+extern const int kLayerForParticleType[PARTICLE_TYPE_COUNT];
+
 @interface ParticleSingleton : NSObject {
 	NSMutableArray* particleEmitterArray;
 }
@@ -26,7 +34,7 @@ enum ParticleTypes {
 + (ParticleSingleton*)sharedParticleSingleton;
 
 - (void)updateParticlesWithDelta:(GLfloat)aDelta;
-- (void)renderParticlesWithScroll:(Vector2f)scroll;
+- (void)renderParticlesOnLayer:(int)layer WithScroll:(Vector2f)scroll;
 
 - (void)resetAllEmitters;
 - (void)createParticles:(int)count withType:(int)particleType atLocation:(CGPoint)location;

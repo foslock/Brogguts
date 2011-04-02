@@ -183,6 +183,7 @@
 
 // Called when the scene was just revealed, not necessarily right after loaded
 - (void)sceneDidAppear;
+- (void)sceneDidDisappear;
 
 // Creates a broggut value text object showing where brogguts were gathered (and adds value to total brogguts)
 - (void)addBroggutValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;
@@ -262,6 +263,12 @@
 
 // Called when the player is trying to create/purchase a structure at the location
 - (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance;
+
+// Called when the other player disconnects (only in multiplayer)
+- (void)otherPlayerDisconnected;
+
+// Called to check the win condition
+- (void)checkWinCondition;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

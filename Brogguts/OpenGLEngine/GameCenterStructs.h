@@ -42,7 +42,7 @@ typedef struct Destruction_Packet {
 
 typedef struct Broggut_Packet {
     int packetType;
-    CGPoint broggutPoint;
+    CGPoint broggutLocation;
     int newValue;
 } BroggutUpdatePacket;
 

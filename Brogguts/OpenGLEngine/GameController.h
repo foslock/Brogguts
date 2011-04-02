@@ -118,7 +118,7 @@ extern NSString* kNewMapScenesFileName;
 
 // Transitions to the scene with the given filename
 - (void)returnToMainMenu;
-- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial;
+- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial isNew:(BOOL)isNewScene;
 - (void)loadTutorialLevelsForIndex:(int)index;
 
 // Updates the logic within the current scene

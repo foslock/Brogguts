@@ -9,6 +9,14 @@
 #import "ParticleSingleton.h"
 #import "ParticleEmitter.h"
 
+const int kLayerForParticleType[PARTICLE_TYPE_COUNT] = {
+    kParticleLayerMiddle,
+    kParticleLayerTop,
+    kParticleLayerMiddle,
+    kParticleLayerBottom,
+    kParticleLayerMiddle,
+};
+
 static ParticleSingleton* sharedPartSingletonInstance = nil;
 
 @implementation ParticleSingleton
@@ -93,8 +101,9 @@ static ParticleSingleton* sharedPartSingletonInstance = nil;
 	}
 }
 
-- (void)renderParticlesWithScroll:(Vector2f)scroll {
-	for (int i = 0; i < [particleEmitterArray count]; i++) {
+- (void)renderParticlesOnLayer:(int)layer WithScroll:(Vector2f)scroll {
+    for (int i = 0; i < [particleEmitterArray count]; i++) {
+        if (layer != kLayerForParticleType[i]) continue;
 		ParticleEmitter* emitter = [particleEmitterArray objectAtIndex:i];
 		if (emitter.active)
 			[emitter renderParticlesWithScroll:scroll];

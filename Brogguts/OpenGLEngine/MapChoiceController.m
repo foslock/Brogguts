@@ -10,6 +10,7 @@
 #import "GameController.h"
 #import "OpenGLEngineAppDelegate.h"
 #import "GameCenterSingleton.h"
+#import "PlayerProfile.h"
 
 enum SectionNames {
     kSectionSavedScenes,
@@ -160,8 +161,7 @@ enum SectionNames {
         case kSectionExitButton:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.backgroundColor = [UIColor redColor];
-            cell.textLabel.text = @"Back";
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            cell.textLabel.text = @"Cancel";
             break;
         default:
             return 0;
@@ -222,12 +222,15 @@ enum SectionNames {
             if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO];
+            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO isNew:NO];
         }
             break;
         case kSectionNewMaps: {
             NSString* name = [newMapNames objectAtIndex:indexPath.row];
             NSLog(@"Make a new scene with name %@", name);
+            NSNull* null = [NSNull null];
+            [[[GameController sharedGameController] gameScenes] setValue:null forKey:name];
+            [[[GameController sharedGameController] currentPlayerProfile] startSkirmish];
             [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
         }
             break;

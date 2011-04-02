@@ -11,6 +11,7 @@
 #import "GameController.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "GameCenterSingleton.h"
 
 static int globalUniqueID = 0;
 
@@ -19,11 +20,11 @@ static int globalUniqueID = 0;
 @synthesize currentScene, objectRotation;
 @synthesize renderLayer;
 @synthesize isHidden, isCheckedForCollisions, isCheckedForMultipleCollisions, destroyNow, isTextObject;
-@synthesize objectImage, rotationSpeed, objectLocation, objectVelocity;
+@synthesize objectImage, rotationSpeed, remoteLocation, objectLocation, objectVelocity;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
 @synthesize isRenderedInOverview, hasBeenCheckedForCollisions;
 @synthesize objectAlliance, objectType;
-@synthesize staticObject;
+@synthesize staticObject, isRemoteObject;
 
 - (void)dealloc {
 	if (objectImage)
@@ -52,6 +53,8 @@ static int globalUniqueID = 0;
         isPaddedForCollisions = YES;            // If there should be a shrunken radius for collisions
 		isTextObject = NO;
 		staticObject = NO;
+        isRemoteObject = NO;
+        remoteLocation = CGPointZero;
 		
 		// Set bounding information
 		boundingCircle.x = location.x;
@@ -102,6 +105,11 @@ static int globalUniqueID = 0;
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+    if (isRemoteObject) {
+        objectVelocity = Vector2fMake( (remoteLocation.x - objectLocation.x) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget)  ,
+                                       (remoteLocation.y - objectLocation.y) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget) );
+    }
+    
     if (objectVelocity.x != 0 || objectVelocity.y != 0) {
         objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
                                      objectLocation.y + objectVelocity.y);

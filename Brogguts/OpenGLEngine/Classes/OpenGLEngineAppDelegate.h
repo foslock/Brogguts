@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GameCenterSingleton.h"
 
 @class EAGLView;
 @class GameController;
+@class GameCenterSingleton;
+@class SoundSingleton;
 @class MainMenuController;
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
@@ -21,6 +22,7 @@
     EAGLView *glView;
     BOOL viewInserted;
 	GameCenterSingleton* sharedGCSingleton;
+    SoundSingleton* sharedSoundSingleton;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
