@@ -749,7 +749,7 @@ static GameController* sharedGameController = nil;
             isFadingSceneOut = NO;
             isAlreadyInScene = NO;
             if (!isReturningToMenu) {
-                [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial isNew:YES];
+                [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial isNew:!isTutorial];
             } else {
                 [currentScene sceneDidDisappear];
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] saveSceneAndPlayer];
