@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneSix
 
@@ -38,6 +39,8 @@
         [newBeetle setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newBeetle withColliding:CRAFT_COLLISION_YESNO];
         [newBeetle release];
+        
+        [helpText setObjectText:@"A ship will automatically attack enemies within its range. Select this Beetle craft and attack the enemy structure."];
     }
     return self;
 }

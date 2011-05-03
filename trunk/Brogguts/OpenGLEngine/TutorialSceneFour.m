@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneFour
 
@@ -38,6 +39,8 @@
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
         [self addCollidableObject:antTrigger];
         [newAnt release];
+        
+        [helpText setObjectText:@"The screen will scroll for selected ships. Select this one and move it towards the right."];
     }
     return self;
 }

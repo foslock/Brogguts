@@ -19,6 +19,7 @@ enum SectionNames {
 };
 
 @implementation MapChoiceController
+@synthesize onlineMatch;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -222,7 +223,7 @@ enum SectionNames {
             if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            [sharedGameController transitionToSceneWithFileName:name isTutorial:NO isNew:NO];
+            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish isNew:NO];
         }
             break;
         case kSectionNewMaps: {
@@ -230,8 +231,12 @@ enum SectionNames {
             NSLog(@"Make a new scene with name %@", name);
             NSNull* null = [NSNull null];
             [[[GameController sharedGameController] gameScenes] setValue:null forKey:name];
-            [[[GameController sharedGameController] currentPlayerProfile] startSkirmish];
-            [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
+            
+            if (onlineMatch) {
+                [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
+            } else {
+                [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish isNew:YES];
+            }
         }
             break;
         case kSectionExitButton: {

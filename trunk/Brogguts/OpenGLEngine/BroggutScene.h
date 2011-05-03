@@ -18,6 +18,7 @@
 #define OVERVIEW_FADE_IN_RATE 0.025f
 #define SIDEBAR_WIDTH 192.0f
 #define OVERVIEW_MAX_ALPHA 1.0f
+#define OVERVIEW_TRANSPARENT_ALPHA_DIVISOR 1.8f
 #define OVERVIEW_MIN_FINGER_DISTANCE 10.0f
 #define SELECTION_MIN_DISTANCE 20.0f
 #define SCENE_NAME_OBJECT_TIME 5.0f
@@ -40,6 +41,7 @@
 @class CraftObject;
 @class ParticleSingleton;
 @class AIController;
+@class EndMissonObject;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -53,15 +55,20 @@
 	
 	// Name of the scene, will be displayed when loaded
 	NSString* sceneName;
+    // Type of the scene (enum defined in GameController)
+    int sceneType;
     
     // Booleans regarding the scene's status and what to display
-    BOOL isBaseCamp;
-    BOOL isTutorial;
+
     BOOL isAllowingSidebar;
     BOOL isShowingBroggutCount;
     BOOL isShowingMetalCount;
     BOOL isAllowingOverview;
     BOOL isMultiplayerMatch;
+    BOOL isMissionOver;
+    
+    // The final box that pops up when the scene is done
+    EndMissonObject* endMissionObject;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -97,6 +104,17 @@
 	// Display of brogguts
 	TextObject* broggutCounter;
 	TextObject* metalCounter;
+    
+    TextObject* valueTextObject;		// Text object that shows the medium broggut value
+	BOOL isShowingValueText;			// Boolean about if the text is showing
+    
+    // These are shown when about to build a new structure or craft
+    TextObject* buildBroggutValue;
+    TextObject* buildMetalValue;
+    int currentBuildBroggutCost;
+    int currentBuildMetalCost;
+    CGPoint currentBuildDragLocation;
+    BOOL isShowingBuildingValues;
 	
 	// The current location at which the screen is being touched
 	CGPoint currentTouchLocation;
@@ -152,6 +170,7 @@
 
 @property (readonly) NSMutableArray* fontArray;
 @property (retain) NSString* sceneName;
+@property (assign) int sceneType;
 @property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
 @property (nonatomic, assign) CGPoint homeBaseLocation;
@@ -161,9 +180,8 @@
 @property (nonatomic, assign) CGRect fullMapBounds;
 @property (nonatomic, assign) CGRect visibleScreenBounds;
 @property (nonatomic, assign) BOOL isShowingOverview;
-@property (nonatomic, assign) BOOL isBaseCamp;
-@property (nonatomic, assign) BOOL isTutorial;
 @property (nonatomic, assign) BOOL isMultiplayerMatch;
+@property (nonatomic, assign) BOOL isMissionOver;
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
@@ -171,6 +189,10 @@
 @property (readonly) int widthCells;
 @property (readonly) int heightCells;
 @property (readonly) int numberOfSmallBrogguts;
+@property (nonatomic, assign) BOOL isShowingBuildingValues;
+@property (nonatomic, assign) int currentBuildBroggutCost;
+@property (nonatomic, assign) int currentBuildMetalCost;
+@property (nonatomic, assign) CGPoint currentBuildDragLocation;
 
 #pragma mark -
 #pragma mark Selectors
@@ -186,7 +208,7 @@
 - (void)sceneDidDisappear;
 
 // Creates a broggut value text object showing where brogguts were gathered (and adds value to total brogguts)
-- (void)addBroggutValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;
+- (void)addBroggutTextValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;
 
 // Randomly generates small brogguts and adds them to the scene randomly scattered in 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;
@@ -225,6 +247,9 @@
 // Adds a text object to the scene
 - (void)addTextObject:(TextObject*)obj;
 
+// Show medium broggut value
+- (void)showBroggutValueAtLocation:(CGPoint)location;
+
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;
 
@@ -253,7 +278,7 @@
 - (BOOL)attemptToControlCraftAtLocation:(CGPoint)location;
 
 // Called when a ship wants to join a squad
-- (BOOL)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
+// - (BOOL)attemptToPutCraft:(CraftObject*)craft inSquadAtLocation:(CGPoint)location;
 
 // Controls the nearest ship to a given location, if there are any ships left
 - (void)controlNearestShipToLocation:(CGPoint)location;
@@ -264,11 +289,11 @@
 // Called when the player is trying to create/purchase a structure at the location
 - (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance;
 
+// Shows the broggut and metal cost for the object being built
+- (void)showBuildingValuesWithBrogguts:(int)brogguts withMetal:(int)metal atLocation:(CGPoint)location;
+
 // Called when the other player disconnects (only in multiplayer)
 - (void)otherPlayerDisconnected;
-
-// Called to check the win condition
-- (void)checkWinCondition;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

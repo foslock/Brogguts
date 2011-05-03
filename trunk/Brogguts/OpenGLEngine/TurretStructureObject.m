@@ -8,8 +8,14 @@
 
 #import "TurretStructureObject.h"
 #import "ParticleSingleton.h"
+#import "Image.h"
 
 @implementation TurretStructureObject
+
+- (void)dealloc {
+    [turretGunImage release];
+    [super dealloc];
+}
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureTurretID withLocation:location isTraveling:traveling];
@@ -20,6 +26,8 @@
 		attributeWeaponsDamage = kStructureTurretWeapons;
 		attributeAttackRange = kStructureTurretAttackRange;
 		attackCooldownTimer = 0;
+        turretGunImage = [[Image alloc] initWithImageNamed:@"spriteturretgun.png" filter:GL_LINEAR];
+        [turretGunImage setRotation:45.0f];
 	}
 	return self;
 }
@@ -32,6 +40,8 @@
 				attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
 														enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
 				[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+                float direction = GetAngleInDegreesFromPoints(objectLocation, attackLaserTargetPosition);
+                [turretGunImage setRotation:direction];
 				attackCooldownTimer = attributeAttackCooldown;
 				if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
 					[self setClosestEnemyObject:nil];
@@ -50,6 +60,11 @@
 	}
 	
 	[super updateObjectLogicWithDelta:aDelta];
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
+    [turretGunImage renderCenteredAtPoint:aPoint withScrollVector:vector];
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {

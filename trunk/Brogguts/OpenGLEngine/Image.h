@@ -33,6 +33,10 @@ extern NSString* kObjectStructureTurretSprite;
 extern NSString* kObjectStructureRadarSprite;
 extern NSString* kObjectStructureFixerSprite;
 
+extern NSString* kObjectExplosionSmallSprite;
+extern NSString* kObjectExplosionMediumSprite;
+extern NSString* kObjectExplosionLargeSprite;
+
 @class Texture2D;
 @class TextureSingleton;
 @class ImageRenderSingleton;
@@ -88,6 +92,7 @@ extern NSString* kObjectStructureFixerSprite;
 	CGRect subImageRectangle;			// Rectangle that holds the bounds of the current image
     CGSize textureRatio;			    // Height and width ratio of the image to the texture.  This allows us to take a pixel
 										// location within the image and convert that to texture coordinates
+    BOOL alwaysRender;                  // Render always even if "off screen"
 	
 	//////////////////// Render information
 	ImageDetails *imageDetails;		    // Structure to store both the original and transformed geometry, texture and color information
@@ -117,6 +122,7 @@ extern NSString* kObjectStructureFixerSprite;
 @property (nonatomic, assign) Color4f color;
 @property (nonatomic, assign) CGPoint rotationPoint;
 @property (nonatomic, assign) CGRect subImageRectangle;
+@property (nonatomic, assign) BOOL alwaysRender;
 
 // Designated initializer that is used to create a new Image instance.  It takes the
 // name of the image file to be used as the texture within the image and also details

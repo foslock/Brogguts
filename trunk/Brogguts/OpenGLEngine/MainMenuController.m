@@ -9,9 +9,11 @@
 #import "MainMenuController.h"
 #import "GameController.h"
 #import "TutorialScene.h"
+#import "CampaignScene.h"
 #import "OptionsMenuController.h"
 #import "ProfileMenuController.h"
 #import "SkirmishMenuController.h"
+#import "BroggupediaObject.h"
 
 @implementation MainMenuController
 
@@ -39,22 +41,38 @@
 
 - (IBAction)startTutorialLevels {
     [[GameController sharedGameController] loadTutorialLevelsForIndex:0];
-    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[0] isTutorial:YES isNew:NO];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[0] sceneType:kSceneTypeTutorial isNew:NO];
+}
+
+- (IBAction)startCampaignLevels {
+    [[GameController sharedGameController] loadCampaignLevelsForIndex:0];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign isNew:NO];
+}
+
+- (IBAction)openBroggupedia {
+    BroggupediaObject* object = [[BroggupediaObject alloc] init];
+    // UIModalPresentationStyle style = [self modalPresentationStyle];
+    // [self setModalPresentationStyle:UIModalPresentationFormSheet];
+    // [self setModalPresentationStyle:style];
+    [object release];
 }
 
 - (IBAction)loadOptionsViewController {
     OptionsMenuController* options = [[OptionsMenuController alloc] init];
     [self presentModalViewController:options animated:YES];
+    [options release];
 }
 
 - (IBAction)loadProfileViewController {
     ProfileMenuController* profile = [[ProfileMenuController alloc] init];
     [self presentModalViewController:profile animated:YES];
+    [profile release];
 }
 
 - (IBAction)loadSkirmishViewController {
     SkirmishMenuController* skirmish = [[SkirmishMenuController alloc] init];
     [self presentModalViewController:skirmish animated:YES];
+    [skirmish release];
 }
 
 #pragma mark - View lifecycle

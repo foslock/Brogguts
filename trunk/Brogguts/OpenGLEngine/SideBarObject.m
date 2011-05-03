@@ -14,6 +14,7 @@
 #import "SideBarController.h"
 #import "BitmapFont.h"
 #import "ImageRenderSingleton.h"
+#import "TiledButtonObject.h"
 
 @implementation SideBarObject
 @synthesize myController, scrollTouchTimer;
@@ -46,10 +47,13 @@
 	
 	// Update the scroll
 	if (!isTouchMovingScroll) {
-		if (currentYOffset > 0.0f) {
+		if (currentYOffset > SIDE_BAR_BOTTOM_VALUE) {
 			currentYOffset /= 1.2;
+            if (currentYOffset < SIDE_BAR_BOTTOM_VALUE) {
+                currentYOffset = SIDE_BAR_BOTTOM_VALUE;
+            }
 		}
-		float diff = kPadScreenLandscapeHeight - totalSideBarHeight;
+		float diff = (kPadScreenLandscapeHeight) - totalSideBarHeight;
 		if (currentYOffset < diff) {
 			currentYOffset = (diff) + (currentYOffset - diff) / 1.2;
 		}
@@ -58,27 +62,20 @@
 
 - (void)renderWithOffset:(Vector2f)vector {
 	// Render buttons
-	enablePrimitiveDraw();
 	float currentYPosition = 0.0f;
-	for (int i = 0; i < [buttonArray count]; i++) {
-		// For each button, update it's center
-		SideBarButton* button = [buttonArray objectAtIndex:i];
-		currentYPosition += SPACE_BETWEEN_SIDEBAR_BUTTONS + (button.buttonHeight / 2);
-		button.buttonCenter = CGPointMake(button.buttonCenter.x, kPadScreenLandscapeHeight - (currentYPosition + currentYOffset));
-		currentYPosition += button.buttonHeight / 2;
-		totalSideBarHeight = currentYPosition + SPACE_BETWEEN_SIDEBAR_BUTTONS;
-		if (button.isPressed) {
-			glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
-		} else {
-			glColor4f(1.0f, 1.0f, 1.0f, 0.4f);
-		}
-		drawFilledRect([button buttonRect], vector);
-		
-		CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
-		// Draw button text
-		[[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText] onLayer:kLayerHUDLayer];
-	}
-	disablePrimitiveDraw();
+    for (int i = 0; i < [buttonArray count]; i++) {
+        // For each button, update it's center
+        SideBarButton* button = [buttonArray objectAtIndex:i];
+        currentYPosition += SPACE_BETWEEN_SIDEBAR_BUTTONS + (button.buttonHeight / 2);
+        button.buttonCenter = CGPointMake(button.buttonCenter.x, kPadScreenLandscapeHeight - (currentYPosition + currentYOffset));
+        currentYPosition += button.buttonHeight / 2;
+        totalSideBarHeight = currentYPosition + SPACE_BETWEEN_SIDEBAR_BUTTONS;
+        [button renderButtonWithScroll:vector];
+        
+        CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
+        // Draw button text
+        [[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText] onLayer:kLayerHUDTextLayer];
+    }
 }
 
 - (void)buttonPressedWithID:(int)buttonID {

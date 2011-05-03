@@ -34,12 +34,13 @@
 
 - (void)saveSceneAndPlayer {
     [sharedGameController savePlayerProfile];
-    if ([[sharedGameController currentScene] isBaseCamp]) {
+    if ([[sharedGameController currentScene] sceneType] == kSceneTypeBaseCamp) {
         [sharedGameController saveCurrentSceneWithFilename:kBaseCampFileName allowOverwrite:YES];
     } else {
         if (![[sharedGameController currentScene] isMultiplayerMatch]) {
             NSString* dateString = [[NSDate date] description];
-            [sharedGameController saveCurrentSceneWithFilename:dateString allowOverwrite:NO];
+            NSString* nameString = [[[sharedGameController currentScene] sceneName] stringByAppendingFormat:@" (%@)", dateString];
+            [sharedGameController saveCurrentSceneWithFilename:nameString allowOverwrite:NO];
         }
     }
 }

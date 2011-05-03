@@ -64,8 +64,49 @@ enum StructureButtonIDs {
 }
 
 - (void)updateSideBar {
-	
 	[super updateSideBar];
+    BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    if (isTouchDraggingButton && 
+		!CGRectContainsPoint([myController sideBarRect], currentDragButtonLocation)) {
+		Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
+		CGPoint absoluteLocation = CGPointMake(currentDragButtonLocation.x + scroll.x, currentDragButtonLocation.y + scroll.y);
+        [scene setCurrentBuildDragLocation:absoluteLocation];
+		switch (currentDragButtonID) {
+			case kStructureButtonBlockID:
+                [scene setCurrentBuildBroggutCost:kStructureBlockCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureBlockCostMetal];
+				break;
+			case kStructureButtonRefineryID:
+                [scene setCurrentBuildBroggutCost:kStructureRefineryCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureRefineryCostMetal];
+				break;
+			case kStructureButtonCraftUpgradesID:
+                [scene setCurrentBuildBroggutCost:kStructureCraftUpgradesCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureCraftUpgradesCostMetal];
+				break;
+			case kStructureButtonStructureUpgradesID:
+                [scene setCurrentBuildBroggutCost:kStructureStructureUpgradesCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureStructureUpgradesCostMetal];
+				break;
+			case kStructureButtonTurretID:
+                [scene setCurrentBuildBroggutCost:kStructureTurretCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureTurretCostMetal];
+				break;
+			case kStructureButtonRadarID:
+                [scene setCurrentBuildBroggutCost:kStructureRadarCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureRadarCostMetal];
+				break;
+			case kStructureButtonFixerID:
+                [scene setCurrentBuildBroggutCost:kStructureFixerCostBrogguts];
+                [scene setCurrentBuildMetalCost:kStructureFixerCostMetal];
+				break;
+			default:
+				break;
+		}
+        [scene setIsShowingBuildingValues:YES];
+	} else {
+        [scene setIsShowingBuildingValues:NO];
+    }
 }
 
 - (void)renderWithOffset:(Vector2f)vector { // vector is the sidebar relative vector, not the current scene's

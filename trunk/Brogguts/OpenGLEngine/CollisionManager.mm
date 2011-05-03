@@ -22,6 +22,7 @@
 
 @implementation CollisionManager
 @synthesize currentScene;
+@synthesize isShowingValueText;
 
 - (void)dealloc {
 	if (cellHashTable) {
@@ -54,7 +55,9 @@
 	}
 	[valueTextObject release];
 	[generator release];
-    [mediumBroggutImageArray release];
+    [mediumBroggutImageArrayYoung release];
+    [mediumBroggutImageArrayOld release];
+    [mediumBroggutImageArrayAncient release];
 	[radialAffectedObjects release];
 	[bufferNearbyObjects release];
 	[objectTableValues release];
@@ -68,6 +71,7 @@
 #endif
 	self = [super init];
 	if (self) {
+        currentScene = nil;
 		fullMapBounds = bounds;
 		cellWidth = width;
 		cellHeight = height;
@@ -90,6 +94,9 @@
 		
 		valueTextObject = [[TextObject alloc]
 						   initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
+        [[self currentScene] addTextObject:valueTextObject];
+        [valueTextObject setIsTextHidden:YES];
+        [valueTextObject setRenderLayer:kLayerTopLayer];
 		isShowingValueText = NO;
 		
 		// Set up pathnode array
@@ -124,20 +131,36 @@
 			MediumBroggut* broggut = &broggutArray->array[i];
 			broggut->broggutID = i;
 			broggut->broggutValue = -1;
-			broggut->broggutAge = 0;
+			broggut->broggutAge = -1;
 			broggut->broggutLocation = [self getBroggutLocationForID:i];
 			broggut->broggutEdge = kMediumBroggutEdgeUp; // Default to drawing the broggut
 		}
 		generator = [[BroggutGenerator alloc] initWithBroggutArray:broggutArray];
-        mediumBroggutImageArray = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
+        mediumBroggutImageArrayYoung = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
+        mediumBroggutImageArrayOld = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
+        mediumBroggutImageArrayAncient = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
         for (int i = 0; i < MEDIUM_BROGGUT_IMAGE_COUNT; i++) {
             // Make an Image and put it into the array
-            NSString* texName = [NSString stringWithFormat:@"broggutTextureNumber%i",i];
-            UIImage* thisImage = [generator imageForRandomMediumBroggut];
-            [[TextureSingleton sharedTextureSingleton] addTextureWithImage:thisImage withName:texName filter:GL_LINEAR];
-            Image* newBroggutImage = [[Image alloc] initWithImageNamed:texName filter:GL_LINEAR];
-            [newBroggutImage setRenderLayer:kLayerBottomLayer];
-            [mediumBroggutImageArray addObject:newBroggutImage];
+            NSString* texNameYoung = [NSString stringWithFormat:@"broggutTextureIndex%iAge%i", i, kBroggutMediumAgeYoung];
+            UIImage* thisImageYoung = [generator imageForRandomMediumBroggutWithAge:kBroggutMediumAgeYoung];
+            [[TextureSingleton sharedTextureSingleton] addTextureWithImage:thisImageYoung withName:texNameYoung filter:GL_LINEAR];
+            Image* newBroggutImageYoung = [[Image alloc] initWithImageNamed:texNameYoung filter:GL_LINEAR];
+            [newBroggutImageYoung setRenderLayer:kLayerBottomLayer];
+            [mediumBroggutImageArrayYoung addObject:newBroggutImageYoung];
+            
+            NSString* texNameOld = [NSString stringWithFormat:@"broggutTextureIndex%iAge%i", i, kBroggutMediumAgeOld];
+            UIImage* thisImageOld = [generator imageForRandomMediumBroggutWithAge:kBroggutMediumAgeOld];
+            [[TextureSingleton sharedTextureSingleton] addTextureWithImage:thisImageOld withName:texNameOld filter:GL_LINEAR];
+            Image* newBroggutImageOld = [[Image alloc] initWithImageNamed:texNameOld filter:GL_LINEAR];
+            [newBroggutImageOld setRenderLayer:kLayerBottomLayer];
+            [mediumBroggutImageArrayOld addObject:newBroggutImageOld];
+            
+            NSString* texNameAncient = [NSString stringWithFormat:@"broggutTextureIndex%iAge%i", i, kBroggutMediumAgeAncient];
+            UIImage* thisImageAncient = [generator imageForRandomMediumBroggutWithAge:kBroggutMediumAgeAncient];
+            [[TextureSingleton sharedTextureSingleton] addTextureWithImage:thisImageAncient withName:texNameAncient filter:GL_LINEAR];
+            Image* newBroggutImageAncient = [[Image alloc] initWithImageNamed:texNameAncient filter:GL_LINEAR];
+            [newBroggutImageAncient setRenderLayer:kLayerBottomLayer];
+            [mediumBroggutImageArrayAncient addObject:newBroggutImageAncient];
         }
 #endif
 #ifdef GRID
@@ -148,6 +171,13 @@
 #endif
 	}
 	return self;
+}
+
+- (BroggutScene*)currentScene {
+    if (!currentScene) {
+        currentScene = [[GameController sharedGameController] currentScene];
+    }
+    return currentScene;
 }
 
 - (void)remakeGenerator {
@@ -340,30 +370,22 @@
 			if (broggut->broggutValue != -1) {
 				// There is a broggut here, so render it!
 				CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
-                /*
-				CGRect rectBounds = CGRectMake(currentPoint.x, currentPoint.y, COLLISION_CELL_WIDTH, COLLISION_CELL_HEIGHT);
-                
-				if (!CGRectIntersectsRect(bounds, rectBounds)) {
-					continue;
-				}
-                
-                
-				if (broggut->broggutEdge == kMediumBroggutEdgeNone) {
-					glColor4f(1.0f, 1.0f, 1.0f, 0.2f);
-					drawFilledRect(rectBounds, scroll);
-					continue;
-				}
-                
-				
-				float* mediumBroggutVerts;
-				int count = [generator verticesOfMediumBroggutAtIndex:straightIndex intoArray:&mediumBroggutVerts];
-				glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
-				drawLines(mediumBroggutVerts, count, scroll);
-                 
-                */
                 int fakeRandom = i * j;
                 int texIndex = fakeRandom % MEDIUM_BROGGUT_IMAGE_COUNT;
-                Image* image = [mediumBroggutImageArray objectAtIndex:texIndex];
+                Image* image;
+                switch (broggut->broggutAge) {
+                    case kBroggutMediumAgeYoung:
+                        image = [mediumBroggutImageArrayYoung objectAtIndex:texIndex];
+                        break;
+                    case kBroggutMediumAgeOld:
+                        image = [mediumBroggutImageArrayOld objectAtIndex:texIndex];
+                        break;
+                    case kBroggutMediumAgeAncient:
+                        image = [mediumBroggutImageArrayAncient objectAtIndex:texIndex];
+                        break;
+                    default:
+                        break;
+                }
                 CGPoint newPoint = CGPointMake(currentPoint.x - scroll.x - BROGGUT_PADDING,
                                                currentPoint.y - scroll.y - BROGGUT_PADDING);
                 [image renderAtPoint:newPoint];
@@ -409,15 +431,6 @@
 			}
 			disablePrimitiveDraw();
 		}
-	}
-}
-
-- (void)showBroggutValueAtLocation:(CGPoint)location {
-	MediumBroggut* broggut = [self broggutCellForLocation:location];
-	if (isShowingValueText) {
-		NSString* string = [NSString stringWithFormat:@"Bgs: %i",broggut->broggutValue];
-		[valueTextObject setObjectText:string];
-		[valueTextObject setIsHidden:NO];
 	}
 }
 
@@ -587,6 +600,9 @@
 }
 
 - (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial isStraight:(BOOL)straight {
+#ifdef ALL_STRAIGHT_PATHS
+    straight = YES;
+#endif
 	MediumBroggut* toBroggut = [self broggutCellForLocation:toLocation];
 	if (toBroggut->broggutValue != -1 && !partial) {
 		return nil; // If the final destination is a broggut, and no partial path, then return 'nil'.

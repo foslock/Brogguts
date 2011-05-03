@@ -12,6 +12,8 @@
 #import "Global.h"
 #import "Primitives.h"
 #import "CraftAndStructures.h"
+#import "PlayerProfile.h"
+#import "GameController.h"
 
 @implementation TouchableObject
 @synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad, touchableBounds;
@@ -58,6 +60,11 @@
 	return tempBoundingCircle;
 }
 
+// Called every step if the upgrade is unlocked and PURCHASED
+- (void)performPassiveAbility:(float)aDelta {
+    
+}
+
 - (void)setIsTraveling:(BOOL)traveling {
 	isTouchable = !traveling;
 	isTraveling = traveling;
@@ -74,6 +81,10 @@
 			}
 		}
 	}
+    // Check if upgraded and perform action if so
+    if ([[[GameController sharedGameController] currentProfile] isUpgradePurchasedWithID:objectType]) {
+        [self performPassiveAbility:aDelta];
+    }
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {

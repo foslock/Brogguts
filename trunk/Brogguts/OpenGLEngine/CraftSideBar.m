@@ -67,8 +67,53 @@ enum CraftButtonIDs {
 }
 
 - (void)updateSideBar {
-	
 	[super updateSideBar];
+    BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    if (isTouchDraggingButton && 
+		!CGRectContainsPoint([myController sideBarRect], currentDragButtonLocation)) {
+		Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
+		CGPoint absoluteLocation = CGPointMake(currentDragButtonLocation.x + scroll.x, currentDragButtonLocation.y + scroll.y);
+        [scene setCurrentBuildDragLocation:absoluteLocation];
+		switch (currentDragButtonID) {
+			case kCraftButtonAntID:
+				[scene setCurrentBuildBroggutCost:kCraftAntCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftAntCostMetal];
+				break;
+			case kCraftButtonMothID:
+				[scene setCurrentBuildBroggutCost:kCraftMothCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftMothCostMetal];
+				break;
+			case kCraftButtonBeetleID:
+                [scene setCurrentBuildBroggutCost:kCraftBeetleCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftBeetleCostMetal];
+				break;
+			case kCraftButtonMonarchID:
+                [scene setCurrentBuildBroggutCost:kCraftMonarchCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftMonarchCostMetal];
+				break;
+			case kCraftButtonCamelID:
+                [scene setCurrentBuildBroggutCost:kCraftCamelCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftCamelCostMetal];
+				break;
+			case kCraftButtonRatID:
+                [scene setCurrentBuildBroggutCost:kCraftRatCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftRatCostMetal];
+				break;
+			case kCraftButtonSpiderID:
+                [scene setCurrentBuildBroggutCost:kCraftSpiderCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftSpiderCostMetal];
+				break;
+			case kCraftButtonEagleID:
+                [scene setCurrentBuildBroggutCost:kCraftEagleCostBrogguts];
+                [scene setCurrentBuildMetalCost:kCraftEagleCostMetal];
+				break;
+			default:
+				break;
+		}
+        [scene setIsShowingBuildingValues:YES];
+	} else {
+        [scene setIsShowingBuildingValues:NO];
+    }
 }
 
 - (void)renderWithOffset:(Vector2f)vector {

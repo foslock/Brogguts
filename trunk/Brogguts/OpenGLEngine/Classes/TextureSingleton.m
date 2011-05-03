@@ -110,7 +110,7 @@ static TextureSingleton* sharedTextureSingleton = nil;
     Texture2D *cachedTexture;
 	
 	if((cachedTexture = [cachedTextures objectForKey:aName])) {
-        NSLog(@"A texture with the name %@ already exists", aName);
+        // NSLog(@"A texture with the name %@ already exists", aName);
 		return; // Already exists
 	}
 	

@@ -9,7 +9,9 @@
 #import "BroggutGenerator.h"
 #import "GameController.h"
 
-static NSString* kMediumBroggutImageSprite = @"spritetrash";
+static NSString* kMediumBroggutYoungImageSprite = @"spritetrashyoung";
+static NSString* kMediumBroggutOldImageSprite = @"spritetrashold";
+static NSString* kMediumBroggutAncientImageSprite = @"spritetrashancient";
 
 @implementation BroggutGenerator
 
@@ -75,8 +77,21 @@ static NSString* kMediumBroggutImageSprite = @"spritetrash";
 }
 
 
-- (UIImage*)imageForRandomMediumBroggut {
-    NSString* path = [[NSBundle mainBundle] pathForResource:kMediumBroggutImageSprite ofType:@"png"];
+- (UIImage*)imageForRandomMediumBroggutWithAge:(int)broggutAge {
+    NSString* path;
+    switch (broggutAge) {
+        case kBroggutMediumAgeYoung:
+            path = [[NSBundle mainBundle] pathForResource:kMediumBroggutYoungImageSprite ofType:@"png"];
+            break;
+        case kBroggutMediumAgeOld:
+            path = [[NSBundle mainBundle] pathForResource:kMediumBroggutOldImageSprite ofType:@"png"];
+            break;
+        case kBroggutMediumAgeAncient:
+            path = [[NSBundle mainBundle] pathForResource:kMediumBroggutAncientImageSprite ofType:@"png"];
+            break;
+        default:
+            break;
+    }
     UIImage* trashTexture = [[UIImage alloc] initWithContentsOfFile:path];
     
     CGSize size = CGSizeMake(COLLISION_CELL_WIDTH + (BROGGUT_PADDING * 2),
@@ -112,6 +127,12 @@ static NSString* kMediumBroggutImageSprite = @"spritetrash";
         
     // drawing commands go here
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    /* WRITE TO FILE
+    NSData* imageData = UIImagePNGRepresentation(newImage);
+    [imageData writeToFile:[[GameController sharedGameController] documentsPathWithFilename:@"broggutImage.png"] atomically:YES];
+    */
+    
     UIGraphicsEndImageContext();
     [trashTexture release];
     return newImage;

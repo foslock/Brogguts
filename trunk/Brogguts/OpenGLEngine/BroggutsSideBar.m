@@ -50,54 +50,57 @@ enum BroggutButtonIDs {
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
-	[super buttonReleasedWithID:buttonID atLocation:location];
-	GameController* controller = [GameController sharedGameController];
-	int metalCount = 0;
-	BOOL didConvert = NO;
-	switch (buttonID) {
-		case kBroggutButtonConvert50:
-			metalCount = 5;
-			if ([[controller currentPlayerProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-				[[controller currentPlayerProfile] addMetal:metalCount];
-				didConvert = YES;
-			}
-			break;
-		case kBroggutButtonConvert100:
-			metalCount = 10;
-			if ([[controller currentPlayerProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-				[[controller currentPlayerProfile] addMetal:metalCount];
-				didConvert = YES;
-			}
-			break;
-		case kBroggutButtonConvert200:
-			metalCount = 20;
-			if ([[controller currentPlayerProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-				[[controller currentPlayerProfile] addMetal:metalCount];
-				didConvert = YES;
-			}
-			break;
-		case kBroggutButtonConvert500:
-			metalCount = 50;
-			if ([[controller currentPlayerProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-				[[controller currentPlayerProfile] addMetal:metalCount];
-				didConvert = YES;
-			}
-			break;
-		default:
-			didConvert = NO;
-			break;
-	}
-	if (didConvert) {
-		// Create a text object telling we added metal
-		CGPoint point = [[[controller currentScene] metalCounter] objectLocation];
-		NSString* metalString = [NSString stringWithFormat:@"+%i metal", metalCount];
-		TextObject* metalText = [[TextObject alloc] initWithFontID:kFontBlairID Text:metalString withLocation:point withDuration:2.0f];
-		[metalText setObjectVelocity:Vector2fMake(0.0f, -0.3f)];
-		[metalText setFontColor:Color4fMake(0.4f, 0.5f, 1.0f, 1.0f)];
-		[metalText setScrollWithBounds:NO];
-		[[controller currentScene] addTextObject:metalText];
-		[metalText release];
-	}
+    SideBarButton* button = [buttonArray objectAtIndex:buttonID];
+    if ([button isPressed]) {
+        GameController* controller = [GameController sharedGameController];
+        int metalCount = 0;
+        BOOL didConvert = NO;
+        switch (buttonID) {
+            case kBroggutButtonConvert50:
+                metalCount = 5;
+                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
+                    [[controller currentProfile] addMetal:metalCount];
+                    didConvert = YES;
+                }
+                break;
+            case kBroggutButtonConvert100:
+                metalCount = 10;
+                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
+                    [[controller currentProfile] addMetal:metalCount];
+                    didConvert = YES;
+                }
+                break;
+            case kBroggutButtonConvert200:
+                metalCount = 20;
+                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
+                    [[controller currentProfile] addMetal:metalCount];
+                    didConvert = YES;
+                }
+                break;
+            case kBroggutButtonConvert500:
+                metalCount = 50;
+                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
+                    [[controller currentProfile] addMetal:metalCount];
+                    didConvert = YES;
+                }
+                break;
+            default:
+                didConvert = NO;
+                break;
+        }
+        if (didConvert) {
+            // Create a text object telling we added metal
+            CGPoint point = [[[controller currentScene] metalCounter] objectLocation];
+            NSString* metalString = [NSString stringWithFormat:@"+%i metal", metalCount];
+            TextObject* metalText = [[TextObject alloc] initWithFontID:kFontBlairID Text:metalString withLocation:point withDuration:2.0f];
+            [metalText setObjectVelocity:Vector2fMake(0.0f, -0.3f)];
+            [metalText setFontColor:Color4fMake(0.4f, 0.5f, 1.0f, 1.0f)];
+            [metalText setScrollWithBounds:NO];
+            [[controller currentScene] addTextObject:metalText];
+            [metalText release];
+        }
+    }
+    [super buttonReleasedWithID:buttonID atLocation:location];
 }
 
 @end

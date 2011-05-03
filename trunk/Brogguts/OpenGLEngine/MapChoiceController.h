@@ -14,8 +14,11 @@
     GameController* sharedGameController;
     int numberOfSavedScenes;
     int numberOfNewMaps;
+    BOOL onlineMatch;
     NSMutableArray* savedScenesNames;
     NSMutableArray* newMapNames;
 }
+
+@property (assign) BOOL onlineMatch;
 
 @end

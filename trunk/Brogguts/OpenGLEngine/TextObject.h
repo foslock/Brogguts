@@ -12,7 +12,9 @@
 @class BitmapFont;
 
 @interface TextObject : CollidableObject {
-	BOOL isTextHidden;			// If the text is hidden (won't be drawn)
+    BOOL drawsInRect;
+    CGRect textRect;        // If drawing in a rect, this is the rect to draw text in
+	BOOL isTextHidden;		// If the text is hidden (won't be drawn)
 	BOOL scrollWithBounds;	// If the text should scroll with the screen
 	int fontID;				// ID of the font to render in
 	NSString* objectText;	// Text of the object
@@ -22,6 +24,7 @@
 	Scale2f fontScale;		// Scale the font will be drawn with
 }
 
+@property (nonatomic, assign) CGRect textRect;
 @property (nonatomic, assign) BOOL isTextHidden;
 @property (nonatomic, assign) BOOL scrollWithBounds;
 @property (nonatomic, assign) int fontID;
@@ -31,6 +34,7 @@
 
 // Set duration to -1 for indefinite duration
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration;
+- (id)initWithFontID:(int)fontid Text:(NSString*)string withRect:(CGRect)rect withDuration:(float)duration;
 
 - (void)renderWithFont:(BitmapFont*)font;
 - (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll;

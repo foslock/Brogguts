@@ -46,11 +46,13 @@ typedef struct Point_Array {
 	BOOL isSpecialAbilityActive;
 	int specialAbilityCooldownTimer;
 	
-	// Monarch that leads the squad (nil if not in a squad)
-	MonarchCraftObject* squadMonarch;
+	// If there is a monarch nearby that is making them resistent
+    BOOL isUnderAura;
 	
 	// Turrets and blinking lights
 	Image* blinkingLightImage;
+    Image* turretImage;
+    float turretRotation;
 	PointArray* turretPointsArray;
 	PointArray* lightPointsArray;
 	int lightBlinkTimer;
@@ -73,6 +75,9 @@ typedef struct Point_Array {
     
     // AI Controller stuff
     CraftAIInfo craftAIInfo;
+    
+    // Upgrade details
+    BOOL isUpgradeEnabled;
 }
 
 @property (readonly) BOOL isFollowingPath;
@@ -80,11 +85,11 @@ typedef struct Point_Array {
 @property (readonly) int attributePlayerCargoCapacity;
 @property (readonly) int attributePlayerCurrentCargo;
 @property (readonly) int attributeHullCurrent;
+@property (readonly) BOOL isUnderAura;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 - (void)createLightLocationsWithCount:(int)lightCount;
 - (void)createTurretLocationsWithCount:(int)turretCount;
-
 
 - (void)addCargo:(int)cargo;
 - (CGPoint)miningLocation;
@@ -98,7 +103,10 @@ typedef struct Point_Array {
 - (void)repairCraft:(int)amount;
 - (BOOL)isHullFull;
 
+// Use this to change the hull value
 - (void)setCurrentHull:(int)newHull;
+
+- (void)setIsUnderAura:(BOOL)yesno;
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target;
 

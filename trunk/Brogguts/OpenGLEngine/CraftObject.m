@@ -15,9 +15,11 @@
 #import "CollisionManager.h"
 #import "ParticleSingleton.h"
 #import "CraftAndStructures.h"
+#import "ExplosionObject.h"
+#import "PlayerProfile.h"
 
 @implementation CraftObject
-@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent;
+@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, isUnderAura;
 
 - (void)dealloc {
     if (turretPointsArray) {
@@ -33,7 +35,7 @@
         }
         free(lightPointsArray);
     }
-    
+    [turretImage release];
 	[pathPointArray release];
 	[blinkingLightImage release];
 	[super dealloc];
@@ -194,6 +196,10 @@
         
         lightPointsArray = NULL;
         turretPointsArray = NULL;
+        turretImage = [[Image alloc] initWithImageNamed:@"spritesmallturret.png" filter:GL_LINEAR];
+        [turretImage setRenderLayer:kLayerTopLayer];
+        [turretImage setScale:Scale2fMake(0.5f, 0.5f)];
+        turretRotation = 0.0f;
         
 		pathPointArray = nil;
 		pathPointNumber = 0;
@@ -205,7 +211,7 @@
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
 		attributePlayerCargoCapacity = 200;
-		squadMonarch = nil;
+        isUnderAura = NO;
 		effectRadius = attributeAttackRange;
 		attackCooldownTimer = 0;
 		isSpecialAbilityCooling = NO;
@@ -311,10 +317,13 @@
     }
 }
 
-- (void)accelerateTowardsLocation:(CGPoint)location {
+- (void)accelerateTowardsLocation:(CGPoint)location withMaxVelocity:(float)otherMaxVelocity {
+    if (otherMaxVelocity < 0.0f) {
+        otherMaxVelocity = maxVelocity;
+    }
     if ([self isOnScreen] && objectType != kObjectCraftSpiderDroneID)
         [[ParticleSingleton sharedParticleSingleton] createParticles:1 withType:kParticleTypeShipThruster atLocation:objectLocation];
-    [super accelerateTowardsLocation:location];
+    [super accelerateTowardsLocation:location withMaxVelocity:otherMaxVelocity];
 }
 
 - (void)targetWasDestroyed:(TouchableObject *)target {
@@ -406,6 +415,7 @@
     CGPoint enemyPoint = closestEnemyObject.objectLocation;
     attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
                                             enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
+    turretRotation = GetAngleInDegreesFromPoints(objectLocation, attackLaserTargetPosition);
     [[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
     attackCooldownTimer = attributeAttackCooldown;
     if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
@@ -429,6 +439,10 @@
     if (newHull >= 0) {
         attributeHullCurrent = CLAMP(newHull, 0, attributeHullCapacity);
     }
+}
+
+- (void)setIsUnderAura:(BOOL)yesno {
+    isUnderAura = yesno;
 }
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target {
@@ -496,7 +510,7 @@
                     }
                 }
             }
-            [self accelerateTowardsLocation:moveTowardsPoint];
+            [self accelerateTowardsLocation:moveTowardsPoint withMaxVelocity:-1.0f];
         } else {
             [self decelerate];
         }
@@ -519,7 +533,7 @@
     [self updateCraftLightLocations];
     
     // Update turret position
-    // [self updateCraftTurretLocations];
+    [self updateCraftTurretLocations];
     
     // Attack if able!
     if (attackCooldownTimer > 0) {
@@ -527,7 +541,7 @@
     } else {
         if (attributeWeaponsDamage != 0 && attributeAttackCooldown != 0) {
             if (closestEnemyObject && (movingAIState != kMovingAIStateMining) ) {
-                if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= attributeAttackRange) {
+                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange)) {
                     if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
                         [self attackTarget];
                     }
@@ -610,6 +624,15 @@
         }
     }
     
+    // Render turret points
+    if (turretPointsArray) {
+        disablePrimitiveDraw();
+        for (int i = 0; i < turretPointsArray->pointCount; i++) {
+            PointLocation curPoint = turretPointsArray->locations[i];
+            [turretImage setRotation:turretRotation];
+            [turretImage renderCenteredAtPoint:CGPointMake(curPoint.x, curPoint.y) withScrollVector:scroll];
+        }
+    }
     
     if (isCurrentlyHoveredOver || isBeingControlled && !isBlinkingSelectionCircle) {
         enablePrimitiveDraw();
@@ -635,6 +658,14 @@
         }
     }
     
+    // Draw the "under aura" effect
+    if (isUnderAura) {
+        enablePrimitiveDraw();
+        Circle newCircle = [self touchableBounds];
+        glColor4f(0.0f, 0.5f, 1.0f, 1.0f);
+        drawDashedCircle(newCircle, CIRCLE_SEGMENTS_COUNT, scroll);
+        disablePrimitiveDraw();
+    }
 }
 
 - (void)renderUnderObjectWithScroll:(Vector2f)scroll {
@@ -663,16 +694,16 @@
 
 - (void)cashInBrogguts {
     if (attributePlayerCurrentCargo > 0) {
-        [self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation withAlliance:objectAlliance];
+        [self.currentScene addBroggutTextValue:attributePlayerCurrentCargo atLocation:objectLocation withAlliance:objectAlliance];
+        [[[GameController sharedGameController] currentProfile] addBrogguts:attributePlayerCurrentCargo];
         attributePlayerCurrentCargo = 0;
     }
 }
 
 - (void)objectWasDestroyed {
-    if (isBeingControlled && objectAlliance == kAllianceFriendly) {
-        // The controlling ship was just destroyed
-        [self.currentScene controlNearestShipToLocation:objectLocation];
-    }
+    ExplosionObject* explosion = [[ExplosionObject alloc] initWithLocation:objectLocation withSize:kExplosionSizeSmall];
+    [self.currentScene addCollidableObject:explosion];
+    [explosion release];
     [super objectWasDestroyed];
 }
 
@@ -708,11 +739,13 @@
                 if (enemy) {
                     [self setPriorityEnemyTarget:enemy];
                 }
+                /*
                 if (![self isKindOfClass:[MonarchCraftObject class]]) {
                     if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
                         [self setMovingAIState:kMovingAIStateMoving];
                     }
                 }
+                 */
             }
             /*
              if (isBeingControlled) {

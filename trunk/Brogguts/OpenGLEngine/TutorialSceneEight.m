@@ -11,6 +11,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneEight
 
@@ -50,6 +51,8 @@
         [self setMiddleOfVisibleScreenToCamera];
         [self addTouchableObject:newBeetle withColliding:CRAFT_COLLISION_YESNO];
         [newBeetle release];
+        
+        [helpText setObjectText:@"If there are enough enemy craft nearby, they will gang up on you and chase you instead. Attack these two enemy Beetles."];
     }
     return self;
 }

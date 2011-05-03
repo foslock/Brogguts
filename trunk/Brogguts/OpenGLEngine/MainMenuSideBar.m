@@ -49,29 +49,32 @@
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
-	[super buttonReleasedWithID:buttonID atLocation:location];
-	if (buttonID == 0) {
-		BroggutsSideBar* newMenu = [[BroggutsSideBar alloc] init];
-		[newMenu setMyController:myController];
-		[myController pushSideBarObject:newMenu];
-		[newMenu release];
-	}
-	if (buttonID == 1) {
-		CraftSideBar* newMenu = [[CraftSideBar alloc] init];
-		[newMenu setMyController:myController];
-		[myController pushSideBarObject:newMenu];
-		[newMenu release];
-	}
-	if (buttonID == 2) {
-		StructureSideBar* newMenu = [[StructureSideBar alloc] init];
-		[newMenu setMyController:myController];
-		[myController pushSideBarObject:newMenu];
-		[newMenu release];
-	}
-    if (buttonID == 4) {
-        [myController moveSideBarOut];
-		[[GameController sharedGameController] returnToMainMenu];
-	}
+    SideBarButton* button = [buttonArray objectAtIndex:buttonID];
+    if ([button isPressed]) {
+        if (buttonID == 0) {
+            BroggutsSideBar* newMenu = [[BroggutsSideBar alloc] init];
+            [newMenu setMyController:myController];
+            [myController pushSideBarObject:newMenu];
+            [newMenu release];
+        }
+        if (buttonID == 1) {
+            CraftSideBar* newMenu = [[CraftSideBar alloc] init];
+            [newMenu setMyController:myController];
+            [myController pushSideBarObject:newMenu];
+            [newMenu release];
+        }
+        if (buttonID == 2) {
+            StructureSideBar* newMenu = [[StructureSideBar alloc] init];
+            [newMenu setMyController:myController];
+            [myController pushSideBarObject:newMenu];
+            [newMenu release];
+        }
+        if (buttonID == 4) {
+            [myController moveSideBarOut];
+            [[GameController sharedGameController] returnToMainMenu];
+        }
+    }
+    [super buttonReleasedWithID:buttonID atLocation:location];
 }
 
 @end

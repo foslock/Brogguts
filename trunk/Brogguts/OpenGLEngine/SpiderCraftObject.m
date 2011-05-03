@@ -58,6 +58,13 @@
 	}
 }
 
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
+    [super drawHoverSelectionWithScroll:scroll];
+    for (SpiderDroneObject* drone in droneArray) {
+		[drone drawHoverSelectionWithScroll:scroll];
+	}
+}
+
 - (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
 	if ([super performSpecialAbilityAtLocation:location]) {
 		TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:location];

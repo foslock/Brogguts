@@ -13,6 +13,7 @@
 #import "CraftAndStructures.h"
 #import "FingerObject.h"
 #import "TextObject.h"
+#import "TiledButtonObject.h"
 
 @implementation TutorialSceneTwo
 
@@ -38,6 +39,8 @@
         [fingerObj attachEndObject:antTrigger];
         [self addCollidableObject:fingerObj];
         [fingerObj release];
+        
+        [helpText setObjectText:@"If you would ever like to move an individual craft: tap, drag, release and it will travel to that location."];
     }
     return self;
 }

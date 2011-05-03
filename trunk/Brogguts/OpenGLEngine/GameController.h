@@ -22,7 +22,7 @@
 
 enum kSceneStorageGlobals {
     kSceneStorageGlobalName,
-    kSceneStorageGlobalBaseCamp,
+    kSceneStorageGlobalSceneType,
     kSceneStorageGlobalWidthCells,
     kSceneStorageGlobalHeightCells,
     kSceneStorageGlobalSmallBrogguts,
@@ -57,16 +57,17 @@ extern NSString* kNewMapScenesFileName;
 #define CRAFT_COLLISION_YESNO YES
 #define STRUCTURE_COLLISION_YESNO YES
 
-// Class responsible for passing touch and game events to the correct game
-// scene.  A game scene is an object which is responsible for a specific
-// scene within the game i.e. Main menu, main game, high scores etc.
-// The state manager hold the currently active scene and the game controller
-// will then pass the necessary messages to that scene.
-//
+enum SceneTypes {
+    kSceneTypeBaseCamp,
+    kSceneTypeTutorial,
+    kSceneTypeCampaign,
+    kSceneTypeSkirmish,
+};
+
 @interface GameController : NSObject {
 	
 	// Player profile
-	PlayerProfile* currentPlayerProfile;
+	PlayerProfile* currentProfile;
 	
 	// Views and orientation
 	EAGLView *eaglView;								// Reference to the EAGLView
@@ -80,7 +81,7 @@ extern NSString* kNewMapScenesFileName;
 	BOOL isFadingSceneIn;
 	BOOL isFadingSceneOut;
 	float fadingRectAlpha;
-    BOOL isTutorial;
+    int currentSceneType;
     BOOL isReturningToMenu;
 	
     // Game controller iVars	
@@ -88,7 +89,7 @@ extern NSString* kNewMapScenesFileName;
 }
 
 @property (retain) NSString* transitionName;
-@property (retain) PlayerProfile* currentPlayerProfile;
+@property (retain) PlayerProfile* currentProfile;
 @property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSDictionary *gameScenes;
@@ -118,7 +119,8 @@ extern NSString* kNewMapScenesFileName;
 
 // Transitions to the scene with the given filename
 - (void)returnToMainMenu;
-- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial isNew:(BOOL)isNewScene;
+- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType isNew:(BOOL)isNewScene;
+- (void)loadCampaignLevelsForIndex:(int)index;
 - (void)loadTutorialLevelsForIndex:(int)index;
 
 // Updates the logic within the current scene

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "TouchableObject.h"
 
+@class Image;
+
 @interface StructureObject : TouchableObject {
 	// Path variables
 	NSMutableArray* pathPointArray;		// Array containing the points that this craft should follow
@@ -22,7 +24,14 @@
 	int attributeMetalCost;
 	int attributeHullCapacity;
 	int attributeHullCurrent;
-	int attributeMovingTime;	
+	int attributeMovingTime;
+    
+    // Upgrade details
+    BOOL isUpgradeEnabled;
+    
+    // Moving drone image
+    Image* buildingDroneImage;
+    float movingDirection;
 }
 
 @property (readonly) int attributeHullCurrent;

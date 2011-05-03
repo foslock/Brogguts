@@ -78,6 +78,14 @@ static inline CGPoint GetMidpointFromPoints(CGPoint startLocation, CGPoint endLo
 	return CGPointMake(startLocation.x + (dx / 2), startLocation.y + (dy / 2));
 }
 
+static inline float GetAngleInDegreesFromPoints(CGPoint startLocation, CGPoint endLocation) {
+	float dx = endLocation.x - startLocation.x;
+	float dy = endLocation.y - startLocation.y;
+    float direction = RADIANS_TO_DEGREES(atan2f(dy, dx));
+    if (direction < 0.0f) direction += 360.0f;
+	return direction;
+}
+
 static inline float GetDistanceBetweenPoints(CGPoint startLocation, CGPoint endLocation) {
 	float dx = fabsf(endLocation.x - startLocation.x);
 	float dy = fabsf(endLocation.y - startLocation.y);

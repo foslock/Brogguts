@@ -27,6 +27,6 @@
 
 - (int)verticesOfMediumBroggutAtIndex:(int)index intoArray:(float**)array;
 
-- (UIImage*)imageForRandomMediumBroggut;
+- (UIImage*)imageForRandomMediumBroggutWithAge:(int)broggutAge;
 
 @end

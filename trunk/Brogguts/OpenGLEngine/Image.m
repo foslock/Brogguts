@@ -42,6 +42,10 @@ NSString* kObjectStructureTurretSprite = @"structureturret.png";
 NSString* kObjectStructureRadarSprite = @"structureradar.png";
 NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 
+NSString* kObjectExplosionSmallSprite = @"explosionsmall.png";
+NSString* kObjectExplosionMediumSprite = @"explosionmedium.png"; // Does not exist yet
+NSString* kObjectExplosionLargeSprite = @"explosionlarge.png";
+
 #pragma mark -
 #pragma mark Private interface
 
@@ -84,6 +88,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 @synthesize minMagFilter;
 @synthesize imageDetails;
 @synthesize subImageRectangle;
+@synthesize alwaysRender;
 
 #pragma mark -
 #pragma mark Deallocation
@@ -109,6 +114,9 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 	if (self != nil) {
         // Initialize the common properties for this image
         [self initializeImage:aName filter:aFilter];
+        
+        // Only render on screen
+        alwaysRender = NO;
         
         // Set the width and height of the image to be the full width and hight of the image
         // within the texture
@@ -221,12 +229,17 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-	float maxDelta = MAX(imageSize.width, imageSize.height);
-	CGRect viewbounds = CGRectInset([[sharedGameController currentScene] visibleScreenBounds], -maxDelta, -maxDelta);
-	if (CGRectContainsPoint(viewbounds, aPoint)) { // ONLY RENDER OBJECTS ON SCREEN
-		CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
+    if (alwaysRender) {
+        CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
 		[self renderCenteredAtPoint:newPoint scale:scale rotation:rotation];
-	}
+    } else {
+        float maxDelta = MAX(imageSize.width, imageSize.height);
+        CGRect viewbounds = CGRectInset([[sharedGameController currentScene] visibleScreenBounds], -maxDelta, -maxDelta);
+        if (CGRectContainsPoint(viewbounds, aPoint)) { // ONLY RENDER OBJECTS ON SCREEN
+            CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
+            [self renderCenteredAtPoint:newPoint scale:scale rotation:rotation];
+        }
+    }
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint scale:(Scale2f)aScale rotation:(float)aRotation {
@@ -304,7 +317,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 			rotationPoint = CGPointMake(imageSize.width / 2 * scale.x, imageSize.height / 2 * scale.y);
 			rotateMatrix(matrix, rotationPoint, rotation);
 		}
-            
+        
         
         // No point in calculcating scale if no scale has been set.
 		if(scale.x != 1.0f || scale.y != 1.0f) 
@@ -354,7 +367,7 @@ NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 	textureRatio.height = texture.textureRatio.height;
     
     // Set the default color
-    color = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
+    color = Color4fOnes;
 	
 	// Set the default rotation point which is the origin of the image i.e. {0, 0}
     rotationPoint = CGPointZero;

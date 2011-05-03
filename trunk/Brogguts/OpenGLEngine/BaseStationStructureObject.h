@@ -9,8 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "StructureObject.h"
 
-@interface BaseStationStructureObject : StructureObject {
+#define BASE_STATION_LIGHT_DELAY 0.02f
+#define BASE_STATION_LIGHT_BLINK 0.1f
+#define BASE_STATION_LIGHT_MOVE_DEGREES 5.0f
+#define BASE_STATION_LIGHT_OUTER_DISTANCE 380.0f
+#define BASE_STATION_LIGHT_INNER_DISTANCE 100.0f
 
+@interface BaseStationStructureObject : StructureObject {
+    Image* blinkingLightImage;
+    float rotationCounter;
+    float blinkCounter;
+    float lightPositionCounter;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

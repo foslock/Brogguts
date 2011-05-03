@@ -9,14 +9,17 @@
 #import <Foundation/Foundation.h>
 
 @class SideBarController;
+@class SideBarButton;
 
-#define SPACE_BETWEEN_SIDEBAR_BUTTONS 32.0f
+#define SPACE_BETWEEN_SIDEBAR_BUTTONS 16.0f
 #define SCROLL_TIME_INTERVAL 8				// Frames between when a touch should be considered a tap/scroll
 #define SCROLLING_DISTANCE_THRESHOLD 8.0f	// The minimum distance needed to trigger the ONLY scroll touch
+#define SIDE_BAR_BOTTOM_VALUE 78.0f
 
 @interface SideBarObject : NSObject {
 	SideBarController* myController;
 	NSMutableArray* buttonArray;
+    int currentPressedButtonID;
 	float currentYOffset;
 	float totalSideBarHeight;
 	

@@ -29,6 +29,7 @@
 #define COLLISIONS
 #define GRID
 #define BROGGUTS
+#define ALL_STRAIGHT_PATHS
 
 
 //
@@ -75,11 +76,14 @@ enum ObjectTypeIDs { // When loading a scene, used for parsing
 	kObjectTypeStructure,	
 };
 
+#define TOTAL_OBJECT_TYPES_COUNT 26
+
 enum ObjectIDs { // How objects are indentified
 	kObjectTextID,
 	kObjectBroggutSmallID,
-	kObjectBroggutMediumID,
-	kObjectBroggutLargeID,
+	kObjectBroggutMediumYoungID,
+	kObjectBroggutMediumOldID,
+    kObjectBroggutMediumAncientID,
     kObjectTriggerID,
     kObjectNotificationID,
 	kObjectCraftAntID,
@@ -97,9 +101,13 @@ enum ObjectIDs { // How objects are indentified
 	kObjectStructureCraftUpgradesID,
 	kObjectStructureStructureUpgradesID,
 	kObjectStructureTurretID,
-	kObjectStructureRadarID,
 	kObjectStructureFixerID,
+    kObjectStructureRadarID,
     kObjectFingerObjectID,
+    kObjectExplosionObjectID,
+    kObjectBuildingObjectID,
+    kObjectTiledButtonID,
+    kObjectEndMissionObjectID,
 };
 
 // 
@@ -132,7 +140,7 @@ enum TheAntValues {
 	kCraftAntSpecialCoolDown = 0, // frames for special to recharge
 	kCraftAntHull = 30,
 	// Special Values
-	kCraftAntCargoSpace = 100, // brogguts
+	kCraftAntCargoSpace = 50, // brogguts
 	kCraftAntCargoSpaceBonus = 50,
 	kCraftAntEnginesBonus = 1,
 	kCraftAntMiningCooldown = 6, // (frames / broggut)
@@ -192,9 +200,8 @@ enum TheMonarchValues {
 	kCraftMonarchSpecialCoolDown = 1, // frames for special to recharge
 	kCraftMonarchHull = 30,
 	// Special Values
-	kCraftMonarchSquadRangeLimit = 256,
-	kCraftMonarchSquadEngines = 3,
-	kCraftMonarchSquadNumberLimit = 4, // Number of additional units allowed in squad
+	kCraftMonarchAuraRangeLimit = 256,
+	kCraftMonarchAuraNumberLimit = 10, // Number of additional units allowed in squad
 };
 
 // Advanced Craft
@@ -247,8 +254,8 @@ enum TheSpiderValues {
 	kCraftSpiderUpgradeUnlockYears = 5, // increases movement speed
 	kCraftSpiderUpgradeCost = 100, // brogguts
 	kCraftSpiderUpgradeTime = 50, // seconds
-	kCraftSpiderCostBrogguts = 0, // 600
-	kCraftSpiderCostMetal = 0, // 60
+	kCraftSpiderCostBrogguts = 600,
+	kCraftSpiderCostMetal = 60,
 	kCraftSpiderEngines = 1,
 	kCraftSpiderWeapons = 0,
 	kCraftSpiderAttackRange = 512, // pixels
@@ -383,8 +390,8 @@ enum TheTurretValues {
 	kStructureTurretUpgradeUnlockYears = 1,
 	kStructureTurretUpgradeCost = 100, // brogguts
 	kStructureTurretUpgradeTime = 50, // seconds
-	kStructureTurretCostBrogguts = 300,
-	kStructureTurretCostMetal = 30,
+	kStructureTurretCostBrogguts = 100, // 300
+	kStructureTurretCostMetal = 0, // 30
 	kStructureTurretMovingTime = 6, // seconds to move to active spot
 	kStructureTurretHull = 30,
 	// Special Values
@@ -471,6 +478,12 @@ enum BroggutDataValues {
 	kBroggutOldMediumMaxValue = 6000,
 	kBroggutAncientMediumMinValue = 10000,
 	kBroggutAncientMediumMaxValue = 20000,
+};
+
+enum BroggutAgeConstants {
+    kBroggutMediumAgeYoung,
+    kBroggutMediumAgeOld,
+    kBroggutMediumAgeAncient,
 };
 
 

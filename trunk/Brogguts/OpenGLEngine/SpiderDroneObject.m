@@ -28,6 +28,14 @@
 	return self;
 }
 
+- (Circle)boundingCircle {
+    Circle newCircle;
+    newCircle.x = objectLocation.x;
+    newCircle.y = objectLocation.y;
+    newCircle.radius = 16.0f;
+    return newCircle;
+}
+
 - (void)attackTarget {
 	if (droneAIState == kDroneAIStateApproaching) {
 		[super attackTarget];
@@ -57,7 +65,7 @@
 		CGPoint attackLocation = CGPointMake(closestEnemyObject.objectLocation.x, closestEnemyObject.objectLocation.y);
 		// Approaching the spider craft's target
 		if (closestEnemyObject) {
-			[self accelerateTowardsLocation:attackLocation];
+			[self accelerateTowardsLocation:attackLocation withMaxVelocity:-1.0f];
 		} else {
 			droneAIState = kDroneAIStateReturning;
 		}
@@ -69,7 +77,7 @@
 		// Returning to the spider either to refuel weapons or target was destroyed
 		CGPoint bayLocation = CGPointMake(mySpiderCraft.objectLocation.x + droneBayLocation.x,
 										  mySpiderCraft.objectLocation.y + droneBayLocation.y);
-		[self accelerateTowardsLocation:bayLocation];
+		[self accelerateTowardsLocation:bayLocation withMaxVelocity:-1.0f];
 		if (AreCGPointsEqual(bayLocation, objectLocation, attributeEngines)) {
 			if (closestEnemyObject)
 				droneAIState = kDroneAIStateApproaching;

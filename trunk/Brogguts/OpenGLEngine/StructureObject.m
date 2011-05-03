@@ -11,7 +11,9 @@
 #import "BroggutScene.h"
 #import "CollisionManager.h"
 #import "CraftObject.h"
-#import "AntCraftObject.h"
+#import "CraftAndStructures.h"
+#import "ExplosionObject.h"
+#import "ImageRenderSingleton.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent;
@@ -122,6 +124,8 @@
 		isFollowingPath = NO;
 		hasCurrentPathFinished = YES;
 		creationEndLocation = location;
+        buildingDroneImage = [[Image alloc] initWithImageNamed:@"craftbuilddrone.png" filter:GL_LINEAR];
+        [buildingDroneImage setRenderLayer:kLayerTopLayer];
 		// Initialize the structure
 		[self initStructureWithID:typeID];
 		if (traveling) {
@@ -131,6 +135,11 @@
 		}
 	}
 	return self;
+}
+
+- (void)dealloc {
+    [buildingDroneImage release];
+    [super dealloc];
 }
 
 - (void)setCurrentHull:(int)newHull {
@@ -199,8 +208,10 @@
 		// Don't move, has reached target location
 		objectVelocity = Vector2fZero;
 	}
-	
+	CGPoint oldPoint = objectLocation;
 	[super updateObjectLogicWithDelta:aDelta];
+    CGPoint newPoint = objectLocation;
+    movingDirection = GetAngleInDegreesFromPoints(oldPoint, newPoint);
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
@@ -209,6 +220,37 @@
         enablePrimitiveDraw();
         [self drawHoverSelectionWithScroll:scroll];
         disablePrimitiveDraw();
+    }
+}
+
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
+    [super renderUnderObjectWithScroll:scroll];
+    if (isTraveling) {
+        CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
+                                 objectLocation.y - (objectImage.imageSize.height / 2),
+                                 objectImage.imageSize.width,
+                                 objectImage.imageSize.height);
+        CGPoint point1 = CGPointMake(rect.origin.x, rect.origin.y);
+        CGPoint point2 = CGPointMake(rect.origin.x + objectImage.imageSize.width, rect.origin.y);
+        CGPoint point3 = CGPointMake(rect.origin.x, rect.origin.y + objectImage.imageSize.height);
+        CGPoint point4 = CGPointMake(rect.origin.x + objectImage.imageSize.width, rect.origin.y + objectImage.imageSize.height);
+        
+        [buildingDroneImage setRotation:movingDirection];
+        [buildingDroneImage renderCenteredAtPoint:point1 withScrollVector:scroll];
+        [buildingDroneImage renderCenteredAtPoint:point2 withScrollVector:scroll];
+        [buildingDroneImage renderCenteredAtPoint:point3 withScrollVector:scroll];
+        [buildingDroneImage renderCenteredAtPoint:point4 withScrollVector:scroll];
+        enablePrimitiveDraw();
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        drawLine(point1, point2, scroll);
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        drawLine(point2, point4, scroll);
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        drawLine(point4, point3, scroll);
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        drawLine(point3, point1, scroll);
+        disablePrimitiveDraw();
+        
     }
 }
 
@@ -265,6 +307,13 @@
 		hasCurrentPathFinished = NO;
 		[self setMovingAIState:kMovingAIStateMoving];
 	}
+}
+
+- (void)objectWasDestroyed {
+    ExplosionObject* explosion = [[ExplosionObject alloc] initWithLocation:objectLocation withSize:kExplosionSizeLarge];
+    [self.currentScene addCollidableObject:explosion];
+    [explosion release];
+    [super objectWasDestroyed];
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {

@@ -13,6 +13,7 @@
 #import "CraftAndStructures.h"
 #import "Primitives.h"
 #import "TextObject.h"
+#import "TiledButtonObject.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     @"Space is polluted",

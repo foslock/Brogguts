@@ -64,6 +64,9 @@
 // Blinks the selection circle around the object
 - (void)blinkSelectionCircle;
 
+// Called every step if the upgrade is unlocked and PURCHASED
+- (void)performPassiveAbility:(float)aDelta;
+
 // Returns YES if the object is destroyed because of the attack
 - (BOOL)attackedByEnemy:(TouchableObject*)enemy withDamage:(int)damage;
 

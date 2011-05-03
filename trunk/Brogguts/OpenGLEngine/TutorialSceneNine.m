@@ -13,6 +13,7 @@
 #import "TriggerObject.h"
 #import "FingerObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneNine
 
@@ -42,13 +43,15 @@
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
         [newAnt release];
+        
+        [helpText setObjectText:@""];
     }
     return self;
 }
 
 - (BOOL)checkObjective {
     // Really check for mining brogguts
-    if ([[sharedGameController currentPlayerProfile] broggutCount] > 0) {
+    if ([[sharedGameController currentProfile] broggutCount] > 0) {
         return YES;
     } else {
         return NO;
