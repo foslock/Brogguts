@@ -30,10 +30,12 @@
 	return self;
 }
 
-- (void)accelerateTowardsLocation:(CGPoint)location {
-	
+- (void)accelerateTowardsLocation:(CGPoint)location withMaxVelocity:(float)otherMaxVelocity {
+	if (otherMaxVelocity < 0.0f) {
+        otherMaxVelocity = maxVelocity;
+    }
 	// Are the points equal?
-	if (AreCGPointsEqual(objectLocation, location, maxVelocity)) {
+	if (AreCGPointsEqual(objectLocation, location, otherMaxVelocity)) {
 		return;
 	}
 	
@@ -42,8 +44,8 @@
 		// If point is closer than the objects radius, move it in the direct velocity
 		float dx = location.x - objectLocation.x;
 		float dy = location.y - objectLocation.y;
-		objectVelocity.x = CLAMP(dx, -maxVelocity, maxVelocity);
-		objectVelocity.y = CLAMP(dy, -maxVelocity, maxVelocity);
+		objectVelocity.x = CLAMP(dx, -otherMaxVelocity, otherMaxVelocity);
+		objectVelocity.y = CLAMP(dy, -otherMaxVelocity, otherMaxVelocity);
 		float direction = RADIANS_TO_DEGREES(atan2f(location.y - objectLocation.y, location.x - objectLocation.x));
 		if (direction < 0.0f) direction += 360.0f;
 		self.objectRotation = (int)direction; // FIX ROTATION SPEED HERE
@@ -62,8 +64,8 @@
 		if (yRatio > 0.0f && yRatio != 0.0f) yRatio += 0.8f; // This ensure that it is above 1.0f
 		if (xRatio < 0.0f && xRatio != 0.0f) xRatio -= 0.8f; // This ensure that it is below -1.0f
 		if (yRatio < 0.0f && yRatio != 0.0f) yRatio -= 0.8f; // This ensure that it is below -1.0f
-		objectVelocity.x = CLAMP((fabs(objectVelocity.x) + 0.1f) * xRatio, -maxVelocity, maxVelocity);
-		objectVelocity.y = CLAMP((fabs(objectVelocity.y) + 0.1f) * yRatio, -maxVelocity, maxVelocity);
+		objectVelocity.x = CLAMP((fabs(objectVelocity.x) + 0.1f) * xRatio, -otherMaxVelocity, otherMaxVelocity);
+		objectVelocity.y = CLAMP((fabs(objectVelocity.y) + 0.1f) * yRatio, -otherMaxVelocity, otherMaxVelocity);
 		return;
 	}
 	if (fabs(deltaDirection) >= 90.0f) {
@@ -90,8 +92,8 @@
 		}
 	}
 	float radDir = DEGREES_TO_RADIANS(objectRotation);
-	objectVelocity.x = CLAMP((fabs(objectVelocity.x) + 0.1f) * cosf(radDir), -maxVelocity, maxVelocity);
-	objectVelocity.y = CLAMP((fabs(objectVelocity.y) + 0.1f) * sinf(radDir), -maxVelocity, maxVelocity);
+	objectVelocity.x = CLAMP((fabs(objectVelocity.x) + 0.1f) * cosf(radDir), -otherMaxVelocity, otherMaxVelocity);
+	objectVelocity.y = CLAMP((fabs(objectVelocity.y) + 0.1f) * sinf(radDir), -otherMaxVelocity, otherMaxVelocity);
 }
 
 - (void)decelerate {

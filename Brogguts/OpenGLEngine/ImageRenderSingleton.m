@@ -224,8 +224,9 @@ static ImageRenderSingleton* sharedImageRenderSingleton = nil;
     // Check to make sure that we have not exceeded the maximum size of the render queue.  If the queue size
 	// is exceeded then render the images that are currently in the render managers queue.  This resets the
 	// queue and allows the image to be added to the render managers then empty queue.
-    if(ivaIndex[newLayer] + 1 > kMax_Images) {
-        NSLog(@"ERROR - RenderManager: Render queue size exceeded.  Consider increasing the default size. %d", ivaIndex[newLayer] + 1);
+    if(ivaIndex[newLayer] >= kMax_Images) {
+        // NSLog(@"ERROR - RenderManager: Render queue size exceeded. Rendering current layer.");
+        // INSTEAD OF RENDERING AGAIN, SAVE 
 		[self renderImagesOnLayer:newLayer];
     }
 	

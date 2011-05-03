@@ -12,6 +12,7 @@
 #import "GameplayConstants.h"
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneEleven
 

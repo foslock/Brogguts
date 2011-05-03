@@ -18,13 +18,14 @@ enum LayerNames {
     kLayerMiddleLayer,
     kLayerTopLayer,
     kLayerHUDLayer,
+    kLayerHUDTextLayer,
 };
 
 // Defines the maximum number of images that can be sent to the render manager
 // before issuing a render command
-#define kMax_Images 1000
+#define kMax_Images 800
 #define kMax_Textures 40
-#define RENDERING_LAYER_COUNT 4
+#define RENDERING_LAYER_COUNT 5
 
 // This class is responsible for rendering all Image content to the screen using
 // OpenGL.  Each time an image is asked to render it calls the render manager

@@ -7,6 +7,49 @@
 //
 
 #import "PlayerProfile.h"
+#import "GameController.h"
+
+int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
+    0, 0, 0, 0, 0, 0, 0,
+    0, // Ant
+    1, // Moth
+    2, // Beetle
+    3, // Monarch
+    4, // Camel
+    5, // Rat
+    7, // Spider
+    0, // (drone)
+    8, // Eagle
+    0, // Base Station
+    0, // Block
+    3, // Refinery
+    4, // Turret
+    3, // Fixer
+    2, // Radar
+    0, 0,
+};
+
+int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
+    0, 0, 0, 0, 0, 0, 0,
+    2, // Ant
+    6, // Moth
+    7, // Beetle
+    8, // Monarch
+    11, // Camel
+    10, // Rat
+    12, // Spider
+    0, // (drone)
+    13, // Eagle
+    0, // Base Station
+    1, // Block
+    7, // Refinery
+    6, // Turret
+    5, // Fixer
+    6, // Radar
+    0, 0,
+};
+
+static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 
 @implementation PlayerProfile
@@ -14,6 +57,12 @@
 @synthesize broggutCount;
 @synthesize metalCount;
 @synthesize playerExperience;
+
+- (void)dealloc {
+    [currentUpgradesTable release];
+    [currentUnlocksTable release];
+    [super dealloc];
+}
 
 - (id)init {
     self = [super init];
@@ -26,6 +75,12 @@
 		metalDisplayNumber = 0;
 		playerExperience = 0;
         isInSkirmish = NO;
+        [self loadDefaultOrPreviousUnlockTable];
+        currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            NSNumber* num = [NSNumber numberWithBool:NO];
+            [currentUpgradesTable addObject:num];
+        }
 	}
 	return self;
 }
@@ -159,25 +214,109 @@
     // Perform a calculation (log based) on the total broggut count to get the space year
 }
 
-- (void)startSkirmish {
-    if (!isInSkirmish) {
-        isInSkirmish = YES;
-        skirmishBroggutCount = 0;
-        skirmishMetalCount = 0;
-        broggutDisplayNumber = skirmishBroggutCount;
-		metalDisplayNumber = skirmishMetalCount;
+- (void)startSceneWithType:(int)sceneType {
+    if (sceneType != kSceneTypeBaseCamp &&
+        sceneType != kSceneTypeTutorial) {
+            isInSkirmish = YES;
+            skirmishBroggutCount = 0;
+            skirmishMetalCount = 0;
+            broggutDisplayNumber = skirmishBroggutCount;
+            metalDisplayNumber = skirmishMetalCount;
     }
 }
 
-- (void)endSkirmishSuccessfully:(BOOL)success {
-    if (isInSkirmish) {
-        isInSkirmish = NO;
-        broggutDisplayNumber = broggutCount;
-		metalDisplayNumber = metalCount;
-        if (success) {
-            [self addBrogguts:(int)((float)skirmishBroggutCount * PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH)];
+- (void)endSceneWithType:(int)sceneType wasSuccessful:(BOOL)success {
+    if (sceneType != kSceneTypeBaseCamp &&
+        sceneType != kSceneTypeTutorial) {
+        if (isInSkirmish) {
+            isInSkirmish = NO;
+            broggutDisplayNumber = broggutCount;
+            metalDisplayNumber = metalCount;
+            if (success) {
+                [self addBrogguts:(int)((float)skirmishBroggutCount * PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH)];
+            }
         }
     }
+}
+
+// Unlocks // 
+
+- (void)loadDefaultOrPreviousUnlockTable {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:@"hasStoredUnlockTable"]) {
+        NSString* filePath = [[GameController sharedGameController] documentsPathWithFilename:kSavedUnlockedFileName];
+        currentUnlocksTable = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        if (!currentUnlocksTable) {
+            NSLog(@"Unable to load previous unlock table");
+            currentUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+            for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+                NSNumber* num = [NSNumber numberWithBool:NO];
+                [currentUnlocksTable addObject:num];
+            }
+        }
+    } else {
+        currentUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            NSNumber* num = [NSNumber numberWithBool:NO];
+            [currentUnlocksTable addObject:num];
+        }
+    }
+}
+
+- (void)saveCurrentUnlocksTable {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* filePath = [[GameController sharedGameController] documentsPathWithFilename:kSavedUnlockedFileName];
+    if ([currentUnlocksTable writeToFile:filePath atomically:YES]) {
+        [defaults setBool:YES forKey:@"hasStoredUnlockTable"];
+    } else {
+        [defaults setBool:NO forKey:@"hasStoredUnlockTable"];
+    }
+}
+
+- (BOOL)isObjectUnlockedWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        NSNumber* num = [currentUnlocksTable objectAtIndex:objectID];
+        return [num boolValue];
+    }
+    return NO;
+}
+
+
+- (int)levelObjectUnlockedWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        return kObjectUnlockLevelTable[objectID];
+    }
+    return 0;
+}
+
+- (void)unlockObjectWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUnlocksTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
+- (void)unlockUpgradeWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUpgradesTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
+// Upgrades // 
+
+- (BOOL)isUpgradePurchasedWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        NSNumber* num = [currentUpgradesTable objectAtIndex:objectID];
+        return [num boolValue];
+    }
+    return NO;
+}
+
+
+- (int)levelUpgradeUnlockedWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        return kUpgradeUnlockLevelTable[objectID];
+    }
+    return 0;
 }
 
 @end

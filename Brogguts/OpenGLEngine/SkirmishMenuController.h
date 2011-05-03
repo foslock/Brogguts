@@ -13,7 +13,8 @@
     
 }
 
-- (IBAction)pushMapChoiceController;
+- (IBAction)pushMapChoiceControllerSinglePlayer;
+- (IBAction)pushMapChoiceControllerMultiplayer;
 - (IBAction)popSkirmishController;
 
 @end

@@ -15,3 +15,4 @@
 #import "RadarStructureObject.h"
 #import "FixerStructureObject.h"
 #import "BaseStationStructureObject.h"
+#import "RefineryStructureObject.h"

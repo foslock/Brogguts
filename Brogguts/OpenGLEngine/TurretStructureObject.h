@@ -11,6 +11,7 @@
 
 @interface TurretStructureObject : StructureObject {
 	// Attacking vars
+    Image* turretGunImage;
 	int attackCooldownTimer;
 	CGPoint attackLaserTargetPosition;
 	int attributeAttackCooldown;

@@ -18,6 +18,9 @@
 #define PROFILE_METAL_START_COUNT 0
 #define BROGGUT_DISPLAY_CHANGE_RATE 2
 
+extern int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
+extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
+
 @interface PlayerProfile : NSObject <NSCoding> {
 	int playerSpaceYear;
 	int broggutCount;
@@ -26,10 +29,17 @@
 	int metalDisplayNumber;
 	int playerExperience;
     
-    // Vars used for skirmishes
+    // Vars used for independant matches
     BOOL isInSkirmish;
     int skirmishBroggutCount;
     int skirmishMetalCount;
+    
+    // Upgrades and unlocks
+
+    // This array is indexed with the ID of the structure or craft that is being unlocked, and the NSNumber (bool value) stored indicates whether or not it is unlocked yet.
+    NSMutableArray* currentUnlocksTable;
+    // This array is indexed with the ID of the structure or craft that gets the upgrade, and the NSNumber (bool balue) stored indicates if it has been bought in the current match.
+    NSMutableArray* currentUpgradesTable;
 }
 
 @property (nonatomic, assign) int playerSpaceYear;
@@ -50,7 +60,19 @@
 - (int)realMetalCount;
 
 - (void)updateSpaceYear;
-- (void)startSkirmish;
-- (void)endSkirmishSuccessfully:(BOOL)success;
+- (void)startSceneWithType:(int)sceneType;
+- (void)endSceneWithType:(int)sceneType wasSuccessful:(BOOL)success;
+
+// Unlocks
+- (void)loadDefaultOrPreviousUnlockTable;
+- (void)saveCurrentUnlocksTable;
+- (BOOL)isObjectUnlockedWithID:(int)objectID;
+- (int)levelObjectUnlockedWithID:(int)objectID;
+- (void)unlockObjectWithID:(int)objectID;
+
+// Upgrades
+- (BOOL)isUpgradePurchasedWithID:(int)objectID;
+- (int)levelUpgradeUnlockedWithID:(int)objectID;
+
 
 @end

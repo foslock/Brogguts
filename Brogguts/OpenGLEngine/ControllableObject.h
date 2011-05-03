@@ -22,7 +22,7 @@
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 
-- (void)accelerateTowardsLocation:(CGPoint)location;
+- (void)accelerateTowardsLocation:(CGPoint)location withMaxVelocity:(float)otherMaxVelocity;
 - (void)decelerate;
 
 

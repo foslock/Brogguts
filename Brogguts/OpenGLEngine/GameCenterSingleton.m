@@ -292,7 +292,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFailWithError:(NSError *)error
 {
-	NSLog(@"Match finding failed!");
+	NSLog(@"Match finding failed: %@", [error localizedDescription]);
     [self dismissModalViewControllerAnimated:YES];
     [self.view removeFromSuperview];
     // Display the error to the user.
@@ -306,7 +306,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     
     // Start the game using the match.
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName isTutorial:NO isNew:YES];
+    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName sceneType:kSceneTypeSkirmish isNew:YES];
 	[self.view removeFromSuperview];
 }
 

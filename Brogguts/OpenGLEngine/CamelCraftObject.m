@@ -112,13 +112,10 @@ enum MiningStates {
 }
 
 - (void)cashInBrogguts {
-	if (attributePlayerCurrentCargo > 0) {
-		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation withAlliance:objectAlliance];
-		attributePlayerCurrentCargo = 0;
-		if (miningState == kMiningStateReturning) {
-			[self tryMiningBroggutsWithCenter:miningLocation];
-		}
-	}
+    [super cashInBrogguts];
+    if (miningState == kMiningStateReturning) {
+        [self tryMiningBroggutsWithCenter:miningLocation];
+    }
 }
 
 - (void)returnBroggutsHome {
@@ -198,17 +195,10 @@ enum MiningStates {
 	}
 }
 
-- (void)renderOverObjectWithScroll:(Vector2f)scroll {
-    [super renderOverObjectWithScroll:scroll];
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
+    [super renderUnderObjectWithScroll:scroll];
+    
     enablePrimitiveDraw();
-    
-    // Draw a line to the closest broggut
-    BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
-    if (closestBrog && GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange)) {
-        glColor4f(1.0f, 1.0f, 0.0f, 0.75f);
-        drawLine(objectLocation, closestBrog.objectLocation, scroll);
-    }
-    
 	if (miningState == kMiningStateMining) {
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
@@ -217,12 +207,8 @@ enum MiningStates {
 		drawLine(objectLocation, CGPointMake(miningLocation.x + randX, miningLocation.y + randY), scroll);
 		glLineWidth(1.0f);
 	}
-    
     disablePrimitiveDraw();
-}
-
-- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
-    [super renderUnderObjectWithScroll:scroll];
+    
     if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}
@@ -231,8 +217,12 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
-        [[self currentScene] removeControlledCraft:self];
-		[self startMiningBroggutWithLocation:location];
+		if ([self startMiningBroggutWithLocation:location]) {
+            if (isBeingControlled) {
+                [[self currentScene] removeControlledCraft:self];
+                [self setIsBeingControlled:NO];
+            }
+        }
 	}
 	
 	[super touchesEndedAtLocation:location];

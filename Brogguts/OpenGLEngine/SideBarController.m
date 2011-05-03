@@ -103,7 +103,7 @@
 		if (!isMovingObjectIn && !isMovingObjectOut) {
 			sideBarObjectLocation = sideBarLocation;
 		}
-			
+        
 		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
 		[topObject updateSideBar];
 		
@@ -156,8 +156,10 @@
 	drawRect(buttonRect, Vector2fZero);
 	disablePrimitiveDraw();
 	
-	SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-	[topObject renderWithOffset:Vector2fMake(-sideBarObjectLocation.x, -sideBarObjectLocation.y)];
+    if (isSideBarShowing) {
+        SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+        [topObject renderWithOffset:Vector2fMake(-sideBarObjectLocation.x, -sideBarObjectLocation.y)];
+    }
 	
 	if ([sideBarStack count] > 1) {
 		// Draw the back button

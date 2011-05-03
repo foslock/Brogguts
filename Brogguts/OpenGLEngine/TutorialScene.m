@@ -42,13 +42,17 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         } else {
             nextSceneName = kTutorialSceneFileNames[tutIndex+1];
         }
-        isTutorial = YES;
+        sceneType = kSceneTypeTutorial;
         tutorialIndex = tutIndex;
         isObjectiveComplete = NO;
-        helpText = [[TextObject alloc] initWithFontID:kFontBlairID
+        helpTextRect = CGRectMake(visibleScreenBounds.size.width,
+                                  (COLLISION_CELL_HEIGHT / 2),
+                                  1, 1);
+        helpText = [[TextObject alloc] initWithFontID:TUTORIAL_HELP_FONT
                                                  Text:@"" 
-                                         withLocation:CGPointMake(COLLISION_CELL_WIDTH / 2, visibleScreenBounds.size.height - (COLLISION_CELL_HEIGHT / 2)) 
+                                             withRect:helpTextRect
                                          withDuration:-1.0f];
+        [helpText setScrollWithBounds:NO];
         [self addTextObject:helpText];
         
         // Turn off the complicated stuff
@@ -61,14 +65,22 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
+    if (helpTextRect.origin.x > -[self getWidthForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]]) {
+        helpTextRect = CGRectOffset(helpTextRect, -TUTORIAL_HELP_TEXT_SCROLL_SPEED, 0);
+    } else {
+        helpTextRect = CGRectMake(visibleScreenBounds.size.width,
+                                  (COLLISION_CELL_HEIGHT / 2),
+                                  1, 1);
+    }
+    [helpText setTextRect:helpTextRect];
     if ([self checkObjective]) {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             if (tutorialIndex < TUTORIAL_SCENES_COUNT - 1) {
                 [[GameController sharedGameController] loadTutorialLevelsForIndex:tutorialIndex + 1];
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:YES isNew:NO];
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeTutorial isNew:NO];
             } else {
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName isTutorial:NO isNew:NO];
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeBaseCamp isNew:NO];
             }
             return;
         }

@@ -39,7 +39,7 @@ static GameController* sharedGameController = nil;
 
 @implementation GameController
 
-@synthesize currentPlayerProfile;
+@synthesize currentProfile;
 @synthesize currentScene, transitionName;
 @synthesize gameScenes;
 @synthesize eaglView;
@@ -122,10 +122,10 @@ static GameController* sharedGameController = nil;
 	NSLog(@"INFO - GameController: Loading previous player profile.");
 	NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
 	NSDictionary* rootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:path];    
-	[self setCurrentPlayerProfile:[rootObject valueForKey:@"Profile"]];
-	if (!currentPlayerProfile) {
+	[self setCurrentProfile:[rootObject valueForKey:@"Profile"]];
+	if (!currentProfile) {
 		NSLog(@"INFO - GameController: No previous player profile, creating a brand new profile.");
-		currentPlayerProfile = [[PlayerProfile alloc] init];
+		currentProfile = [[PlayerProfile alloc] init];
 	}
 }
 
@@ -133,7 +133,7 @@ static GameController* sharedGameController = nil;
 	NSLog(@"INFO - GameController: Saving current player profile.");
 	NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
 	NSMutableDictionary* rootObject = [NSMutableDictionary dictionary];
-	[rootObject setValue:currentPlayerProfile forKey:@"Profile"];
+	[rootObject setValue:currentProfile forKey:@"Profile"];
 	if (![NSKeyedArchiver archiveRootObject:rootObject toFile:path]){
 		NSLog(@"INFO - GameController: Saving failed.");
 	}
@@ -215,14 +215,14 @@ static GameController* sharedGameController = nil;
 
 - (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name {
     NSString* sceneTitle = name;
-	BOOL isBaseCamp = NO;
+	int thisSceneType = kSceneTypeSkirmish;
 	int widthCells = width;
 	int heightCells = height;
 	int numberOfSmallBrogguts = 0;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
-	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:thisSceneType] atIndex:kSceneStorageGlobalSceneType];
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
@@ -238,7 +238,7 @@ static GameController* sharedGameController = nil;
 			NSNumber* broggutValue;
 			NSNumber* broggutAge;
             broggutValue = [NSNumber numberWithInt:-1];
-            broggutAge = [NSNumber numberWithInt:0];
+            broggutAge = [NSNumber numberWithInt:-1];
 			[thisBroggutInfo insertObject:broggutValue atIndex:0];
 			[thisBroggutInfo insertObject:broggutAge atIndex:1];
 			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
@@ -261,14 +261,14 @@ static GameController* sharedGameController = nil;
 
 - (void)createInitialBaseCampLevel {
 	NSString* sceneTitle = @"Base Camp";
-	BOOL isBaseCamp = YES;
+	int sceneType = kSceneTypeBaseCamp;
 	int widthCells = 32;
 	int heightCells = 24;
 	int numberOfSmallBrogguts = 500;
 	
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
-	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:sceneType] atIndex:kSceneStorageGlobalSceneType];
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
@@ -286,10 +286,10 @@ static GameController* sharedGameController = nil;
 			NSNumber* broggutAge;
 			if ( (i > 4 && i < 27) && ((i > 14 && i < 17) || (j > 10 && j < 13)) ) {
 				broggutValue = [NSNumber numberWithInt:400];
-				broggutAge = [NSNumber numberWithInt:1];
+				broggutAge = [NSNumber numberWithInt:kBroggutMediumAgeYoung];
 			} else {
 				broggutValue = [NSNumber numberWithInt:-1];
-				broggutAge = [NSNumber numberWithInt:0];
+				broggutAge = [NSNumber numberWithInt:-1];
 			}			
 			[thisBroggutInfo insertObject:broggutValue atIndex:0];
 			[thisBroggutInfo insertObject:broggutAge atIndex:1];
@@ -448,7 +448,7 @@ static GameController* sharedGameController = nil;
     if (!currentScene) {
         return NO;
     }
-    if (currentScene.isTutorial) {
+    if (currentScene.sceneType == kSceneTypeTutorial) {
         NSLog(@"Scene filename: %@, it is a tutorial level", filename);
         return NO;
     }
@@ -458,14 +458,14 @@ static GameController* sharedGameController = nil;
     }
 	
 	NSString* sceneTitle = currentScene.sceneName;
-	BOOL isBaseCamp = currentScene.isBaseCamp;
+	int thisSceneType = currentScene.sceneType;
 	int widthCells = currentScene.widthCells;
 	int heightCells = currentScene.heightCells;
 	int numberOfSmallBrogguts = currentScene.numberOfSmallBrogguts;
     
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
-	[plistArray insertObject:[NSNumber numberWithBool:isBaseCamp] atIndex:kSceneStorageGlobalBaseCamp];
+	[plistArray insertObject:[NSNumber numberWithInt:thisSceneType] atIndex:kSceneStorageGlobalSceneType];
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
@@ -596,7 +596,7 @@ static GameController* sharedGameController = nil;
         [plistArray release];
         return NO;
 	}
-    if (!currentScene.isBaseCamp) {
+    if (currentScene.sceneType != kSceneTypeBaseCamp) {
         [self addFilenameToSceneFileList:filename];
     }
     [plistArray release];
@@ -636,9 +636,9 @@ static GameController* sharedGameController = nil;
     }
 }
 
-- (void)transitionToSceneWithFileName:(NSString*)fileName isTutorial:(BOOL)tutorial isNew:(BOOL)isNewScene {
+- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType isNew:(BOOL)isNewScene {
     BroggutScene* scene = [gameScenes objectForKey:fileName];
-    isTutorial = tutorial;
+    currentSceneType = sceneType;
     if (!scene || isNewScene) {
         BroggutScene* newScene = [[BroggutScene alloc] initWithFileName:fileName];
         [gameScenes setValue:newScene forKey:fileName];
@@ -663,6 +663,23 @@ static GameController* sharedGameController = nil;
             isAlreadyInScene = YES;
         }
     }
+}
+
+- (void)loadCampaignLevelsForIndex:(int)index {
+    switch (index) {
+        case 0: {
+            CampaignSceneOne* newCamp = [[CampaignSceneOne alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 1: {
+            CampaignSceneTwo* newCamp = [[CampaignSceneTwo alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+        default:
+            break;
+    }
+
 }
 
 - (void)loadTutorialLevelsForIndex:(int)index {
@@ -749,7 +766,13 @@ static GameController* sharedGameController = nil;
             isFadingSceneOut = NO;
             isAlreadyInScene = NO;
             if (!isReturningToMenu) {
-                [self transitionToSceneWithFileName:transitionName isTutorial:isTutorial isNew:!isTutorial];
+                BOOL isNew = YES;
+                if (currentSceneType == kSceneTypeTutorial ||
+                    currentSceneType == kSceneTypeCampaign) {
+                    // Tutorials and campaigns are pre-loaded so we don't want to clear the scene from the dictionary
+                    isNew = NO;
+                }
+                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType isNew:isNew];
             } else {
                 [currentScene sceneDidDisappear];
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] saveSceneAndPlayer];
@@ -759,7 +782,7 @@ static GameController* sharedGameController = nil;
             isReturningToMenu = NO;
 		}
 	}
-	[currentPlayerProfile updateProfile];
+	[currentProfile updateProfile];
 	[currentScene updateSceneWithDelta:aDelta];
 }
 
@@ -814,7 +837,7 @@ static GameController* sharedGameController = nil;
 	fadingRectAlpha = 1.0f;
 	currentScene = nil;
 	isAlreadyInScene = NO;
-    isTutorial = NO;
+    currentSceneType = kSceneTypeBaseCamp;
     isReturningToMenu = NO;
 	
 	[self loadPlayerProfile];

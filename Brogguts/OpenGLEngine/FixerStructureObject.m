@@ -8,6 +8,7 @@
 
 #import "FixerStructureObject.h"
 #import "CraftAndStructures.h"
+#import "GameplayConstants.h"
 
 @implementation FixerStructureObject
 
@@ -37,7 +38,7 @@
 - (void)objectEnteredEffectRadius:(TouchableObject *)other {
 	[super objectEnteredEffectRadius:other];
 	if (!isTraveling) {
-		if ([other isKindOfClass:[CraftObject class]]) {
+		if ([other isKindOfClass:[CraftObject class]] && other.objectType != kObjectCraftSpiderDroneID) {
 			if (other.objectAlliance == kAllianceFriendly) {
 				if (![closeFriendlyCraft containsObject:other]) {
 					[closeFriendlyCraft addObject:other];

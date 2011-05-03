@@ -33,6 +33,7 @@ enum MiningStates {
 	self = [super initWithTypeID:kObjectCraftAntID withLocation:location isTraveling:traveling];
 	if (self) {
         [self createLightLocationsWithCount:1];
+        [self createTurretLocationsWithCount:1];
 		attributePlayerCargoCapacity = kCraftAntCargoSpace;
 		attributePlayerCurrentCargo = 0;
 		attributeMiningCooldown = kCraftAntMiningCooldown;
@@ -52,7 +53,11 @@ enum MiningStates {
 }
 
 - (void)updateCraftTurretLocations {
-	// Update turret locations
+    for (int i = 0; i < turretPointsArray->pointCount; i++) {
+        PointLocation* curPoint = &turretPointsArray->locations[i];
+        curPoint->x = objectLocation.x;
+        curPoint->y = objectLocation.y;
+    }
 }
 
 - (CGPoint)miningLocation {
@@ -85,6 +90,7 @@ enum MiningStates {
 		miningLocation = location;
 		return;
 	}
+    NSMutableArray* pointArray = [[NSMutableArray alloc] initWithCapacity:9];
 	if (![self startMiningBroggutWithLocation:location]) {
 		// Middle broggut isn't minable
 		for (int i = -1; i < 2; i++) {
@@ -93,12 +99,27 @@ enum MiningStates {
 					continue;
 				}
 				CGPoint point = CGPointMake(location.x + (i * COLLISION_CELL_WIDTH), location.y + (j * COLLISION_CELL_HEIGHT));
-				if ([self startMiningBroggutWithLocation:point]) {
-					break;
-				}
+                [pointArray addObject:[NSValue valueWithCGPoint:point]];
 			}
 		}
+        // Shuffle it!
+        NSMutableArray* copy = [pointArray mutableCopy];
+        [pointArray removeAllObjects];
+        while ([copy count] > 0)
+        {
+            int index = arc4random() % [copy count];
+            id objectToMove = [copy objectAtIndex:index];
+            [pointArray addObject:objectToMove];
+            [copy removeObjectAtIndex:index];
+        }
+        for (int i = 0; i < [pointArray count]; i++) {
+            CGPoint point = [[pointArray objectAtIndex:i] CGPointValue];
+            if ([self startMiningBroggutWithLocation:point])
+                return;
+        }
+        [copy release];
 	}
+    [pointArray release];
 }
 
 - (BOOL)startMiningBroggutWithLocation:(CGPoint)location {
@@ -112,10 +133,6 @@ enum MiningStates {
 		[self followPath:pathArray isLooped:NO];
 		miningState = kMiningStateApproaching;
 		[self setMovingAIState:kMovingAIStateMining];
-        if (isBeingControlled) {
-            [[self currentScene] removeControlledCraft:self];
-            [self setIsBeingControlled:NO];
-        }
 		return YES;
 	} else {
 		miningState = kMiningStateNone;
@@ -129,13 +146,10 @@ enum MiningStates {
 }
 
 - (void)cashInBrogguts {
-	if (attributePlayerCurrentCargo > 0) {
-		[self.currentScene addBroggutValue:attributePlayerCurrentCargo atLocation:objectLocation withAlliance:objectAlliance];
-		attributePlayerCurrentCargo = 0;
-		if (miningState == kMiningStateReturning) {
-			[self tryMiningBroggutsWithCenter:miningLocation];
-		}
-	}
+    [super cashInBrogguts];
+    if (miningState == kMiningStateReturning) {
+        [self tryMiningBroggutsWithCenter:miningLocation];
+    }
 }
 
 - (void)returnBroggutsHome {
@@ -202,8 +216,8 @@ enum MiningStates {
 	}
 }
 
-- (void)renderOverObjectWithScroll:(Vector2f)scroll {
-    [super renderOverObjectWithScroll:scroll];
+- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
+    [super renderUnderObjectWithScroll:scroll];
     enablePrimitiveDraw();
     
 	if (miningState == kMiningStateMining) {
@@ -216,10 +230,6 @@ enum MiningStates {
 	}
     
     disablePrimitiveDraw();
-}
-
-- (void)renderUnderObjectWithScroll:(Vector2f)scroll {
-    [super renderUnderObjectWithScroll:scroll];
     if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}
@@ -228,7 +238,12 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
-		[self startMiningBroggutWithLocation:location];
+		if ([self startMiningBroggutWithLocation:location]) {
+            if (isBeingControlled) {
+                [[self currentScene] removeControlledCraft:self];
+                [self setIsBeingControlled:NO];
+            }
+        }
 	}
 	[super touchesEndedAtLocation:location];
 }

@@ -33,11 +33,22 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)pushMapChoiceController {
+- (IBAction)pushMapChoiceControllerSinglePlayer {
     MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
+    [mapchoice setOnlineMatch:NO];
     mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentModalViewController:mapchoice animated:YES];
+    [mapchoice release];
 }
+
+- (IBAction)pushMapChoiceControllerMultiplayer {
+    MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
+    [mapchoice setOnlineMatch:YES];
+    mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentModalViewController:mapchoice animated:YES];
+    [mapchoice release];
+}
+
 - (IBAction)popSkirmishController {
     [self.parentViewController dismissModalViewControllerAnimated:YES];
 }

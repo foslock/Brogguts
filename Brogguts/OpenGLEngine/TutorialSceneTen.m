@@ -13,6 +13,7 @@
 #import "FingerObject.h"
 #import "CraftAndStructures.h"
 #import "Image.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneTen
 
@@ -100,6 +101,8 @@
         [self addCollidableObject:tempFingerThree];
         [tempFingerThree setDoesScrollWithScreen:NO];
         [tempFingerThree release];
+        
+        [helpText setObjectText:@"The map overview shows all the units currently in the game. Drag the white box around and release it on your units to select them."];
     }
     return self;
 }

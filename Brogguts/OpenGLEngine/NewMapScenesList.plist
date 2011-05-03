@@ -3,5 +3,10 @@
 <plist version="1.0">
 <array>
 	<string>Map 1</string>
+	<string>Map 2</string>
+	<string>Map 3</string>
+	<string>Campaign 1</string>
+	<string>Campaign 2</string>
+	<string>Campaign 3</string>
 </array>
 </plist>

@@ -15,6 +15,8 @@
 
 - (IBAction)loadOptionsViewController;
 - (IBAction)startTutorialLevels;
+- (IBAction)openBroggupedia;
+- (IBAction)startCampaignLevels;
 - (IBAction)loadProfileViewController;
 - (IBAction)loadSkirmishViewController;
 

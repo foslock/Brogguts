@@ -12,7 +12,7 @@
 
 @implementation TextObject
 @synthesize isTextHidden, fontID, objectText, scrollWithBounds;
-@synthesize fontColor, fontScale;
+@synthesize fontColor, fontScale, textRect;
 
 - (void)dealloc {
 	[objectText release];
@@ -23,6 +23,28 @@
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
         self.renderLayer = kLayerHUDLayer;
+		isTextHidden = NO;
+        drawsInRect = NO;
+		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
+		fontID = fontid;
+		isTextObject = YES;
+		fontColor = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
+		destroyNow = NO;
+		timeLeft = duration;
+		fadeTime = duration / 3; // By default 2/3 through the duration
+		isCheckedForCollisions = NO;
+		fontScale = Scale2fMake(1.0f, 1.0f);
+		self.objectText = string;
+	}
+	return self;
+}
+
+- (id)initWithFontID:(int)fontid Text:(NSString*)string withRect:(CGRect)rect withDuration:(float)duration {
+	self = [super initWithImage:nil withLocation:rect.origin withObjectType:kObjectTextID];
+	if (self) {
+        self.renderLayer = kLayerHUDLayer;
+        textRect = rect;
+        drawsInRect = YES;
 		isTextHidden = NO;
 		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
 		fontID = fontid;
@@ -37,6 +59,8 @@
 	}
 	return self;
 }
+
+
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	if (timeLeft != -1.0f) {
@@ -55,7 +79,10 @@
 	if (isTextHidden) return;
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
+    if (!drawsInRect)
+        [font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
+    else
+        [font renderStringJustifiedInFrame:textRect justification:BitmapFontJustification_MiddleLeft text:self.objectText onLayer:renderLayer];
 	[font setFontColor:savedColor];
 }
 
@@ -64,7 +91,10 @@
 	CGPoint location = CGPointMake(objectLocation.x - scroll.x, objectLocation.y - scroll.y);
 	Color4f savedColor = [font fontColor];
 	[font setFontColor:fontColor];
-	[font renderStringAt:location text:self.objectText onLayer:renderLayer];
+	if (!drawsInRect)
+        [font renderStringAt:location text:self.objectText onLayer:renderLayer];
+    else
+        [font renderStringJustifiedInFrame:CGRectOffset(textRect, -scroll.x, -scroll.y) justification:BitmapFontJustification_MiddleLeft text:self.objectText onLayer:renderLayer];
 	[font setFontColor:savedColor];
 }
 

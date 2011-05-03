@@ -12,6 +12,7 @@
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
 #import "Image.h"
+#import "TextObject.h"
 
 @implementation TutorialSceneFive
 
@@ -55,6 +56,8 @@
         [newAntTwo release];
         [self setCameraLocation:GetMidpointFromPoints(antOneLoc, antTwoLoc)];
         [self setMiddleOfVisibleScreenToCamera];
+        
+        [helpText setObjectText:@"Selecting multiple ships is just like selecting one. Use two fingers, tap, and make a shape containing both ships."];
     }
     return self;
 }
