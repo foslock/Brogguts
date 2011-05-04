@@ -37,7 +37,7 @@
 
 - (IBAction)startBaseCamp {
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
-    [[GameController sharedGameController] transitionToSceneWithFileName:fileNameAlone sceneType:kSceneTypeBaseCamp isNew:NO];
+    [[GameController sharedGameController] transitionToSceneWithFileName:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO];
 }
 
 - (IBAction)popProfileController {

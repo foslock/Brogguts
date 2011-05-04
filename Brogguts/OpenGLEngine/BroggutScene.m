@@ -40,7 +40,7 @@
 @synthesize collisionManager;
 @synthesize cameraContainRect, cameraLocation;
 @synthesize fullMapBounds, visibleScreenBounds;
-@synthesize isShowingOverview;
+@synthesize isShowingOverview, isBuildingStructure;
 @synthesize commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 @synthesize fontArray, broggutCounter, metalCounter;
@@ -74,6 +74,7 @@
     isShowingMetalCount = YES;
     isAllowingOverview = YES;
     isMissionOver = NO;
+    isBuildingStructure = NO;
     endMissionObject = [[EndMissionObject alloc] init];
     renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -508,9 +509,9 @@
 
 - (void)sceneDidAppear {
     
-    CGPoint nameLoc = CGPointMake((kPadScreenLandscapeWidth - [self getWidthForFontID:kFontBlairID withString:sceneName]) / 2,
+    CGPoint nameLoc = CGPointMake((kPadScreenLandscapeWidth - [self getWidthForFontID:kFontGothicID withString:sceneName]) / 2,
                                   kPadScreenLandscapeHeight - 64);
-    TextObject* nameObject = [[TextObject alloc] initWithFontID:kFontBlairID Text:sceneName withLocation:nameLoc withDuration:SCENE_NAME_OBJECT_TIME];
+    TextObject* nameObject = [[TextObject alloc] initWithFontID:kFontGothicID Text:sceneName withLocation:nameLoc withDuration:SCENE_NAME_OBJECT_TIME];
     [nameObject setScrollWithBounds:NO];
     [self addTextObject:nameObject];
     [nameObject release];
@@ -523,7 +524,10 @@
             averageY += craft.objectLocation.y / ((float)[controlledShips count]);
         }
         CGPoint cameraPoint = CGPointMake(averageX, averageY);
-        cameraLocation = cameraPoint;
+        [self setCameraLocation:cameraPoint];
+        [self setMiddleOfVisibleScreenToCamera];
+    } else {
+        [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
     }
     // Just to be sure
@@ -1530,7 +1534,24 @@
             break;
         }
         case kObjectCraftRatID: {
-            
+            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftRatCostBrogguts metal:kCraftRatCostMetal]) {
+                [self addBroggutTextValue:-kCraftRatCostBrogguts atLocation:location withAlliance:alliance];
+                RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:YES];
+                if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+                [newCraft setObjectAlliance:alliance];
+                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
+                    [self addControlledCraft:newCraft];
+                }
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
+                [self addCollidableObject:tempObject];
+            } else {
+                [self failedToCreateAtLocation:location];
+            }
             break;
         }
         case kObjectCraftSpiderID: {
@@ -1555,6 +1576,24 @@
             break;
         }
         case kObjectCraftEagleID: {
+            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftEagleCostBrogguts metal:kCraftEagleCostMetal]) {
+                [self addBroggutTextValue:-kCraftEagleCostBrogguts atLocation:location withAlliance:alliance];
+                EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:YES];
+                if (alliance == kAllianceFriendly) {
+                    [newCraft setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newCraft setObjectLocation:enemyBaseLocation];
+                }
+                [newCraft setObjectAlliance:alliance];
+                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
+                    [self addControlledCraft:newCraft];
+                }
+                [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
+                [self addCollidableObject:tempObject];
+            } else {
+                [self failedToCreateAtLocation:location];
+            }
             break;
         }
         default:
@@ -1564,6 +1603,9 @@
 }
 
 - (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
+    if (isBuildingStructure) {
+        return;
+    }
     switch (structureID) {
         case kObjectStructureBaseStationID: {
             NSLog(@"Shouldn't create another base station!");
@@ -1678,16 +1720,17 @@
     NSString* metalString = [NSString stringWithFormat:@"Mtl: %i", metal];
     float bWidth = [self getWidthForFontID:kFontBlairID withString:broggutsString];
     float mWidth = [self getWidthForFontID:kFontBlairID withString:metalString];
+    float totalWidth = bWidth + mWidth;
     
     [buildBroggutValue setIsTextHidden:NO];
     [buildMetalValue setIsTextHidden:NO];
     
     [buildBroggutValue setObjectText:broggutsString];
     [buildBroggutValue setFontColor:Color4fMake(0.5f, 1.0f, 0.0f, 0.8f)];
-    [buildBroggutValue setObjectLocation:CGPointMake(location.x - 52 - (bWidth / 2), location.y + 48)];
+    [buildBroggutValue setObjectLocation:CGPointMake(location.x - totalWidth - (bWidth / 2), location.y + 48)];
     [buildMetalValue setObjectText:metalString];
     [buildMetalValue setFontColor:Color4fMake(0.0f, 0.5f, 1.0f, 0.8f)];
-    [buildMetalValue setObjectLocation:CGPointMake(location.x + 52 - (mWidth / 2), location.y + 48)];
+    [buildMetalValue setObjectLocation:CGPointMake(location.x + totalWidth - (mWidth / 2), location.y + 48)];
 }
 
 #pragma mark -

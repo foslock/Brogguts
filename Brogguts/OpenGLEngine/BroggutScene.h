@@ -108,6 +108,9 @@
     TextObject* valueTextObject;		// Text object that shows the medium broggut value
 	BOOL isShowingValueText;			// Boolean about if the text is showing
     
+    // Only allow one structure to be built at once.
+    BOOL isBuildingStructure;
+    
     // These are shown when about to build a new structure or craft
     TextObject* buildBroggutValue;
     TextObject* buildMetalValue;
@@ -193,6 +196,7 @@
 @property (nonatomic, assign) int currentBuildBroggutCost;
 @property (nonatomic, assign) int currentBuildMetalCost;
 @property (nonatomic, assign) CGPoint currentBuildDragLocation;
+@property (nonatomic, assign) BOOL isBuildingStructure;
 
 #pragma mark -
 #pragma mark Selectors

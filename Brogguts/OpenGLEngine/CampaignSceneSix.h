@@ -1,5 +1,5 @@
 //
-//  CampaignSceneThree.h
+//  CampaignSceneSix.h
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 5/2/11.
@@ -11,7 +11,7 @@
 
 @class SpawnerObject;
 
-@interface CampaignSceneThree : CampaignScene {
+@interface CampaignSceneSix : CampaignScene {
     SpawnerObject* spawner;
 }
 

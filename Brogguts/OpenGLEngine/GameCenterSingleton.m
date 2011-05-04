@@ -306,7 +306,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     
     // Start the game using the match.
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName sceneType:kSceneTypeSkirmish isNew:YES];
+    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES];
 	[self.view removeFromSuperview];
 }
 

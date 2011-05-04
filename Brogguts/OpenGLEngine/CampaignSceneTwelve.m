@@ -1,17 +1,17 @@
 //
-//  CampaignSceneThree.m
+//  CampaignSceneTwelve.m
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 5/2/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
-#import "CampaignSceneThree.h"
+#import "CampaignSceneTwelve.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "SpawnerObject.h"
 
-@implementation CampaignSceneThree
+@implementation CampaignSceneTwelve
 
 - (void)dealloc {
     [spawner release];
@@ -19,7 +19,7 @@
 }
 
 - (id)init {
-    self = [super initWithCampaignIndex:2];
+    self = [super initWithCampaignIndex:11];
     if (self) {
         spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:1.0f withCount:2];
         [spawner pauseSpawnerForDuration:10.0f];

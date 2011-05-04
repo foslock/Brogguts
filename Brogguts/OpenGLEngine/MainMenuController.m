@@ -14,6 +14,7 @@
 #import "ProfileMenuController.h"
 #import "SkirmishMenuController.h"
 #import "BroggupediaObject.h"
+#import "SavedGameChoiceController.h"
 
 @implementation MainMenuController
 
@@ -40,13 +41,20 @@
 }
 
 - (IBAction)startTutorialLevels {
-    [[GameController sharedGameController] loadTutorialLevelsForIndex:0];
-    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[0] sceneType:kSceneTypeTutorial isNew:NO];
+    [[GameController sharedGameController] transitionToSceneWithFileName:kTutorialSceneFileNames[0] sceneType:kSceneTypeTutorial withIndex:0 isNew:NO];
 }
 
 - (IBAction)startCampaignLevels {
-    [[GameController sharedGameController] loadCampaignLevelsForIndex:0];
-    [[GameController sharedGameController] transitionToSceneWithFileName:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign isNew:NO];
+    NSString* path = [[GameController sharedGameController] documentsPathWithFilename:kSavedCampaignFileName];
+    NSArray* savedArray = [NSArray arrayWithContentsOfFile:path];
+    if ([savedArray count] != 0) {
+        SavedGameChoiceController* controller = [[SavedGameChoiceController alloc] init];
+        controller.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentModalViewController:controller animated:YES];
+        [controller release];
+    } else {
+        [[GameController sharedGameController] transitionToSceneWithFileName:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:NO];
+    }
 }
 
 - (IBAction)openBroggupedia {

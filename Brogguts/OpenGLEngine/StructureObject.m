@@ -129,6 +129,7 @@
 		// Initialize the structure
 		[self initStructureWithID:typeID];
 		if (traveling) {
+            [[self currentScene] setIsBuildingStructure:YES];
 			[self setIsTraveling:YES];
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
 			[self followPath:path isLooped:NO];
@@ -198,6 +199,7 @@
 				hasCurrentPathFinished = YES;
 				[self setMovingAIState:kMovingAIStateStill];
 				if (isTraveling) {
+                    [[self currentScene] setIsBuildingStructure:NO];
 					[self setIsTraveling:NO];
 					[[self.currentScene collisionManager] setPathNodeIsOpen:NO atLocation:objectLocation];
 				}
@@ -310,6 +312,9 @@
 }
 
 - (void)objectWasDestroyed {
+    if (isTraveling) {
+        [[self currentScene] setIsBuildingStructure:NO];
+    }
     ExplosionObject* explosion = [[ExplosionObject alloc] initWithLocation:objectLocation withSize:kExplosionSizeLarge];
     [self.currentScene addCollidableObject:explosion];
     [explosion release];

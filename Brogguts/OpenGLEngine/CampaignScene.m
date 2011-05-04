@@ -31,7 +31,6 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Credits",
 };
 
-
 @implementation CampaignScene
 
 - (id)initWithCampaignIndex:(int)campIndex {
@@ -91,7 +90,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
         isAdvancingOrReset = YES;
         if (campaignIndex < CAMPAIGN_SCENES_COUNT - 1) {
             [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex + 1];
-            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeCampaign isNew:NO];
+            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:NO];
         }
     }
 }
@@ -100,7 +99,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
         [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex];
-        [[GameController sharedGameController] transitionToSceneWithFileName:sceneName sceneType:kSceneTypeCampaign isNew:NO];
+        [[GameController sharedGameController] transitionToSceneWithFileName:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:NO];
     }
 }
 
