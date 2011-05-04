@@ -40,7 +40,12 @@
         if (![[sharedGameController currentScene] isMultiplayerMatch]) {
             NSString* dateString = [[NSDate date] description];
             NSString* nameString = [[[sharedGameController currentScene] sceneName] stringByAppendingFormat:@" (%@)", dateString];
-            [sharedGameController saveCurrentSceneWithFilename:nameString allowOverwrite:NO];
+            if ([sharedGameController currentScene].sceneType != kSceneTypeCampaign) {
+                [sharedGameController saveCurrentSceneWithFilename:nameString allowOverwrite:NO];
+            } else {
+                NSString* sceneFileName = [[sharedGameController currentScene] sceneName];
+                [sharedGameController saveCurrentSceneWithFilename:sceneFileName allowOverwrite:YES];
+            }
         }
     }
 }

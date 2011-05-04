@@ -217,11 +217,11 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 - (void)startSceneWithType:(int)sceneType {
     if (sceneType != kSceneTypeBaseCamp &&
         sceneType != kSceneTypeTutorial) {
-            isInSkirmish = YES;
-            skirmishBroggutCount = 0;
-            skirmishMetalCount = 0;
-            broggutDisplayNumber = skirmishBroggutCount;
-            metalDisplayNumber = skirmishMetalCount;
+        isInSkirmish = YES;
+        skirmishBroggutCount = 0;
+        skirmishMetalCount = 0;
+        broggutDisplayNumber = skirmishBroggutCount;
+        metalDisplayNumber = skirmishMetalCount;
     }
 }
 

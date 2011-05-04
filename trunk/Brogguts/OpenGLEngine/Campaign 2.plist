@@ -294,8 +294,8 @@
 			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>500</integer>
+			<integer>1</integer>
 		</array>
 		<array>
 			<integer>500</integer>
@@ -342,8 +342,8 @@
 			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>500</integer>
+			<integer>1</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -558,12 +558,12 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>500</integer>
+			<integer>1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>500</integer>
+			<integer>1</integer>
 		</array>
 		<array>
 			<integer>-1</integer>

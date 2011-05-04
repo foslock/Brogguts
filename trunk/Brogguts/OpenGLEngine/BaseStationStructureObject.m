@@ -34,6 +34,11 @@
 	return self;
 }
 
+- (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
+    [self blinkSelectionCircle];
+    return [super attackedByEnemy:enemy withDamage:damage];
+}
+
 - (void)objectEnteredEffectRadius:(TouchableObject*)other {
 	// For mining ships, turn in brogguts
 	if (objectAlliance == other.objectAlliance) {

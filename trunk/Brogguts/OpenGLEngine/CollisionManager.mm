@@ -867,7 +867,7 @@
 		tempObjectArray->arrayCount += 1;
 	} else {
 		// RESIZE THE ARRAY
-		NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
+		// NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
 		tempObjectArray->objectIDArray = (int*)realloc(tempObjectArray->objectIDArray,
 													   (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
 		tempObjectArray->arrayCapacity = (currentArrayCapacity + INITIAL_HASH_CAPACITY);
@@ -894,7 +894,7 @@
 		tempObjectArray->arrayCount += 1;
 	} else {
 		// RESIZE THE ARRAY
-		NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
+		// NSLog(@"Resizing index: %i, from %i to %i", indexOfLocation, currentArrayCapacity, (currentArrayCapacity + INITIAL_HASH_CAPACITY));
 		tempObjectArray->objectIDArray = (int*)realloc(tempObjectArray->objectIDArray,
 													   (currentArrayCapacity + INITIAL_HASH_CAPACITY) * sizeof(int) );
 		tempObjectArray->arrayCapacity = (currentArrayCapacity + INITIAL_HASH_CAPACITY);

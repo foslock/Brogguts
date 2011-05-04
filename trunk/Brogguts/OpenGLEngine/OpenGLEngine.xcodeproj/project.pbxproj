@@ -112,7 +112,6 @@
 		6F4EE68F136E0F05003B0038 /* spritesmallturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE68E136E0F05003B0038 /* spritesmallturret.png */; };
 		6F4EE691136E1B1F003B0038 /* smallbroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE690136E1B1F003B0038 /* smallbroggut.png */; };
 		6F4EE693136E1BB2003B0038 /* particlebroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE692136E1BB2003B0038 /* particlebroggut.png */; };
-		6F4EE695136E7B2F003B0038 /* Campaign 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE694136E7B2F003B0038 /* Campaign 2.plist */; };
 		6F4EE698136E7B86003B0038 /* CampaignSceneThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F4EE697136E7B86003B0038 /* CampaignSceneThree.m */; };
 		6F4EE69F136F637E003B0038 /* BroggupediaObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F4EE69E136F637E003B0038 /* BroggupediaObject.m */; };
 		6F4EE6A5136F66F6003B0038 /* BroggupediaTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F4EE6A4136F66F6003B0038 /* BroggupediaTableView.m */; };
@@ -127,6 +126,29 @@
 		6F611810136FCA540039DB7C /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F61180F136FCA540039DB7C /* structurefixer.png */; };
 		6F611812136FCC4C0039DB7C /* structurecraftupgrades.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F611811136FCC4B0039DB7C /* structurecraftupgrades.png */; };
 		6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181313707E250039DB7C /* craftbuilddrone.png */; };
+		6F61181A1370DE430039DB7C /* SpawnerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118191370DE430039DB7C /* SpawnerObject.m */; };
+		6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181B1370EAB30039DB7C /* Campaign 2.plist */; };
+		6F6118251370F1720039DB7C /* Campaign 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181E1370F1720039DB7C /* Campaign 4.plist */; };
+		6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181F1370F1720039DB7C /* Campaign 5.plist */; };
+		6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118201370F1720039DB7C /* Campaign 6.plist */; };
+		6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118211370F1720039DB7C /* Campaign 7.plist */; };
+		6F6118291370F1720039DB7C /* Campaign 8.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118221370F1720039DB7C /* Campaign 8.plist */; };
+		6F61182A1370F1720039DB7C /* Campaign 9.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118231370F1720039DB7C /* Campaign 9.plist */; };
+		6F61182B1370F1720039DB7C /* Campaign 10.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118241370F1720039DB7C /* Campaign 10.plist */; };
+		6F61182E1370F1EB0039DB7C /* CampaignSceneFour.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61182D1370F1EA0039DB7C /* CampaignSceneFour.m */; };
+		6F6118311370F2400039DB7C /* CampaignSceneFive.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118301370F2400039DB7C /* CampaignSceneFive.m */; };
+		6F6118341370F27D0039DB7C /* CampaignSceneSix.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118331370F27D0039DB7C /* CampaignSceneSix.m */; };
+		6F6118371370F2A70039DB7C /* CampaignSceneSeven.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118361370F2A60039DB7C /* CampaignSceneSeven.m */; };
+		6F61183A1370F2D30039DB7C /* CampaignSceneEight.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118391370F2D20039DB7C /* CampaignSceneEight.m */; };
+		6F61183D1370F2F60039DB7C /* CampaignSceneNine.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61183C1370F2F50039DB7C /* CampaignSceneNine.m */; };
+		6F6118401370F3180039DB7C /* CampaignSceneTen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61183F1370F3170039DB7C /* CampaignSceneTen.m */; };
+		6F6118431370F3440039DB7C /* CampaignSceneEleven.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118421370F3420039DB7C /* CampaignSceneEleven.m */; };
+		6F6118461370F36C0039DB7C /* CampaignSceneTwelve.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118451370F36B0039DB7C /* CampaignSceneTwelve.m */; };
+		6F6118491370F3930039DB7C /* CampaignSceneThirteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118481370F38F0039DB7C /* CampaignSceneThirteen.m */; };
+		6F61184C1370F3B90039DB7C /* CampaignSceneFourteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61184B1370F3B70039DB7C /* CampaignSceneFourteen.m */; };
+		6F61184F1370F3E20039DB7C /* CampaignSceneFifteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61184E1370F3E10039DB7C /* CampaignSceneFifteen.m */; };
+		6F6118531371007C0039DB7C /* SavedGameChoiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118511371007B0039DB7C /* SavedGameChoiceController.m */; };
+		6F6118541371007C0039DB7C /* SavedGameChoiceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118521371007B0039DB7C /* SavedGameChoiceController.xib */; };
 		6F650D89132EA22300DC3BDB /* craftspider.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F650D87132EA22300DC3BDB /* craftspider.png */; };
 		6F650D8A132EA22300DC3BDB /* craftspiderdrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F650D88132EA22300DC3BDB /* craftspiderdrone.png */; };
 		6F67CBE41329480C0061B1A9 /* craftbeetle.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F67CBE11329480C0061B1A9 /* craftbeetle.png */; };
@@ -371,7 +393,6 @@
 		6F4EE68E136E0F05003B0038 /* spritesmallturret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesmallturret.png; sourceTree = "<group>"; };
 		6F4EE690136E1B1F003B0038 /* smallbroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smallbroggut.png; sourceTree = "<group>"; };
 		6F4EE692136E1BB2003B0038 /* particlebroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlebroggut.png; sourceTree = "<group>"; };
-		6F4EE694136E7B2F003B0038 /* Campaign 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 2.plist"; sourceTree = "<group>"; };
 		6F4EE696136E7B85003B0038 /* CampaignSceneThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneThree.h; sourceTree = "<group>"; };
 		6F4EE697136E7B86003B0038 /* CampaignSceneThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneThree.m; sourceTree = "<group>"; };
 		6F4EE69D136F637E003B0038 /* BroggupediaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggupediaObject.h; sourceTree = "<group>"; };
@@ -390,6 +411,43 @@
 		6F61180F136FCA540039DB7C /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F611811136FCC4B0039DB7C /* structurecraftupgrades.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurecraftupgrades.png; sourceTree = "<group>"; };
 		6F61181313707E250039DB7C /* craftbuilddrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbuilddrone.png; sourceTree = "<group>"; };
+		6F6118181370DE430039DB7C /* SpawnerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpawnerObject.h; sourceTree = "<group>"; };
+		6F6118191370DE430039DB7C /* SpawnerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpawnerObject.m; sourceTree = "<group>"; };
+		6F61181B1370EAB30039DB7C /* Campaign 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 2.plist"; sourceTree = "<group>"; };
+		6F61181E1370F1720039DB7C /* Campaign 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 4.plist"; sourceTree = "<group>"; };
+		6F61181F1370F1720039DB7C /* Campaign 5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 5.plist"; sourceTree = "<group>"; };
+		6F6118201370F1720039DB7C /* Campaign 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 6.plist"; sourceTree = "<group>"; };
+		6F6118211370F1720039DB7C /* Campaign 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 7.plist"; sourceTree = "<group>"; };
+		6F6118221370F1720039DB7C /* Campaign 8.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 8.plist"; sourceTree = "<group>"; };
+		6F6118231370F1720039DB7C /* Campaign 9.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 9.plist"; sourceTree = "<group>"; };
+		6F6118241370F1720039DB7C /* Campaign 10.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 10.plist"; sourceTree = "<group>"; };
+		6F61182C1370F1EA0039DB7C /* CampaignSceneFour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFour.h; sourceTree = "<group>"; };
+		6F61182D1370F1EA0039DB7C /* CampaignSceneFour.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneFour.m; sourceTree = "<group>"; };
+		6F61182F1370F23F0039DB7C /* CampaignSceneFive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFive.h; sourceTree = "<group>"; };
+		6F6118301370F2400039DB7C /* CampaignSceneFive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneFive.m; sourceTree = "<group>"; };
+		6F6118321370F27C0039DB7C /* CampaignSceneSix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneSix.h; sourceTree = "<group>"; };
+		6F6118331370F27D0039DB7C /* CampaignSceneSix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneSix.m; sourceTree = "<group>"; };
+		6F6118351370F2A60039DB7C /* CampaignSceneSeven.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneSeven.h; sourceTree = "<group>"; };
+		6F6118361370F2A60039DB7C /* CampaignSceneSeven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneSeven.m; sourceTree = "<group>"; };
+		6F6118381370F2D10039DB7C /* CampaignSceneEight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneEight.h; sourceTree = "<group>"; };
+		6F6118391370F2D20039DB7C /* CampaignSceneEight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneEight.m; sourceTree = "<group>"; };
+		6F61183B1370F2F40039DB7C /* CampaignSceneNine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneNine.h; sourceTree = "<group>"; };
+		6F61183C1370F2F50039DB7C /* CampaignSceneNine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneNine.m; sourceTree = "<group>"; };
+		6F61183E1370F3150039DB7C /* CampaignSceneTen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneTen.h; sourceTree = "<group>"; };
+		6F61183F1370F3170039DB7C /* CampaignSceneTen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneTen.m; sourceTree = "<group>"; };
+		6F6118411370F3410039DB7C /* CampaignSceneEleven.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneEleven.h; sourceTree = "<group>"; };
+		6F6118421370F3420039DB7C /* CampaignSceneEleven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneEleven.m; sourceTree = "<group>"; };
+		6F6118441370F3690039DB7C /* CampaignSceneTwelve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneTwelve.h; sourceTree = "<group>"; };
+		6F6118451370F36B0039DB7C /* CampaignSceneTwelve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneTwelve.m; sourceTree = "<group>"; };
+		6F6118471370F38E0039DB7C /* CampaignSceneThirteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneThirteen.h; sourceTree = "<group>"; };
+		6F6118481370F38F0039DB7C /* CampaignSceneThirteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneThirteen.m; sourceTree = "<group>"; };
+		6F61184A1370F3B50039DB7C /* CampaignSceneFourteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFourteen.h; sourceTree = "<group>"; };
+		6F61184B1370F3B70039DB7C /* CampaignSceneFourteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneFourteen.m; sourceTree = "<group>"; };
+		6F61184D1370F3DF0039DB7C /* CampaignSceneFifteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFifteen.h; sourceTree = "<group>"; };
+		6F61184E1370F3E10039DB7C /* CampaignSceneFifteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneFifteen.m; sourceTree = "<group>"; };
+		6F6118501371007B0039DB7C /* SavedGameChoiceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedGameChoiceController.h; sourceTree = "<group>"; };
+		6F6118511371007B0039DB7C /* SavedGameChoiceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedGameChoiceController.m; sourceTree = "<group>"; };
+		6F6118521371007B0039DB7C /* SavedGameChoiceController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SavedGameChoiceController.xib; sourceTree = "<group>"; };
 		6F650D87132EA22300DC3BDB /* craftspider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspider.png; sourceTree = "<group>"; };
 		6F650D88132EA22300DC3BDB /* craftspiderdrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspiderdrone.png; sourceTree = "<group>"; };
 		6F67CBE11329480C0061B1A9 /* craftbeetle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbeetle.png; sourceTree = "<group>"; };
@@ -814,6 +872,23 @@
 			name = "View Controllers";
 			sourceTree = "<group>";
 		};
+		6F61181D1370F1600039DB7C /* Campaign Levels */ = {
+			isa = PBXGroup;
+			children = (
+				6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */,
+				6F61181B1370EAB30039DB7C /* Campaign 2.plist */,
+				6F4EE6AB136F771E003B0038 /* Campaign 3.plist */,
+				6F61181E1370F1720039DB7C /* Campaign 4.plist */,
+				6F61181F1370F1720039DB7C /* Campaign 5.plist */,
+				6F6118201370F1720039DB7C /* Campaign 6.plist */,
+				6F6118211370F1720039DB7C /* Campaign 7.plist */,
+				6F6118221370F1720039DB7C /* Campaign 8.plist */,
+				6F6118231370F1720039DB7C /* Campaign 9.plist */,
+				6F6118241370F1720039DB7C /* Campaign 10.plist */,
+			);
+			name = "Campaign Levels";
+			sourceTree = "<group>";
+		};
 		6F67CBE81329A19E0061B1A9 /* Menu Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -835,6 +910,9 @@
 				6F67CC03132A844A0061B1A9 /* MapChoiceController.h */,
 				6F67CC04132A844B0061B1A9 /* MapChoiceController.m */,
 				6F67CC05132A844C0061B1A9 /* MapChoiceController.xib */,
+				6F6118501371007B0039DB7C /* SavedGameChoiceController.h */,
+				6F6118511371007B0039DB7C /* SavedGameChoiceController.m */,
+				6F6118521371007B0039DB7C /* SavedGameChoiceController.xib */,
 			);
 			name = "Menu Controllers";
 			sourceTree = "<group>";
@@ -846,9 +924,7 @@
 				6FD777B213441F6B00F734D5 /* Map 1.plist */,
 				6F1F03C81366323C00B6DBD0 /* Map 2.plist */,
 				6F1F03D613663A2400B6DBD0 /* Map 3.plist */,
-				6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */,
-				6F4EE694136E7B2F003B0038 /* Campaign 2.plist */,
-				6F4EE6AB136F771E003B0038 /* Campaign 3.plist */,
+				6F61181D1370F1600039DB7C /* Campaign Levels */,
 			);
 			name = "Default Maps";
 			sourceTree = "<group>";
@@ -918,6 +994,30 @@
 				6F8420F71362334C008CAFE2 /* CampaignSceneTwo.m */,
 				6F4EE696136E7B85003B0038 /* CampaignSceneThree.h */,
 				6F4EE697136E7B86003B0038 /* CampaignSceneThree.m */,
+				6F61182C1370F1EA0039DB7C /* CampaignSceneFour.h */,
+				6F61182D1370F1EA0039DB7C /* CampaignSceneFour.m */,
+				6F61182F1370F23F0039DB7C /* CampaignSceneFive.h */,
+				6F6118301370F2400039DB7C /* CampaignSceneFive.m */,
+				6F6118321370F27C0039DB7C /* CampaignSceneSix.h */,
+				6F6118331370F27D0039DB7C /* CampaignSceneSix.m */,
+				6F6118351370F2A60039DB7C /* CampaignSceneSeven.h */,
+				6F6118361370F2A60039DB7C /* CampaignSceneSeven.m */,
+				6F6118381370F2D10039DB7C /* CampaignSceneEight.h */,
+				6F6118391370F2D20039DB7C /* CampaignSceneEight.m */,
+				6F61183B1370F2F40039DB7C /* CampaignSceneNine.h */,
+				6F61183C1370F2F50039DB7C /* CampaignSceneNine.m */,
+				6F61183E1370F3150039DB7C /* CampaignSceneTen.h */,
+				6F61183F1370F3170039DB7C /* CampaignSceneTen.m */,
+				6F6118411370F3410039DB7C /* CampaignSceneEleven.h */,
+				6F6118421370F3420039DB7C /* CampaignSceneEleven.m */,
+				6F6118441370F3690039DB7C /* CampaignSceneTwelve.h */,
+				6F6118451370F36B0039DB7C /* CampaignSceneTwelve.m */,
+				6F6118471370F38E0039DB7C /* CampaignSceneThirteen.h */,
+				6F6118481370F38F0039DB7C /* CampaignSceneThirteen.m */,
+				6F61184A1370F3B50039DB7C /* CampaignSceneFourteen.h */,
+				6F61184B1370F3B70039DB7C /* CampaignSceneFourteen.m */,
+				6F61184D1370F3DF0039DB7C /* CampaignSceneFifteen.h */,
+				6F61184E1370F3E10039DB7C /* CampaignSceneFifteen.m */,
 			);
 			name = "Campaign Scenes";
 			sourceTree = "<group>";
@@ -1075,6 +1175,8 @@
 		6F8E25D01330196C00DCD662 /* Scene Objects */ = {
 			isa = PBXGroup;
 			children = (
+				6F6118181370DE430039DB7C /* SpawnerObject.h */,
+				6F6118191370DE430039DB7C /* SpawnerObject.m */,
 				6F8E25D113302F3C00DCD662 /* TriggerObject.h */,
 				6F8E25D213302F3C00DCD662 /* TriggerObject.m */,
 				6F0E327B1331691E0037C789 /* NotificationObject.h */,
@@ -1424,7 +1526,6 @@
 				6F4EE68F136E0F05003B0038 /* spritesmallturret.png in Resources */,
 				6F4EE691136E1B1F003B0038 /* smallbroggut.png in Resources */,
 				6F4EE693136E1BB2003B0038 /* particlebroggut.png in Resources */,
-				6F4EE695136E7B2F003B0038 /* Campaign 2.plist in Resources */,
 				6F4EE6AA136F674A003B0038 /* BroggupediaDetailView.xib in Resources */,
 				6F4EE6AC136F771E003B0038 /* Campaign 3.plist in Resources */,
 				6F611801136FC7BA0039DB7C /* spriteturretgun.png in Resources */,
@@ -1432,6 +1533,15 @@
 				6F611810136FCA540039DB7C /* structurefixer.png in Resources */,
 				6F611812136FCC4C0039DB7C /* structurecraftupgrades.png in Resources */,
 				6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */,
+				6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */,
+				6F6118251370F1720039DB7C /* Campaign 4.plist in Resources */,
+				6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */,
+				6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */,
+				6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */,
+				6F6118291370F1720039DB7C /* Campaign 8.plist in Resources */,
+				6F61182A1370F1720039DB7C /* Campaign 9.plist in Resources */,
+				6F61182B1370F1720039DB7C /* Campaign 10.plist in Resources */,
+				6F6118541371007C0039DB7C /* SavedGameChoiceController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1530,6 +1640,20 @@
 				6F4EE69F136F637E003B0038 /* BroggupediaObject.m in Sources */,
 				6F4EE6A5136F66F6003B0038 /* BroggupediaTableView.m in Sources */,
 				6F4EE6A9136F674A003B0038 /* BroggupediaDetailView.m in Sources */,
+				6F61181A1370DE430039DB7C /* SpawnerObject.m in Sources */,
+				6F61182E1370F1EB0039DB7C /* CampaignSceneFour.m in Sources */,
+				6F6118311370F2400039DB7C /* CampaignSceneFive.m in Sources */,
+				6F6118341370F27D0039DB7C /* CampaignSceneSix.m in Sources */,
+				6F6118371370F2A70039DB7C /* CampaignSceneSeven.m in Sources */,
+				6F61183A1370F2D30039DB7C /* CampaignSceneEight.m in Sources */,
+				6F61183D1370F2F60039DB7C /* CampaignSceneNine.m in Sources */,
+				6F6118401370F3180039DB7C /* CampaignSceneTen.m in Sources */,
+				6F6118431370F3440039DB7C /* CampaignSceneEleven.m in Sources */,
+				6F6118461370F36C0039DB7C /* CampaignSceneTwelve.m in Sources */,
+				6F6118491370F3930039DB7C /* CampaignSceneThirteen.m in Sources */,
+				6F61184C1370F3B90039DB7C /* CampaignSceneFourteen.m in Sources */,
+				6F61184F1370F3E20039DB7C /* CampaignSceneFifteen.m in Sources */,
+				6F6118531371007C0039DB7C /* SavedGameChoiceController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

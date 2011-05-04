@@ -31,7 +31,7 @@
     [super objectEnteredEffectRadius:other];
     if ([other isKindOfClass:[CraftObject class]]) {
         CraftObject* craft = (CraftObject*)other;
-        if (craft.objectType != kObjectCraftMonarchID) {
+        if (craft.objectType != kObjectCraftMonarchID && craft.objectAlliance == objectAlliance) {
             if ([craftUnderAura count] < kCraftMonarchAuraNumberLimit) {
                 if (![craftUnderAura containsObject:craft] && ![craft isUnderAura]) {
                     [craft setIsUnderAura:YES];

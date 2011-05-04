@@ -15,7 +15,6 @@
 #import "CampaignScene.h"
 #import "CampaignSceneOne.h"
 #import "CampaignSceneTwo.h"
-/*
 #import "CampaignSceneThree.h"
 #import "CampaignSceneFour.h"
 #import "CampaignSceneFive.h"
@@ -29,6 +28,3 @@
 #import "CampaignSceneThirteen.h"
 #import "CampaignSceneFourteen.h"
 #import "CampaignSceneFifteen.h"
-#import "CampaignSceneSixteen.h"
-#import "CampaignSceneCredits.h"
- */

@@ -23,7 +23,8 @@
 #import "GameCenterSingleton.h"
 
 NSString* kBaseCampFileName = @"BaseCampSaved.plist";
-NSString* kSavedScenesFileName = @"SavedScenesList.plist";
+NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
+NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
 
 #pragma mark -
@@ -187,9 +188,16 @@ static GameController* sharedGameController = nil;
         [tempMapPlist writeToFile:newFilePath atomically:YES];  
     }
     
-    if (![self doesFilenameExistInDocuments:kSavedScenesFileName]) {
+    if (![self doesFilenameExistInDocuments:kSavedSkirmishFileName]) {
         NSArray* newArray = [[NSArray alloc] init];
-        NSString* path = [self documentsPathWithFilename:kSavedScenesFileName];
+        NSString* path = [self documentsPathWithFilename:kSavedSkirmishFileName];
+        [newArray writeToFile:path atomically:YES];
+        [newArray release];
+    }
+    
+    if (![self doesFilenameExistInDocuments:kSavedCampaignFileName]) {
+        NSArray* newArray = [[NSArray alloc] init];
+        NSString* path = [self documentsPathWithFilename:kSavedCampaignFileName];
         [newArray writeToFile:path atomically:YES];
         [newArray release];
     }
@@ -596,18 +604,46 @@ static GameController* sharedGameController = nil;
         [plistArray release];
         return NO;
 	}
-    if (currentScene.sceneType != kSceneTypeBaseCamp) {
-        [self addFilenameToSceneFileList:filename];
+    if (currentScene.sceneType == kSceneTypeSkirmish) {
+        [self addFilenameToSkirmishFileList:filename];
+    }
+    if (currentScene.sceneType == kSceneTypeCampaign) {
+        [self addFilenameToSavedCampaignFileList:filename];
     }
     [plistArray release];
     return YES;
 }
 
-- (void)addFilenameToSceneFileList:(NSString*)filename {
+- (void)addFilenameToSkirmishFileList:(NSString*)filename {
     if ([filename caseInsensitiveCompare:kBaseCampFileName] == NSOrderedSame) { // don't worry about this for basecamp saving
         return;
     }
-    NSString* filePath = [self documentsPathWithFilename:kSavedScenesFileName];
+    NSString* filePath = [self documentsPathWithFilename:kSavedSkirmishFileName];
+    NSMutableArray* plistArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    
+    BOOL duplicate = NO;
+    for (NSString* other in plistArray) {
+        if ([filename caseInsensitiveCompare:other] == NSOrderedSame) {
+            duplicate = YES;
+        }
+    }
+    if (!duplicate) {
+        [plistArray addObject:filename];
+    } else {
+        NSLog(@"Filename already exists!");
+    }
+    
+    if (![plistArray writeToFile:filePath atomically:YES]) {
+        NSLog(@"Failed to saved the scene name: %@", filename);
+    }
+    [plistArray release];
+}
+
+- (void)addFilenameToSavedCampaignFileList:(NSString*)filename {
+    if ([filename caseInsensitiveCompare:kBaseCampFileName] == NSOrderedSame) { // don't worry about this for basecamp saving
+        return;
+    }
+    NSString* filePath = [self documentsPathWithFilename:kSavedCampaignFileName];
     NSMutableArray* plistArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
     
     BOOL duplicate = NO;
@@ -636,14 +672,25 @@ static GameController* sharedGameController = nil;
     }
 }
 
-- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType isNew:(BOOL)isNewScene {
+- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene {
     BroggutScene* scene = [gameScenes objectForKey:fileName];
+    if (!scene) {
+        if (sceneType == kSceneTypeCampaign) {
+            [self loadCampaignLevelsForIndex:index];
+            scene = [gameScenes objectForKey:fileName];
+        }
+        if (sceneType == kSceneTypeTutorial) {
+            [self loadTutorialLevelsForIndex:index];
+            scene = [gameScenes objectForKey:fileName];
+        }
+    }
     currentSceneType = sceneType;
-    if (!scene || isNewScene) {
+    if (!scene || (isNewScene && sceneType != kSceneTypeCampaign && sceneType != kSceneTypeTutorial)) {
         BroggutScene* newScene = [[BroggutScene alloc] initWithFileName:fileName];
         [gameScenes setValue:newScene forKey:fileName];
         [newScene release];
         scene = newScene;
+        scene.sceneType = currentSceneType;
     }
     if (scene) {
         if (transitionName)
@@ -676,6 +723,72 @@ static GameController* sharedGameController = nil;
             CampaignSceneTwo* newCamp = [[CampaignSceneTwo alloc] init];
             [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
         }
+            break;
+        case 2: {
+            CampaignSceneThree* newCamp = [[CampaignSceneThree alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 3: {
+            CampaignSceneFour* newCamp = [[CampaignSceneFour alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 4: {
+            CampaignSceneFive* newCamp = [[CampaignSceneFive alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 5: {
+            CampaignSceneSix* newCamp = [[CampaignSceneSix alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 6: {
+            CampaignSceneSeven* newCamp = [[CampaignSceneSeven alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 7: {
+            CampaignSceneEight* newCamp = [[CampaignSceneEight alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 8: {
+            CampaignSceneNine* newCamp = [[CampaignSceneNine alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 9: {
+            CampaignSceneTen* newCamp = [[CampaignSceneTen alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 10: {
+            CampaignSceneEleven* newCamp = [[CampaignSceneEleven alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 11: {
+            CampaignSceneTwelve* newCamp = [[CampaignSceneTwelve alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 12: {
+            CampaignSceneThirteen* newCamp = [[CampaignSceneThirteen alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 13: {
+            CampaignSceneFourteen* newCamp = [[CampaignSceneFourteen alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
+        case 14: {
+            CampaignSceneFifteen* newCamp = [[CampaignSceneFifteen alloc] init];
+            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+        }
+            break;
         default:
             break;
     }
@@ -772,7 +885,7 @@ static GameController* sharedGameController = nil;
                     // Tutorials and campaigns are pre-loaded so we don't want to clear the scene from the dictionary
                     isNew = NO;
                 }
-                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType isNew:isNew];
+                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:0 isNew:isNew];
             } else {
                 [currentScene sceneDidDisappear];
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] saveSceneAndPlayer];

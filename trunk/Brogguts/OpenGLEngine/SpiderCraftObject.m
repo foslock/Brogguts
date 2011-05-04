@@ -9,6 +9,8 @@
 #import "SpiderCraftObject.h"
 #import "BroggutScene.h"
 #import "Image.h"
+#import "GameController.h"
+#import "PlayerProfile.h"
 
 @implementation SpiderCraftObject
 
@@ -89,7 +91,8 @@
         droneBuildTimer = kCraftSpiderBuildDroneTime;
         if (droneCount < droneCountLimit) {
             [self addNewDroneToBay];
-            [[self currentScene] addBroggutValue:-kCraftSpiderDroneCostBrogguts atLocation:objectLocation withAlliance:kAllianceFriendly];
+            [[self currentScene] addBroggutTextValue:-kCraftSpiderDroneCostBrogguts atLocation:objectLocation withAlliance:kAllianceFriendly];
+            [[[GameController sharedGameController] currentProfile] addBrogguts:-kCraftSpiderDroneCostBrogguts];
         }
 	} else if (!isTraveling) {
         droneBuildTimer -= 1;

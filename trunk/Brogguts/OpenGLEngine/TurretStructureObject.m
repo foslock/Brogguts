@@ -9,6 +9,7 @@
 #import "TurretStructureObject.h"
 #import "ParticleSingleton.h"
 #import "Image.h"
+#import "ImageRenderSingleton.h"
 
 @implementation TurretStructureObject
 
@@ -27,6 +28,7 @@
 		attributeAttackRange = kStructureTurretAttackRange;
 		attackCooldownTimer = 0;
         turretGunImage = [[Image alloc] initWithImageNamed:@"spriteturretgun.png" filter:GL_LINEAR];
+        [turretGunImage setRenderLayer:kLayerTopLayer];
         [turretGunImage setRotation:45.0f];
 	}
 	return self;
@@ -62,11 +64,6 @@
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
-    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
-    [turretGunImage renderCenteredAtPoint:aPoint withScrollVector:vector];
-}
-
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
     enablePrimitiveDraw();
@@ -85,6 +82,8 @@
 		}
 	}
 	disablePrimitiveDraw();
+    
+    [turretGunImage renderCenteredAtPoint:objectLocation withScrollVector:scroll];
 }
 
 @end

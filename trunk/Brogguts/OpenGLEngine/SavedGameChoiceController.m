@@ -1,12 +1,12 @@
 //
-//  MapChoiceController.m
+//  SavedGameChoiceController.m
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 3/11/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
-#import "MapChoiceController.h"
+#import "SavedGameChoiceController.h"
 #import "GameController.h"
 #import "OpenGLEngineAppDelegate.h"
 #import "GameCenterSingleton.h"
@@ -14,34 +14,27 @@
 
 enum SectionNames {
     kSectionSavedScenes,
-    kSectionNewMaps,
     kSectionExitButton,
 };
 
-@implementation MapChoiceController
-@synthesize onlineMatch;
+@implementation SavedGameChoiceController
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         sharedGameController = [GameController sharedGameController];      
-        NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedSkirmishFileName];
-        NSString* mapsPath = [sharedGameController documentsPathWithFilename:kNewMapScenesFileName];
+        NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
         NSArray* savedPlistArray = [NSArray arrayWithContentsOfFile:savedScenePath];
-        NSArray* mapsPlistArray = [NSArray arrayWithContentsOfFile:mapsPath];
-        savedScenesNames = [[NSMutableArray alloc] initWithArray:savedPlistArray];
-        newMapNames = [[NSMutableArray alloc] initWithArray:mapsPlistArray];
-        numberOfSavedScenes = [savedScenesNames count];
-        numberOfNewMaps = [newMapNames count];
+        savedGamesNames = [[NSMutableArray alloc] initWithArray:savedPlistArray];
+        numberOfSavedGames = [savedGamesNames count];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [savedScenesNames release];
-    [newMapNames release];
+    [savedGamesNames release];
     [super dealloc];
 }
 
@@ -109,9 +102,6 @@ enum SectionNames {
         case kSectionSavedScenes:
             return @"Saved Games";
             break;
-        case kSectionNewMaps:
-            return @"New Game";
-            break;
         default:
             return @"";
             break;
@@ -121,7 +111,7 @@ enum SectionNames {
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -129,10 +119,7 @@ enum SectionNames {
     // Return the number of rows in the section.
     switch (section) {
         case kSectionSavedScenes:
-            return numberOfSavedScenes;
-            break;
-        case kSectionNewMaps:
-            return numberOfNewMaps;
+            return numberOfSavedGames;
             break;
         case kSectionExitButton:
             return 1;
@@ -155,13 +142,8 @@ enum SectionNames {
     switch (indexPath.section) {
         case kSectionSavedScenes:
             cell.textLabel.textAlignment = UITextAlignmentLeft;
+            cell.textLabel.text = [savedGamesNames objectAtIndex:indexPath.row];
             cell.backgroundColor = [UIColor whiteColor];
-            cell.textLabel.text = [savedScenesNames objectAtIndex:indexPath.row];
-            break;
-        case kSectionNewMaps:
-            cell.textLabel.textAlignment = UITextAlignmentLeft;
-            cell.backgroundColor = [UIColor whiteColor];
-            cell.textLabel.text = [newMapNames objectAtIndex:indexPath.row];
             break;
         case kSectionExitButton:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
@@ -220,27 +202,14 @@ enum SectionNames {
 {
     switch (indexPath.section) {
         case kSectionSavedScenes: {
-            NSString* name = [savedScenesNames objectAtIndex:indexPath.row];
+            NSString* name = [savedGamesNames objectAtIndex:indexPath.row];
             NSLog(@"Load the saved scene with name %@", name);
-            NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedSkirmishFileName];
-            [savedScenesNames removeObjectAtIndex:indexPath.row];
-            if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
+            NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
+            [savedGamesNames removeObjectAtIndex:indexPath.row];
+            if (![savedGamesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:NO];
-        }
-            break;
-        case kSectionNewMaps: {
-            NSString* name = [newMapNames objectAtIndex:indexPath.row];
-            NSLog(@"Make a new scene with name %@", name);
-            NSNull* null = [NSNull null];
-            [[[GameController sharedGameController] gameScenes] setValue:null forKey:name];
-            
-            if (onlineMatch) {
-                [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
-            } else {
-                [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES];
-            }
+            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeCampaign withIndex:0 isNew:NO];
         }
             break;
         case kSectionExitButton: {

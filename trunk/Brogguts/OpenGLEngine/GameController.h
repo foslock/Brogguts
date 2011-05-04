@@ -48,7 +48,8 @@ enum kSceneStorageIndexs {
 };
 
 extern NSString* kBaseCampFileName;
-extern NSString* kSavedScenesFileName;
+extern NSString* kSavedCampaignFileName;
+extern NSString* kSavedSkirmishFileName;
 extern NSString* kNewMapScenesFileName;
 
 #define COLLISION_CELL_WIDTH 128.0f
@@ -115,11 +116,12 @@ enum SceneTypes {
 - (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name;
 - (void)createInitialBaseCampLevel;
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
-- (void)addFilenameToSceneFileList:(NSString*)filename;
+- (void)addFilenameToSkirmishFileList:(NSString*)filename;
+- (void)addFilenameToSavedCampaignFileList:(NSString*)filename;
 
 // Transitions to the scene with the given filename
 - (void)returnToMainMenu;
-- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType isNew:(BOOL)isNewScene;
+- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene;
 - (void)loadCampaignLevelsForIndex:(int)index;
 - (void)loadTutorialLevelsForIndex:(int)index;
 
