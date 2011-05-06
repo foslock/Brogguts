@@ -2,17 +2,25 @@
 //  BroggupediaDetailView.h
 //  OpenGLEngine
 //
-//  Created by James F Lockwood on 5/2/11.
+//  Created by James F Lockwood on 5/5/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-
 @interface BroggupediaDetailView : UIViewController {
-    
+    int currentObjectID;
+    float currentRotation;
+    NSTimer* timer;
 }
 
-- (void)presentUnitWithObjectID:(int)objectID;
+@property (assign) IBOutlet UIImageView* unitImageView;
+@property (assign) IBOutlet UILabel* unitLabel;
+@property (assign) IBOutlet UILabel* unitBroggutsCostLabel;
+@property (assign) IBOutlet UILabel* unitMetalCostLabel;
+
+- (id)initWithObjectType:(int)objectID;
+- (void)setLabelsWithObjectID:(int)objectID;
+- (void)rotateObject:(NSTimer*)timer;
 
 @end

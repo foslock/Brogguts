@@ -147,24 +147,25 @@
                          initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
     buildMetalValue = [[TextObject alloc]
                        initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
-    [buildBroggutValue setRenderLayer:kLayerHUDTextLayer];
-    [buildMetalValue setRenderLayer:kLayerHUDTextLayer];
+    [buildBroggutValue setRenderLayer:kLayerHUDTopLayer];
+    [buildMetalValue setRenderLayer:kLayerHUDTopLayer];
     [self addTextObject:buildBroggutValue];
     [self addTextObject:buildMetalValue];
     isShowingBuildingValues = NO;
     currentBuildBroggutCost = 0;
     currentBuildMetalCost = 0;
-        
+    
     frameCounter = 0;
     
     cameraImage = [[Image alloc] initWithImageNamed:@"starTexture.png" filter:GL_LINEAR];
 }
 
-- (id)initWithFileName:(NSString*)filename {
+- (id)initWithFileName:(NSString*)filename wasLoaded:(BOOL)loaded {
     self = [super init];
     if (self) {
         // Get the game controller first
         sharedGameController = [GameController sharedGameController];
+        [sharedGameController setJustMadeScene:self];
         
         NSString* fileNameExt = [filename stringByAppendingString:@".plist"];
         NSString* filePath = [sharedGameController documentsPathWithFilename:fileNameExt];
@@ -210,8 +211,40 @@
                 MediumBroggut* broggut = [[self collisionManager] broggutCellForLocation:currentPoint]; 
                 NSNumber* broggutValue = [currentBroggutInfo objectAtIndex:0];  // Value stored
                 NSNumber* broggutAge = [currentBroggutInfo objectAtIndex:1];	// Age stored
-                broggut->broggutValue = [broggutValue intValue];
                 broggut->broggutAge = [broggutAge intValue];
+                
+                if (!loaded) {
+                    if ([broggutValue intValue] != -1) {
+                        switch ([broggutAge intValue]) {
+                            case kBroggutMediumAgeYoung: {
+                                int range = kBroggutYoungMediumMaxValue - kBroggutYoungMediumMinValue;
+                                int rand = arc4random() % range;
+                                broggut->broggutValue = kBroggutYoungMediumMinValue + rand;
+                                break;
+                            }
+                            case kBroggutMediumAgeOld:{
+                                int range = kBroggutOldMediumMaxValue - kBroggutOldMediumMinValue;
+                                int rand = arc4random() % range;
+                                broggut->broggutValue = kBroggutOldMediumMinValue + rand;
+                                break;
+                            }
+                            case kBroggutMediumAgeAncient:{
+                                int range = kBroggutAncientMediumMaxValue - kBroggutAncientMediumMinValue;
+                                int rand = arc4random() % range;
+                                broggut->broggutValue = kBroggutAncientMediumMinValue + rand;
+                                break;
+                            }
+                            default:
+                                broggut->broggutValue = [broggutValue intValue];
+                                break;
+                        }
+                    } else {
+                        broggut->broggutValue = [broggutValue intValue];
+                    }
+                } else {
+                    broggut->broggutValue = [broggutValue intValue];
+                }
+                
                 if ([broggutValue intValue] == -1) {
                     [pointArray addObject:[NSNumber numberWithFloat:currentX]];
                     [pointArray addObject:[NSNumber numberWithFloat:currentY]];
@@ -249,6 +282,7 @@
                         case kObjectStructureBaseStationID: {
                             BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc]
                                                                         initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newStructure setCurrentScene:self];
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
@@ -266,6 +300,7 @@
                         case kObjectStructureBlockID: {
                             BlockStructureObject* newStructure = [[BlockStructureObject alloc]
                                                                   initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newStructure setCurrentScene:self];
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
@@ -277,6 +312,7 @@
                         case kObjectStructureTurretID: {
                             TurretStructureObject* newStructure = [[TurretStructureObject alloc]
                                                                    initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newStructure setCurrentScene:self];
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
@@ -288,6 +324,7 @@
                         case kObjectStructureRadarID: {
                             RadarStructureObject* newStructure = [[RadarStructureObject alloc]
                                                                   initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newStructure setCurrentScene:self];
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
@@ -299,6 +336,7 @@
                         case kObjectStructureFixerID: {
                             FixerStructureObject* newStructure = [[FixerStructureObject alloc]
                                                                   initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newStructure setCurrentScene:self];
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
@@ -319,6 +357,7 @@
                         case kObjectCraftAntID: {
                             AntCraftObject* newCraft = [[AntCraftObject alloc]
                                                         initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -338,6 +377,7 @@
                         case kObjectCraftMothID: {
                             MothCraftObject* newCraft = [[MothCraftObject alloc]
                                                          initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -354,6 +394,7 @@
                         case kObjectCraftBeetleID: {
                             BeetleCraftObject* newCraft = [[BeetleCraftObject alloc]
                                                            initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -370,6 +411,7 @@
                         case kObjectCraftMonarchID: {
                             MonarchCraftObject* newCraft = [[MonarchCraftObject alloc]
                                                             initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -386,6 +428,7 @@
                         case kObjectCraftCamelID: {
                             CamelCraftObject* newCraft = [[CamelCraftObject alloc]
                                                           initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -405,6 +448,7 @@
                         case kObjectCraftRatID: {
                             RatCraftObject* newCraft = [[RatCraftObject alloc]
                                                         initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -421,6 +465,10 @@
                         case kObjectCraftSpiderID: {
                             SpiderCraftObject* newCraft = [[SpiderCraftObject alloc]
                                                            initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
+                            for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
+                                [newCraft addNewDroneToBay];
+                            }
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -437,6 +485,7 @@
                         case kObjectCraftEagleID: {
                             EagleCraftObject* newCraft = [[EagleCraftObject alloc]
                                                           initWithLocation:objectEndLocation isTraveling:objectIsTraveling];
+                            [newCraft setCurrentScene:self];
                             [newCraft setObjectAlliance:objectAlliance];
                             [newCraft setObjectRotation:objectRotation];
                             [newCraft setObjectLocation:objectCurrentLocation];
@@ -526,13 +575,13 @@
         CGPoint cameraPoint = CGPointMake(averageX, averageY);
         [self setCameraLocation:cameraPoint];
         [self setMiddleOfVisibleScreenToCamera];
-    } else {
+    } else if (sceneType != kSceneTypeTutorial){
         [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
     }
     // Just to be sure
     [sharedStarSingleton randomizeStars];
-    [sharedGameCenterSingleton setCurrentScene:self];
+    [[GameController sharedGameController] setCurrentScene:self];
     [[sharedGameController currentProfile] startSceneWithType:sceneType];
 }
 
@@ -945,7 +994,7 @@
     
     enablePrimitiveDraw();
     // Draw the grid that collisions are based in
-    [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:0.08f];
+    [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:SCENE_GRID_RENDER_ALPHA];
     disablePrimitiveDraw();
     
     // Draw the medium/large brogguts
@@ -1021,10 +1070,9 @@
     }
     
     // Render images
-    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDLayer];
-    
-    // Render images
-    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDTextLayer];
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDBottomLayer];
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDMiddleLayer];
+    [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDTopLayer];
 }
 
 #pragma mark -
@@ -1228,7 +1276,7 @@
         cPoints[vertexCounter++] = point.x;
         cPoints[vertexCounter++] = point.y;
     }
-    
+    glLineWidth(2.0f);
     drawLines(cPoints, pointCount, Vector2fZero);
     disablePrimitiveDraw();
     free(cPoints);
@@ -1318,10 +1366,60 @@
     }
     [tempShips release];
     
+    if ([controlledShips count] > 1) {
+        [self spreadOutCurrentlySelectedShips];
+    }
+    
     free(xPoints);
     free(yPoints);
     [selectionPointsOne removeAllObjects];
     [selectionPointsTwo removeAllObjects];
+}
+
+- (void)spreadOutCurrentlySelectedShips {
+    int shipCount = [controlledShips count];
+    float* pointsX = malloc(shipCount * sizeof(*pointsX));
+    float* pointsY = malloc(shipCount * sizeof(*pointsY));
+    float averageX = 0.0f;
+    float averageY = 0.0f;
+    for (int i = 0; i < shipCount; i++) {
+        CraftObject* craft = [controlledShips objectAtIndex:i];
+        pointsX[i] = craft.objectLocation.x;
+        pointsY[i] = craft.objectLocation.y;
+        averageX += pointsX[i] / (float)shipCount;
+        averageY += pointsY[i] / (float)shipCount;
+        if ([craft isFollowingPath]) {
+            return;
+        }
+    }
+    
+    BOOL allTooClose = YES;
+    for (int i = 0; i < shipCount; i++) {
+        float pointXOne = pointsX[i];
+        float pointYOne = pointsY[i];
+        for (int j = i + 1; j < shipCount; j++) {
+            float pointXTwo = pointsX[j];
+            float pointYTwo = pointsY[j];
+            if (GetDistanceBetweenPointsSquared(CGPointMake(pointXOne, pointYOne), CGPointMake(pointXTwo, pointYTwo)) > POW2(COLLISION_CELL_WIDTH)) {
+                allTooClose = NO;
+            }
+        }
+    }
+    
+    if (allTooClose) {
+        for (int i = 0; i < shipCount; i++) {
+            CraftObject* craft = [controlledShips objectAtIndex:i];
+            float currentAngle = 360.0f * ((float)i / (float)shipCount);
+            float distance = CLAMP([craft boundingCircle].radius, COLLISION_CELL_WIDTH, FLT_MAX);
+            CGPoint newPoint = CGPointMake(averageX + (distance * cosf(DEGREES_TO_RADIANS(currentAngle))),
+                                           averageY + (distance * sinf(DEGREES_TO_RADIANS(currentAngle))));
+            NSArray* path = [collisionManager pathFrom:craft.objectLocation to:newPoint allowPartial:YES isStraight:YES];
+            [craft followPath:path isLooped:NO];
+        }
+    }
+    
+    free(pointsX);
+    free(pointsY);
 }
 
 - (void)addControlledCraft:(CraftObject*)craft {
@@ -1438,9 +1536,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1459,9 +1554,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1480,9 +1572,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1501,9 +1590,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1522,9 +1608,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1543,9 +1626,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1558,15 +1638,16 @@
             if ([[sharedGameController currentProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal]) {
                 [self addBroggutTextValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:alliance];
                 SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
+                [newCraft setCurrentScene:self];
+                for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
+                    [newCraft addNewDroneToBay];
+                }
                 if (alliance == kAllianceFriendly) {
                     [newCraft setObjectLocation:homeBaseLocation];
                 } else if (alliance == kAllianceEnemy) {
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1585,9 +1666,6 @@
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
                 [newCraft setObjectAlliance:alliance];
-                if (numberOfCurrentShips == 0 && alliance == kAllianceFriendly) {
-                    [self addControlledCraft:newCraft];
-                }
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
@@ -1604,6 +1682,9 @@
 
 - (void)attemptToCreateStructureWithID:(int)structureID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
     if (isBuildingStructure) {
+        return;
+    }
+    if (![collisionManager isPathNodeOpenAtLocation:location]) {
         return;
     }
     switch (structureID) {
@@ -1719,18 +1800,17 @@
     NSString* broggutsString = [NSString stringWithFormat:@"Bgs: %i", brogguts];
     NSString* metalString = [NSString stringWithFormat:@"Mtl: %i", metal];
     float bWidth = [self getWidthForFontID:kFontBlairID withString:broggutsString];
-    float mWidth = [self getWidthForFontID:kFontBlairID withString:metalString];
-    float totalWidth = bWidth + mWidth;
+    float fixedDistance = 16.0f;
     
     [buildBroggutValue setIsTextHidden:NO];
     [buildMetalValue setIsTextHidden:NO];
     
     [buildBroggutValue setObjectText:broggutsString];
     [buildBroggutValue setFontColor:Color4fMake(0.5f, 1.0f, 0.0f, 0.8f)];
-    [buildBroggutValue setObjectLocation:CGPointMake(location.x - totalWidth - (bWidth / 2), location.y + 48)];
+    [buildBroggutValue setObjectLocation:CGPointMake(location.x - bWidth - (fixedDistance / 2), location.y + 48)];
     [buildMetalValue setObjectText:metalString];
     [buildMetalValue setFontColor:Color4fMake(0.0f, 0.5f, 1.0f, 0.8f)];
-    [buildMetalValue setObjectLocation:CGPointMake(location.x + totalWidth - (mWidth / 2), location.y + 48)];
+    [buildMetalValue setObjectLocation:CGPointMake(location.x + (fixedDistance / 2), location.y + 48)];
 }
 
 #pragma mark -
@@ -1738,7 +1818,7 @@
 
 - (void)otherPlayerDisconnected {
     if (isMultiplayerMatch)
-        [[GameController sharedGameController] returnToMainMenu];
+        [[GameController sharedGameController] returnToMainMenuWithSave:NO];
 }
 
 #pragma mark -
@@ -2031,11 +2111,20 @@
                     float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
                     CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
                     currentOverViewPoint = localTouchLoc;
-                    if ([self attemptToSelectCraftWithinRect:[self visibleScreenBounds]]) {
-                        [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
-                        [self setMiddleOfVisibleScreenToCamera];
-                        [self fadeOverviewMapOut];
+                    /*
+                     if ([self attemptToSelectCraftWithinRect:[self visibleScreenBounds]]) {
+                     [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
+                     [self setMiddleOfVisibleScreenToCamera];
+                     [self fadeOverviewMapOut];
+                     }
+                     */
+                    for (CraftObject* craft in controlledShips) {
+                        [craft setIsBeingControlled:NO];
                     }
+                    [controlledShips removeAllObjects];
+                    [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
+                    [self setMiddleOfVisibleScreenToCamera];
+                    [self fadeOverviewMapOut];
                     break;
                 }
             }

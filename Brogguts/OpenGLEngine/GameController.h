@@ -74,6 +74,8 @@ enum SceneTypes {
 	EAGLView *eaglView;								// Reference to the EAGLView
 	UIInterfaceOrientation interfaceOrientation;	// Devices interface orientation
 	BroggutScene* currentScene;
+    BroggutScene* justMadeScene;
+    BOOL isUpdatingCurrentScene;
 	
 	// Scene transition vars
 	NSString* transitionName;
@@ -83,7 +85,12 @@ enum SceneTypes {
 	BOOL isFadingSceneOut;
 	float fadingRectAlpha;
     int currentSceneType;
+    BOOL isNewSceneNew;
     BOOL isReturningToMenu;
+    BOOL isSavingFadingScene;
+    BOOL isLoadingSavedScene;
+    
+    BOOL isShowingBroggupediaInScene;
 	
     // Game controller iVars	
     NSDictionary *gameScenes;						// Dictionary of the different game scenes
@@ -92,6 +99,7 @@ enum SceneTypes {
 @property (retain) NSString* transitionName;
 @property (retain) PlayerProfile* currentProfile;
 @property (nonatomic, retain) BroggutScene *currentScene;
+@property (nonatomic, retain) BroggutScene *justMadeScene;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
@@ -101,6 +109,9 @@ enum SceneTypes {
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class
 + (GameController*)sharedGameController;
+
+- (void)presentBroggupedia;
+- (void)dismissBroggupedia;
 
 // Deal with loading and saving the player data
 - (void)loadPlayerProfile;
@@ -120,9 +131,9 @@ enum SceneTypes {
 - (void)addFilenameToSavedCampaignFileList:(NSString*)filename;
 
 // Transitions to the scene with the given filename
-- (void)returnToMainMenu;
-- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene;
-- (void)loadCampaignLevelsForIndex:(int)index;
+- (void)returnToMainMenuWithSave:(BOOL)save;
+- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene isLoading:(BOOL)loading;
+- (void)loadCampaignLevelsForIndex:(int)index withLoaded:(BOOL)loaded;
 - (void)loadTutorialLevelsForIndex:(int)index;
 
 // Updates the logic within the current scene

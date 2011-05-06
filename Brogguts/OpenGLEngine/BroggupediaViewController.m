@@ -1,21 +1,19 @@
 //
-//  ProfileMenuController.m
+//  BroggupediaViewController.m
 //  OpenGLEngine
 //
-//  Created by James F Lockwood on 3/10/11.
+//  Created by James F Lockwood on 5/5/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
-#import "ProfileMenuController.h"
+#import "BroggupediaViewController.h"
+#import "BroggupediaDetailView.h"
 #import "GameController.h"
-#import "OpenGLEngineAppDelegate.h"
-#import "TutorialFiles.h"
 
-@implementation ProfileMenuController
+@implementation BroggupediaViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+- (id)init {
+    self = [super initWithNibName:@"BroggupediaViewController" bundle:nil];
     if (self) {
         // Custom initialization
     }
@@ -35,13 +33,16 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)startBaseCamp {
-    NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
-    [[GameController sharedGameController] transitionToSceneWithFileName:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
+- (IBAction)backButtonPressed:(id)sender {
+    [[GameController sharedGameController] dismissBroggupedia];
 }
 
-- (IBAction)popProfileController {
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+- (IBAction)buttonPressed:(id)sender {
+    int objectID = (int)[sender tag];
+    BroggupediaDetailView* controller = [[BroggupediaDetailView alloc] initWithObjectType:objectID];
+    [controller setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:controller animated:YES];
+    [controller release];
 }
 
 #pragma mark - View lifecycle

@@ -119,10 +119,12 @@ enum StructureButtonIDs {
 		disablePrimitiveDraw();
 		CGPoint flooredLocation = CGPointMake(currentDragButtonLocation.x + scroll.x,
 											  currentDragButtonLocation.y + scroll.y);
-		[[[[GameController sharedGameController]
-		   currentScene]
-		  collisionManager]	
-		 drawValidityRectForLocation:flooredLocation forMining:NO];
+        if (!CGRectContainsPoint([myController sideBarRect], currentDragButtonLocation)) {
+            [[[[GameController sharedGameController]
+               currentScene]
+              collisionManager]	
+             drawValidityRectForLocation:flooredLocation forMining:NO];
+        }
 	}
 }
 

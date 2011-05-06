@@ -51,7 +51,7 @@
         
         [self addTouchableObject:newAntOne withColliding:CRAFT_COLLISION_YESNO];
         [self addTouchableObject:newAntTwo withColliding:CRAFT_COLLISION_YESNO];
-        [self addCollidableObject:antTrigger];
+        [self addTouchableObject:antTrigger withColliding:NO];        
         [newAntOne release];
         [newAntTwo release];
         [self setCameraLocation:GetMidpointFromPoints(antOneLoc, antTwoLoc)];

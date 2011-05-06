@@ -21,7 +21,8 @@ extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1];
     BOOL isAdvancingOrReset;
 }
 
-- (id)initWithCampaignIndex:(int)campIndex;
+- (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded;
+- (id)initWithLoaded:(BOOL)loaded;
 - (BOOL)checkObjective;
 - (BOOL)checkFailure;
 - (void)advanceToNextLevel;

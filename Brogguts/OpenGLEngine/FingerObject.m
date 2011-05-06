@@ -26,7 +26,8 @@
         isRenderedInOverview = NO;
         touchImage = [[Image alloc] initWithImageNamed:@"spritetouch.png" filter:GL_LINEAR];
         touchImage.color = Color4fMake(1.0f, 1.0f, 1.0f, 0.5f);
-        self.renderLayer = kLayerHUDLayer;
+        [touchImage setRenderLayer:kLayerHUDBottomLayer];
+        [self setRenderLayer:kLayerHUDMiddleLayer];
         startLocation = startLoc;
         endLocation = endLoc;
         objectImage.scale = Scale2fMake(2.0f, 2.0f);

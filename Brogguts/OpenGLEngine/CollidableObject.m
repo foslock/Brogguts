@@ -90,6 +90,9 @@ static int globalUniqueID = 0;
     if (!currentScene) {
         currentScene = [[GameController sharedGameController] currentScene];
     }
+    if (!currentScene) {
+        currentScene = [[GameController sharedGameController] justMadeScene];
+    }
     return currentScene;
 }
 

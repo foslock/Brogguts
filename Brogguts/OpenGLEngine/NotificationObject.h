@@ -17,6 +17,8 @@
     CollidableObject* objectAttachedTo;
 }
 
+@property (readonly) CGPoint notificationLocation;
+
 - (id)initWithLocation:(CGPoint)location withDuration:(float)duration;
 - (void)attachToObject:(CollidableObject*)object;
 

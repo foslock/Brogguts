@@ -28,6 +28,7 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet EAGLView *glView;
 
+- (UIViewController*)mainMenuController;
 - (void)saveSceneAndPlayer;
 - (void)startGLAnimation;
 - (void)stopGLAnimation;

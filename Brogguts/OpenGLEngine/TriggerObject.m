@@ -34,6 +34,8 @@
         numberOfObjectsNeeded = INT_MAX;
         objectIDNeeded = -1;
         nearbyObjects = [[NSMutableArray alloc] init];
+        isCheckedForRadialEffect = YES;
+        isTouchable = NO;
     }
     return self;
 }
@@ -45,7 +47,7 @@
     }
 }
 
-- (void)collidedWithOtherObject:(CollidableObject *)other {
+- (void)objectEnteredEffectRadius:(TouchableObject *)other {
     if (other.objectType == objectIDNeeded) {
         if (![nearbyObjects containsObject:other]) {
             [nearbyObjects addObject:other];
@@ -88,6 +90,7 @@
     }
     currentTriggerAlpha = CLAMP(currentTriggerAlpha, TRIGGER_MIN_ALPHA, TRIGGER_MAX_ALPHA);
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentTriggerAlpha)];
+    effectRadius = [objectImage imageSize].width;
 }
 
 @end

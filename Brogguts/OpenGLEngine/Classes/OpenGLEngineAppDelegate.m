@@ -21,6 +21,7 @@
 
 - (void)startGLAnimation {
     [window bringSubviewToFront:glView];
+    [mainMenuController dismissModalViewControllerAnimated:NO];
     glView.hidden = NO;
     [glView startAnimation];
 }
@@ -93,6 +94,10 @@
     SplashScreenViewController* splash = [[SplashScreenViewController alloc] initWithNibName:@"SplashScreenViewController" bundle:nil];
     [mainMenuController presentModalViewController:splash animated:NO];
     return YES;
+}
+
+- (UIViewController*)mainMenuController {
+    return mainMenuController;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

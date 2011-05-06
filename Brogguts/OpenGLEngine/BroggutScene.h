@@ -22,6 +22,7 @@
 #define OVERVIEW_MIN_FINGER_DISTANCE 10.0f
 #define SELECTION_MIN_DISTANCE 20.0f
 #define SCENE_NAME_OBJECT_TIME 5.0f
+#define SCENE_GRID_RENDER_ALPHA 0.075f
 
 @class Image;
 @class ImageRenderSingleton;
@@ -202,7 +203,7 @@
 #pragma mark Selectors
 
 // Get a scene from a file
-- (id)initWithFileName:(NSString*)filename;
+- (id)initWithFileName:(NSString*)filename wasLoaded:(BOOL)loaded;
 
 // Set default values, etc.
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName;
@@ -268,6 +269,9 @@
 
 // Try to select the ships between the two arrays of points
 - (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;
+
+// Spreads out the ships that are currently selected so that they aren't all in a clump
+- (void)spreadOutCurrentlySelectedShips;
 
 // Add a craft the the current controlled craft
 - (void)addControlledCraft:(CraftObject*)craft;

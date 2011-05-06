@@ -11,8 +11,10 @@
 #import "OpenGLEngineAppDelegate.h"
 #import "GameCenterSingleton.h"
 #import "PlayerProfile.h"
+#import "CampaignScene.h"
 
 enum SectionNames {
+    kSectionNewGame,
     kSectionSavedScenes,
     kSectionExitButton,
 };
@@ -99,6 +101,9 @@ enum SectionNames {
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
+        case kSectionNewGame:
+            return @"New Game";
+            break;
         case kSectionSavedScenes:
             return @"Saved Games";
             break;
@@ -111,13 +116,16 @@ enum SectionNames {
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
     switch (section) {
+        case kSectionNewGame:
+            return 1;
+            break;
         case kSectionSavedScenes:
             return numberOfSavedGames;
             break;
@@ -140,6 +148,11 @@ enum SectionNames {
     }
     
     switch (indexPath.section) {
+        case kSectionNewGame:
+            cell.textLabel.textAlignment = UITextAlignmentLeft;
+            cell.textLabel.text = @"Start a New Game";
+            cell.backgroundColor = [UIColor whiteColor];
+            break;
         case kSectionSavedScenes:
             cell.textLabel.textAlignment = UITextAlignmentLeft;
             cell.textLabel.text = [savedGamesNames objectAtIndex:indexPath.row];
@@ -201,6 +214,10 @@ enum SectionNames {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.section) {
+        case kSectionNewGame: {
+            [[GameController sharedGameController] transitionToSceneWithFileName:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
+        }
+            break;
         case kSectionSavedScenes: {
             NSString* name = [savedGamesNames objectAtIndex:indexPath.row];
             NSLog(@"Load the saved scene with name %@", name);
@@ -209,7 +226,14 @@ enum SectionNames {
             if (![savedGamesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeCampaign withIndex:0 isNew:NO];
+            int index = 0;
+            for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+                NSString* otherName = kCampaignSceneFileNames[i];
+                if ([otherName caseInsensitiveCompare:name] == NSOrderedSame) {
+                    index = i;
+                }
+            }
+            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeCampaign withIndex:index isNew:NO isLoading:YES];
         }
             break;
         case kSectionExitButton: {

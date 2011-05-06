@@ -127,12 +127,11 @@ static NSString* kMediumBroggutAncientImageSprite = @"spritetrashancient";
         
     // drawing commands go here
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    /* WRITE TO FILE
+    /*
     NSData* imageData = UIImagePNGRepresentation(newImage);
-    [imageData writeToFile:[[GameController sharedGameController] documentsPathWithFilename:@"broggutImage.png"] atomically:YES];
+    NSString* name = [NSString stringWithFormat:@"broggutImage%i.png",broggutAge];
+    [imageData writeToFile:[[GameController sharedGameController] documentsPathWithFilename:name] atomically:YES];
     */
-    
     UIGraphicsEndImageContext();
     [trashTexture release];
     return newImage;

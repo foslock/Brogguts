@@ -70,8 +70,6 @@
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 
-- (void)collidedWithOtherObject:(CollidableObject*)other;
-
 - (void)updateObjectLogicWithDelta:(float)aDelta;
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector;

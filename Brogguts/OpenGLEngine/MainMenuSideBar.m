@@ -14,6 +14,7 @@
 #import "StructureSideBar.h"
 #import "BroggutsSideBar.h"
 #import "GameController.h"
+#import "BroggupediaViewController.h"
 
 @implementation MainMenuSideBar
 
@@ -25,7 +26,7 @@
 			[buttonArray addObject:button];
 			switch (i) {
 				case 0:
-					[button setButtonText:@"Brogguts"];
+					[button setButtonText:@"Refining"];
 					break;
 				case 1:
 					[button setButtonText:@"Craft"];
@@ -33,8 +34,8 @@
 				case 2:
 					[button setButtonText:@"Structures"];
 					break;
-				case 3:
-					[button setButtonText:@"Upgrades"];
+                case 3:
+					[button setButtonText:@"Broggupedia"];
 					break;
                 case 4:
 					[button setButtonText:@"MAIN MENU"];
@@ -69,9 +70,12 @@
             [myController pushSideBarObject:newMenu];
             [newMenu release];
         }
+        if (buttonID == 3) {
+            [[GameController sharedGameController] presentBroggupedia];
+        }
         if (buttonID == 4) {
             [myController moveSideBarOut];
-            [[GameController sharedGameController] returnToMainMenu];
+            [[GameController sharedGameController] returnToMainMenuWithSave:YES];
         }
     }
     [super buttonReleasedWithID:buttonID atLocation:location];

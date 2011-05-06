@@ -1,12 +1,12 @@
 //
-//  TutorialSceneEleven.m
+//  TutorialSceneTwelve.m
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 3/17/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
-#import "TutorialSceneEleven.h"
+#import "TutorialSceneTwelve.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "GameplayConstants.h"
@@ -14,22 +14,22 @@
 #import "CraftAndStructures.h"
 #import "TextObject.h"
 
-@implementation TutorialSceneEleven
+@implementation TutorialSceneTwelve
 
 - (id)init {
-    self = [super initWithTutorialIndex:10];
+    self = [super initWithTutorialIndex:11];
     if (self) {
         isAllowingOverview = YES;
         isShowingBroggutCount = YES;
         isAllowingSidebar = YES;
         
-        [helpText setObjectText:@"Tap the button in the top left to open the auxilury menu, select craft, and drag the craft you want onto the screen, Then it will travel to that location. Create three new Ants. Make sure you have enough brogguts!"];
+        [helpText setObjectText:@"Structures are built the same way, except you can only build one at a time. Be careful how far you build it from your base station, or you will have to wait a long time! Build three new Blocks near your base station."];
     }
     return self;
 }
 
 - (BOOL)checkObjective {
-    if (numberOfCurrentShips >= 4)
+    if (numberOfCurrentStructures >= 3 && !isBuildingStructure)
         return YES;
     else
         return NO;

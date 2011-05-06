@@ -33,8 +33,8 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 
 @implementation CampaignScene
 
-- (id)initWithCampaignIndex:(int)campIndex {
-    self = [super initWithFileName:kCampaignSceneFileNames[campIndex]];
+- (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded {
+    self = [super initWithFileName:kCampaignSceneFileNames[campIndex] wasLoaded:loaded];
     if (self) {
         nextSceneName = kCampaignSceneFileNames[campIndex+1];
         
@@ -53,6 +53,10 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
         [self setMiddleOfVisibleScreenToCamera];
     }
     return self;
+}
+
+- (id)initWithLoaded:(BOOL)loaded {
+    return nil; // OVERRIDE!
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
@@ -89,8 +93,8 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
         if (campaignIndex < CAMPAIGN_SCENES_COUNT - 1) {
-            [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex + 1];
-            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:NO];
+            [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex + 1 withLoaded:NO];
+            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:NO isLoading:NO];
         }
     }
 }
@@ -98,8 +102,8 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 - (void)restartCurrentLevel {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
-        [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex];
-        [[GameController sharedGameController] transitionToSceneWithFileName:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:NO];
+        [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex withLoaded:NO];
+        [[GameController sharedGameController] transitionToSceneWithFileName:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:NO isLoading:NO];
     }
 }
 
