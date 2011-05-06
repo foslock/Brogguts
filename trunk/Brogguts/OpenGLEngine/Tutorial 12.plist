@@ -2,11 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<string>Title</string>
-	<false/>
+	<string>Building New Structures</string>
+	<integer>1</integer>
 	<integer>16</integer>
 	<integer>12</integer>
-	<integer>192</integer>
+	<integer>0</integer>
 	<array/>
 	<array>
 		<array>
@@ -26,52 +26,52 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -94,48 +94,48 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -166,40 +166,40 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -250,24 +250,24 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -318,28 +318,28 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -390,24 +390,24 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -458,24 +458,24 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -522,24 +522,24 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -586,24 +586,24 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -650,28 +650,28 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -714,36 +714,36 @@
 			<integer>-1</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
-			<integer>-1</integer>
-			<integer>-1</integer>
+			<integer>400</integer>
+			<integer>0</integer>
 		</array>
 		<array>
 			<integer>-1</integer>
@@ -784,7 +784,7 @@
 			<integer>16</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
 				<real>64</real>
@@ -798,8 +798,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -808,70 +808,22 @@
 			<integer>7</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
-				<real>448</real>
-				<real>448</real>
-			</array>
-			<array>
-				<real>448</real>
-				<real>448</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
-			<false/>
-			<array>
-				<real>0.0</real>
-				<real>0.0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>1</integer>
-			<integer>7</integer>
-			<array/>
-			<integer>0</integer>
-			<real>0.0</real>
-			<false/>
-			<array>
-				<real>576</real>
+				<real>320</real>
 				<real>320</real>
 			</array>
 			<array>
-				<real>576</real>
+				<real>320</real>
 				<real>320</real>
 			</array>
 			<integer>-1</integer>
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>1</integer>
-			<integer>7</integer>
-			<array/>
-			<integer>0</integer>
-			<real>0.0</real>
-			<false/>
-			<array>
-				<real>704</real>
-				<real>448</real>
-			</array>
-			<array>
-				<real>704</real>
-				<real>448</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
-			<false/>
-			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>

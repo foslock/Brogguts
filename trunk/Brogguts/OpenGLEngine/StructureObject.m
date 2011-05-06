@@ -128,6 +128,7 @@
         [buildingDroneImage setRenderLayer:kLayerTopLayer];
 		// Initialize the structure
 		[self initStructureWithID:typeID];
+        [[[self currentScene] collisionManager] setPathNodeIsOpen:NO atLocation:location];
 		if (traveling) {
             [[self currentScene] setIsBuildingStructure:YES];
 			[self setIsTraveling:YES];

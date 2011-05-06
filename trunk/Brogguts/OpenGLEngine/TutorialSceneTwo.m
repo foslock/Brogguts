@@ -31,7 +31,7 @@
         myCraft = newAnt;
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
-        [self addCollidableObject:antTrigger];
+        [self addTouchableObject:antTrigger withColliding:NO];
         
         FingerObject* fingerObj = [[FingerObject alloc] initWithStartLocation:antLoc withEndLocation:triggerLoc repeats:YES];
         finger = fingerObj;

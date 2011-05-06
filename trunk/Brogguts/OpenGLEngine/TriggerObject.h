@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CollidableObject.h"
+#import "TouchableObject.h"
 
 #define TRIGGER_PULSE_SPEED 0.01f // Speed at which the trigger will blink
 #define TRIGGER_MAX_ALPHA 0.45f
 #define TRIGGER_MIN_ALPHA 0.15f
 
-@interface TriggerObject : CollidableObject {
+@interface TriggerObject : TouchableObject {
     BOOL pulsingUp;
     BOOL pulsingDown;
     BOOL isComplete;

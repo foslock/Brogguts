@@ -10,20 +10,23 @@
 #import "Image.h"
 #import "ImageRenderSingleton.h"
 
-#define BUTTON_UNSCALED_SIZE 24
-#define BUTTON_SCALED_SIZE 2
-#define BUTTON_INSET_AMOUNT 4
+#define BUTTON_UNSCALED_SIZE 24.0f
+#define BUTTON_SCALED_SIZE 8.0f
+#define BUTTON_INSET_AMOUNT 4.0f
 
 @implementation TiledButtonObject
-@synthesize isPushable, isPushed;
+@synthesize isPushable, isPushed, wasJustReleased;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;
 {
+    int width = CLAMP(buttonRect.size.width, (2*BUTTON_UNSCALED_SIZE), FLT_MAX);
+    int height = CLAMP(buttonRect.size.height, (2*BUTTON_UNSCALED_SIZE), FLT_MAX);
+    
     drawRect = CGRectMake(buttonRect.origin.x,
                           buttonRect.origin.y,
-                          CLAMP(buttonRect.size.width, (2*BUTTON_UNSCALED_SIZE), FLT_MAX),
-                          CLAMP(buttonRect.size.height, (2*BUTTON_UNSCALED_SIZE), FLT_MAX));
+                          width + (width % (int)BUTTON_SCALED_SIZE),
+                          height + (height % (int)BUTTON_SCALED_SIZE));
     CGPoint point = CGPointMake(drawRect.origin.x + drawRect.size.width / 2,
                                 drawRect.origin.y + drawRect.size.height / 2);
     self = [super initWithImage:nil withLocation:point withObjectType:kObjectTiledButtonID];
@@ -56,7 +59,7 @@
         [images addObject:bottomMiddle];
         [images addObject:bottomRight];
         for (Image* image in images) {
-            [image setRenderLayer:kLayerHUDLayer];
+            [image setRenderLayer:kLayerHUDBottomLayer];
             [image setAlwaysRender:YES];
         }
     }
@@ -134,31 +137,38 @@
     float yMiddleScale = CLAMP(drawRect.size.height - (2 * BUTTON_UNSCALED_SIZE), 0, FLT_MAX);
     [middleMiddle setScale:Scale2fMake(xMiddleScale + 2, yMiddleScale + 2)];
     
-    for (int i = 0; i <= (int)(xMiddleScale / 2); i++) {
-        CGPoint point = CGPointMake(botLeftPoint.x + (BUTTON_UNSCALED_SIZE / 2) + (i * 2),
+    for (int i = 0; i <= (int)(xMiddleScale / BUTTON_SCALED_SIZE); i++) {
+        CGPoint point = CGPointMake(botLeftPoint.x + (BUTTON_UNSCALED_SIZE / 2) + (i * BUTTON_SCALED_SIZE) - 1,
                                     botLeftPoint.y);
         [bottomMiddle renderCenteredAtPoint:point withScrollVector:vector];
     }
     
-    for (int i = 0; i <= (int)(xMiddleScale / 2); i++) {
-        CGPoint point = CGPointMake(topLeftPoint.x + (BUTTON_UNSCALED_SIZE / 2) + (i * 2),
+    for (int i = 0; i <= (int)(xMiddleScale / BUTTON_SCALED_SIZE); i++) {
+        CGPoint point = CGPointMake(topLeftPoint.x + (BUTTON_UNSCALED_SIZE / 2) + (i * BUTTON_SCALED_SIZE) - 1,
                                     topLeftPoint.y);
         [topMiddle renderCenteredAtPoint:point withScrollVector:vector];
     }
     
-    for (int i = 0; i <= (int)(yMiddleScale / 2); i++) {
+    for (int i = 0; i <= (int)(yMiddleScale / BUTTON_SCALED_SIZE); i++) {
         CGPoint point = CGPointMake(topLeftPoint.x,
-                                    topLeftPoint.y - (BUTTON_UNSCALED_SIZE / 2) - (i * 2) - 1);
+                                    topLeftPoint.y - (BUTTON_UNSCALED_SIZE / 2) - (i * BUTTON_SCALED_SIZE));
         [middleLeft renderCenteredAtPoint:point withScrollVector:vector];
     }
     
-    for (int i = 0; i <= (int)(yMiddleScale / 2); i++) {
+    for (int i = 0; i <= (int)(yMiddleScale / BUTTON_SCALED_SIZE); i++) {
         CGPoint point = CGPointMake(topRightPoint.x,
-                                    topRightPoint.y - (BUTTON_UNSCALED_SIZE / 2) - (i * 2) - 1);
+                                    topRightPoint.y - (BUTTON_UNSCALED_SIZE / 2) - (i * BUTTON_SCALED_SIZE));
         [middleRight renderCenteredAtPoint:point withScrollVector:vector];
     }
     
     [middleMiddle renderCenteredAtPoint:middlePoint withScrollVector:vector];
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+    [super updateObjectLogicWithDelta:aDelta];
+    if (wasJustReleased) {
+        wasJustReleased = NO;
+    }
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
@@ -174,6 +184,9 @@
 - (void)touchesEndedAtLocation:(CGPoint)location {
     if (!isPushable) {
         return;
+    }
+    if (CGRectContainsPoint(drawRect, location) && isPushed) {
+        wasJustReleased = YES;
     }
     [self setIsPushed:NO];
 }

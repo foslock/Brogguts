@@ -13,6 +13,8 @@
 #import "Global.h"
 
 @implementation NotificationObject
+@synthesize notificationLocation;
+
 
 - (id)initWithLocation:(CGPoint)location withDuration:(float)duration {
     Image* image = [[Image alloc] initWithImageNamed:@"spritenotificationarrow.png" filter:GL_LINEAR];

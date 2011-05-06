@@ -10,6 +10,8 @@
 #import "GameController.h"
 #import "TriggerObject.h"
 #import "TextObject.h"
+#import "Image.h"
+#import "ImageRenderSingleton.h"
 
 NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     @"Tutorial 1",
@@ -23,19 +25,21 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     @"Tutorial 9",
     @"Tutorial 10",
     @"Tutorial 11",
+    @"Tutorial 12",
 };
 
 
 @implementation TutorialScene
 
 - (void)dealloc {
+    [blackBar release];
     [helpText release];
     [nextSceneName release];
     [super dealloc];
 }
 
 - (id)initWithTutorialIndex:(int)tutIndex {
-    self = [super initWithFileName:kTutorialSceneFileNames[tutIndex]];
+    self = [super initWithFileName:kTutorialSceneFileNames[tutIndex] wasLoaded:NO];
     if (self) {
         if (tutIndex >= TUTORIAL_SCENES_COUNT - 1) {
             nextSceneName = [[kBaseCampFileName stringByDeletingPathExtension] copy];
@@ -53,7 +57,12 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
                                              withRect:helpTextRect
                                          withDuration:-1.0f];
         [helpText setScrollWithBounds:NO];
+        [helpText setRenderLayer:kLayerHUDMiddleLayer];
         [self addTextObject:helpText];
+        
+        blackBar = [[Image alloc] initWithImageNamed:@"blackpixel.png" filter:GL_LINEAR];
+        [blackBar setRenderLayer:kLayerHUDBottomLayer];
+        [blackBar setColor:Color4fMake(0.0f, 0.0f, 0.0f, 0.75f)];
         
         // Turn off the complicated stuff
         isAllowingSidebar = NO;
@@ -72,20 +81,27 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
                                   (COLLISION_CELL_HEIGHT / 2),
                                   1, 1);
     }
+    [blackBar setScale:Scale2fMake(kPadScreenLandscapeWidth, [self getHeightForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]] + 2.0f)];
+                                   
     [helpText setTextRect:helpTextRect];
     if ([self checkObjective]) {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             if (tutorialIndex < TUTORIAL_SCENES_COUNT - 1) {
                 [[GameController sharedGameController] loadTutorialLevelsForIndex:tutorialIndex + 1];
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeTutorial withIndex:tutorialIndex + 1 isNew:NO];
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeTutorial withIndex:tutorialIndex + 1 isNew:NO isLoading:NO];
             } else {
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO];
+                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
             }
             return;
         }
     }
     [super updateSceneWithDelta:aDelta];
+}
+
+- (void)renderScene {
+    [blackBar renderAtPoint:CGPointMake(0.0f, [helpText objectLocation].y - ([self getHeightForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]] / 2) - 3.0f)];
+    [super renderScene];
 }
 
 - (BOOL)checkObjective {

@@ -64,18 +64,6 @@ enum MiningStates {
 	return miningLocation;
 }
 
-- (void)collidedWithOtherObject:(CollidableObject *)other {
-    if (other.objectType == kObjectBroggutSmallID) {
-        BroggutObject* broggut = (BroggutObject*)other;
-        if (!broggut.destroyNow) {
-            if ( (attributePlayerCurrentCargo + broggut.broggutValue) < attributePlayerCargoCapacity) {
-                [self addCargo:broggut.broggutValue];
-                [broggut setDestroyNow:YES];
-                [[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:broggut.objectLocation];
-            }
-        }
-    }
-}
 /*
  - (void)objectEnteredEffectRadius:(TouchableObject *)other {
  if (objectAlliance != other.objectAlliance) {

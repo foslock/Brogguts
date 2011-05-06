@@ -18,8 +18,8 @@
     [super dealloc];
 }
 
-- (id)init {
-    self = [super initWithCampaignIndex:12];
+- (id)initWithLoaded:(BOOL)loaded {
+    self = [super initWithCampaignIndex:12 wasLoaded:loaded];
     if (self) {
         spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:1.0f withCount:2];
         [spawner pauseSpawnerForDuration:10.0f];

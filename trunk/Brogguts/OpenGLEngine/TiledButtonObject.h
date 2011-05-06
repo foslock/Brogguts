@@ -32,10 +32,12 @@
     
     BOOL isPushable;
     BOOL isPushed;
+    BOOL wasJustReleased;
 }
 
 @property (readonly) BOOL isPushable;
 @property (readonly) BOOL isPushed;
+@property (readonly) BOOL wasJustReleased;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;

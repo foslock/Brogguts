@@ -33,7 +33,7 @@
         mothTrigger.numberOfObjectsNeeded = 16;
         mothTrigger.objectIDNeeded = kObjectCraftMothID;
         mothTrigger.objectImage.scale = Scale2fMake(3.0f, 3.0f);
-        [self addCollidableObject:mothTrigger];
+        [self addTouchableObject:mothTrigger withColliding:NO];        
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:mothTrigger.objectLocation withDuration:-1.0f];
         [notiObj attachToObject:mothTrigger];
         [self addCollidableObject:notiObj];
@@ -102,7 +102,7 @@
         [tempFingerThree setDoesScrollWithScreen:NO];
         [tempFingerThree release];
         
-        [helpText setObjectText:@"The map overview shows all the units currently in the game. Drag the white box around and release it on your units to select them."];
+        [helpText setObjectText:@"The map overview shows all the units currently in the game. Drag the white box around and release it on your units to view them."];
     }
     return self;
 }

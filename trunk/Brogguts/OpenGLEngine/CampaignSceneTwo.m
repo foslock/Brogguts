@@ -12,8 +12,8 @@
 
 @implementation CampaignSceneTwo
 
-- (id)init {
-    self = [super initWithCampaignIndex:1];
+- (id)initWithLoaded:(BOOL)loaded {
+    self = [super initWithCampaignIndex:1 wasLoaded:loaded];
     if (self) {
         
     }
@@ -22,7 +22,7 @@
 
 - (BOOL)checkObjective {
     int count = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (count >= 10) {
+    if (count >= 100) {
         return YES;
     }
     return NO;

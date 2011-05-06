@@ -28,7 +28,6 @@
         droneBuildTimer = kCraftSpiderBuildDroneTime;
         for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
             droneBayContainment[i] = NO;
-            [self addNewDroneToBay];
         }
 	}
 	return self;

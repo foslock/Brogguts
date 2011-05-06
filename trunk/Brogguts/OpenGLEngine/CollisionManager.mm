@@ -19,6 +19,7 @@
 #import "TextureSingleton.h"
 #import "ImageRenderSingleton.h"
 #import "GameCenterSingleton.h"
+#import "CraftAndStructures.h"
 
 @implementation CollisionManager
 @synthesize currentScene;
@@ -348,11 +349,8 @@
 			MediumBroggut* broggut = &broggutArray->array[straightIndex];
 			CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
 			[self updateMediumBroggutEdgeAtLocation:currentPoint];
-			PathNode* node = [self pathNodeForRow:j forColumn:i];
 			if (broggut->broggutValue != -1) {
-				node->isOpen = NO;
-			} else {
-				node->isOpen = YES;
+				[self setPathNodeIsOpen:NO atLocation:currentPoint];
 			}
 		}
 	}
@@ -420,7 +418,8 @@
 			enablePrimitiveDraw();
 			CGRect brogRect = [self getBroggutRectForID:broggut->broggutID];
 			Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
-			if (broggut->broggutValue == -1) {
+            BOOL isOpen = [self isPathNodeOpenAtLocation:location];
+			if (broggut->broggutValue == -1 && isOpen) {
 				// If empty, draw a faded green box
 				glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
 				drawFilledRect(brogRect, scroll);
@@ -597,6 +596,13 @@
 	int col = (location.x / COLLISION_CELL_WIDTH);
 	PathNode* node = [self pathNodeForRow:row forColumn:col];
 	node->isOpen = open;
+}
+
+- (BOOL)isPathNodeOpenAtLocation:(CGPoint)location {
+    int row = (location.y / COLLISION_CELL_HEIGHT);
+	int col = (location.x / COLLISION_CELL_WIDTH);
+	PathNode* node = [self pathNodeForRow:row forColumn:col];
+	return node->isOpen;
 }
 
 - (NSArray*)pathFrom:(CGPoint)fromLocation to:(CGPoint)toLocation allowPartial:(BOOL)partial isStraight:(BOOL)straight {
@@ -842,6 +848,62 @@
 #pragma mark -
 #pragma mark Collidable Objects
 
+- (BOOL)collisionOccuredBetween:(CollidableObject*)object andOther:(CollidableObject*)other {
+    if (object.objectType == kObjectBroggutSmallID && other.objectType == kObjectBroggutSmallID &&
+        !object.hasBeenCheckedForCollisions && !other.hasBeenCheckedForCollisions &&
+        object.renderLayer == other.renderLayer) {
+        
+        float distance = [object boundingCircle].radius + [other boundingCircle].radius;
+        float angle = GetAngleInDegreesFromPoints(object.objectLocation, other.objectLocation);
+        float newdX = distance * cosf(DEGREES_TO_RADIANS(angle));
+        float newdY = distance * sinf(DEGREES_TO_RADIANS(angle));
+        other.objectLocation = CGPointMake(object.objectLocation.x + newdX, object.objectLocation.y + newdY);
+        
+        Vector2f vel1 = object.objectVelocity;
+        Vector2f vel2 = other.objectVelocity;
+        float mass1 = 1.0f;
+        float mass2 = 1.0f;
+        Vector2f norm = Vector2fNormalize(Vector2fMake(other.objectLocation.x - object.objectLocation.x,
+                                                       other.objectLocation.y - object.objectLocation.y));
+        Vector2f tang;
+        tang.x = -norm.y;
+        tang.y = norm.x;
+        
+        float v1n = Vector2fDot(vel1, norm);
+        float v1t = Vector2fDot(vel1, tang);
+        float v2n = Vector2fDot(vel2, norm);
+        float v2t = Vector2fDot(vel2, tang);
+        
+        float v1nPrime = (v1n * (mass1 - mass2) + 2.0f * mass2 * v2n) / (mass1 + mass2);
+        float v2nPrime = (v2n * (mass2 - mass1) + 2.0f * mass1 * v1n) / (mass1 + mass2);
+        
+        Vector2f newv1n = Vector2fMultiply(norm, v1nPrime);
+        Vector2f newv1t = Vector2fMultiply(tang, v1t);
+        Vector2f newv2n = Vector2fMultiply(norm, v2nPrime);
+        Vector2f newv2t = Vector2fMultiply(tang, v2t);
+        
+        Vector2f newvel1 = Vector2fAdd(newv1n, newv1t);
+        Vector2f newvel2 = Vector2fAdd(newv2n, newv2t);
+        
+        object.objectVelocity = newvel1;
+        other.objectVelocity = newvel2;  
+        return YES;
+    }
+    if (object.objectType == kObjectCraftAntID && other.objectType == kObjectBroggutSmallID) {
+        BroggutObject* broggut = (BroggutObject*)other;
+        AntCraftObject* ant = (AntCraftObject*)object;
+        if (!broggut.destroyNow) {
+            if ( (ant.attributePlayerCurrentCargo + broggut.broggutValue) < ant.attributePlayerCargoCapacity) {
+                [ant addCargo:broggut.broggutValue];
+                [broggut setDestroyNow:YES];
+                [[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:broggut.objectLocation];
+            }
+        }
+        return YES;
+    }
+    return NO;
+}
+
 - (void)addCollidableObject:(CollidableObject*)object {
 	int UID = object.uniqueObjectID;
 	object.isCheckedForCollisions = YES;
@@ -1016,8 +1078,11 @@
 						continue;
 					}
 					if ( CircleIntersectsCircle(obj1.boundingCircle, obj2.boundingCircle) ) {
-						[obj1 collidedWithOtherObject:obj2];
-						[obj2 collidedWithOtherObject:obj1];
+						if (![self collisionOccuredBetween:obj1 andOther:obj2]) {
+                            [self collisionOccuredBetween:obj2 andOther:obj1];
+                        }
+                        obj1.hasBeenCheckedForCollisions = YES;
+                        obj2.hasBeenCheckedForCollisions = YES;
 					}
 				}
 			}

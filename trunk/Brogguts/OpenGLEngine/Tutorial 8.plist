@@ -3,7 +3,7 @@
 <plist version="1.0">
 <array>
 	<string>Attacking Multiple Enemy Craft</string>
-	<false/>
+	<integer>1</integer>
 	<integer>16</integer>
 	<integer>12</integer>
 	<integer>0</integer>

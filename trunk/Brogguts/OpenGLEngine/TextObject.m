@@ -22,7 +22,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withLocation:(CGPoint)location withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:location withObjectType:kObjectTextID];
 	if (self) {
-        self.renderLayer = kLayerHUDLayer;
+        self.renderLayer = kLayerHUDBottomLayer;
 		isTextHidden = NO;
         drawsInRect = NO;
 		scrollWithBounds = YES; // Defaults to staying in the absolute bounds
@@ -42,7 +42,7 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withRect:(CGRect)rect withDuration:(float)duration {
 	self = [super initWithImage:nil withLocation:rect.origin withObjectType:kObjectTextID];
 	if (self) {
-        self.renderLayer = kLayerHUDLayer;
+        self.renderLayer = kLayerHUDBottomLayer;
         textRect = rect;
         drawsInRect = YES;
 		isTextHidden = NO;

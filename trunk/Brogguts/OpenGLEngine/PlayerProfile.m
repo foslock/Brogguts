@@ -215,8 +215,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 }
 
 - (void)startSceneWithType:(int)sceneType {
-    if (sceneType != kSceneTypeBaseCamp &&
-        sceneType != kSceneTypeTutorial) {
+    if (sceneType != kSceneTypeBaseCamp) {
         isInSkirmish = YES;
         skirmishBroggutCount = 0;
         skirmishMetalCount = 0;
@@ -226,14 +225,15 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 }
 
 - (void)endSceneWithType:(int)sceneType wasSuccessful:(BOOL)success {
-    if (sceneType != kSceneTypeBaseCamp &&
-        sceneType != kSceneTypeTutorial) {
+    if (sceneType != kSceneTypeBaseCamp) {
         if (isInSkirmish) {
             isInSkirmish = NO;
             broggutDisplayNumber = broggutCount;
             metalDisplayNumber = metalCount;
-            if (success) {
-                [self addBrogguts:(int)((float)skirmishBroggutCount * PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH)];
+            if (sceneType != kSceneTypeTutorial) {
+                if (success) {
+                    [self addBrogguts:(int)((float)skirmishBroggutCount * PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH)];
+                }
             }
         }
     }

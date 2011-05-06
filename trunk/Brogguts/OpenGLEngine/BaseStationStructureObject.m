@@ -77,8 +77,12 @@
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
     if (blinkCounter > 0.0f) {
-        [blinkingLightImage setColor:Color4fMake(0.0f, 0.75, 0.1f, blinkCounter / BASE_STATION_LIGHT_BLINK)];
-
+        if (objectAlliance == kAllianceFriendly) {
+            [blinkingLightImage setColor:Color4fMake(0.0f, 0.75f, 0.1f, blinkCounter / BASE_STATION_LIGHT_BLINK)]; 
+        } else if (objectAlliance == kAllianceEnemy) {
+            [blinkingLightImage setColor:Color4fMake(1.0f, 0.0f, 0.0f, blinkCounter / BASE_STATION_LIGHT_BLINK)];
+        }        
+        
         float xPos1 = objectLocation.x + (BASE_STATION_LIGHT_OUTER_DISTANCE * cosf(DEGREES_TO_RADIANS(lightPositionCounter)));
         float yPos1 = objectLocation.y + (BASE_STATION_LIGHT_OUTER_DISTANCE * sinf(DEGREES_TO_RADIANS(lightPositionCounter)));
         CGPoint point1 = CGPointMake(xPos1, yPos1);

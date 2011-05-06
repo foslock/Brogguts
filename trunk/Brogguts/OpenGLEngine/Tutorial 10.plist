@@ -3,7 +3,7 @@
 <plist version="1.0">
 <array>
 	<string>Using the Overview for Selection</string>
-	<false/>
+	<integer>1</integer>
 	<integer>64</integer>
 	<integer>48</integer>
 	<integer>0</integer>

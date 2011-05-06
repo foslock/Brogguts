@@ -30,7 +30,7 @@
         myCraft = newAnt;
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
-        [self addCollidableObject:antTrigger];
+        [self addTouchableObject:antTrigger withColliding:NO];        
         
         FingerObject* tempFingerOne = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
                                                                                               myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)

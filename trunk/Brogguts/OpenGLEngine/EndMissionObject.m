@@ -36,14 +36,15 @@
         [background setRenderLayer:kLayerTopLayer];
         [background setIsPushable:NO];
         menuButton = [[TiledButtonObject alloc] initWithRect:buttonRect];
-        confirmButton = [[TiledButtonObject alloc] initWithRect:CGRectOffset(buttonRect, END_MISSION_BACKGROUND_WIDTH - END_MISSION_BUTTON_WIDTH - (END_MISSION_BUTTON_INSET*2), 0)];
-        headerText = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsLeftLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsEarnedLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsTotalLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsLeftNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsEarnedNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
-        broggutsTotalNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
+        CGRect confirmRect = CGRectOffset(buttonRect, END_MISSION_BACKGROUND_WIDTH - END_MISSION_BUTTON_WIDTH - (END_MISSION_BUTTON_INSET*2), 0);
+        confirmButton = [[TiledButtonObject alloc] initWithRect:confirmRect];
+        headerText = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:rect.origin withDuration:-1.0f];
+        broggutsLeftLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"Brogguts Left: " withLocation:CGPointZero withDuration:-1.0f];
+        broggutsEarnedLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"Brogguts Earned: " withLocation:CGPointZero withDuration:-1.0f];
+        broggutsTotalLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"Total Brogguts: " withLocation:CGPointZero withDuration:-1.0f];
+        broggutsLeftNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"0" withLocation:CGPointZero withDuration:-1.0f];
+        broggutsEarnedNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"0" withLocation:CGPointZero withDuration:-1.0f];
+        broggutsTotalNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"0" withLocation:CGPointZero withDuration:-1.0f];
         objectArray = [[NSMutableArray alloc] initWithCapacity:10];
         [objectArray addObject:background];
         [objectArray addObject:menuButton];
@@ -55,6 +56,13 @@
         [objectArray addObject:broggutsLeftNumber];
         [objectArray addObject:broggutsEarnedNumber];
         [objectArray addObject:broggutsTotalNumber];
+        for (CollidableObject* object in objectArray) {
+            [object setRenderLayer:kLayerHUDTopLayer];
+        }
+        [background setRenderLayer:kLayerHUDBottomLayer];
+        [menuButton setRenderLayer:kLayerHUDMiddleLayer];
+        [confirmButton setRenderLayer:kLayerHUDMiddleLayer];
+        
     }
     return self;
 }
@@ -63,16 +71,19 @@
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     [super renderCenteredAtPoint:center withScrollVector:Vector2fZero];
     for (CollidableObject* object in objectArray) {
-        [object renderCenteredAtPoint:center withScrollVector:Vector2fZero];
+        [object renderCenteredAtPoint:object.objectLocation withScrollVector:Vector2fZero];
     }
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
-    for (CollidableObject* object in objectArray) {
-        [object updateObjectLogicWithDelta:aDelta];
+    if (wasSuccessfulMission) {
+        [headerText setObjectText:@"Mission Successful!"];
+    } else {
+        [headerText setObjectText:@"Mission Failed!"];
     }
-    if ([confirmButton isPushed]) {
+    
+    if ([confirmButton wasJustReleased]) {
         BroggutScene* scene = [self currentScene];
         if ([scene isKindOfClass:[CampaignScene class]]) {
             if (wasSuccessfulMission)
@@ -80,8 +91,11 @@
             else
                 [(CampaignScene*)scene restartCurrentLevel];
         }
-    } else if ([menuButton isPushed]) {
-        [[GameController sharedGameController] returnToMainMenu];
+    } else if ([menuButton wasJustReleased]) {
+        [[GameController sharedGameController] returnToMainMenuWithSave:NO];
+    }
+    for (CollidableObject* object in objectArray) {
+        [object updateObjectLogicWithDelta:aDelta];
     }
 }
 

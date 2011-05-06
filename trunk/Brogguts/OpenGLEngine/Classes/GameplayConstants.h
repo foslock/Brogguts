@@ -472,12 +472,12 @@ enum BroggutDataValues {
 	kBroggutOldSmallMaxValue = 20,
 	kBroggutAncientSmallMinValue = 80,
 	kBroggutAncientSmallMaxValue = 100,
-	kBroggutYoungMediumMinValue = 2000,
-	kBroggutYoungMediumMaxValue = 5000,
-	kBroggutOldMediumMinValue = 4000,
-	kBroggutOldMediumMaxValue = 6000,
-	kBroggutAncientMediumMinValue = 10000,
-	kBroggutAncientMediumMaxValue = 20000,
+	kBroggutYoungMediumMinValue = 400,
+	kBroggutYoungMediumMaxValue = 500,
+	kBroggutOldMediumMinValue = 500,
+	kBroggutOldMediumMaxValue = 750,
+	kBroggutAncientMediumMinValue = 750,
+	kBroggutAncientMediumMaxValue = 2000,
 };
 
 enum BroggutAgeConstants {

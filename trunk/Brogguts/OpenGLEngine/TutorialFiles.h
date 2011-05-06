@@ -11,6 +11,7 @@
 #import "TutorialSceneNine.h"
 #import "TutorialSceneTen.h"
 #import "TutorialSceneEleven.h"
+#import "TutorialSceneTwelve.h"
 
 #import "CampaignScene.h"
 #import "CampaignSceneOne.h"
