@@ -25,6 +25,8 @@
 - (void)updateAnimatedImageWithDelta:(float)aDelta;
 - (void)renderCurrentSubImageAtPoint:(CGPoint)aPoint;
 - (void)renderCurrentSubImageAtPoint:(CGPoint)aPoint withScale:(Scale2f)aScale withRotation:(float)aRot;
+- (CGSize)imageSize;
 - (void)setRenderLayer:(int)layer;
+- (void)setScale:(Scale2f)scale;
 
 @end

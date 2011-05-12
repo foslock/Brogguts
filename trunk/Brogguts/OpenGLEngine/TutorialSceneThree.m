@@ -55,7 +55,7 @@
         [self addCollidableObject:tempFingerThree];
         [tempFingerThree release];
         
-        [helpText setObjectText:@"If you want to select a ship (or more) tap with two fingers and make any shape containing those ships."];
+        [helpText setObjectText:@"If you want to select a ship (or more) tap with two fingers and make any shape containing those ships. Selected ships will move towards a held touch."];
     }
     return self;
 }

@@ -227,7 +227,7 @@ enum SectionNames {
             if (![savedScenesNames writeToFile:savedScenePath atomically:YES]) {
                 NSLog(@"Error overwriting previously saved scene: %@", name);
             }
-            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:NO isLoading:YES];
+            [sharedGameController fadeOutToSceneWithFilename:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:NO isLoading:YES];
         }
             break;
         case kSectionNewMaps: {
@@ -239,7 +239,7 @@ enum SectionNames {
             if (onlineMatch) {
                 [[GameCenterSingleton sharedGCSingleton] hostMatchWithHostedFileName:name];
             } else {
-                [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:YES];
+                [sharedGameController fadeOutToSceneWithFilename:name sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:YES];
             }
         }
             break;

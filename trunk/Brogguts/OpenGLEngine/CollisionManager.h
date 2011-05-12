@@ -132,6 +132,7 @@ typedef struct Path_Node_Queue {
 - (int)getBroggutValueWithID:(int)brogID;
 - (void)setBroggutValue:(int)newValue withID:(int)brogID isRemote:(BOOL)remote;
 
+- (void)updateMediumBroggutAtLocation:(CGPoint)location;
 - (void)updateMediumBroggutEdgeAtLocation:(CGPoint)location;
 - (void)updateAllMediumBroggutsEdges;
 - (void)addMediumBroggut;

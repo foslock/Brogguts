@@ -10,6 +10,7 @@
 #import "CraftAndStructures.h"
 #import "Image.h"
 #import "Global.h"
+#import "BroggutScene.h"
 
 @implementation TriggerObject
 @synthesize isComplete;
@@ -60,6 +61,12 @@
                 if (obj.objectType == objectIDNeeded) {
                     if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2(self.boundingCircle.radius)) {
                         count++;
+                        /*
+                        if ([obj isKindOfClass:[CraftObject class]]) {
+                            CraftObject* craft = (CraftObject*)obj;
+                            [currentScene removeControlledCraft:craft];
+                        }
+                         */
                     }
                 }
             }

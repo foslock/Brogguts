@@ -122,8 +122,16 @@
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
+        isDirtyImage = NO;
 		hasCurrentPathFinished = YES;
 		creationEndLocation = location;
+        
+        lightBlinkTimer = (arc4random() % LIGHT_BLINK_FREQUENCY) + 1;
+		lightBlinkAlpha = 0.0f;
+		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
+		blinkingLightImage.scale = Scale2fMake(0.35f, 0.35f);
+        blinkingLightImage.renderLayer = kLayerTopLayer;
+        
         buildingDroneImage = [[Image alloc] initWithImageNamed:@"craftbuilddrone.png" filter:GL_LINEAR];
         [buildingDroneImage setRenderLayer:kLayerTopLayer];
 		// Initialize the structure
@@ -140,6 +148,7 @@
 }
 
 - (void)dealloc {
+    [blinkingLightImage release];
     [buildingDroneImage release];
     [super dealloc];
 }
@@ -180,6 +189,26 @@
 		destroyNow = YES;
 		return;
 	}
+    
+    if (attributeHullCurrent <= (attributeHullCapacity / 2)) {
+        if (!isDirtyImage) {
+            isDirtyImage = YES;
+            NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
+            Color4f color = [objectImage color];
+            Scale2f scale = [objectImage scale];
+            [objectImage autorelease];
+            NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
+            Image* newImage = [[Image alloc] initWithImageNamed:newName filter:GL_LINEAR];
+            if (newImage) {
+                objectImage = newImage;
+                [objectImage setColor:color];
+                [objectImage setScale:scale];
+                [objectImage setRotation:objectRotation];
+            } else {
+                [objectImage retain];
+            }
+        }
+    }
 	
 	// Get the current point we should be following
 	if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
@@ -211,6 +240,20 @@
 		// Don't move, has reached target location
 		objectVelocity = Vector2fZero;
 	}
+    
+    // Update the light blinking
+    if (lightBlinkTimer <= 0) {
+        lightBlinkTimer = LIGHT_BLINK_FREQUENCY;
+        lightBlinkAlpha = LIGHT_BLINK_BRIGHTNESS;
+    } else {
+        lightBlinkTimer--;
+        if (lightBlinkAlpha > 0) {
+            lightBlinkAlpha -= LIGHT_BLINK_FADE_SPEED;
+        } else {
+            lightBlinkAlpha = 0.0f;
+        }
+    }
+    
 	CGPoint oldPoint = objectLocation;
 	[super updateObjectLogicWithDelta:aDelta];
     CGPoint newPoint = objectLocation;
@@ -219,6 +262,31 @@
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
+    
+    if (objectType != kObjectStructureBaseStationID) {
+        disablePrimitiveDraw();
+        CGPoint topLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width / 2) + STRUCTURE_LIGHT_INSET,
+                                      objectLocation.y + ([objectImage imageSize].height / 2) - STRUCTURE_LIGHT_INSET);
+        CGPoint topRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width / 2) - STRUCTURE_LIGHT_INSET,
+                                       objectLocation.y + ([objectImage imageSize].height / 2) - STRUCTURE_LIGHT_INSET);
+        CGPoint botLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width / 2) + STRUCTURE_LIGHT_INSET,
+                                      objectLocation.y - ([objectImage imageSize].height / 2) + STRUCTURE_LIGHT_INSET);
+        CGPoint botRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width / 2) - STRUCTURE_LIGHT_INSET,
+                                       objectLocation.y - ([objectImage imageSize].height / 2) + STRUCTURE_LIGHT_INSET);
+        if (self.objectAlliance == kAllianceFriendly) {
+            if (!isTraveling)
+                blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+            else
+                blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
+        } else {
+            blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
+        }
+        [blinkingLightImage renderCenteredAtPoint:topLeft withScrollVector:scroll];
+        [blinkingLightImage renderCenteredAtPoint:topRight withScrollVector:scroll];
+        [blinkingLightImage renderCenteredAtPoint:botLeft withScrollVector:scroll];
+        [blinkingLightImage renderCenteredAtPoint:botRight withScrollVector:scroll];
+    }
+    
 	if (isCurrentlyHoveredOver && !isBlinkingSelectionCircle) {
         enablePrimitiveDraw();
         [self drawHoverSelectionWithScroll:scroll];

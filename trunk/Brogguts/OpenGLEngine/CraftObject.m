@@ -35,6 +35,7 @@
         }
         free(lightPointsArray);
     }
+    [craftSheild release];
     [turretImage release];
 	[pathPointArray release];
 	[blinkingLightImage release];
@@ -193,6 +194,7 @@
 		blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
 		blinkingLightImage.scale = Scale2fMake(0.25f, 0.25f);
         blinkingLightImage.renderLayer = kLayerTopLayer;
+        [self createLightLocationsWithCount:1];
         
         lightPointsArray = NULL;
         turretPointsArray = NULL;
@@ -201,13 +203,25 @@
         [turretImage setScale:Scale2fMake(0.5f, 0.5f)];
         turretRotation = 0.0f;
         
+        craftSheild = [[Image alloc] initWithImageNamed:@"spritesheild.png" filter:GL_LINEAR];
+        float xRatio = [objectImage imageSize].width / [craftSheild imageSize].width;
+        float yRatio = [objectImage imageSize].height / [craftSheild imageSize].height;
+        if (xRatio < yRatio) {
+            [craftSheild setScale:Scale2fMake(xRatio, xRatio)];
+        } else {
+            [craftSheild setScale:Scale2fMake(yRatio, yRatio)];
+        }
+        isShowingSheild = NO;
+        sheildTimer = 0.0f;
+        
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
+        isDirtyImage = NO;
 		hasCurrentPathFinished = YES;
 		[self setMovingAIState:kMovingAIStateStill];
 		[self setAttackingAIState:kAttackingAIStateNeutral];
-		objectImage.renderLayer = kLayerMiddleLayer;
+		[objectImage setRenderLayer:kLayerMiddleLayer];
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
 		attributePlayerCargoCapacity = 200;
@@ -276,12 +290,24 @@
     }
 }
 
-- (void)updateCraftLightLocations {
-    // OVERRIDE FOR EACH CRAFT
+- (void)updateCraftLightLocations { // Too Slow!!
+    if (lightPointsArray) {
+        for (int i = 0; i < lightPointsArray->pointCount; i++) {
+            PointLocation* curPoint = &lightPointsArray->locations[i];
+            curPoint->x = objectLocation.x;
+            curPoint->y = objectLocation.y;
+        }
+    }
 }
 
 - (void)updateCraftTurretLocations {
-    // OVERRIDE FOR EACH CRAFT
+    if (turretPointsArray) {
+        for (int i = 0; i < turretPointsArray->pointCount; i++) {
+            PointLocation* curPoint = &turretPointsArray->locations[i];
+            curPoint->x = objectLocation.x;
+            curPoint->y = objectLocation.y;
+        }
+    }
 }
 
 - (CGPoint)miningLocation {
@@ -337,65 +363,78 @@
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
     [super attackedByEnemy:enemy withDamage:damage];
+    if (isUnderAura) {
+        damage = CLAMP(damage - kCraftMonarchAuraResistanceValue, 0, INT_MAX);
+        [self showCraftSheild];
+    }
     attributeHullCurrent -= damage;
     if (attributeHullCurrent <= 0) {
         destroyNow = YES;
         return YES;
     }
-    BOOL returnedAttack = NO;
-    if (attackingAIState != kAttackingAIStateAttacking && !isBeingControlled && !isBeingDragged) {
-        if ([enemy isKindOfClass:[CraftObject class]]) {
-            CraftObject* enemyCraft = (CraftObject*)enemy;
-            [enemyCraft calculateCraftAIInfo];
-            NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
-            [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
-            float totalCraftPower = 0.0f;
-            for (int i = 0; i < [nearbyCraftArray count]; i++) {
-                CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
-                if ([obj isKindOfClass:[CraftObject class]]) {
-                    CraftObject* craft = (CraftObject*)obj;
-                    if (craft.objectAlliance == objectAlliance) {
-                        [craft calculateCraftAIInfo];
-                        totalCraftPower += craft.craftAIInfo.averageCraftValue;
-                    }
-                }
-            }
-            if (totalCraftPower > enemyCraft.craftAIInfo.averageCraftValue) {
-                returnedAttack = YES;
+    if (!isTraveling) {
+        BOOL returnedAttack = NO;
+        if (attackingAIState != kAttackingAIStateAttacking && !isBeingControlled && !isBeingDragged) {
+            if ([enemy isKindOfClass:[CraftObject class]]) {
+                CraftObject* enemyCraft = (CraftObject*)enemy;
+                [enemyCraft calculateCraftAIInfo];
+                NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
+                [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
+                float totalCraftPower = 0.0f;
                 for (int i = 0; i < [nearbyCraftArray count]; i++) {
                     CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
                     if ([obj isKindOfClass:[CraftObject class]]) {
                         CraftObject* craft = (CraftObject*)obj;
                         if (craft.objectAlliance == objectAlliance) {
-                            [craft setPriorityEnemyTarget:enemy];
+                            [craft calculateCraftAIInfo];
+                            totalCraftPower += craft.craftAIInfo.averageCraftValue;
                         }
                     }
                 }
+                if (totalCraftPower > enemyCraft.craftAIInfo.averageCraftValue) {
+                    returnedAttack = YES;
+                    for (int i = 0; i < [nearbyCraftArray count]; i++) {
+                        CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
+                        if ([obj isKindOfClass:[CraftObject class]]) {
+                            CraftObject* craft = (CraftObject*)obj;
+                            if (craft.objectAlliance == objectAlliance) {
+                                [craft setPriorityEnemyTarget:enemy];
+                            }
+                        }
+                    }
+                }
+                [nearbyCraftArray release];
             }
-            [nearbyCraftArray release];
         }
-    }
-    
-    if (!returnedAttack && movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
-        && !isBeingControlled && !isBeingDragged) {
-        // Move away from the attacker
-        float xDest = objectLocation.x;
-        float yDest = objectLocation.y;
-        if (enemy.objectLocation.x < objectLocation.x) {
-            xDest += COLLISION_CELL_WIDTH;
-        } else {
-            xDest -= COLLISION_CELL_WIDTH;
+        
+        if (!returnedAttack && movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
+            && !isBeingControlled && !isBeingDragged) {
+            // Move away from the attacker
+            float xDest = objectLocation.x;
+            float yDest = objectLocation.y;
+            if (enemy.objectLocation.x < objectLocation.x) {
+                xDest += COLLISION_CELL_WIDTH;
+            } else {
+                xDest -= COLLISION_CELL_WIDTH;
+            }
+            if (enemy.objectLocation.y < objectLocation.y) {
+                yDest += COLLISION_CELL_HEIGHT;
+            } else {
+                yDest -= COLLISION_CELL_HEIGHT;
+            }
+            xDest = CLAMP(xDest, 0.0f, [[self currentScene] fullMapBounds].size.width);
+            yDest = CLAMP(xDest, 0.0f, [[self currentScene] fullMapBounds].size.height);
+            NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO isStraight:NO];
+            [self followPath:newPath isLooped:NO];
+            [self setMovingAIState:kMovingAIStateMoving];
         }
-        if (enemy.objectLocation.y < objectLocation.y) {
-            yDest += COLLISION_CELL_HEIGHT;
-        } else {
-            yDest -= COLLISION_CELL_HEIGHT;
-        }
-        NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO isStraight:NO];
-        [self followPath:newPath isLooped:NO];
-        [self setMovingAIState:kMovingAIStateMoving];
     }
     return NO;
+}
+
+- (void)showCraftSheild {
+    isShowingSheild = YES;
+    sheildTimer = 1.0f;
 }
 
 - (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
@@ -446,6 +485,12 @@
 }
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target {
+    if (target.objectType == kObjectCraftRatID) {
+        RatCraftObject* rat = (RatCraftObject*)target;
+        if ([rat isCloaked]) {
+            return;
+        }
+    }
     [self setClosestEnemyObject:target];
     [target blinkSelectionCircle];
     [self setAttackingAIState:kAttackingAIStateAttacking];
@@ -475,6 +520,35 @@
     if (attributeHullCurrent <= 0) {
         destroyNow = YES;
         return;
+    }
+    
+    if (isShowingSheild) {
+        if (sheildTimer > 0.0f) {
+            sheildTimer -= aDelta;
+        } else {
+            isShowingSheild = NO;
+            sheildTimer = 0.0f;
+        }
+    }
+    
+    if (attributeHullCurrent <= (attributeHullCapacity / 2)) {
+        if (!isDirtyImage) {
+            isDirtyImage = YES;
+            NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
+            Color4f color = [objectImage color];
+            Scale2f scale = [objectImage scale];
+            [objectImage autorelease];
+            NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
+            Image* newImage = [[Image alloc] initWithImageNamed:newName filter:GL_LINEAR];
+            if (newImage) {
+                objectImage = newImage;
+                [objectImage setColor:color];
+                [objectImage setScale:scale];
+                [objectImage setRotation:objectRotation];
+            } else {
+                [objectImage retain];
+            }
+        }
     }
     
     if (specialAbilityCooldownTimer > 0) { // Reduce the special counter timer by one each frame
@@ -543,7 +617,14 @@
             if (closestEnemyObject && (movingAIState != kMovingAIStateMining) ) {
                 if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange)) {
                     if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
-                        [self attackTarget];
+                        if (closestEnemyObject.objectType == kObjectCraftRatID) {
+                            RatCraftObject* rat = (RatCraftObject*)closestEnemyObject;
+                            if (![rat isCloaked]) {
+                                [self attackTarget];
+                            }
+                        } else {
+                            [self attackTarget];
+                        }
                     }
                 }
             }
@@ -578,7 +659,7 @@
     }
     
     // If the closest target is too far away, and not in ATTACKING state, set it to nil
-    if (attackingAIState != kAttackingAIStateAttacking && !([self isKindOfClass:[SpiderDroneObject class]])) {
+    if (attackingAIState != kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
         if (closestEnemyObject) {
             if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
                 [self setClosestEnemyObject:nil];
@@ -660,11 +741,29 @@
     
     // Draw the "under aura" effect
     if (isUnderAura) {
-        enablePrimitiveDraw();
-        Circle newCircle = [self touchableBounds];
-        glColor4f(0.0f, 0.5f, 1.0f, 1.0f);
-        drawDashedCircle(newCircle, CIRCLE_SEGMENTS_COUNT, scroll);
-        disablePrimitiveDraw();
+        if (objectType == kObjectCraftRatID) {
+            RatCraftObject* rat = (RatCraftObject*)self;
+            if (!rat.isCloaked) {
+                enablePrimitiveDraw();
+                Circle newCircle = [self touchableBounds];
+                glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
+                drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
+                disablePrimitiveDraw();
+            }
+        } else {
+            enablePrimitiveDraw();
+            Circle newCircle = [self touchableBounds];
+            glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
+            drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
+            disablePrimitiveDraw();
+        }
+    }
+    
+    if (isShowingSheild) {
+        [craftSheild setRotation:objectRotation];
+        float alpha = CLAMP(sheildTimer - 0.4f, 0.0f, 0.6f);
+        [craftSheild setColor:Color4fMake(1.0f, 1.0f, 1.0f, alpha)];
+        [craftSheild renderCenteredAtPoint:objectLocation withScrollVector:scroll];
     }
 }
 
@@ -740,11 +839,11 @@
                     [self setPriorityEnemyTarget:enemy];
                 }
                 /*
-                if (![self isKindOfClass:[MonarchCraftObject class]]) {
-                    if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
-                        [self setMovingAIState:kMovingAIStateMoving];
-                    }
-                }
+                 if (![self isKindOfClass:[MonarchCraftObject class]]) {
+                 if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
+                 [self setMovingAIState:kMovingAIStateMoving];
+                 }
+                 }
                  */
             }
             /*

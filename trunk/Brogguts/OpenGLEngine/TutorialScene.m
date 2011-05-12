@@ -26,6 +26,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     @"Tutorial 10",
     @"Tutorial 11",
     @"Tutorial 12",
+    @"Tutorial 13",
 };
 
 
@@ -65,10 +66,11 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         [blackBar setColor:Color4fMake(0.0f, 0.0f, 0.0f, 0.75f)];
         
         // Turn off the complicated stuff
-        isAllowingSidebar = NO;
         isShowingBroggutCount = NO;
         isShowingMetalCount = NO;
         isAllowingOverview = NO;
+        isAllowingCraft = NO;
+        isAllowingStructures = NO;
     }
     return self;
 }
@@ -88,10 +90,9 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             if (tutorialIndex < TUTORIAL_SCENES_COUNT - 1) {
-                [[GameController sharedGameController] loadTutorialLevelsForIndex:tutorialIndex + 1];
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeTutorial withIndex:tutorialIndex + 1 isNew:NO isLoading:NO];
+                [[GameController sharedGameController] fadeOutToSceneWithFilename:nextSceneName sceneType:kSceneTypeTutorial withIndex:tutorialIndex + 1 isNew:YES isLoading:NO];
             } else {
-                [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
+                [[GameController sharedGameController] fadeOutToSceneWithFilename:nextSceneName sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
             }
             return;
         }

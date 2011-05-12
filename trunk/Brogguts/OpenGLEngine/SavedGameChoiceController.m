@@ -215,7 +215,7 @@ enum SectionNames {
 {
     switch (indexPath.section) {
         case kSectionNewGame: {
-            [[GameController sharedGameController] transitionToSceneWithFileName:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
+            [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
         }
             break;
         case kSectionSavedScenes: {
@@ -233,7 +233,7 @@ enum SectionNames {
                     index = i;
                 }
             }
-            [sharedGameController transitionToSceneWithFileName:name sceneType:kSceneTypeCampaign withIndex:index isNew:NO isLoading:YES];
+            [sharedGameController fadeOutToSceneWithFilename:name sceneType:kSceneTypeCampaign withIndex:index isNew:NO isLoading:YES];
         }
             break;
         case kSectionExitButton: {

@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "StructureObject.h"
 
+@class Image;
+
 @interface RadarStructureObject : StructureObject {
-	
+	Image* radarDishImage;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

@@ -128,7 +128,7 @@ enum TheAntValues {
 	kCraftAntBoundingBoxWidth = 100, // pixels
 	kCraftAntBoundingBoxHeight = 50,
 	kCraftAntUnlockYears = 0,
-	kCraftAntUpgradeUnlockYears = 1,
+	kCraftAntUpgradeUnlockYears = 2,
 	kCraftAntUpgradeCost = 100, // brogguts
 	kCraftAntUpgradeTime = 20, // seconds
 	kCraftAntCostBrogguts = 100,
@@ -149,8 +149,8 @@ enum TheAntValues {
 enum TheMothValues {
 	kCraftMothBoundingBoxWidth = 50, // pixels
 	kCraftMothBoundingBoxHeight = 50,
-	kCraftMothUnlockYears = 0,
-	kCraftMothUpgradeUnlockYears = 1,
+	kCraftMothUnlockYears = 1,
+	kCraftMothUpgradeUnlockYears = 6,
 	kCraftMothUpgradeCost = 100, // brogguts
 	kCraftMothUpgradeTime = 20, // seconds
 	kCraftMothCostBrogguts = 100,
@@ -168,8 +168,8 @@ enum TheMothValues {
 enum TheBeetleValues {
 	kCraftBeetleBoundingBoxWidth = 64, // pixels
 	kCraftBeetleBoundingBoxHeight = 80,
-	kCraftBeetleUnlockYears = 0,
-	kCraftBeetleUpgradeUnlockYears = 1,
+	kCraftBeetleUnlockYears = 2,
+	kCraftBeetleUpgradeUnlockYears = 7,
 	kCraftBeetleUpgradeCost = 100, // brogguts
 	kCraftBeetleUpgradeTime = 20, // seconds
 	kCraftBeetleCostBrogguts = 200,
@@ -187,8 +187,8 @@ enum TheBeetleValues {
 enum TheMonarchValues {
 	kCraftMonarchBoundingBoxWidth = 64, // pixels
 	kCraftMonarchBoundingBoxHeight = 64,
-	kCraftMonarchUnlockYears = 1,
-	kCraftMonarchUpgradeUnlockYears = 2,
+	kCraftMonarchUnlockYears = 3,
+	kCraftMonarchUpgradeUnlockYears = 8,
 	kCraftMonarchUpgradeCost = 100, // brogguts
 	kCraftMonarchUpgradeTime = 20, // seconds
 	kCraftMonarchCostBrogguts = 300,
@@ -202,6 +202,7 @@ enum TheMonarchValues {
 	// Special Values
 	kCraftMonarchAuraRangeLimit = 256,
 	kCraftMonarchAuraNumberLimit = 10, // Number of additional units allowed in squad
+    kCraftMonarchAuraResistanceValue = 1,
 };
 
 // Advanced Craft
@@ -209,8 +210,8 @@ enum TheMonarchValues {
 enum TheCamelValues {
 	kCraftCamelBoundingBoxWidth = 128, // pixels
 	kCraftCamelBoundingBoxHeight = 64,
-	kCraftCamelUnlockYears = 2,
-	kCraftCamelUpgradeUnlockYears = 3,
+	kCraftCamelUnlockYears = 4,
+	kCraftCamelUpgradeUnlockYears = 11,
 	kCraftCamelUpgradeCost = 100, // brogguts
 	kCraftCamelUpgradeTime = 30, // seconds
 	kCraftCamelCostBrogguts = 400,
@@ -230,8 +231,8 @@ enum TheCamelValues {
 enum TheRatValues {
 	kCraftRatBoundingBoxWidth = 80, // pixels
 	kCraftRatBoundingBoxHeight = 64,
-	kCraftRatUnlockYears = 3,
-	kCraftRatUpgradeUnlockYears = 4,
+	kCraftRatUnlockYears = 5,
+	kCraftRatUpgradeUnlockYears = 10,
 	kCraftRatUpgradeCost = 100, // brogguts
 	kCraftRatUpgradeTime = 40, // seconds
 	kCraftRatCostBrogguts = 500,
@@ -250,8 +251,8 @@ enum TheRatValues {
 enum TheSpiderValues {
 	kCraftSpiderBoundingBoxWidth = 160, // pixels
 	kCraftSpiderBoundingBoxHeight = 160,
-	kCraftSpiderUnlockYears = 4,
-	kCraftSpiderUpgradeUnlockYears = 5, // increases movement speed
+	kCraftSpiderUnlockYears = 7,
+	kCraftSpiderUpgradeUnlockYears = 12, // increases movement speed
 	kCraftSpiderUpgradeCost = 100, // brogguts
 	kCraftSpiderUpgradeTime = 50, // seconds
 	kCraftSpiderCostBrogguts = 600,
@@ -270,7 +271,7 @@ enum TheSpiderValues {
 enum TheSpiderDroneValues {
 	kCraftSpiderDroneBoundingBoxWidth = 24, // pixels
 	kCraftSpiderDroneBoundingBoxHeight = 24,
-	kCraftSpiderDroneUnlockYears = 4,
+	kCraftSpiderDroneUnlockYears = 0,
 	kCraftSpiderDroneUpgradeUnlockYears = 0, // No upgrade
 	kCraftSpiderDroneUpgradeCost = 0, // brogguts
 	kCraftSpiderDroneUpgradeTime = 0, // seconds
@@ -289,8 +290,8 @@ enum TheSpiderDroneValues {
 enum TheEagleValues {
 	kCraftEagleBoundingBoxWidth = 160, // pixels
 	kCraftEagleBoundingBoxHeight = 80,
-	kCraftEagleUnlockYears = 5,
-	kCraftEagleUpgradeUnlockYears = 6, // increases explode damage
+	kCraftEagleUnlockYears = 8,
+	kCraftEagleUpgradeUnlockYears = 13, // increases explode damage
 	kCraftEagleUpgradeCost = 100, // brogguts
 	kCraftEagleUpgradeTime = 20, // seconds
 	kCraftEagleCostBrogguts = 600,
@@ -328,7 +329,7 @@ enum TheBlockValues {
 	kStructureBlockBoundingBoxWidth = 64, // pixels
 	kStructureBlockBoundingBoxHeight = 64,
 	kStructureBlockUnlockYears = 0,
-	kStructureBlockUpgradeUnlockYears = 0, // No upgrade
+	kStructureBlockUpgradeUnlockYears = 1,
 	kStructureBlockUpgradeCost = 0, // brogguts
 	kStructureBlockUpgradeTime = 0, // seconds
 	kStructureBlockCostBrogguts = 100,
@@ -341,8 +342,8 @@ enum TheBlockValues {
 enum TheRefineryValues {
 	kStructureRefineryBoundingBoxWidth = 80, // pixels
 	kStructureRefineryBoundingBoxHeight = 80,
-	kStructureRefineryUnlockYears = 1,
-	kStructureRefineryUpgradeUnlockYears = 2,
+	kStructureRefineryUnlockYears = 0,
+	kStructureRefineryUpgradeUnlockYears = 7,
 	kStructureRefineryUpgradeCost = 100, // brogguts
 	kStructureRefineryUpgradeTime = 20, // seconds
 	kStructureRefineryCostBrogguts = 300,
@@ -351,8 +352,8 @@ enum TheRefineryValues {
 	kStructureRefineryHull = 40,
 	// Special Values
 	kStructureRefineryBroggutConvertTimeBonus = -2,
-	kStructureRefineryBroggutConversionRate = 10, // number of metal for 100 bogguts
-	kStructureRefineryBroggutConvertTime = 5, // seconds for 100 brogguts -> metal
+	kStructureRefineryBroggutConversionRate = 5, // number of metal per batch
+	kStructureRefineryBroggutConvertTime = 120, // Frames for one batch of metal
 };
 
 enum TheCraftUpgradesValues {
@@ -372,7 +373,7 @@ enum TheCraftUpgradesValues {
 enum TheStructureUpgradesValues {
 	kStructureStructureUpgradesBoundingBoxWidth = 80, // pixels
 	kStructureStructureUpgradesBoundingBoxHeight = 80,
-	kStructureStructureUpgradesUnlockYears = 2,
+	kStructureStructureUpgradesUnlockYears = 1,
 	kStructureStructureUpgradesUpgradeUnlockYears = 0, // No upgrade
 	kStructureStructureUpgradesUpgradeCost = 0, // brogguts
 	kStructureStructureUpgradesUpgradeTime = 0, // seconds
@@ -386,8 +387,8 @@ enum TheStructureUpgradesValues {
 enum TheTurretValues {
 	kStructureTurretBoundingBoxWidth = 128, // pixels
 	kStructureTurretBoundingBoxHeight = 128,
-	kStructureTurretUnlockYears = 0,
-	kStructureTurretUpgradeUnlockYears = 1,
+	kStructureTurretUnlockYears = 4,
+	kStructureTurretUpgradeUnlockYears = 6,
 	kStructureTurretUpgradeCost = 100, // brogguts
 	kStructureTurretUpgradeTime = 50, // seconds
 	kStructureTurretCostBrogguts = 100, // 300
@@ -405,8 +406,8 @@ enum TheTurretValues {
 enum TheRadarValues {
 	kStructureRadarBoundingBoxWidth = 64, // pixels
 	kStructureRadarBoundingBoxHeight = 64,
-	kStructureRadarUnlockYears = 1,
-	kStructureRadarUpgradeUnlockYears = 2,
+	kStructureRadarUnlockYears = 2,
+	kStructureRadarUpgradeUnlockYears = 6,
 	kStructureRadarUpgradeCost = 100, // brogguts
 	kStructureRadarUpgradeTime = 50, // seconds
 	kStructureRadarCostBrogguts = 300,
@@ -414,15 +415,15 @@ enum TheRadarValues {
 	kStructureRadarMovingTime = 8, // seconds to move to active spot
 	kStructureRadarHull = 40,
 	// Special Values
-	kStructureRadarRadius = 512,
+	kStructureRadarRadius = 768,
 	kStructureRadarRadiusBonus = 512,
 };
 
 enum TheFixerValues {
 	kStructureFixerBoundingBoxWidth = 128, // pixels
 	kStructureFixerBoundingBoxHeight = 128,
-	kStructureFixerUnlockYears = 0,
-	kStructureFixerUpgradeUnlockYears = 1,
+	kStructureFixerUnlockYears = 3,
+	kStructureFixerUpgradeUnlockYears = 5,
 	kStructureFixerUpgradeCost = 100, // brogguts
 	kStructureFixerUpgradeTime = 50, // seconds
 	kStructureFixerCostBrogguts = 400,
@@ -430,10 +431,10 @@ enum TheFixerValues {
 	kStructureFixerMovingTime = 6, // seconds to move to active spot
 	kStructureFixerHull = 50,
 	// Special Values
-	kStructureFixerRepairRange = 512,
+	kStructureFixerRepairRange = 400,
     kStructureFixerRepairAmount = 2,
-	kStructureFixerRepairCooldown = 100, // HP per 100 frames
-	kStructureFixerFriendlyTargetLimit = 1,
+	kStructureFixerRepairCooldown = 150, // HP per 100 frames
+	kStructureFixerFriendlyTargetLimit = 2,
 	kStructureFixerFriendlyTargetLimitBonus = 1,
 };
 

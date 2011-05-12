@@ -10,9 +10,11 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
+#define HELP_MESSAGE_COUNT 7
+#define HELP_MESSAGE_TIME 4.0f
 #define SCROLL_BOUNDS_X_INSET 500.0f
 #define SCROLL_BOUNDS_Y_INSET 350.0f
-#define SCROLL_MAX_SPEED 20.0f
+#define SCROLL_MAX_SPEED 35.0f
 #define INITIAL_OBJECT_CAPACITY 100
 #define FRAME_COUNTER_MAX 100
 #define OVERVIEW_FADE_IN_RATE 0.025f
@@ -23,6 +25,21 @@
 #define SELECTION_MIN_DISTANCE 20.0f
 #define SCENE_NAME_OBJECT_TIME 5.0f
 #define SCENE_GRID_RENDER_ALPHA 0.075f
+#define END_MISSION_BACKGROUND_ALPHA 0.6f
+#define TOTAL_CRAFT_LIMIT 200
+#define TOTAL_STRUCTURE_LIMIT 200
+
+enum kHelpMessageIDs {
+    kHelpMessageNeedBrogguts,
+    kHelpMessageNeedMetal,
+    kHelpMessageNeedBroggutsAndMetal,
+    kHelpMessageNeedStructureBuilding,
+    kHelpMessageNeedStructureLimit,
+    kHelpMessageNeedUnitLimit,
+    kHelpMessageMiningEdges,
+};
+
+extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 
 @class Image;
 @class ImageRenderSingleton;
@@ -43,6 +60,7 @@
 @class ParticleSingleton;
 @class AIController;
 @class EndMissonObject;
+@class RefineryStructureObject;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -56,20 +74,25 @@
 	
 	// Name of the scene, will be displayed when loaded
 	NSString* sceneName;
+    NSString* sceneFileName;
+    
     // Type of the scene (enum defined in GameController)
     int sceneType;
     
     // Booleans regarding the scene's status and what to display
-
     BOOL isAllowingSidebar;
     BOOL isShowingBroggutCount;
     BOOL isShowingMetalCount;
     BOOL isAllowingOverview;
     BOOL isMultiplayerMatch;
     BOOL isMissionOver;
+    BOOL isAllowingCraft;
+    BOOL isAllowingStructures;
     
     // The final box that pops up when the scene is done
     EndMissonObject* endMissionObject;
+    float fadeBackgroundAlpha;
+    BOOL didAddBrogguts;
 	
 	////////////////////// Singleton references
 	GameController *sharedGameController;				// Reference to the game controller
@@ -97,6 +120,8 @@
 	int numberOfCurrentShips;
 	int numberOfCurrentStructures;
 	int numberOfSmallBrogguts;
+    int numberOfRefineries;
+    NSMutableArray* currentRefineries;
 	
 	// Location of the home base
 	CGPoint homeBaseLocation;
@@ -109,8 +134,17 @@
     TextObject* valueTextObject;		// Text object that shows the medium broggut value
 	BOOL isShowingValueText;			// Boolean about if the text is showing
     
+    // Displayed when the player doesn't have the required resources
+    TextObject* helpMessageObject;
+    float messageTimer;
+    BOOL isShowingMessageTimer;
+    
     // Only allow one structure to be built at once.
     BOOL isBuildingStructure;
+    
+    // Explosion's shaking the screen
+    BOOL isScreenShaking;
+    float screenShakingAmount;
     
     // These are shown when about to build a new structure or craft
     TextObject* buildBroggutValue;
@@ -134,8 +168,8 @@
 	NSMutableArray* renderableDestroyed;		 // The array of objects that need to be destroyed through the next frame pass
 	NSMutableArray* touchableObjects;			 // The array of objects that need to be checked for touches in ADDITION to rendered/updated
 	NSMutableDictionary* currentObjectsTouching; // Key: numerical hash value of the touch. Value: the object currently being touched
-	NSMutableDictionary* currentObjectsHovering; // Key: numerical hash value of the touch. Value: the object currently being touched
-	NSMutableDictionary* currentTouchesInSideBar;	 // Array of NSValues of touch hashes for touches active in the sidebar
+	NSMutableDictionary* currentObjectsHovering; // Key: numerical hash value of the touch. Value: the object currently being hovered
+	NSMutableDictionary* currentTouchesInSideBar;// Array of NSValues of touch hashes for touches active in the sidebar
 	CollisionManager* collisionManager;			 // Manages objects that need to check between other collidable objects
 	
 	// Camera Control
@@ -155,7 +189,7 @@
 	NSMutableArray* fontArray;          // Array containing the all the bitmap fonts used
 	
 	// Frame counter
-	int frameCounter;			// The counter for frames (use for functions you want to call NOT every frame with "%" operator
+	int frameCounter;			// The counter for frames (use for functions you want to call NOT every frame with "%" operator)
 	
 	// Overview map control
 	BOOL isShowingOverview;
@@ -166,7 +200,6 @@
 	// Map vars
 	int widthCells;
 	int heightCells;
-	
 }
 
 #pragma mark -
@@ -174,6 +207,7 @@
 
 @property (readonly) NSMutableArray* fontArray;
 @property (retain) NSString* sceneName;
+@property (retain) NSString* sceneFileName;
 @property (assign) int sceneType;
 @property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
@@ -193,11 +227,15 @@
 @property (readonly) int widthCells;
 @property (readonly) int heightCells;
 @property (readonly) int numberOfSmallBrogguts;
+@property (readonly) int numberOfRefineries;
 @property (nonatomic, assign) BOOL isShowingBuildingValues;
 @property (nonatomic, assign) int currentBuildBroggutCost;
 @property (nonatomic, assign) int currentBuildMetalCost;
 @property (nonatomic, assign) CGPoint currentBuildDragLocation;
 @property (nonatomic, assign) BOOL isBuildingStructure;
+@property (readonly) BOOL isAllowingCraft;
+@property (readonly) BOOL isAllowingStructures;
+
 
 #pragma mark -
 #pragma mark Selectors
@@ -217,6 +255,9 @@
 
 // Randomly generates small brogguts and adds them to the scene randomly scattered in 
 - (void)addSmallBrogguts:(int)number inBounds:(CGRect)bounds withLocationArray:(NSArray*)locationArray;
+
+// Will divide the metal needed among the current refineries
+- (void)refineMetalOutOfBrogguts:(int)metal;
 
 // Font widths and heights
 - (float)getWidthForFontID:(int)fontID withString:(NSString*)string;
@@ -252,8 +293,17 @@
 // Adds a text object to the scene
 - (void)addTextObject:(TextObject*)obj;
 
+// Increments the refinery count
+- (void)addRefinery:(RefineryStructureObject*)refinery;
+
 // Show medium broggut value
 - (void)showBroggutValueAtLocation:(CGPoint)location;
+
+// Shows the message with the appropriate ID
+- (void)showHelpMessageWithMessageID:(int)helpID;
+
+// Shakes the screen
+- (void)startShakingScreenWithMagnitude:(float)magnitude;
 
 // Selector to update the scenes logic using |aDelta| which is passe in from the game loop
 - (void)updateSceneWithDelta:(float)aDelta;

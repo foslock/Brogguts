@@ -9,26 +9,31 @@
 #import "FixerStructureObject.h"
 #import "CraftAndStructures.h"
 #import "GameplayConstants.h"
+#import "Image.h"
 
 @implementation FixerStructureObject
 
 - (void)dealloc {
 	[closeFriendlyCraft release];
-	[repairingCraft release];
 	[super dealloc];
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureFixerID withLocation:location isTraveling:traveling];
 	if (self) {
+        [objectImage setScale:Scale2fMake(0.65f, 0.65f)];
 		repairCountdownTimer = 0;
+        currentRepairCount = 0;
+        for (int i = 0; i < REPAIR_MAX_CRAFT_COUNT; i++) {
+            laserCountdownTimer[i] = 0;
+        }
 		isCheckedForRadialEffect = YES;
+        isDrawingEffectRadius = YES;
 		isRepairingCraft = NO;
 		closeFriendlyCraft = [[NSMutableArray alloc] initWithCapacity:REPAIR_MAX_CRAFT_COUNT];
-		repairingCraft = [[NSMutableArray alloc] initWithCapacity:REPAIR_MAX_CRAFT_COUNT];
 		attributeRepairAmount = kStructureFixerRepairAmount;
         attributeRepairCooldown = kStructureFixerRepairCooldown;
-		attributeRepairMaxCount = kStructureFixerFriendlyTargetLimit;
+		attributeRepairMaxCount = CLAMP(kStructureFixerFriendlyTargetLimit, 0, REPAIR_MAX_CRAFT_COUNT);
 		attributeRepairRange = kStructureFixerRepairRange;
 		effectRadius = attributeRepairRange;
 	}
@@ -39,10 +44,13 @@
 	[super objectEnteredEffectRadius:other];
 	if (!isTraveling) {
 		if ([other isKindOfClass:[CraftObject class]] && other.objectType != kObjectCraftSpiderDroneID) {
-			if (other.objectAlliance == kAllianceFriendly) {
-				if (![closeFriendlyCraft containsObject:other]) {
-					[closeFriendlyCraft addObject:other];
-				}
+			if (other.objectAlliance == objectAlliance) {
+                CraftObject* craft = (CraftObject*)other;
+                if (![craft isHullFull]) {
+                    if (![closeFriendlyCraft containsObject:other]) {
+                        [closeFriendlyCraft addObject:other];
+                    }
+                }
 			}
 		}
 	}
@@ -50,23 +58,36 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	if (!isTraveling) {
+        for (int i = 0; i < [closeFriendlyCraft count]; i++) {
+            CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
+            if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) > POW2(attributeRepairRange) || [craft isHullFull]) {
+                [closeFriendlyCraft removeObject:craft];
+            }
+        }
+        
+        // Notch down the laser countdowns
+        for (int i = 0; i < REPAIR_MAX_CRAFT_COUNT; i++) {
+            if (laserCountdownTimer[i] > 0) {
+                laserCountdownTimer[i] -= 1;
+            }
+        }
+        
 		// For the close craft array by the objects' current hull
 		NSSortDescriptor* sorter = [[NSSortDescriptor alloc] initWithKey:@"attributeHullCurrent" ascending:YES];
 		NSArray* sorterArray = [NSArray arrayWithObject:sorter];
 		[closeFriendlyCraft sortUsingDescriptors:sorterArray];
 		[sorter release];
-		[repairingCraft removeAllObjects];
 		int shipCount = CLAMP([closeFriendlyCraft count], 0, attributeRepairMaxCount);
+        currentRepairCount = shipCount;
         if (repairCountdownTimer <= 0) {
             for (int i = 0; i < shipCount; i++) {
                 CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
-                if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) <= POW2(attributeRepairRange) && 
-                    ![craft isHullFull]) {
-                    [craft repairCraft:attributeRepairAmount];
-                    [repairingCraft addObject:craft];
+                [craft repairCraft:attributeRepairAmount];
+                if (laserCountdownTimer[i] <= 0) {
+                    laserCountdownTimer[i] = REPAIR_LASER_FRAMES;
                 }
             }
-            repairCountdownTimer = attributeRepairCooldown / shipCount;
+            repairCountdownTimer = attributeRepairCooldown;
         } else {
             repairCountdownTimer--;
         }
@@ -77,16 +98,19 @@
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
-    if ([repairingCraft count] > 0) {
-        enablePrimitiveDraw();
-        for (CraftObject* craft in repairingCraft) {
-            glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-            glLineWidth(4.0f);
+    enablePrimitiveDraw();
+    for (int i = 0; i < currentRepairCount; i++)  {
+        CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
+        glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
+        int remainder = laserCountdownTimer[i] % 20;
+        float width = REPAIR_LASER_WIDTH * (float)remainder / 20.0f; 
+        if (width > 0.0f) {
+            glLineWidth(width);
             drawLine(objectLocation, craft.objectLocation, scroll);
             glLineWidth(1.0f);
         }
-        disablePrimitiveDraw();
     }
+    disablePrimitiveDraw();
 }
 
 @end

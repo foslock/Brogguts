@@ -10,13 +10,16 @@
 #import "StructureObject.h"
 
 #define REPAIR_MAX_CRAFT_COUNT 4
+#define REPAIR_LASER_FRAMES 40
+#define REPAIR_LASER_WIDTH 8.0f
 
 @interface FixerStructureObject : StructureObject {
 	// Reparing vars
 	int repairCountdownTimer;
+    int laserCountdownTimer[REPAIR_MAX_CRAFT_COUNT];
 	BOOL isRepairingCraft;
 	NSMutableArray* closeFriendlyCraft;
-	NSMutableArray* repairingCraft;
+	int currentRepairCount;
 	
 	int attributeRepairAmount;
 	int attributeRepairMaxCount;

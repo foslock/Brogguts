@@ -23,7 +23,7 @@
 #import "GameCenterSingleton.h"
 #import "BroggupediaViewController.h"
 
-NSString* kBaseCampFileName = @"BaseCampSaved.plist";
+NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
 NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
@@ -153,6 +153,7 @@ static GameController* sharedGameController = nil;
 		NSLog(@"INFO - GameController: No previous player profile, creating a brand new profile.");
 		currentProfile = [[PlayerProfile alloc] init];
 	}
+    [currentProfile updateSpaceYearUnlocks];
 }
 
 - (void)savePlayerProfile {
@@ -228,7 +229,10 @@ static GameController* sharedGameController = nil;
     }
     
     if (![self doesFilenameExistInDocuments:kBaseCampFileName]) {
-        [self createInitialBaseCampLevel];
+        // [self createInitialBaseCampLevel];
+        NSString* campNamePath = [[NSBundle mainBundle] pathForResource:kBaseCampFileName ofType:@""];
+        NSArray* campArray = [NSArray arrayWithContentsOfFile:campNamePath];
+        [campArray writeToFile:[self documentsPathWithFilename:kBaseCampFileName] atomically:YES];
     }
     
     for (int i = 0; i < TUTORIAL_SCENES_COUNT; i++) {
@@ -533,6 +537,9 @@ static GameController* sharedGameController = nil;
 	NSArray* currentObjectArray = [NSArray arrayWithArray:[currentScene touchableObjects]];
 	for (int i = 0; i < [currentObjectArray count]; i++) {
 		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+        if ([object destroyNow]) {
+            continue;
+        }
 		if ([object isKindOfClass:[StructureObject class]]) {
 			// It is a structure, so save it!
 			NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
@@ -578,6 +585,9 @@ static GameController* sharedGameController = nil;
 	// Save all craft next
 	for (int i = 0; i < [currentObjectArray count]; i++) {
 		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+        if ([object destroyNow]) {
+            continue;
+        }
 		if ([object isKindOfClass:[CraftObject class]] && ![object isKindOfClass:[SpiderDroneObject class]]) {
 			// It is a craft (and not a drone!) so save it!
 			NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
@@ -700,9 +710,6 @@ static GameController* sharedGameController = nil;
 
 - (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene isLoading:(BOOL)loading {
     BroggutScene* scene = [gameScenes objectForKey:fileName];
-    currentSceneType = sceneType;
-    isNewSceneNew = isNewScene;
-    isLoadingSavedScene = loading;
     if (currentSceneType == kSceneTypeCampaign && isNewSceneNew) {
         [self loadCampaignLevelsForIndex:index withLoaded:isLoadingSavedScene];
         scene = [gameScenes objectForKey:fileName];
@@ -721,22 +728,36 @@ static GameController* sharedGameController = nil;
         scene.sceneType = currentSceneType;
     }
     if (scene) {
-        if (transitionName)
+        if (transitionName) {
             [transitionName autorelease];
-        transitionName = [fileName copy];
-        if (isAlreadyInScene) { // If already in a scene, fade that one out
-            isFadingSceneOut = YES;
-            fadingRectAlpha = 0.0f;
-        } else {
-            [currentScene sceneDidDisappear];
-            [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-            currentScene = [gameScenes objectForKey:transitionName];
-            [[ParticleSingleton sharedParticleSingleton] resetAllEmitters];
-            [currentScene sceneDidAppear];
-            isFadingSceneIn = YES;
-            fadingRectAlpha = 1.0f;
-            isAlreadyInScene = YES;
         }
+        transitionName = [fileName copy];
+        [currentScene sceneDidDisappear];
+        [currentScene autorelease];
+        [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+        self.currentScene = [gameScenes objectForKey:transitionName];
+        [[ParticleSingleton sharedParticleSingleton] resetAllEmitters];
+        [currentScene sceneDidAppear];
+        isFadingSceneIn = YES;
+        fadingRectAlpha = 1.0f;
+        isAlreadyInScene = YES;
+    }
+}
+
+- (void)fadeOutToSceneWithFilename:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene isLoading:(BOOL)loading {
+    if (transitionName) {
+        [transitionName autorelease];
+    }
+    transitionName = [fileName copy];
+    currentSceneType = sceneType;
+    isNewSceneNew = isNewScene;
+    isLoadingSavedScene = loading;
+    currentSceneIndex = index;
+    if (isAlreadyInScene) { // If already in a scene, fade that one out
+        isFadingSceneOut = YES;
+        fadingRectAlpha = 0.0f;
+    } else {
+        [self transitionToSceneWithFileName:fileName sceneType:sceneType withIndex:index isNew:isNewScene isLoading:loading];
     }
 }
 
@@ -885,6 +906,11 @@ static GameController* sharedGameController = nil;
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
         }
             break;
+        case 12: {
+            TutorialSceneThirteen* newTut = [[TutorialSceneThirteen alloc] init];
+            [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+        }
+            break;
         default:
             break;
     }
@@ -911,8 +937,11 @@ static GameController* sharedGameController = nil;
 		} else {
             isFadingSceneOut = NO;
             isAlreadyInScene = NO;
+            // Remove it from the current table of scenes
+            NSString* name = [currentScene sceneFileName];
+            [gameScenes removeObjectForKey:name];
             if (!isReturningToMenu) {
-                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:0 isNew:isNewSceneNew isLoading:isLoadingSavedScene];
+                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:currentSceneIndex isNew:isNewSceneNew isLoading:isLoadingSavedScene];
             } else {
                 [currentScene sceneDidDisappear];
                 if (isSavingFadingScene) {
@@ -927,11 +956,13 @@ static GameController* sharedGameController = nil;
 	}
 	[currentProfile updateProfile];
     
-    [currentScene updateSceneWithDelta:aDelta];
+    if (!isShowingBroggupediaInScene || [currentScene isMultiplayerMatch])
+        [currentScene updateSceneWithDelta:aDelta];
 }
 
 -(void)renderCurrentScene {
-    [currentScene renderScene];
+    if (!isShowingBroggupediaInScene)
+        [currentScene renderScene];
     
 	if (isFadingSceneIn || isFadingSceneOut) {
 		enablePrimitiveDraw();
@@ -984,6 +1015,7 @@ static GameController* sharedGameController = nil;
     isNewSceneNew = YES;
 	isAlreadyInScene = NO;
     currentSceneType = kSceneTypeBaseCamp;
+    currentSceneIndex = 0;
     isReturningToMenu = NO;
     isSavingFadingScene = NO;
     isShowingBroggupediaInScene = NO;

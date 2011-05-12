@@ -7,15 +7,18 @@
 //
 
 #import "BaseStationStructureObject.h"
+#import "GameController.h"
+#import "BroggutScene.h"
 #import "CraftAndStructures.h"
 #import "Global.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "CollisionManager.h"
 
 @implementation BaseStationStructureObject
 
 - (void)dealloc {
-    [blinkingLightImage release];
+    [blinkingStructureLightImage release];
     [super dealloc];
 }
 
@@ -24,12 +27,19 @@
 	if (self) {
 		isCheckedForRadialEffect = YES;
 		isTouchable = NO;
-        blinkingLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
-        [blinkingLightImage setScale:Scale2fMake(0.25f, 0.25f)];
-        [blinkingLightImage setRenderLayer:kLayerTopLayer];
+        blinkingStructureLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
+        [blinkingStructureLightImage setScale:Scale2fMake(0.25f, 0.25f)];
+        [blinkingStructureLightImage setRenderLayer:kLayerTopLayer];
         rotationCounter = 0.0f;
         blinkCounter = 0.0f;
         lightPositionCounter = 0.0f;
+        CollisionManager* manager = [currentScene collisionManager];
+        for (int i = -BASE_STATION_WIDTH_CELLS; i < BASE_STATION_WIDTH_CELLS; i++) {
+            for (int j = -BASE_STATION_HEIGHT_CELLS; j < BASE_STATION_HEIGHT_CELLS; j++ ) {
+                CGPoint point = CGPointMake(COLLISION_CELL_WIDTH * i, COLLISION_CELL_HEIGHT * j);
+                [manager setPathNodeIsOpen:NO atLocation:point];
+            }
+        }
 	}
 	return self;
 }
@@ -78,20 +88,20 @@
     [super renderOverObjectWithScroll:scroll];
     if (blinkCounter > 0.0f) {
         if (objectAlliance == kAllianceFriendly) {
-            [blinkingLightImage setColor:Color4fMake(0.0f, 0.75f, 0.1f, blinkCounter / BASE_STATION_LIGHT_BLINK)]; 
+            [blinkingStructureLightImage setColor:Color4fMake(0.0f, 0.75f, 0.1f, blinkCounter / BASE_STATION_LIGHT_BLINK)]; 
         } else if (objectAlliance == kAllianceEnemy) {
-            [blinkingLightImage setColor:Color4fMake(1.0f, 0.0f, 0.0f, blinkCounter / BASE_STATION_LIGHT_BLINK)];
+            [blinkingStructureLightImage setColor:Color4fMake(1.0f, 0.0f, 0.0f, blinkCounter / BASE_STATION_LIGHT_BLINK)];
         }        
         
         float xPos1 = objectLocation.x + (BASE_STATION_LIGHT_OUTER_DISTANCE * cosf(DEGREES_TO_RADIANS(lightPositionCounter)));
         float yPos1 = objectLocation.y + (BASE_STATION_LIGHT_OUTER_DISTANCE * sinf(DEGREES_TO_RADIANS(lightPositionCounter)));
         CGPoint point1 = CGPointMake(xPos1, yPos1);
-        [blinkingLightImage renderCenteredAtPoint:point1 withScrollVector:scroll];
+        [blinkingStructureLightImage renderCenteredAtPoint:point1 withScrollVector:scroll];
         
         float xPos2 = objectLocation.x + (BASE_STATION_LIGHT_INNER_DISTANCE * cosf(DEGREES_TO_RADIANS(360.0f - lightPositionCounter)));
         float yPos2 = objectLocation.y + (BASE_STATION_LIGHT_INNER_DISTANCE * sinf(DEGREES_TO_RADIANS(360.0f - lightPositionCounter)));
         CGPoint point2 = CGPointMake(xPos2, yPos2);
-        [blinkingLightImage renderCenteredAtPoint:point2 withScrollVector:scroll];
+        [blinkingStructureLightImage renderCenteredAtPoint:point2 withScrollVector:scroll];
     }
 }
 

@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "TouchableObject.h"
 
+#define BUTTON_DISABLED_COLOR Color4fMake(0.35f, 0.35f, 0.35f, 1.0f)
+#define BUTTON_ENABLED_COLOR Color4fMake(1.0f, 1.0f, 1.0f, 1.0f)
+#define BUTTON_PRESSED_COLOR Color4fMake(0.8f, 0.8f, 0.8f, 1.0f)
+
 @class Image;
 
 @interface TiledButtonObject : TouchableObject {
@@ -33,11 +37,16 @@
     BOOL isPushable;
     BOOL isPushed;
     BOOL wasJustReleased;
+    BOOL isDisabled;
+    
+    Color4f inactiveColor;
+    Color4f pressedColor;
 }
 
 @property (readonly) BOOL isPushable;
 @property (readonly) BOOL isPushed;
 @property (readonly) BOOL wasJustReleased;
+@property (nonatomic, assign) BOOL isDisabled;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;

@@ -40,7 +40,7 @@
         [self addTouchableObject:newBeetle withColliding:CRAFT_COLLISION_YESNO];
         [newBeetle release];
         
-        [helpText setObjectText:@"An enemy craft will try to escape you if you attack it. Kill the enemy Ant."];
+        [helpText setObjectText:@"An enemy craft will try to escape if it is attacked. Kill the enemy Ant."];
     }
     return self;
 }

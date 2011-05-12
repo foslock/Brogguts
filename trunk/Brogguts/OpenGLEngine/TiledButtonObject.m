@@ -16,6 +16,7 @@
 
 @implementation TiledButtonObject
 @synthesize isPushable, isPushed, wasJustReleased;
+@synthesize isDisabled;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;
@@ -34,6 +35,8 @@
         isTouchable = YES;
         isPushed = NO;
         isPushable = YES;
+        inactiveColor = BUTTON_ENABLED_COLOR;
+        pressedColor = BUTTON_PRESSED_COLOR;
         topLeft = [[Image alloc] initWithImageNamed:@"buttontopleft.png" filter:GL_LINEAR];
         topMiddle = [[Image alloc] initWithImageNamed:@"buttontopmiddle.png" filter:GL_LINEAR];       // Scaled
         topRight = [[Image alloc] initWithImageNamed:@"buttontopright.png" filter:GL_LINEAR];
@@ -99,12 +102,39 @@
     if (pushed && !isPushed) {
         isPushed = pushed;
         for (Image* image in images) {
-            [image setColor:Color4fMake(0.5f, 0.5f, 0.5f, 1.0f)];
+            [image setColor:pressedColor];
         }
     } else if (!pushed && isPushed) {
         isPushed = pushed;
         for (Image* image in images) {
-            [image setColor:Color4fMake(1.0f, 1.0f, 1.0f, 1.0f)];
+            [image setColor:inactiveColor];
+        }
+    }
+}
+
+- (void)setIsDisabled:(BOOL)disabled {
+    isDisabled = disabled;
+    if (isDisabled) {
+        inactiveColor = BUTTON_DISABLED_COLOR;
+        if (!isPushed) {
+            for (Image* image in images) {
+                [image setColor:inactiveColor];
+            }
+        } else {
+            for (Image* image in images) {
+                [image setColor:pressedColor];
+            }
+        }
+    } else {
+        inactiveColor = BUTTON_ENABLED_COLOR;
+        if (!isPushed) {
+            for (Image* image in images) {
+                [image setColor:inactiveColor];
+            }
+        } else {
+            for (Image* image in images) {
+                [image setColor:pressedColor];
+            }
         }
     }
 }
@@ -172,17 +202,17 @@
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
-    if (!CGRectContainsPoint(drawRect, location)) {
+    if (!isPushable || isDisabled) {
         return;
     }
-    if (!isPushable) {
+    if (!CGRectContainsPoint(drawRect, location)) {
         return;
     }
     [self setIsPushed:YES];
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
-    if (!isPushable) {
+    if (!isPushable || isDisabled) {
         return;
     }
     if (CGRectContainsPoint(drawRect, location) && isPushed) {
@@ -192,7 +222,7 @@
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
-    if (!isPushable) {
+    if (!isPushable || isDisabled) {
         return;
     }
     if (!CGRectContainsPoint(drawRect, toLocation)) {

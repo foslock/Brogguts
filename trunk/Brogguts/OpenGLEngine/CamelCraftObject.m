@@ -90,21 +90,25 @@ enum MiningStates {
 
 - (BOOL)startMiningBroggutWithLocation:(CGPoint)location {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
-	if (broggut && broggut->broggutValue != -1 && broggut->broggutEdge != kMediumBroggutEdgeNone) {
-		// NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
-		CGPoint broggutLoc = [[self.currentScene collisionManager] getBroggutLocationForID:broggut->broggutID];
-		miningBroggutID = broggut->broggutID;
-		miningLocation = broggutLoc;
-		NSArray* pathArray = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:broggutLoc], nil];
-		[self followPath:pathArray isLooped:NO];
-		miningState = kMiningStateApproaching;
-		[self setMovingAIState:kMovingAIStateMining];
-		return YES;
-	} else {
-		miningState = kMiningStateNone;
-		[self setMovingAIState:kMovingAIStateStill];
-		return NO;
+	if (broggut && broggut->broggutValue != -1) {
+        if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
+            // NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
+            CGPoint broggutLoc = [[self.currentScene collisionManager] getBroggutLocationForID:broggut->broggutID];
+            miningBroggutID = broggut->broggutID;
+            miningLocation = broggutLoc;
+            NSArray* pathArray = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:broggutLoc], nil];
+            [self followPath:pathArray isLooped:NO];
+            miningState = kMiningStateApproaching;
+            [self setMovingAIState:kMovingAIStateMining];
+            return YES;
+        } else {
+            miningState = kMiningStateNone;
+            [self setMovingAIState:kMovingAIStateStill];
+            [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
+            return NO;
+        }
 	}
+    return NO;
 }
 
 - (void)addCargo:(int)cargo {
@@ -128,6 +132,8 @@ enum MiningStates {
     }
 	[self setMovingAIState:kMovingAIStateMining];
 	miningState = kMiningStateReturning;
+    [[[self currentScene] collisionManager] updateAllMediumBroggutsEdges];
+    [[[self currentScene] collisionManager] updateMediumBroggutAtLocation:miningLocation];
 }
 
 - (void)followPath:(NSArray *)array isLooped:(BOOL)looped {
@@ -200,12 +206,14 @@ enum MiningStates {
     
     enablePrimitiveDraw();
 	if (miningState == kMiningStateMining) {
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
-		float randY = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_HEIGHT) / 4);
-		glLineWidth(3.0f);
-		drawLine(objectLocation, CGPointMake(miningLocation.x + randX, miningLocation.y + randY), scroll);
-		glLineWidth(1.0f);
+		if (![currentScene isMissionOver]) {
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
+            float randY = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_HEIGHT) / 4);
+            glLineWidth(3.0f);
+            drawLine(objectLocation, CGPointMake(miningLocation.x + randX, miningLocation.y + randY), scroll);
+            glLineWidth(1.0f);
+        }
 	}
     disablePrimitiveDraw();
     
