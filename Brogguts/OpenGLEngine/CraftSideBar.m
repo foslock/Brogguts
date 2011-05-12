@@ -12,6 +12,7 @@
 #import "SideBarController.h"
 #import "CraftSideBar.h"
 #import "GameController.h"
+#import "PlayerProfile.h"
 
 enum CraftButtonIDs {
 	kCraftButtonAntID, // Basic
@@ -24,42 +25,64 @@ enum CraftButtonIDs {
 	kCraftButtonEagleID,
 };
 
+NSString* kCraftButtonText[8] = {
+    @"Ant",
+    @"Moth",
+    @"Beetle",
+    @"Monarch",
+    @"Camel",
+    @"Rat",
+    @"Spider",
+    @"Eagle",
+};
+
+NSString* kCraftButtonLockedText = @"???";
+
 @implementation CraftSideBar
 
 - (id)init {
 	self = [super init];
 	if (self) {
+        PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
 		for (int i = 0; i < 8; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
-			switch (i) {
-				case kCraftButtonAntID:
-					[button setButtonText:@"The Ant"];
-					break;
-				case kCraftButtonMothID:
-					[button setButtonText:@"The Moth"];
-					break;
-				case kCraftButtonBeetleID:
-					[button setButtonText:@"The Beetle"];
-					break;
-				case kCraftButtonMonarchID:
-					[button setButtonText:@"The Monarch"];
-					break;
-				case kCraftButtonCamelID:
-					[button setButtonText:@"The Camel"];
-					break;
-				case kCraftButtonRatID:
-					[button setButtonText:@"The Rat"];
-					break;
-				case kCraftButtonSpiderID:
-					[button setButtonText:@"The Spider"];
-					break;
-				case kCraftButtonEagleID:
-					[button setButtonText:@"The Eagle"];
-					break;
-				default:
-					break;
-			}
+            BOOL isUnlocked = NO;
+            switch (i) {
+                case kCraftButtonAntID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftAntID];
+                    break;
+                case kCraftButtonMothID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftMothID];
+                    break;
+                case kCraftButtonBeetleID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftBeetleID];
+                    break;
+                case kCraftButtonMonarchID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftMonarchID];
+                    break;
+                case kCraftButtonCamelID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftCamelID];
+                    break;
+                case kCraftButtonRatID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftRatID];
+                    break;
+                case kCraftButtonSpiderID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftSpiderID];
+                    break;
+                case kCraftButtonEagleID:
+                    isUnlocked = [profile isObjectUnlockedWithID:kObjectCraftEagleID];
+                    break;
+                default:
+                    break;
+            }
+            if (isUnlocked) {
+                [button setIsDisabled:NO];
+                [button setButtonText:kCraftButtonText[i]];
+            } else {
+                [button setIsDisabled:YES];
+                [button setButtonText:kCraftButtonLockedText];
+            }
 			[button release];
 		}
 	}

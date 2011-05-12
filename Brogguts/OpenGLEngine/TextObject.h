@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "CollidableObject.h"
 
+#define TEXT_SHADOW_OFFSET_X 2.0f
+#define TEXT_SHADOW_OFFSET_Y 2.0f
+
 @class BitmapFont;
 
 @interface TextObject : CollidableObject {
@@ -37,6 +40,6 @@
 - (id)initWithFontID:(int)fontid Text:(NSString*)string withRect:(CGRect)rect withDuration:(float)duration;
 
 - (void)renderWithFont:(BitmapFont*)font;
-- (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll;
+- (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll centered:(BOOL)centered;
 
 @end

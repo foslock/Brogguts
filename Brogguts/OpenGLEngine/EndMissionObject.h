@@ -21,6 +21,7 @@
 @interface EndMissionObject : TouchableObject {
     CGRect rect;
     BOOL wasSuccessfulMission;
+    BOOL didAppear;
     TiledButtonObject* background; // Not pushable
     TiledButtonObject* menuButton; // Returns to the menu always (WITHOUT SAVING THE SCENE)
     TiledButtonObject* confirmButton; // Either retry or next level
@@ -34,10 +35,18 @@
     TextObject* broggutsEarnedNumber;
     TextObject* broggutsTotalNumber;
     
-    NSMutableArray* objectArray;
+    NSMutableArray* buttonArray;
+    NSMutableArray* textArray;
+    
+    int broggutsLeft;
+    int broggutsEarned;
+    int totalCount;
+    int totalCounter;
 }
 
 @property (readonly) CGRect rect;
 @property (assign) BOOL wasSuccessfulMission;
+
+- (void)endMissionDidAppear;
 
 @end

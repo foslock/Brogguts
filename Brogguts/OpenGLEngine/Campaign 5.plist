@@ -3,7 +3,7 @@
 <plist version="1.0">
 <array>
 	<string>Promoted</string>
-	<false/>
+	<integer>2</integer>
 	<integer>16</integer>
 	<integer>24</integer>
 	<integer>50</integer>
@@ -1552,7 +1552,7 @@
 			<integer>16</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
 				<real>1088</real>
@@ -1566,8 +1566,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -1576,7 +1576,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
 				<real>1088</real>
@@ -1590,8 +1590,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>

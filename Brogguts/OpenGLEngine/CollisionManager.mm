@@ -285,22 +285,17 @@
 	broggut->broggutValue = newValue;
     int col = brogID % numberOfColumns;
 	int row = brogID / numberOfColumns;
+    CGPoint location = CGPointMake( (COLLISION_CELL_WIDTH / 2) + (COLLISION_CELL_WIDTH) * col,
+                                   (COLLISION_CELL_HEIGHT / 2) + (COLLISION_CELL_HEIGHT) * row);
     // If it is a multiplayer game, send the update
     if (!remote && currentScene.isMultiplayerMatch) {
         BroggutUpdatePacket packet;
-        packet.broggutLocation = CGPointMake( (COLLISION_CELL_WIDTH / 2) + (COLLISION_CELL_WIDTH) * col,
-                                             (COLLISION_CELL_HEIGHT / 2) + (COLLISION_CELL_HEIGHT) * row);
+        packet.broggutLocation = location;
         packet.newValue = newValue;
         [[GameCenterSingleton sharedGCSingleton] sendBroggutUpdatePacket:packet isRequired:YES];
     }
 	
-	PathNode* node = [self pathNodeForRow:row forColumn:col];
-	if (newValue == -1) {
-		node->isOpen = YES;
-	} else {
-		node->isOpen = NO;
-	}
-	[self updateAllMediumBroggutsEdges];
+	[self updateMediumBroggutAtLocation:location];
 }
 
 - (void)addMediumBroggut {
@@ -340,18 +335,22 @@
 	
 }
 
+- (void)updateMediumBroggutAtLocation:(CGPoint)location {
+    MediumBroggut* broggut = [self broggutCellForLocation:location];
+    if (broggut->broggutValue != -1) {
+        [self setPathNodeIsOpen:NO atLocation:location];
+    } else {
+        [self setPathNodeIsOpen:YES atLocation:location];
+    }
+}
+
 - (void)updateAllMediumBroggutsEdges {
 	int cellsWide = broggutArray->bWidth;
 	int cellsHigh = broggutArray->bHeight;
 	for (int j = 0; j < cellsHigh; j++) {
 		for (int i = 0; i < cellsWide; i++) {
-			int straightIndex = i + (j * cellsWide);
-			MediumBroggut* broggut = &broggutArray->array[straightIndex];
 			CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
 			[self updateMediumBroggutEdgeAtLocation:currentPoint];
-			if (broggut->broggutValue != -1) {
-				[self setPathNodeIsOpen:NO atLocation:currentPoint];
-			}
 		}
 	}
 }
@@ -850,8 +849,7 @@
 
 - (BOOL)collisionOccuredBetween:(CollidableObject*)object andOther:(CollidableObject*)other {
     if (object.objectType == kObjectBroggutSmallID && other.objectType == kObjectBroggutSmallID &&
-        !object.hasBeenCheckedForCollisions && !other.hasBeenCheckedForCollisions &&
-        object.renderLayer == other.renderLayer) {
+        !object.hasBeenCheckedForCollisions && !other.hasBeenCheckedForCollisions) {
         
         float distance = [object boundingCircle].radius + [other boundingCircle].radius;
         float angle = GetAngleInDegreesFromPoints(object.objectLocation, other.objectLocation);
@@ -886,6 +884,39 @@
         Vector2f newvel2 = Vector2fAdd(newv2n, newv2t);
         
         object.objectVelocity = newvel1;
+        other.objectVelocity = newvel2;  
+        return YES;
+    }
+    if ([object isKindOfClass:[StructureObject class]] && object.objectType != kObjectStructureBaseStationID && other.objectType == kObjectBroggutSmallID &&
+        !object.hasBeenCheckedForCollisions && !other.hasBeenCheckedForCollisions) {
+        
+        float distance = [object boundingCircle].radius + [other boundingCircle].radius;
+        float angle = GetAngleInDegreesFromPoints(object.objectLocation, other.objectLocation);
+        float newdX = distance * cosf(DEGREES_TO_RADIANS(angle));
+        float newdY = distance * sinf(DEGREES_TO_RADIANS(angle));
+        other.objectLocation = CGPointMake(object.objectLocation.x + newdX, object.objectLocation.y + newdY);
+        
+        Vector2f vel1 = Vector2fZero;
+        Vector2f vel2 = other.objectVelocity;
+        float mass1 = 10000.0f;
+        float mass2 = 1.0f;
+        Vector2f norm = Vector2fNormalize(Vector2fMake(other.objectLocation.x - object.objectLocation.x,
+                                                       other.objectLocation.y - object.objectLocation.y));
+        Vector2f tang;
+        tang.x = -norm.y;
+        tang.y = norm.x;
+        
+        float v1n = Vector2fDot(vel1, norm);
+        float v2n = Vector2fDot(vel2, norm);
+        float v2t = Vector2fDot(vel2, tang);
+        
+        float v2nPrime = (v2n * (mass2 - mass1) + 2.0f * mass1 * v1n) / (mass1 + mass2);
+        
+        Vector2f newv2n = Vector2fMultiply(norm, v2nPrime);
+        Vector2f newv2t = Vector2fMultiply(tang, v2t);
+        
+        Vector2f newvel2 = Vector2fAdd(newv2n, newv2t);
+        
         other.objectVelocity = newvel2;  
         return YES;
     }

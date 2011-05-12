@@ -9,43 +9,48 @@
 #import "PlayerProfile.h"
 #import "GameController.h"
 
+
 int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
     0, 0, 0, 0, 0, 0, 0,
-    0, // Ant
-    1, // Moth
-    2, // Beetle
-    3, // Monarch
-    4, // Camel
-    5, // Rat
-    7, // Spider
-    0, // (drone)
-    8, // Eagle
-    0, // Base Station
-    0, // Block
-    3, // Refinery
-    4, // Turret
-    3, // Fixer
-    2, // Radar
+    kCraftAntUnlockYears, // Ant
+    kCraftMothUnlockYears, // Moth
+    kCraftBeetleUnlockYears, // Beetle
+    kCraftMonarchUnlockYears, // Monarch
+    kCraftCamelUnlockYears, // Camel
+    kCraftRatUnlockYears, // Rat
+    kCraftSpiderUnlockYears, // Spider
+    kCraftSpiderDroneUnlockYears, // (drone)
+    kCraftEagleUnlockYears, // Eagle
+    kStructureBaseStationUnlockYears, // Base Station
+    kStructureBlockUnlockYears, // Block
+    kStructureRefineryUnlockYears, // Refinery
+    kStructureCraftUpgradesUnlockYears, // Craft upgrades
+    kStructureStructureUpgradesUnlockYears, // Structure upgrades
+    kStructureTurretUnlockYears, // Turret
+    kStructureFixerUnlockYears, // Fixer
+    kStructureRadarUnlockYears, // Radar
     0, 0,
 };
 
 int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
     0, 0, 0, 0, 0, 0, 0,
-    2, // Ant
-    6, // Moth
-    7, // Beetle
-    8, // Monarch
-    11, // Camel
-    10, // Rat
-    12, // Spider
-    0, // (drone)
-    13, // Eagle
-    0, // Base Station
-    1, // Block
-    7, // Refinery
-    6, // Turret
-    5, // Fixer
-    6, // Radar
+    kCraftAntUpgradeUnlockYears, // Ant
+    kCraftMothUpgradeUnlockYears, // Moth
+    kCraftBeetleUpgradeUnlockYears, // Beetle
+    kCraftMonarchUpgradeUnlockYears, // Monarch
+    kCraftCamelUpgradeUnlockYears, // Camel
+    kCraftRatUpgradeUnlockYears, // Rat
+    kCraftSpiderUpgradeUnlockYears, // Spider
+    kCraftSpiderDroneUpgradeUnlockYears, // (drone)
+    kCraftEagleUpgradeUnlockYears, // Eagle
+    kStructureBaseStationUpgradeUnlockYears, // Base Station
+    kStructureBlockUpgradeUnlockYears, // Block
+    kStructureRefineryUpgradeUnlockYears, // Refinery
+    kStructureCraftUpgradesUpgradeUnlockYears, // Craft upgrades
+    kStructureStructureUpgradesUpgradeUnlockYears, // Structure upgrades
+    kStructureTurretUpgradeUnlockYears, // Turret
+    kStructureFixerUpgradeUnlockYears, // Fixer
+    kStructureRadarUpgradeUnlockYears, // Radar
     0, 0,
 };
 
@@ -83,6 +88,35 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         }
 	}
 	return self;
+}
+
+- (id)initWithCoder:(NSCoder*)coder
+{
+    self = [super init];
+	if (self)
+	{
+		[self setPlayerSpaceYear:	[coder decodeIntForKey:@"playerSpaceYear"]];
+		[self setBroggutCount:		CLAMP([coder decodeIntForKey:@"broggutCount"], 0, PROFILE_BROGGUT_MAX_COUNT)];
+		[self setMetalCount:		CLAMP([coder decodeIntForKey:@"metalCount"], 0, PROFILE_METAL_MAX_COUNT)];
+		[self setPlayerExperience:	[coder decodeIntForKey:@"playerExperience"]];
+        [self loadDefaultOrPreviousUnlockTable];
+		broggutDisplayNumber = broggutCount;
+		metalDisplayNumber = metalCount;
+        currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            NSNumber* num = [NSNumber numberWithBool:NO];
+            [currentUpgradesTable addObject:num];
+        }
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder*)coder
+{
+	[coder encodeInt:playerSpaceYear	forKey:@"playerSpaceYear"];
+	[coder encodeInt:broggutCount		forKey:@"broggutCount"];
+	[coder encodeInt:metalCount			forKey:@"metalCount"];
+	[coder encodeInt:playerExperience	forKey:@"playerExperience"];
 }
 
 - (void)updateProfile {
@@ -143,28 +177,40 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
-- (BOOL)subtractBrogguts:(int)brogs metal:(int)metal {
+- (int)subtractBrogguts:(int)brogs metal:(int)metal {
     if (!isInSkirmish) {
-        if (brogs > broggutCount || metal > metalCount) {
-            return NO;
+        if (brogs > broggutCount && metal > metalCount) {
+            return kProfileFailBroggutsAndMetal;
+        } else if (brogs > broggutCount) {
+            return kProfileFailBrogguts;
+        } else if (metal > metalCount) {
+            return kProfileFailMetal;
         } else {
             metalCount -= metal;
             broggutCount -= brogs;
-            return YES;
+            return kProfileNoFail;
         }
     } else {
-        if (brogs > skirmishBroggutCount || metal > skirmishMetalCount) {
-            return NO;
+        if (brogs > broggutCount && metal > metalCount) {
+            return kProfileFailBroggutsAndMetal;
+        } else if (brogs > broggutCount) {
+            return kProfileFailBrogguts;
+        } else if (metal > metalCount) {
+            return kProfileFailMetal;
         } else {
             skirmishMetalCount -= metal;
             skirmishBroggutCount -= brogs;
-            return YES;
+            return kProfileNoFail;
         }
     }
 }
 
 - (int)broggutCount {
 	return broggutDisplayNumber;
+}
+
+- (int)totalBroggutCount {
+    return broggutCount;
 }
 
 - (int)realBroggutCount {
@@ -187,40 +233,29 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
-- (id)initWithCoder:(NSCoder*)coder
-{
-    self = [super init];
-	if (self)
-	{
-		[self setPlayerSpaceYear:	[coder decodeIntForKey:@"playerSpaceYear"]];
-		[self setBroggutCount:		CLAMP([coder decodeIntForKey:@"broggutCount"], 0, PROFILE_BROGGUT_MAX_COUNT)];
-		[self setMetalCount:		CLAMP([coder decodeIntForKey:@"metalCount"], 0, PROFILE_METAL_MAX_COUNT)];
-		[self setPlayerExperience:	[coder decodeIntForKey:@"playerExperience"]];
-		broggutDisplayNumber = broggutCount;
-		metalDisplayNumber = metalCount;
-	}
-	return self;
-}
-
-- (void)encodeWithCoder:(NSCoder*)coder
-{
-	[coder encodeInt:playerSpaceYear	forKey:@"playerSpaceYear"];
-	[coder encodeInt:broggutCount		forKey:@"broggutCount"];
-	[coder encodeInt:metalCount			forKey:@"metalCount"];
-	[coder encodeInt:playerExperience	forKey:@"playerExperience"];
-}
-
-- (void)updateSpaceYear {
-    // Perform a calculation (log based) on the total broggut count to get the space year
+- (void)updateSpaceYearUnlocks {
+    // Unlock the stuff that comes with the current space year
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        int levelNeeded = [self levelObjectUnlockedWithID:i];
+        if (levelNeeded <= playerExperience) {
+            [self unlockObjectWithID:i];
+        }
+    }
 }
 
 - (void)startSceneWithType:(int)sceneType {
     if (sceneType != kSceneTypeBaseCamp) {
         isInSkirmish = YES;
-        skirmishBroggutCount = 0;
-        skirmishMetalCount = 0;
+        skirmishBroggutCount = PROFILE_BROGGUT_START_COUNT;
+        skirmishMetalCount = PROFILE_METAL_START_COUNT;
         broggutDisplayNumber = skirmishBroggutCount;
         metalDisplayNumber = skirmishMetalCount;
+    } else {
+        if (isInSkirmish) {
+            isInSkirmish = NO;
+            broggutDisplayNumber = broggutCount;
+            metalDisplayNumber = metalCount;
+        }
     }
 }
 
@@ -270,6 +305,14 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         [defaults setBool:YES forKey:@"hasStoredUnlockTable"];
     } else {
         [defaults setBool:NO forKey:@"hasStoredUnlockTable"];
+    }
+}
+
+- (void)unlockAllObjects {
+    [currentUnlocksTable removeAllObjects];
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        NSNumber* num = [NSNumber numberWithBool:YES];
+        [currentUnlocksTable addObject:num];
     }
 }
 

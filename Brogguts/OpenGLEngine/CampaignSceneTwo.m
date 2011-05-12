@@ -22,7 +22,7 @@
 
 - (BOOL)checkObjective {
     int count = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (count >= 100) {
+    if (count >= 1000) {
         return YES;
     }
     return NO;

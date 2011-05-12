@@ -21,14 +21,17 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureTurretID withLocation:location isTraveling:traveling];
 	if (self) {
+        [objectImage setScale:Scale2fMake(0.65f, 0.65f)];
 		isCheckedForRadialEffect = YES;
+        isDrawingEffectRadius = YES;
 		effectRadius = kStructureTurretAttackRange;
 		attributeAttackCooldown = kStructureTurretAttackCooldown;
 		attributeWeaponsDamage = kStructureTurretWeapons;
 		attributeAttackRange = kStructureTurretAttackRange;
 		attackCooldownTimer = 0;
         turretGunImage = [[Image alloc] initWithImageNamed:@"spriteturretgun.png" filter:GL_LINEAR];
-        [turretGunImage setRenderLayer:kLayerTopLayer];
+        [turretGunImage setScale:[objectImage scale]];
+        [turretGunImage setRenderLayer:kLayerMiddleLayer];
         [turretGunImage setRotation:45.0f];
 	}
 	return self;
@@ -64,6 +67,11 @@
 	[super updateObjectLogicWithDelta:aDelta];
 }
 
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
+    [turretGunImage renderCenteredAtPoint:aPoint withScrollVector:vector];
+}
+
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
     enablePrimitiveDraw();
@@ -82,8 +90,6 @@
 		}
 	}
 	disablePrimitiveDraw();
-    
-    [turretGunImage renderCenteredAtPoint:objectLocation withScrollVector:scroll];
 }
 
 @end

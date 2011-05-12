@@ -14,12 +14,19 @@
 // The percent of the brogguts earned in a skirmish are added to the total count
 #define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f
 
-#define PROFILE_BROGGUT_START_COUNT 200
+#define PROFILE_BROGGUT_START_COUNT 0
 #define PROFILE_METAL_START_COUNT 0
-#define BROGGUT_DISPLAY_CHANGE_RATE 2
+#define BROGGUT_DISPLAY_CHANGE_RATE 6
 
 extern int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
+
+enum kProfileFailTypes {
+    kProfileNoFail,
+    kProfileFailBrogguts,
+    kProfileFailMetal,
+    kProfileFailBroggutsAndMetal,
+};
 
 @interface PlayerProfile : NSObject <NSCoding> {
 	int playerSpaceYear;
@@ -53,13 +60,15 @@ extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 - (void)addBrogguts:(int)brogs;
 - (void)addMetal:(int)metal;
 
-// Returns NO if the current broggut count is too low to subtract the passed in brogguts and DOES NOT subtract them
-- (BOOL)subtractBrogguts:(int)brogs metal:(int)metal;
+// Returns the correct FAIL TYPE (see above) if there isn't enough of a particular resource
+- (int)subtractBrogguts:(int)brogs metal:(int)metal;
 
 - (int)realBroggutCount;
 - (int)realMetalCount;
 
-- (void)updateSpaceYear;
+- (int)totalBroggutCount;
+
+- (void)updateSpaceYearUnlocks;
 - (void)startSceneWithType:(int)sceneType;
 - (void)endSceneWithType:(int)sceneType wasSuccessful:(BOOL)success;
 
@@ -69,6 +78,9 @@ extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 - (BOOL)isObjectUnlockedWithID:(int)objectID;
 - (int)levelObjectUnlockedWithID:(int)objectID;
 - (void)unlockObjectWithID:(int)objectID;
+
+// Used for testing!
+- (void)unlockAllObjects;
 
 // Upgrades
 - (BOOL)isUpgradePurchasedWithID:(int)objectID;

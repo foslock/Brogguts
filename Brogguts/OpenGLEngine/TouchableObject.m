@@ -20,6 +20,7 @@
 @synthesize closestEnemyObject;
 @synthesize movingAIState, attackingAIState;
 @synthesize creationEndLocation;
+@synthesize isDrawingEffectRadius;
 
 - (void)dealloc {
 	[objectsTargetingSelf release];
@@ -33,6 +34,7 @@
 		isCurrentlyTouched = NO;
 		isCurrentlyHoveredOver = NO;
 		isCheckedForRadialEffect = NO;
+        isDrawingEffectRadius = NO;
 		isPartOfASquad = NO;
 		effectRadius = (objectImage.imageSize.width * objectImage.scale.x) / 2;
 		closestEnemyObject = nil;
@@ -97,6 +99,14 @@
             disablePrimitiveDraw();
 		}
 	}
+    
+    if (!isTraveling && isDrawingEffectRadius) {
+        enablePrimitiveDraw();
+        glColor4f(1.0f, 1.0f, 1.0f, 0.25f);
+        glLineWidth(1.0f);
+        drawDashedCircle([self effectRadiusCircle], CIRCLE_SEGMENTS_COUNT * 2, scroll);
+        disablePrimitiveDraw();
+    }
 }
 
 - (void)setMovingAIState:(int)state {

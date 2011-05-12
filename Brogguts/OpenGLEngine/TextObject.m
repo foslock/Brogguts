@@ -78,24 +78,49 @@
 - (void)renderWithFont:(BitmapFont*)font {
 	if (isTextHidden) return;
 	Color4f savedColor = [font fontColor];
-	[font setFontColor:fontColor];
-    if (!drawsInRect)
+	
+    if (!drawsInRect) {
+        [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+        [font renderStringAt:CGPointMake(objectLocation.x + TEXT_SHADOW_OFFSET_X, objectLocation.y - TEXT_SHADOW_OFFSET_Y) text:self.objectText onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];
+        [font setFontColor:fontColor];
         [font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
-    else
+    }
+    else {
+        [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+        [font renderStringJustifiedInFrame:CGRectOffset(textRect, TEXT_SHADOW_OFFSET_X, -TEXT_SHADOW_OFFSET_Y)
+                             justification:BitmapFontJustification_MiddleLeft
+                                      text:self.objectText
+                                   onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];
+        [font setFontColor:fontColor];
         [font renderStringJustifiedInFrame:textRect justification:BitmapFontJustification_MiddleLeft text:self.objectText onLayer:renderLayer];
+    }
 	[font setFontColor:savedColor];
 }
 
-- (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll {
+- (void)renderWithFont:(BitmapFont*)font withScrollVector:(Vector2f)scroll centered:(BOOL)centered {
 	if (isTextHidden) return;
 	CGPoint location = CGPointMake(objectLocation.x - scroll.x, objectLocation.y - scroll.y);
+    if (centered) {
+        location = CGPointMake(location.x - ([font getWidthForString:objectText] / 2), location.y);
+    }
 	Color4f savedColor = [font fontColor];
-	[font setFontColor:fontColor];
-	if (!drawsInRect)
+    CGRect renderRect = CGRectOffset(textRect, -scroll.x, -scroll.y);
+	
+	if (!drawsInRect) {
+        [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+        [font renderStringAt:CGPointMake(location.x + TEXT_SHADOW_OFFSET_X, location.y - TEXT_SHADOW_OFFSET_Y) text:self.objectText onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];
+        [font setFontColor:fontColor];    
         [font renderStringAt:location text:self.objectText onLayer:renderLayer];
-    else
-        [font renderStringJustifiedInFrame:CGRectOffset(textRect, -scroll.x, -scroll.y) justification:BitmapFontJustification_MiddleLeft text:self.objectText onLayer:renderLayer];
-	[font setFontColor:savedColor];
+    }
+    else {
+        [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+        [font renderStringJustifiedInFrame:CGRectOffset(renderRect, TEXT_SHADOW_OFFSET_X, -TEXT_SHADOW_OFFSET_Y)
+                             justification:BitmapFontJustification_MiddleLeft
+                                      text:self.objectText
+                                   onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];        [font setFontColor:fontColor];
+        [font renderStringJustifiedInFrame:renderRect justification:BitmapFontJustification_MiddleLeft text:self.objectText onLayer:renderLayer];
+	}
+    [font setFontColor:savedColor];
 }
 
 @end

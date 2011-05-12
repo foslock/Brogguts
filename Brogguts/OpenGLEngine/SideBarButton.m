@@ -10,7 +10,7 @@
 #import "TiledButtonObject.h"
 
 @implementation SideBarButton
-@synthesize buttonText, buttonHeight, buttonWidth, buttonCenter, isPressed, button;
+@synthesize buttonText, buttonHeight, buttonWidth, buttonCenter, isPressed, isDisabled, button, textColor;
 
 - (void)dealloc {
     [button release];
@@ -23,14 +23,31 @@
 		buttonWidth = (int)width;
 		buttonHeight = (int)height;
 		buttonCenter = center;
+        isDisabled = NO;
+        textColor = Color4fOnes;
         button = [[TiledButtonObject alloc] initWithRect:[self buttonRect]];
 	}
 	return self;
 }
 
+- (Color4f)textColor {
+    if (isDisabled) {
+        return Color4fMake(0.5f, 0.5f, 0.5f, 0.8f);
+    } else {
+        return textColor;
+    }
+}
+
+- (void)setIsDisabled:(BOOL)disabled {
+    isDisabled = disabled;
+    [button setIsDisabled:disabled];
+}
+
 - (void)setIsPressed:(BOOL)pressed {
-    isPressed = pressed;
-    [button setIsPushed:pressed];
+    if (!isDisabled) {
+        isPressed = pressed;
+        [button setIsPushed:pressed];
+    }
 }
 
 - (CGRect)buttonRect {

@@ -12,7 +12,9 @@
 
 @interface SideBarButton : NSObject {
 	NSString* buttonText;
+    Color4f textColor;
 	BOOL isPressed;
+    BOOL isDisabled;
 	int buttonWidth;
 	int buttonHeight;
 	CGPoint buttonCenter;
@@ -20,7 +22,9 @@
 }
 
 @property (retain) NSString* buttonText;
+@property (nonatomic, assign) Color4f textColor;
 @property (nonatomic, assign) BOOL isPressed;
+@property (nonatomic, assign) BOOL isDisabled;
 @property (nonatomic, assign) int buttonWidth;
 @property (nonatomic, assign) int buttonHeight;
 @property (nonatomic, assign) CGPoint buttonCenter;

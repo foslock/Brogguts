@@ -26,13 +26,16 @@
 			[buttonArray addObject:button];
 			switch (i) {
 				case 0:
-					[button setButtonText:@"Refining"];
+					[button setButtonText:@"Refinery"];
+                    [button setIsDisabled:YES];
 					break;
 				case 1:
 					[button setButtonText:@"Craft"];
+                    [button setIsDisabled:YES];
 					break;
 				case 2:
 					[button setButtonText:@"Structures"];
+                    [button setIsDisabled:YES];
 					break;
                 case 3:
 					[button setButtonText:@"Broggupedia"];
@@ -47,6 +50,26 @@
 		}
 	}
 	return self;
+}
+
+- (void)updateSideBar {
+    [super updateSideBar];
+    BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    if (scene.numberOfRefineries > 0) {
+        SideBarButton* refinery = [buttonArray objectAtIndex:0];
+        if ([refinery isDisabled])
+            [refinery setIsDisabled:NO];
+    }
+    if (scene.isAllowingCraft) {
+        SideBarButton* craft = [buttonArray objectAtIndex:1];
+        if ([craft isDisabled])
+            [craft setIsDisabled:NO];
+    }
+    if (scene.isAllowingStructures) {
+        SideBarButton* structures = [buttonArray objectAtIndex:2];
+        if ([structures isDisabled])
+            [structures setIsDisabled:NO];
+    }
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {

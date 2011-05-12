@@ -10,12 +10,16 @@
 #import "SideBarObject.h"
 #import "MainMenuSideBar.h"
 #import "BitmapFont.h"
+#import "Image.h"
+#import "ImageRenderSingleton.h"
 
 @implementation SideBarController
 
 @synthesize isSideBarShowing, sideBarFont;
 
 - (void)dealloc {
+    [sideBarBackButtonImage release];
+    [sideBarButtonImage release];
 	[sideBarFont release];
 	[super dealloc];
 }
@@ -23,6 +27,10 @@
 - (id)initWithLocation:(CGPoint)location withWidth:(float)width withHeight:(float)height {
 	self = [super init];
 	if (self) {
+        sideBarButtonImage = [[Image alloc] initWithImageNamed:@"spritesidebarbutton.png" filter:GL_LINEAR];
+        [sideBarButtonImage setRenderLayer:kLayerHUDBottomLayer];
+        sideBarBackButtonImage = [[Image alloc] initWithImageNamed:@"spritesidebarback.png" filter:GL_LINEAR];
+        [sideBarBackButtonImage setRenderLayer:kLayerHUDTopLayer];
 		isSideBarShowing = NO;
 		isSideBarMovingIn = NO;
 		isSideBarMovingOut = NO;
@@ -82,6 +90,7 @@
 
 - (void)updateSideBar {
 	if (isSideBarShowing) {
+        [sideBarButtonImage setFlipHorizontally:YES];
 		if (isSideBarMovingIn) {
 			sideBarLocation = CGPointMake(sideBarLocation.x + SIDEBAR_MOVE_SPEED, sideBarLocation.y);
 			if (sideBarLocation.x >= originalLocation.x + sideBarWidth) {
@@ -129,7 +138,9 @@
 				}
 			}
 		}
-	}
+	} else {
+        [sideBarButtonImage setFlipHorizontally:NO];
+    }
 }
 
 - (CGRect)backButtonRect {
@@ -140,21 +151,31 @@
 	return rect;
 }
 
+- (CGPoint)backButtonPoint {
+	CGPoint point = CGPointMake(sideBarLocation.x,
+                                sideBarLocation.y + sideBarHeight - (SIDEBAR_BUTTON_HEIGHT / 2));
+	return point;
+}
+
 - (void)renderSideBar {
-	CGRect renderRect = [self sideBarRect];
+	// CGRect renderRect = [self sideBarRect];
 	CGRect buttonRect = [self buttonRect];
-	
+	/*
 	if (isSideBarShowing) {
 		glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 		enablePrimitiveDraw();
 		drawRect(renderRect, Vector2fZero);
 		disablePrimitiveDraw();
 	}
-	
+    */
+	/*
 	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 	enablePrimitiveDraw();
 	drawRect(buttonRect, Vector2fZero);
 	disablePrimitiveDraw();
+    */
+    
+    [sideBarButtonImage renderAtPoint:buttonRect.origin];
 	
     if (isSideBarShowing) {
         SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
@@ -163,10 +184,13 @@
 	
 	if ([sideBarStack count] > 1) {
 		// Draw the back button
+        [sideBarBackButtonImage renderCenteredAtPoint:[self backButtonPoint]];
+        /*
 		enablePrimitiveDraw();
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
 		drawFilledRect([self backButtonRect], Vector2fZero);
 		disablePrimitiveDraw();
+         */
 	}
 }
 

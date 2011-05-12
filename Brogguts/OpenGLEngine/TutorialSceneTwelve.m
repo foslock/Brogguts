@@ -22,6 +22,8 @@
         isAllowingOverview = YES;
         isShowingBroggutCount = YES;
         isAllowingSidebar = YES;
+        isAllowingCraft = YES;
+        isAllowingStructures = YES;
         
         [helpText setObjectText:@"Structures are built the same way, except you can only build one at a time. Be careful how far you build it from your base station, or you will have to wait a long time! Build three new Blocks near your base station."];
     }
@@ -29,7 +31,7 @@
 }
 
 - (BOOL)checkObjective {
-    if (numberOfCurrentStructures >= 3 && !isBuildingStructure)
+    if (numberOfCurrentStructures >= 4 && !isBuildingStructure)
         return YES;
     else
         return NO;

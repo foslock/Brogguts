@@ -152,6 +152,17 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     return (gcClass && osVersionSupported);
 }
 
+// Always use messages to get the current scene!
+- (BroggutScene*)currentScene {
+    if (!currentScene) {
+        currentScene = [[GameController sharedGameController] currentScene];
+    }
+    if (!currentScene) {
+        currentScene = [[GameController sharedGameController] justMadeScene];
+    }
+    return currentScene;
+}
+
 - (void)authenticateLocalPlayer
 {
     [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
@@ -293,20 +304,20 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFailWithError:(NSError *)error
 {
 	NSLog(@"Match finding failed: %@", [error localizedDescription]);
-    [self dismissModalViewControllerAnimated:YES];
-    [self.view removeFromSuperview];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Uh oh!" message:@"There were no games found!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release];
     // Display the error to the user.
 }
 
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFindMatch:(GKMatch *)match
 {
-    [self dismissModalViewControllerAnimated:YES];
     self.currentMatch = match; // Use a retaining property to retain the match.
 	currentMatch.delegate = self;
     
     // Start the game using the match.
     [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] transitionToSceneWithFileName:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
+    [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
 	[self.view removeFromSuperview];
 }
 
@@ -326,7 +337,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         case GKPlayerStateDisconnected:
 			NSLog(@"Other player left, disconnecting...");
 			[currentMatch disconnect];
-            [currentScene otherPlayerDisconnected];
+            [[self currentScene] otherPlayerDisconnected];
             // a player just disconnected.
 			break;
     }
@@ -339,7 +350,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 }
 
 - (CGPoint)translatedPointForMultiplayer:(Vector2f)point {
-    CGRect bounds = [currentScene fullMapBounds];
+    CGRect bounds = [[self currentScene] fullMapBounds];
     CGPoint newPoint = CGPointMake(bounds.size.width - point.x, point.y);
     return newPoint;
 }
@@ -712,7 +723,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -722,7 +733,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -732,7 +743,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -742,7 +753,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -752,7 +763,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -762,7 +773,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -772,7 +783,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -782,7 +793,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:NO];
             [newCraft setRemoteLocation:location];
             [newCraft setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
@@ -791,9 +802,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         case kObjectStructureBaseStationID: {
             BaseStationStructureObject* newStructure = [[BaseStationStructureObject alloc] initWithLocation:location isTraveling:NO];
             [newStructure setRemoteLocation:location];
-            [currentScene setEnemyBaseLocation:location];
+            [[self currentScene] setEnemyBaseLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
@@ -803,7 +814,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:NO];
             [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
@@ -813,7 +824,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:NO];
             [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
@@ -823,7 +834,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:NO];
             [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
@@ -833,7 +844,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:NO];
             [newStructure setRemoteLocation:location];
             [newStructure setObjectAlliance:kAllianceEnemy];
-            [currentScene addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
@@ -867,8 +878,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 
 - (void)broggutUpdatePacketReceived:(BroggutUpdatePacket)packet {
     CGPoint newPoint = [self translatedPointForMultiplayer:Vector2fMake(packet.broggutLocation.x, packet.broggutLocation.y)];
-    MediumBroggut* broggut = [[currentScene collisionManager] broggutCellForLocation:newPoint];
-    [[currentScene collisionManager] setBroggutValue:packet.newValue withID:broggut->broggutID isRemote:YES];
+    MediumBroggut* broggut = [[[self currentScene] collisionManager] broggutCellForLocation:newPoint];
+    [[[self currentScene] collisionManager] setBroggutValue:packet.newValue withID:broggut->broggutID isRemote:YES];
 }
 
 - (void)simplePacketReceived:(SimpleEntityPacket)packet {

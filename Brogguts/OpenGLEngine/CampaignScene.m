@@ -11,6 +11,7 @@
 #import "TriggerObject.h"
 #import "TextObject.h"
 #import "EndMissionObject.h"
+#import "PlayerProfile.h"
 
 NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Campaign 1",
@@ -66,6 +67,11 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
             isMissionOver = YES;
             [endMissionObject setWasSuccessfulMission:YES];
             [endMissionObject setCurrentScene:self];
+            int currentExperience = [[sharedGameController currentProfile] playerExperience];
+            if (campaignIndex + 1 >= currentExperience) {
+                [[sharedGameController currentProfile] setPlayerExperience:campaignIndex + 1];
+                [[sharedGameController currentProfile] updateSpaceYearUnlocks];
+            }
         }
     }
     if ([self checkFailure]) {
@@ -93,8 +99,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
         if (campaignIndex < CAMPAIGN_SCENES_COUNT - 1) {
-            [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex + 1 withLoaded:NO];
-            [[GameController sharedGameController] transitionToSceneWithFileName:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:NO isLoading:NO];
+            [[GameController sharedGameController] fadeOutToSceneWithFilename:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:YES isLoading:NO];
         }
     }
 }
@@ -102,8 +107,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 - (void)restartCurrentLevel {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
-        [[GameController sharedGameController] loadCampaignLevelsForIndex:campaignIndex withLoaded:NO];
-        [[GameController sharedGameController] transitionToSceneWithFileName:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:NO isLoading:NO];
+        [[GameController sharedGameController] fadeOutToSceneWithFilename:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:YES isLoading:NO];
     }
 }
 

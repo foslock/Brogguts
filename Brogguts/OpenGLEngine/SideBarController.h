@@ -8,14 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-#define SIDEBAR_BUTTON_WIDTH 80
-#define SIDEBAR_BUTTON_HEIGHT 80
+#define SIDEBAR_BUTTON_WIDTH 64
+#define SIDEBAR_BUTTON_HEIGHT 64
 #define SIDEBAR_MOVE_SPEED 8.0f
 
 @class SideBarObject;
 @class BitmapFont;
+@class Image;
 
 @interface SideBarController : NSObject {
+    Image* sideBarButtonImage;
+    Image* sideBarBackButtonImage;
+    
 	// Vars dealing with bar appearing and disappearing
 	BOOL isSideBarShowing;
 	BOOL isSideBarMovingIn;

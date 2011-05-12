@@ -38,7 +38,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftAntCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftAntCostMetal]];
-            // [unitLabel setText:@""];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Ant is a very common craft. Used mostly for mining operations, this ship has a cargo capacity of %i brogguts. It also is equipped with a quick release bay that can transport whatever is in its bay to a neighboring base station.", kCraftAntCargoSpace];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -53,6 +54,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftMothCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftMothCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Moth first appeared as a racing craft on the outskirts of the solar system, but soon was adopted as a scouting ship for the local companies. It is very fast, very weak, and very replacable."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -67,6 +70,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftBeetleCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftBeetleCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Beetle used to be used as a military transport, but since all of the corporate takeovers they have been converted to slow and powerful monsters. These space tanks are slow, but pack quite a punch. One thing is for sure, you do not want to take one of these on alone."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -81,6 +86,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftMonarchCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftMonarchCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Monarch is a recent breakthrough in wireless technology. Not only can it transmit information as light speed, it can provide protection for all nearby friendly ships. Having just a few of these ships can turn one battle completely around."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -95,6 +102,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftCamelCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftCamelCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Camel is a company's attempt at creating a mining craft superior to the Ant. Built from the same frame, but loaded with many more auxilury systems, this craft has a cargo capacity of %i. The addition of these bonuses come at a price.",kCraftCamelCargoSpace];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -109,6 +118,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftRatCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftRatCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Rat is another brand new company invention. While seemingly harmless, this craft has the passive ability to remain cloaked and hidden from its enemies. Only an enemy radar structure will be able to detect it."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -123,6 +134,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftSpiderCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftSpiderCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Spider is the largest craft that the companies have been able to build. It has eight bays where it stores eight separate attack drones. Instead of the ship being equipped with a weapon, these drones will swarm any enemy that comes near it."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -137,6 +150,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftEagleCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftEagleCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Eagle is the most desirable and multipurpose craft available. It is fast, strong, and can single handedly destroy almost any other ship it comes up against. It does come at quite a price though."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -153,6 +168,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:@"Brogguts Cost: N/A"];
             [unitMetalCostLabel setText:@"Metal Cost: N/A"];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Base Station is the standard in commanding stations. It provides storage for all mined brogguts, it builds craft and other important structures that help progress the current mission. Each commander may only have one Base Station at a time."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -167,6 +184,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureBlockCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureBlockCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Block is essentially created from the worst and most useless of the brogguts brought in. While it may seemingly serve no purpose as a structure, the built-in alert system can be helpful when interested in knowing when and where an attack may be coming."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -181,6 +200,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureRefineryCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureRefineryCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Refinery is required to refine brogguts back into useable metal. Metal is required to build most craft and structures, and will be refined faster the more of these you build."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -195,6 +216,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureCraftUpgradesCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureCraftUpgradesCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Craft Upgrades structure provides an opporunity to strengthen the abilities of all of the commander's crafts. Each upgrade costs brogguts in addition to the cost of this structure."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -209,6 +232,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureStructureUpgradesCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureStructureUpgradesCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Structure Upgrades structure provides an opporunity to strengthen the abilities of all of the commander's structures. Each upgrade costs brogguts in addition to the cost of this structure."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -223,6 +248,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureTurretCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureTurretCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Turret is the basic defensive structure to defend a Base Station. It attacks quickly, and having a large array of these makes a Base Station almost impossible to destroy."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -237,6 +264,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureRadarCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureRadarCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tRadar is used purely to detect enemy units. It will alert the commander when an enemy ship enters its radar detection field. The Rat craft must be detected using this structure."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -251,6 +280,8 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureFixerCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureFixerCostMetal]];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Fixer is a useful structure that repairs the closest damaged friendly craft. Even though it repairs fairly slowly, "];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -266,6 +297,8 @@
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Collectable Brogguts Range: %i to %i",kBroggutYoungSmallMinValue, kBroggutYoungSmallMaxValue]];
             [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
+            NSString* description = [NSString stringWithFormat:@"\t\tThis is a common piece of space trash that one might find floating around in space. Once a clean and empty void, space is now full of these."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -281,6 +314,8 @@
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutYoungMediumMinValue, kBroggutYoungMediumMaxValue]];
             [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
+            NSString* description = [NSString stringWithFormat:@"\t\tA relatively young collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -296,6 +331,8 @@
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutOldMediumMinValue, kBroggutOldMediumMaxValue]];
             [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
+            NSString* description = [NSString stringWithFormat:@"\t\tAn older collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
+            [unitLabel setText:description];
             [image release];
             break;
         }
@@ -311,6 +348,8 @@
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutAncientMediumMinValue, kBroggutAncientMediumMaxValue]];
             [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
+            NSString* description = [NSString stringWithFormat:@"\t\tAn ancient collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
+            [unitLabel setText:description];
             [image release];
             break;
         }

@@ -41,6 +41,10 @@
     return self;
 }
 
+- (CGSize)imageSize {
+    return [[subImageArray objectAtIndex:0] imageSize];
+}
+
 - (BOOL)isAnimating {
     if (animationSpeed != 0.0f) {
         return YES;
@@ -82,6 +86,12 @@
 - (void)setRenderLayer:(int)layer {
     for (Image* image in subImageArray) {
         [image setRenderLayer:layer];
+    }
+}
+
+- (void)setScale:(Scale2f)scale {
+    for (Image* image in subImageArray) {
+        [image setScale:scale];
     }
 }
 

@@ -14,9 +14,11 @@
 #define BASE_STATION_LIGHT_MOVE_DEGREES 5.0f
 #define BASE_STATION_LIGHT_OUTER_DISTANCE 380.0f
 #define BASE_STATION_LIGHT_INNER_DISTANCE 100.0f
+#define BASE_STATION_WIDTH_CELLS 3
+#define BASE_STATION_HEIGHT_CELLS 3
 
 @interface BaseStationStructureObject : StructureObject {
-    Image* blinkingLightImage;
+    Image* blinkingStructureLightImage;
     float rotationCounter;
     float blinkCounter;
     float lightPositionCounter;

@@ -11,10 +11,13 @@
 
 
 @interface RatCraftObject : CraftObject {
-
+    BOOL isCloaked;
+    float cloakAlpha;
 }
 
-- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+@property (nonatomic, assign) BOOL isCloaked;
+@property (nonatomic, assign) float cloakAlpha;
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 @end

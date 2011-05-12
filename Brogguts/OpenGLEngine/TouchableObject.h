@@ -11,6 +11,10 @@
 #define CIRCLE_BLINK_FREQUENCY 50	// The number of times the selection circle blinks when "selected"
 #define CIRCLE_BLINK_FRAMES 150	// The frames it takes for the circle to blink (must be larger than the above number)
 
+#define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
+#define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
+#define LIGHT_BLINK_FADE_SPEED 0.05f // Rate at which the blinking light fades out
+
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
@@ -23,6 +27,7 @@
 	
 	// True if the structure should be checked for ships/structures in it's area
 	BOOL isCheckedForRadialEffect;
+    BOOL isDrawingEffectRadius;
 	float effectRadius;
 	
 	// AI states
@@ -50,6 +55,7 @@
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) Circle touchableBounds;
 @property (nonatomic, assign) BOOL isCheckedForRadialEffect;
+@property (nonatomic, assign) BOOL isDrawingEffectRadius;
 @property (nonatomic, assign) CGPoint creationEndLocation;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;

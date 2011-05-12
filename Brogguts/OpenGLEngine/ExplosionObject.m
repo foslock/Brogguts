@@ -10,6 +10,8 @@
 #import "AnimatedImage.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "ParticleSingleton.h"
+#import "BroggutScene.h"
 
 @implementation ExplosionObject
 
@@ -21,17 +23,41 @@
 - (id)initWithLocation:(CGPoint)location withSize:(int)size {
     self = [super initWithImage:nil withLocation:location withObjectType:kObjectExplosionObjectID];
     if (self) {
+        float distance = 128.0f;
         switch (size) {
             case kExplosionSizeSmall: {
+                [[self currentScene] startShakingScreenWithMagnitude:5.0f];
                 animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionSmallSprite withSubImageCount:8];
+                for (int i = 0; i < 3; i++) {
+                    float randX = RANDOM_MINUS_1_TO_1() * distance;
+                    float randY = RANDOM_MINUS_1_TO_1() * distance;
+                    CGPoint randPoint = CGPointMake(objectLocation.x + randX, objectLocation.y + randY);
+                    [[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:randPoint];
+                }
             }
                 break;
             case kExplosionSizeMedium: {
-                // animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionMediumSprite withSubImageCount:6];
+                [[self currentScene] startShakingScreenWithMagnitude:10.0f];
+                animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionSmallSprite withSubImageCount:8];
+                [animatedImage setScale:Scale2fMake(1.5f, 1.5f)];
+                for (int i = 0; i < 3; i++) {
+                    float randX = RANDOM_MINUS_1_TO_1() * distance;
+                    float randY = RANDOM_MINUS_1_TO_1() * distance;
+                    CGPoint randPoint = CGPointMake(objectLocation.x + randX, objectLocation.y + randY);
+                    [[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:randPoint];
+                }
             }
                 break;
             case kExplosionSizeLarge: {
+                [[self currentScene] startShakingScreenWithMagnitude:20.0f];
                 animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionLargeSprite withSubImageCount:8];
+                [[ParticleSingleton sharedParticleSingleton] createParticles:40 withType:kParticleTypeSpark atLocation:objectLocation];
+                for (int i = 0; i < 3; i++) {
+                    float randX = RANDOM_MINUS_1_TO_1() * distance;
+                    float randY = RANDOM_MINUS_1_TO_1() * distance;
+                    CGPoint randPoint = CGPointMake(objectLocation.x + randX, objectLocation.y + randY);
+                    [[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:randPoint];
+                }
             }
                 break;
             default:
@@ -40,6 +66,7 @@
         self.objectRotation = RANDOM_0_TO_1() * 360.0f;
         [animatedImage setAnimationSpeed:0.15f + (RANDOM_0_TO_1() * 0.05f)];
         [animatedImage setRenderLayer:kLayerBottomLayer];
+        
     }
     return self;
 }

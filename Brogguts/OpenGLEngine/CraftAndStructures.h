@@ -16,3 +16,5 @@
 #import "FixerStructureObject.h"
 #import "BaseStationStructureObject.h"
 #import "RefineryStructureObject.h"
+#import "CraftUpgradesStructureObject.h"
+#import "StructureUpgradesStructureObject.h"

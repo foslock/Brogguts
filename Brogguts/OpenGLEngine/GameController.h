@@ -85,6 +85,7 @@ enum SceneTypes {
 	BOOL isFadingSceneOut;
 	float fadingRectAlpha;
     int currentSceneType;
+    int currentSceneIndex;
     BOOL isNewSceneNew;
     BOOL isReturningToMenu;
     BOOL isSavingFadingScene;
@@ -93,7 +94,7 @@ enum SceneTypes {
     BOOL isShowingBroggupediaInScene;
 	
     // Game controller iVars	
-    NSDictionary *gameScenes;						// Dictionary of the different game scenes
+    NSMutableDictionary *gameScenes;				// Dictionary of the different game scenes
 }
 
 @property (retain) NSString* transitionName;
@@ -101,7 +102,7 @@ enum SceneTypes {
 @property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) BroggutScene *justMadeScene;
 @property (nonatomic, retain) EAGLView *eaglView;
-@property (nonatomic, retain) NSDictionary *gameScenes;
+@property (nonatomic, retain) NSMutableDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
 @property (readonly) BOOL isFadingSceneIn;
 @property (readonly) BOOL isFadingSceneOut;
@@ -132,7 +133,7 @@ enum SceneTypes {
 
 // Transitions to the scene with the given filename
 - (void)returnToMainMenuWithSave:(BOOL)save;
-- (void)transitionToSceneWithFileName:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene isLoading:(BOOL)loading;
+- (void)fadeOutToSceneWithFilename:(NSString*)fileName sceneType:(int)sceneType withIndex:(int)index isNew:(BOOL)isNewScene isLoading:(BOOL)loading;
 - (void)loadCampaignLevelsForIndex:(int)index withLoaded:(BOOL)loaded;
 - (void)loadTutorialLevelsForIndex:(int)index;
 

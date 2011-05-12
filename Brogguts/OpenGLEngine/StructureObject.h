@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "TouchableObject.h"
 
+#define STRUCTURE_LIGHT_INSET 16.0f
+
 @class Image;
 
 @interface StructureObject : TouchableObject {
@@ -26,12 +28,20 @@
 	int attributeHullCurrent;
 	int attributeMovingTime;
     
+    // Turrets and blinking lights
+	Image* blinkingLightImage;
+	int lightBlinkTimer;
+	float lightBlinkAlpha;
+    
     // Upgrade details
     BOOL isUpgradeEnabled;
     
     // Moving drone image
     Image* buildingDroneImage;
     float movingDirection;
+    
+    // If the dirty image is being shown
+    BOOL isDirtyImage;
 }
 
 @property (readonly) int attributeHullCurrent;

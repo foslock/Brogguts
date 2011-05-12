@@ -10,9 +10,6 @@
 #import "ControllableObject.h"
 #import "AIController.h"
 
-#define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
-#define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
-#define LIGHT_BLINK_FADE_SPEED 0.05f // Rate at which the blinking light fades out
 #define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
 
 @class MonarchCraftObject;
@@ -48,6 +45,9 @@ typedef struct Point_Array {
 	
 	// If there is a monarch nearby that is making them resistent
     BOOL isUnderAura;
+    Image* craftSheild;
+    BOOL isShowingSheild;
+    float sheildTimer;
 	
 	// Turrets and blinking lights
 	Image* blinkingLightImage;
@@ -78,6 +78,9 @@ typedef struct Point_Array {
     
     // Upgrade details
     BOOL isUpgradeEnabled;
+    
+    // If the dirty image is being shown
+    BOOL isDirtyImage;
 }
 
 @property (readonly) BOOL isFollowingPath;
@@ -102,6 +105,7 @@ typedef struct Point_Array {
 // Called when this craft is being repaired
 - (void)repairCraft:(int)amount;
 - (BOOL)isHullFull;
+- (void)showCraftSheild;
 
 // Use this to change the hull value
 - (void)setCurrentHull:(int)newHull;

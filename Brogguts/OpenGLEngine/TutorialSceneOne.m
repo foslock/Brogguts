@@ -16,19 +16,34 @@
 #import "TiledButtonObject.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
-    @"Space is polluted",
-    @"Yada yada yada",
-    @"You must build an empire and clean it",
-    @"Space trash = brogguts",
-    @"Blah blah blah",
-    @"Evil pirates will try and take over your station",
-    @"Kill them before they kill you",
-    @"Blah blah blah...",
-    @"Almost there...",
-    @"Finally, end of the intro.",
+    @"Hundreds of years in the future, the human ",
+    @" population grows beyond the planet's capacity.",
+    @"Landfills were overflowing with our trash, ",
+    @" eventually forcing the colonization of other planets.",
+    @"Inevitably the same happened, and as a result we ",
+    @" took to jettisoning all our trash into space.",
+    @"Thousands of years past that, the trash had accumulated ",
+    @" and started forming large masses in space.",
+    @"One day a single invention changed the galaxy: ",
+    @" A process that could convert any of this trash back into energy.",
+    @"Instantly, the trash became a valuable commodity, ",
+    @" and received the nickname 'Brogguts'.",
+    @"Companies were formed solely around mining ",
+    @" and selling millions of these Brogguts.",
+    @"Pirating and rogue missions soon found their way into the picture.",
+    @"Brogguts have become what all desire. ",
+    @" Struggles, and even war have erupted over just a few mining operations.",
+    @"You are an overseer of one of these large companies smaller base stations.",
+    @"Collect as many Brogguts as you can...",
+    @"...and maybe you will be the next to make a difference in this world.",
 };
 
 @implementation TutorialSceneOne
+
+- (void)dealloc {
+    [textObjects release];
+    [super dealloc];
+}
 
 - (id)init {
     self = [super initWithTutorialIndex:0];
@@ -36,7 +51,9 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
         skipTimer = 0;
         isHoldingTouch = NO;
         introIsOver = NO;
+        isAllowingSidebar = NO;
         holdLocation = CGPointZero;
+        textObjects = [[NSMutableArray alloc] init];
         for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
             float xLoc = (kPadScreenLandscapeWidth - [self getWidthForFontID:kFontBlairID withString:kIntroSceneText[i]]) / 2;
             TextObject* introText = [[TextObject alloc] initWithFontID:kFontBlairID
@@ -46,6 +63,7 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
             
             [introText setObjectVelocity:Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED)];
             [self addTextObject:introText];
+            [textObjects addObject:introText];
         }
         textTimer = TUTORIAL_INTRO_TEXT_TIME;
     }
@@ -64,12 +82,26 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
         introIsOver = YES;
     }
     
+    if (isHoldingTouch) {
+        for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
+            TextObject* introText = [textObjects objectAtIndex:i];
+            textTimer -= aDelta;
+            [introText setObjectVelocity:Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED_FAST)];
+        }
+    } else {
+        for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
+            TextObject* introText = [textObjects objectAtIndex:i];
+            
+            [introText setObjectVelocity:Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED)];
+        }
+    }
+    
     [super updateSceneWithDelta:aDelta];
 }
 
 - (void)renderScene {
     [super renderScene];
-    
+    /*
     if (isHoldingTouch) {
         skipTimer++;
         Circle newCircle;
@@ -90,8 +122,9 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     }
     
     if (skipTimer >= TUTORIAL_INTRO_SKIP_TIME) {
-        introIsOver = YES;
+        // introIsOver = YES;
     }
+     */
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(id)event view:(id)aView {

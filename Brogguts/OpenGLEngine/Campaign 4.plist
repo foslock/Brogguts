@@ -3,7 +3,7 @@
 <plist version="1.0">
 <array>
 	<string>Twice the Terror</string>
-	<false/>
+	<integer>2</integer>
 	<integer>16</integer>
 	<integer>6</integer>
 	<integer>20</integer>
@@ -400,7 +400,7 @@
 			<integer>16</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
 				<real>64</real>
@@ -414,8 +414,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -424,7 +424,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0.0</real>
+			<real>0</real>
 			<false/>
 			<array>
 				<real>320</real>
@@ -438,8 +438,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0.0</real>
-				<real>0.0</real>
+				<real>0</real>
+				<real>0</real>
 			</array>
 			<integer>0</integer>
 		</array>

@@ -10,6 +10,7 @@
 #import "TouchableObject.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "CraftObject.h"
 
 @implementation BuildingObject
 
@@ -18,10 +19,14 @@
     Image* newImage = [[Image alloc] initWithImageNamed:filename filter:GL_LINEAR];
     self = [super initWithImage:newImage withLocation:location withObjectType:kObjectBuildingObjectID];
     if (self) {
+        [objectImage setScale:[object objectImage].scale];
+        if ([object isKindOfClass:[CraftObject class]]) {
+            [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];
+        }
         creatingObject = object;
         creatingCraftID = object.uniqueObjectID;
         currentAlpha = BUILDING_OBJECT_MAX_ALPHA;
-        [self setRenderLayer:kLayerBottomLayer];
+        [objectImage setRenderLayer:kLayerBottomLayer];
     }
     [newImage release];
     return self;

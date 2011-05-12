@@ -22,24 +22,36 @@ enum BroggutButtonIDs {
 	kBroggutButtonConvert500,
 };
 
+enum BroggutConvertAmounts {
+	kBroggutAmountConvert50 = 5,
+	kBroggutAmountConvert100 = 10,
+	kBroggutAmountConvert200 = 20,
+	kBroggutAmountConvert500 = 50,
+};
+
 - (id)init {
 	self = [super init];
 	if (self) {
 		for (int i = 0; i < 4; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
+            NSString* buttonText;
 			switch (i) {
 				case kBroggutButtonConvert50:
-					[button setButtonText:@"Convert 50B"];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert50 * 10, kBroggutAmountConvert50];
+					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert100:
-					[button setButtonText:@"Convert 100B"];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert100 * 10, kBroggutAmountConvert100];
+					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert200:
-					[button setButtonText:@"Convert 200B"];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert200 * 10, kBroggutAmountConvert200];
+					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert500:
-					[button setButtonText:@"Convert 500B"];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert500 * 10, kBroggutAmountConvert500];
+					[button setButtonText:buttonText];
 				default:
 					break;
 			}
@@ -49,55 +61,63 @@ enum BroggutButtonIDs {
 	return self;
 }
 
+- (void)updateSideBar {
+    [super updateSideBar];
+    int broggutCount = [[[GameController sharedGameController] currentProfile] broggutCount];
+    
+    if (broggutCount < kBroggutAmountConvert50 * 10) {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert50];
+        [button setIsDisabled:YES];
+    } else {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert50];
+        [button setIsDisabled:NO];
+    }
+    
+    if (broggutCount < kBroggutAmountConvert100 * 10) {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert100];
+        [button setIsDisabled:YES];
+    } else {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert100];
+        [button setIsDisabled:NO];
+    }
+    
+    if (broggutCount < kBroggutAmountConvert200 * 10) {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert200];
+        [button setIsDisabled:YES];
+    } else {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert200];
+        [button setIsDisabled:NO];
+    }
+    
+    if (broggutCount < kBroggutAmountConvert500 * 10) {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert500];
+        [button setIsDisabled:YES];
+    } else {
+        SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert500];
+        [button setIsDisabled:NO];
+    }
+    
+}
+
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
     SideBarButton* button = [buttonArray objectAtIndex:buttonID];
     if ([button isPressed]) {
-        GameController* controller = [GameController sharedGameController];
-        int metalCount = 0;
-        BOOL didConvert = NO;
+        BroggutScene* scene = [[GameController sharedGameController] currentScene];
         switch (buttonID) {
             case kBroggutButtonConvert50:
-                metalCount = 5;
-                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-                    [[controller currentProfile] addMetal:metalCount];
-                    didConvert = YES;
-                }
+                [scene refineMetalOutOfBrogguts:kBroggutAmountConvert50];
                 break;
             case kBroggutButtonConvert100:
-                metalCount = 10;
-                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-                    [[controller currentProfile] addMetal:metalCount];
-                    didConvert = YES;
-                }
+                [scene refineMetalOutOfBrogguts:kBroggutAmountConvert100];
                 break;
             case kBroggutButtonConvert200:
-                metalCount = 20;
-                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-                    [[controller currentProfile] addMetal:metalCount];
-                    didConvert = YES;
-                }
+                [scene refineMetalOutOfBrogguts:kBroggutAmountConvert200];
                 break;
             case kBroggutButtonConvert500:
-                metalCount = 50;
-                if ([[controller currentProfile] subtractBrogguts:(metalCount * 10) metal:0]) {
-                    [[controller currentProfile] addMetal:metalCount];
-                    didConvert = YES;
-                }
+                [scene refineMetalOutOfBrogguts:kBroggutAmountConvert500];
                 break;
             default:
-                didConvert = NO;
                 break;
-        }
-        if (didConvert) {
-            // Create a text object telling we added metal
-            CGPoint point = [[[controller currentScene] metalCounter] objectLocation];
-            NSString* metalString = [NSString stringWithFormat:@"+%i metal", metalCount];
-            TextObject* metalText = [[TextObject alloc] initWithFontID:kFontBlairID Text:metalString withLocation:point withDuration:2.0f];
-            [metalText setObjectVelocity:Vector2fMake(0.0f, -0.3f)];
-            [metalText setFontColor:Color4fMake(0.4f, 0.5f, 1.0f, 1.0f)];
-            [metalText setScrollWithBounds:NO];
-            [[controller currentScene] addTextObject:metalText];
-            [metalText release];
         }
     }
     [super buttonReleasedWithID:buttonID atLocation:location];

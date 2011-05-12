@@ -74,6 +74,7 @@
         
         CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
         // Draw button text
+        [[myController sideBarFont] setFontColor:[button textColor]];
         [[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText] onLayer:kLayerHUDMiddleLayer];
     }
 }
@@ -104,7 +105,7 @@
 	for (int i = 0; i < [buttonArray count]; i++) {
 		// For each button, check if the location is in the rect
 		SideBarButton* button = [buttonArray objectAtIndex:i];
-		if (CGRectContainsPoint([button buttonRect], location)) {
+		if (CGRectContainsPoint([button buttonRect], location) && ![button isDisabled]) {
 			[self buttonPressedWithID:i];
 			isTouchDraggingButton = YES;
 		}
@@ -117,7 +118,7 @@
 	for (int i = 0; i < [buttonArray count]; i++) {
 		// For each button, check if the location is in the rect
 		SideBarButton* button = [buttonArray objectAtIndex:i];
-		if (CGRectContainsPoint([button buttonRect], location)) {
+		if (CGRectContainsPoint([button buttonRect], location) && ![button isDisabled]) {
 			[self buttonPressedWithID:i];
 			[self buttonReleasedWithID:i atLocation:location];
 		}
@@ -138,7 +139,7 @@
 				for (int i = 0; i < [buttonArray count]; i++) {
 					// For each button, check if the location is in the rect
 					SideBarButton* button = [buttonArray objectAtIndex:i];
-					if (CGRectContainsPoint([button buttonRect], fromLocation)) {
+					if (CGRectContainsPoint([button buttonRect], fromLocation) && ![button isDisabled]) {
 						[self buttonCancelledWithId:i];
 					}
 				}
@@ -157,7 +158,7 @@
 		for (int i = 0; i < [buttonArray count]; i++) {
 			// For each button, check if the location is in the rect
 			SideBarButton* button = [buttonArray objectAtIndex:i];
-			if (CGRectContainsPoint([button buttonRect], location)) {
+			if (CGRectContainsPoint([button buttonRect], location) && ![button isDisabled]) {
 				[self buttonReleasedWithID:i atLocation:location];
 			}
 			[button setIsPressed:NO];

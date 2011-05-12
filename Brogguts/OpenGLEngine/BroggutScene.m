@@ -34,9 +34,20 @@
 #import "BuildingObject.h"
 #import "EndMissionObject.h"
 
+
+NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
+    @"You must mine more Brogguts",
+    @"You must refine more Metal",
+    @"You must collect more Brogguts and Metal",
+    @"You must build only in empty space",
+    @"You've reached the limit for that structure",
+    @"You've reached the limit for that unit",
+    @"You must only mine brogguts on the edge",
+};
+
 @implementation BroggutScene
 
-@synthesize sceneName, sceneType;
+@synthesize sceneName, sceneFileName, sceneType;
 @synthesize collisionManager;
 @synthesize cameraContainRect, cameraLocation;
 @synthesize fullMapBounds, visibleScreenBounds;
@@ -48,7 +59,7 @@
 @synthesize widthCells, heightCells, numberOfSmallBrogguts;
 @synthesize isMultiplayerMatch, isMissionOver;
 @synthesize isShowingBuildingValues, currentBuildBroggutCost, currentBuildDragLocation, currentBuildMetalCost;
-
+@synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -73,9 +84,13 @@
     isShowingBroggutCount = YES;
     isShowingMetalCount = YES;
     isAllowingOverview = YES;
+    isAllowingCraft = YES;
+    isAllowingStructures = YES;
     isMissionOver = NO;
     isBuildingStructure = NO;
     endMissionObject = [[EndMissionObject alloc] init];
+    fadeBackgroundAlpha = 0.0f;
+    didAddBrogguts = NO;
     renderableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     renderableDestroyed = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
     touchableObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_OBJECT_CAPACITY];
@@ -100,6 +115,15 @@
     numberOfCurrentShips = 0;
     numberOfCurrentStructures = 0;
     numberOfSmallBrogguts = 0;
+    numberOfRefineries = 0;
+    currentRefineries = [[NSMutableArray alloc] initWithCapacity:4];
+    CGPoint helpMessagePoint = CGPointMake(kPadScreenLandscapeWidth / 2, 0.0f);
+    helpMessageObject = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:helpMessagePoint withDuration:-1.0f];
+    [helpMessageObject setRenderLayer:kLayerHUDBottomLayer];
+    messageTimer = 0.0f;
+    isShowingMessageTimer = NO;
+    isScreenShaking = NO;
+    screenShakingAmount = 0.0f;
     /*
      if (!isMultiplayerMatch)
      enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
@@ -167,6 +191,7 @@
         sharedGameController = [GameController sharedGameController];
         [sharedGameController setJustMadeScene:self];
         
+        self.sceneFileName = [NSString stringWithString:filename];
         NSString* fileNameExt = [filename stringByAppendingString:@".plist"];
         NSString* filePath = [sharedGameController documentsPathWithFilename:fileNameExt];
         BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
@@ -525,6 +550,9 @@
 	if (cameraImage) {
 		[cameraImage release];
 	}
+    [helpMessageObject release];
+    [sceneFileName release];
+    [currentRefineries release];
     [buildBroggutValue release];
     [buildMetalValue release];
     [endMissionObject release];
@@ -587,7 +615,6 @@
 
 - (void)sceneDidDisappear {
     [sharedGameCenterSingleton disconnectFromGame];
-    [[sharedGameController currentProfile] endSceneWithType:sceneType wasSuccessful:isMissionOver];
 }
 
 #pragma mark -
@@ -670,6 +697,24 @@
     }
 }
 
+- (void)refineMetalOutOfBrogguts:(int)metal {
+    if (numberOfRefineries == 0) {
+        return;
+    }
+    if ([[sharedGameController currentProfile] subtractBrogguts:(metal * 10) metal:0]) {
+        int divided = metal / numberOfRefineries;
+        int remainder = metal % numberOfRefineries;
+        
+        for (int i = 0; i < numberOfRefineries; i++) {
+            RefineryStructureObject* refinery = [currentRefineries objectAtIndex:i];
+            [refinery addRefiningCount:divided];
+            if (i == 0) {
+                [refinery addRefiningCount:remainder];
+            }
+        }
+    }
+}
+
 #pragma mark -
 #pragma mark Fonts
 
@@ -738,7 +783,13 @@
 
 // ALL objects should use this to do their scrolled drawing
 - (Vector2f)scrollVectorFromScreenBounds {
-    return Vector2fMake(visibleScreenBounds.origin.x, visibleScreenBounds.origin.y);
+    if (!isScreenShaking) {
+        return Vector2fMake(visibleScreenBounds.origin.x, visibleScreenBounds.origin.y);
+    } else {
+        float randX = RANDOM_MINUS_1_TO_1() * screenShakingAmount;
+        float randY = RANDOM_MINUS_1_TO_1() * screenShakingAmount;
+        return Vector2fMake(visibleScreenBounds.origin.x + randX, visibleScreenBounds.origin.y + randY);   
+    }
 }
 - (CGPoint)middleOfVisibleScreen {
     return CGPointMake(visibleScreenBounds.origin.x + (visibleScreenBounds.size.width / 2),
@@ -773,9 +824,34 @@
         frameCounter = 0;
     }
     
+    // Update the current broggut count
+    NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentProfile].broggutCount];
+    [broggutCounter setObjectText:brogCount];
+    [broggutCounter setIsTextHidden:!isShowingBroggutCount];
+    
+    NSString* metalCount = [NSString stringWithFormat:@"Metal: %i",[sharedGameController currentProfile].metalCount];
+    [metalCounter setObjectText:metalCount];
+    [metalCounter setIsTextHidden:!isShowingMetalCount];
+    
     if (isMissionOver) {
+        [endMissionObject endMissionDidAppear];
+        if (!didAddBrogguts) {
+            didAddBrogguts = YES;
+            [[sharedGameController currentProfile] endSceneWithType:sceneType wasSuccessful:isMissionOver];
+        }
         [endMissionObject updateObjectLogicWithDelta:aDelta];
+        if (fadeBackgroundAlpha < END_MISSION_BACKGROUND_ALPHA) {
+            fadeBackgroundAlpha += 0.005f;
+        }
         return;
+    }
+    
+    if (isScreenShaking) {
+        screenShakingAmount /= 1.1;
+        if (screenShakingAmount <= 0.0f) {
+            isScreenShaking = NO;
+            screenShakingAmount = 0.0f;
+        }
     }
     
     // Update the stars' positions and brightness if applicable
@@ -829,14 +905,14 @@
         [buildMetalValue setIsTextHidden:YES];
     }
     
-    // Update the current broggut count
-    NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentProfile].broggutCount];
-    [broggutCounter setObjectText:brogCount];
-    [broggutCounter setIsTextHidden:!isShowingBroggutCount];
-    
-    NSString* metalCount = [NSString stringWithFormat:@"Metal: %i",[sharedGameController currentProfile].metalCount];
-    [metalCounter setObjectText:metalCount];
-    [metalCounter setIsTextHidden:!isShowingMetalCount];
+    if (isShowingMessageTimer) {
+        messageTimer -= aDelta;
+        [helpMessageObject setObjectLocation:CGPointMake(kPadScreenLandscapeWidth / 2, 64.0f)];
+        [helpMessageObject setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, CLAMP(messageTimer, 0.0f, 1.0f))];
+        if (messageTimer <= 0.0f) {
+            isShowingMessageTimer = NO;
+        }
+    }
     
     // Gets the vector that the screen shoudl scroll, and scrolls it, updating the rects as necessary
     Vector2f cameraScroll = [self newScrollVectorFromCamera];
@@ -937,6 +1013,10 @@
         if ([tempObj isKindOfClass:[StructureObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
             // It is a structure
             numberOfCurrentStructures--;
+            if (tempObj.objectType == kObjectStructureRefineryID) {
+                numberOfRefineries--;
+                [currentRefineries removeObject:tempObj];
+            }
         }
         if ([tempObj isKindOfClass:[BroggutObject class]]) {
             // It is a broggut
@@ -994,6 +1074,7 @@
     
     enablePrimitiveDraw();
     // Draw the grid that collisions are based in
+    glLineWidth(1.0f);
     [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:SCENE_GRID_RENDER_ALPHA];
     disablePrimitiveDraw();
     
@@ -1004,7 +1085,7 @@
     for (int i = 0; i < [textObjectArray count]; i++) {
         TextObject* tempObj = [textObjectArray objectAtIndex:i];
         if (tempObj.scrollWithBounds)
-            [tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID] withScrollVector:scroll];
+            [tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID] withScrollVector:scroll centered:NO];
         else
             [tempObj renderWithFont:[fontArray objectAtIndex:tempObj.fontID]];
     }
@@ -1027,6 +1108,12 @@
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
         if ([tempObj isOnScreen])
             [tempObj renderUnderObjectWithScroll:scroll];
+        else if ([tempObj isKindOfClass:[TouchableObject class]]) {
+            TouchableObject* touchObj = (TouchableObject*)tempObj;
+            if ([touchObj isDrawingEffectRadius]) {
+                [tempObj renderUnderObjectWithScroll:scroll];
+            }
+        }
     }
     
     // Render particles under middle
@@ -1040,6 +1127,12 @@
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
         if ([tempObj isOnScreen])
             [tempObj renderOverObjectWithScroll:scroll];
+        else if ([tempObj isKindOfClass:[TouchableObject class]]) {
+            TouchableObject* touchObj = (TouchableObject*)tempObj;
+            if ([touchObj isDrawingEffectRadius]) {
+                [tempObj renderOverObjectWithScroll:scroll];
+            }
+        }
     }
     
     // Render particles under middle
@@ -1066,13 +1159,32 @@
         [sideBar renderSideBar];
     
     if (isMissionOver) {
+        glColor4f(0.0f, 0.0f, 0.0f, fadeBackgroundAlpha);
+        enablePrimitiveDraw();
+        drawFilledRect(CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight), Vector2fZero);
+        disablePrimitiveDraw();
         [endMissionObject renderCenteredAtPoint:[self middleOfVisibleScreen] withScrollVector:scroll];
+    }
+    
+    // Render the help message
+    if (isShowingMessageTimer) {
+        [helpMessageObject renderWithFont:[fontArray objectAtIndex:kFontBlairID] withScrollVector:Vector2fZero centered:YES];
     }
     
     // Render images
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDBottomLayer];
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDMiddleLayer];
     [sharedImageRenderSingleton renderImagesOnLayer:kLayerHUDTopLayer];
+    
+    if (isMissionOver) {
+        CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
+        enablePrimitiveDraw();
+        glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+        glLineWidth(3.0f);
+        drawLine(CGPointMake(center.x - (END_MISSION_BACKGROUND_WIDTH / 3), center.y),
+                 CGPointMake(center.x + (END_MISSION_BACKGROUND_WIDTH / 3), center.y), Vector2fZero);
+        disablePrimitiveDraw();
+    }
 }
 
 #pragma mark -
@@ -1123,6 +1235,11 @@
     [textObjectArray addObject:obj];
 }
 
+- (void)addRefinery:(RefineryStructureObject*)refinery {
+    numberOfRefineries++;
+    [currentRefineries addObject:refinery];
+}
+
 - (void)showBroggutValueAtLocation:(CGPoint)location {
 	MediumBroggut* broggut = [[self collisionManager] broggutCellForLocation:location];
 	if (isShowingValueText) {
@@ -1138,6 +1255,21 @@
 	} else {
         [valueTextObject setIsTextHidden:YES];
     }
+}
+
+- (void)showHelpMessageWithMessageID:(int)helpID {
+    if (helpID < 0 || helpID >= HELP_MESSAGE_COUNT) {
+        return;
+    }
+    isShowingMessageTimer = YES;
+    messageTimer = HELP_MESSAGE_TIME;
+    NSString* messageString = [NSString stringWithString:kHelpMessagesTextArray[helpID]];
+    [helpMessageObject setObjectText:messageString];
+}
+
+- (void)startShakingScreenWithMagnitude:(float)magnitude {
+    isScreenShaking = YES;
+    screenShakingAmount = magnitude;
 }
 
 #pragma mark -
@@ -1186,6 +1318,7 @@
     float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
     
     CGPoint relativeMiddle = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
+    glLineWidth(1.0f);
     [collisionManager drawCellGridAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withScroll:Vector2fZero withAlpha:CLAMP(alpha - 0.5f, 0.0f, 0.1f)];
     
     // Render each object as a point (sprite?) on the overview map
@@ -1197,16 +1330,18 @@
         }
         objPoint[0] = obj.objectLocation.x * xRatio;
         objPoint[1] = obj.objectLocation.y * yRatio;
+        glPointSize(1.0f);
         if ([obj isKindOfClass:[TouchableObject class]]) {
-            /*
-             // If the object has an "effect circle" then draw it in faded gray
-             Circle newCircle;
-             newCircle.x = objPoint[0];
-             newCircle.y = objPoint[1];
-             newCircle.radius = [((TouchableObject*)obj) effectRadiusCircle].radius * xRatio;
-             glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
-             drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
-             */
+            TouchableObject* touchObj = (TouchableObject*)obj;
+            if ([touchObj isDrawingEffectRadius]) {
+                // If the object has an "effect circle" then draw it in faded gray
+                Circle newCircle;
+                newCircle.x = objPoint[0];
+                newCircle.y = objPoint[1];
+                newCircle.radius = [touchObj effectRadiusCircle].radius * xRatio;
+                glColor4f(0.5f, 0.5f, 0.5f, CLAMP(alpha - 0.8f, 0.0f, OVERVIEW_MAX_ALPHA));
+                drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT, Vector2fZero);
+            }
         }
         if (obj.objectAlliance == kAllianceNeutral) {
             glColor4f(1.0f, 1.0f, 0.0f, alpha);
@@ -1214,6 +1349,12 @@
             glColor4f(0.0f, 1.0f, 0.0f, alpha);
         } else if (obj.objectAlliance == kAllianceEnemy) {
             glColor4f(1.0f, 0.0f, 0.0f, alpha);
+        }
+        if ([obj isKindOfClass:[CraftObject class]]) {
+            glPointSize(4.0f);
+        }
+        if ([obj isKindOfClass:[StructureObject class]]) {
+            glPointSize(8.0f);
         }
         glVertexPointer(2, GL_FLOAT, 0, objPoint);
         glDrawArrays(GL_POINTS, 0, 1);
@@ -1520,14 +1661,31 @@
 #pragma mark -
 #pragma mark Purchasing Craft and Structures
 
-- (void)failedToCreateAtLocation:(CGPoint)location {
-    NSLog(@"Failed to create object at location <%.1f,%.1f>", location.x, location.y);
+- (void)failedToCreateAtLocation:(CGPoint)location withFailType:(int)failtype {
+    switch (failtype) {
+        case kProfileFailBroggutsAndMetal:
+            [self showHelpMessageWithMessageID:kHelpMessageNeedBroggutsAndMetal];
+            break;
+        case kProfileFailBrogguts:
+            [self showHelpMessageWithMessageID:kHelpMessageNeedBrogguts];
+            break;
+        case kProfileFailMetal:
+            [self showHelpMessageWithMessageID:kHelpMessageNeedMetal];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
+    if (numberOfCurrentShips >= TOTAL_CRAFT_LIMIT) {
+        [self showHelpMessageWithMessageID:kHelpMessageNeedUnitLimit];
+        return;
+    }
     switch (craftID) {
         case kObjectCraftAntID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftAntCostBrogguts atLocation:location withAlliance:alliance];
                 AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1540,12 +1698,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftMothID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftMothCostBrogguts atLocation:location withAlliance:alliance];
                 MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1558,12 +1717,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftBeetleID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftBeetleCostBrogguts atLocation:location withAlliance:alliance];
                 BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1576,12 +1736,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftMonarchID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftMonarchCostBrogguts atLocation:location withAlliance:alliance];
                 MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1594,12 +1755,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftCamelID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftCamelCostBrogguts atLocation:location withAlliance:alliance];
                 CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1612,12 +1774,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftRatID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftRatCostBrogguts metal:kCraftRatCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftRatCostBrogguts metal:kCraftRatCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftRatCostBrogguts atLocation:location withAlliance:alliance];
                 RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1630,12 +1793,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftSpiderID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:alliance];
                 SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
                 [newCraft setCurrentScene:self];
@@ -1652,12 +1816,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectCraftEagleID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kCraftEagleCostBrogguts metal:kCraftEagleCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftEagleCostBrogguts metal:kCraftEagleCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kCraftEagleCostBrogguts atLocation:location withAlliance:alliance];
                 EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1670,7 +1835,7 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
@@ -1684,7 +1849,12 @@
     if (isBuildingStructure) {
         return;
     }
+    if (numberOfCurrentStructures >= TOTAL_STRUCTURE_LIMIT) {
+        [self showHelpMessageWithMessageID:kHelpMessageNeedStructureLimit];
+        return;
+    }
     if (![collisionManager isPathNodeOpenAtLocation:location]) {
+        [self showHelpMessageWithMessageID:kHelpMessageNeedStructureBuilding];
         return;
     }
     switch (structureID) {
@@ -1693,7 +1863,8 @@
             break;
         }
         case kObjectStructureBlockID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kStructureBlockCostBrogguts atLocation:location withAlliance:alliance];
                 BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1706,12 +1877,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectStructureTurretID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kStructureTurretCostBrogguts atLocation:location withAlliance:alliance];
                 TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1724,12 +1896,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectStructureRadarID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kStructureRadarCostBrogguts atLocation:location withAlliance:alliance];
                 RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1742,12 +1915,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectStructureFixerID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kStructureFixerCostBrogguts atLocation:location withAlliance:alliance];
                 FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1760,12 +1934,13 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectStructureRefineryID: {
-            if ([[sharedGameController currentProfile] subtractBrogguts:kStructureRefineryCostBrogguts metal:kStructureRefineryCostMetal]) {
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureRefineryCostBrogguts metal:kStructureRefineryCostMetal];
+            if (failType == kProfileNoFail) {
                 [self addBroggutTextValue:-kStructureRefineryCostBrogguts atLocation:location withAlliance:alliance];
                 RefineryStructureObject* newStructure = [[RefineryStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -1778,16 +1953,46 @@
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
             } else {
-                [self failedToCreateAtLocation:location];
+                [self failedToCreateAtLocation:location withFailType:failType];
             }
             break;
         }
         case kObjectStructureCraftUpgradesID: {
-            
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureCraftUpgradesCostBrogguts metal:kStructureCraftUpgradesCostMetal];
+            if (failType == kProfileNoFail) {
+                [self addBroggutTextValue:-kStructureCraftUpgradesCostBrogguts atLocation:location withAlliance:alliance];
+                CraftUpgradesStructureObject* newStructure = [[CraftUpgradesStructureObject alloc] initWithLocation:location isTraveling:YES];
+                if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+                [newStructure setObjectAlliance:alliance];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
+                [self addCollidableObject:tempObject];
+            } else {
+                [self failedToCreateAtLocation:location withFailType:failType];
+            }
             break;
         }
         case kObjectStructureStructureUpgradesID: {
-            
+            int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureStructureUpgradesCostBrogguts metal:kStructureStructureUpgradesCostMetal];
+            if (failType == kProfileNoFail) {
+                [self addBroggutTextValue:-kStructureStructureUpgradesCostBrogguts atLocation:location withAlliance:alliance];
+                StructureUpgradesStructureObject* newStructure = [[StructureUpgradesStructureObject alloc] initWithLocation:location isTraveling:YES];
+                if (alliance == kAllianceFriendly) {
+                    [newStructure setObjectLocation:homeBaseLocation];
+                } else if (alliance == kAllianceEnemy) {
+                    [newStructure setObjectLocation:enemyBaseLocation];
+                }
+                [newStructure setObjectAlliance:alliance];
+                [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
+                [self addCollidableObject:tempObject];
+            } else {
+                [self failedToCreateAtLocation:location withFailType:failType];
+            }
             break;
         }
         default:
@@ -1981,9 +2186,10 @@
                 selectionTouchHashOne = -1;
                 selectionTouchHashTwo = -1;
                 isSelectingShips = NO;
-                if (!isShowingOverview)
+                if (!isShowingOverview) {
                     [self fadeOverviewMapIn];
-                else
+                    [sideBar moveSideBarOut];
+                } else
                     [self fadeOverviewMapOut];
                 break;
             }

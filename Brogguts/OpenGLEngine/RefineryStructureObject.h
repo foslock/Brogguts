@@ -13,9 +13,15 @@
 
 @interface RefineryStructureObject : StructureObject {
     AnimatedImage* animatedImage;
+    BOOL hasBeenAdded;
+    BOOL isRefining;
+    int refiningTimer;
+    int refiningCounter;
 }
 
-- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+@property (nonatomic, assign) BOOL isRefining;
 
+- (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+- (void)addRefiningCount:(int)counter;
 
 @end
