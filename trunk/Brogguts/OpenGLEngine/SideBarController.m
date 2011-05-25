@@ -40,7 +40,7 @@
 		sideBarHeight = height;
 		sideBarStack = [[NSMutableArray alloc] init];
 		sideBarObjectLocation = location;
-		sideBarFont = [[BitmapFont alloc] initWithFontImageNamed:@"blair.png" controlFile:@"blair" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
+		sideBarFont = [[BitmapFont alloc] initWithFontImageNamed:@"gothic.png" controlFile:@"gothic" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
 		[sideBarFont setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 1.0f)];
 		MainMenuSideBar* topTemp = [[MainMenuSideBar alloc] init];
 		[topTemp setMyController:self];
@@ -153,7 +153,7 @@
 
 - (CGPoint)backButtonPoint {
 	CGPoint point = CGPointMake(sideBarLocation.x,
-                                sideBarLocation.y + sideBarHeight - (SIDEBAR_BUTTON_HEIGHT / 2));
+                                sideBarLocation.y + sideBarHeight);
 	return point;
 }
 

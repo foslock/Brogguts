@@ -1,5 +1,5 @@
 //
-//  ProfileMenuController.h
+//  InfoMenuController.h
 //  OpenGLEngine
 //
 //  Created by James F Lockwood on 3/10/11.
@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 
 
-@interface ProfileMenuController : UIViewController {
+@interface InfoMenuController : UIViewController {
     
 }
 
-- (IBAction)startBaseCamp;
-- (IBAction)popProfileController;
+- (IBAction)popInfoController;
 
 @end

@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define PROFILE_BROGGUT_MAX_COUNT 9999999
-#define PROFILE_METAL_MAX_COUNT 9999999
+#define PROFILE_BROGGUT_MAX_COUNT 1000000
+#define PROFILE_METAL_MAX_COUNT 1000000
+#define PROFILE_SPACE_YEAR_MAX 2000
 
 // The percent of the brogguts earned in a skirmish are added to the total count
 #define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f

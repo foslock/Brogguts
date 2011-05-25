@@ -17,6 +17,7 @@
 #import "CraftAndStructures.h"
 #import "ExplosionObject.h"
 #import "PlayerProfile.h"
+#import "NotificationObject.h"
 
 @implementation CraftObject
 @synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, isUnderAura;
@@ -201,19 +202,7 @@
         turretImage = [[Image alloc] initWithImageNamed:@"spritesmallturret.png" filter:GL_LINEAR];
         [turretImage setRenderLayer:kLayerTopLayer];
         [turretImage setScale:Scale2fMake(0.5f, 0.5f)];
-        turretRotation = 0.0f;
-        
-        craftSheild = [[Image alloc] initWithImageNamed:@"spritesheild.png" filter:GL_LINEAR];
-        float xRatio = [objectImage imageSize].width / [craftSheild imageSize].width;
-        float yRatio = [objectImage imageSize].height / [craftSheild imageSize].height;
-        if (xRatio < yRatio) {
-            [craftSheild setScale:Scale2fMake(xRatio, xRatio)];
-        } else {
-            [craftSheild setScale:Scale2fMake(yRatio, yRatio)];
-        }
-        isShowingSheild = NO;
-        sheildTimer = 0.0f;
-        
+        turretRotation = 0.0f;        
 		pathPointArray = nil;
 		pathPointNumber = 0;
 		isFollowingPath = NO;
@@ -222,6 +211,19 @@
 		[self setMovingAIState:kMovingAIStateStill];
 		[self setAttackingAIState:kAttackingAIStateNeutral];
 		[objectImage setRenderLayer:kLayerMiddleLayer];
+        
+        craftSheild = [[Image alloc] initWithImageNamed:@"spritesheild.png" filter:GL_LINEAR];
+        [craftSheild setRenderLayer:CLAMP([objectImage renderLayer] + 1, kLayerBottomLayer, kLayerHUDTopLayer)];
+        float xRatio = [objectImage imageSize].width / [craftSheild imageSize].width;
+        float yRatio = [objectImage imageSize].height / [craftSheild imageSize].height;
+        if (xRatio < yRatio) {
+            [craftSheild setScale:Scale2fMake(xRatio, xRatio)];
+        } else {
+            [craftSheild setScale:Scale2fMake(yRatio, yRatio)];
+        }
+        
+        isShowingSheild = NO;
+        sheildTimer = 0.0f;
 		isCheckedForRadialEffect = YES;
 		attributePlayerCurrentCargo = 0;
 		attributePlayerCargoCapacity = 200;
@@ -364,10 +366,18 @@
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
     [super attackedByEnemy:enemy withDamage:damage];
     if (isUnderAura) {
-        damage = CLAMP(damage - kCraftMonarchAuraResistanceValue, 0, INT_MAX);
+        damage = CLAMP(damage - kCraftMonarchAuraResistanceValue, 1, INT_MAX);
         [self showCraftSheild];
     }
     attributeHullCurrent -= damage;
+    
+    if (objectAlliance == kAllianceFriendly) {
+        NotificationObject* noti = [[NotificationObject alloc] initWithLocation:self.objectLocation withDuration:3.0f];
+        [noti attachToObject:self];
+        [[self currentScene] setNotification:noti];
+        [noti release];
+    }
+    
     if (attributeHullCurrent <= 0) {
         destroyNow = YES;
         return YES;
@@ -746,14 +756,14 @@
             if (!rat.isCloaked) {
                 enablePrimitiveDraw();
                 Circle newCircle = [self touchableBounds];
-                glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
+                glColor4f(0.0f, 0.5f, 1.0f, 0.4f);
                 drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
                 disablePrimitiveDraw();
             }
         } else {
             enablePrimitiveDraw();
             Circle newCircle = [self touchableBounds];
-            glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
+            glColor4f(0.0f, 0.5f, 1.0f, 0.4f);
             drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
             disablePrimitiveDraw();
         }
@@ -761,7 +771,7 @@
     
     if (isShowingSheild) {
         [craftSheild setRotation:objectRotation];
-        float alpha = CLAMP(sheildTimer - 0.4f, 0.0f, 0.6f);
+        float alpha = CLAMP(sheildTimer - 0.6f, 0.0f, 0.4f);
         [craftSheild setColor:Color4fMake(1.0f, 1.0f, 1.0f, alpha)];
         [craftSheild renderCenteredAtPoint:objectLocation withScrollVector:scroll];
     }

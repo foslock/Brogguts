@@ -33,10 +33,13 @@
         rotationCounter = 0.0f;
         blinkCounter = 0.0f;
         lightPositionCounter = 0.0f;
-        CollisionManager* manager = [currentScene collisionManager];
-        for (int i = -BASE_STATION_WIDTH_CELLS; i < BASE_STATION_WIDTH_CELLS; i++) {
-            for (int j = -BASE_STATION_HEIGHT_CELLS; j < BASE_STATION_HEIGHT_CELLS; j++ ) {
-                CGPoint point = CGPointMake(COLLISION_CELL_WIDTH * i, COLLISION_CELL_HEIGHT * j);
+        CollisionManager* manager = [[self currentScene] collisionManager];
+        for (int i = 0; i < BASE_STATION_WIDTH_CELLS; i++) {
+            for (int j = 0; j < BASE_STATION_HEIGHT_CELLS; j++) {
+                int xIndex = i - (BASE_STATION_WIDTH_CELLS / 2);
+                int yIndex = j - (BASE_STATION_HEIGHT_CELLS / 2);
+                CGPoint point = CGPointMake(objectLocation.x + (COLLISION_CELL_WIDTH * xIndex),
+                                            objectLocation.y + (COLLISION_CELL_HEIGHT * yIndex));
                 [manager setPathNodeIsOpen:NO atLocation:point];
             }
         }

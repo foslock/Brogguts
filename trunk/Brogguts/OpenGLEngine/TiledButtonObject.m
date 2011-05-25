@@ -16,7 +16,7 @@
 
 @implementation TiledButtonObject
 @synthesize isPushable, isPushed, wasJustReleased;
-@synthesize isDisabled;
+@synthesize isDisabled, drawRect;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;

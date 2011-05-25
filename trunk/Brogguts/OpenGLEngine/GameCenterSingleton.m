@@ -168,8 +168,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
 		if (error == nil)
 		{
-            localPlayerID = [[GKLocalPlayer localPlayer] playerID];
+            self.localPlayerID = [[GKLocalPlayer localPlayer] playerID];
 			NSLog(@"Authentication was successful!");
+             NSLog(@"I am Player: %@", localPlayerID);
 			// Insert code here to handle a successful authentication.
 		}
 		else
@@ -316,14 +317,20 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	currentMatch.delegate = self;
     
     // Start the game using the match.
-    [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
-	[self.view removeFromSuperview];
+    if (!self.matchStarted && match.expectedPlayerCount == 0)
+    {
+        NSLog(@"Match has started!");
+        [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+        [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
+        self.matchStarted = YES;
+        [self.view removeFromSuperview];
+    }
 }
 
 - (void)match:(GKMatch *)match player:(NSString *)playerID didChangeState:(GKPlayerConnectionState)state
 {
 	NSLog(@"Match changed state...");
+    self.localPlayerID = [[GKLocalPlayer localPlayer] playerID];
     switch (state)
     {
         case GKPlayerStateConnected:
@@ -333,20 +340,28 @@ static GameCenterSingleton* sharedGCSingleton = nil;
                 self.otherPlayerID = playerID;
                 otherPlayerArrayID = [[NSArray alloc] initWithObjects:otherPlayerID, nil];
             }
+            if (!self.matchStarted && match.expectedPlayerCount == 0)
+            {
+                NSLog(@"Match has started!");
+                [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
+                [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
+                self.matchStarted = YES;
+                [self.view removeFromSuperview];
+                // handle initial match negotiation.
+            }
 			break;
         case GKPlayerStateDisconnected:
-			NSLog(@"Other player left, disconnecting...");
-			[currentMatch disconnect];
+			NSLog(@"Player left: %@", playerID);
+            [currentMatch disconnect];
             [[self currentScene] otherPlayerDisconnected];
             // a player just disconnected.
 			break;
     }
-    if (!matchStarted && match.expectedPlayerCount == 0)
-    {
-		NSLog(@"Match has started!");
-        matchStarted = YES;
-        // handle initial match negotiation.
-    }
+}
+
+- (void)match:(GKMatch *)match connectionWithPlayerFailed:(NSString *)playerID withError:(NSError *)error {
+    NSLog(@"Transmission Failed with player: %@", playerID);
+    NSLog(@"Error: %@", [error localizedDescription]);
 }
 
 - (CGPoint)translatedPointForMultiplayer:(Vector2f)point {
@@ -406,6 +421,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     
     int counter = 0;
     while (counter < creationQueueCount) {
+        NSLog(@"Queued creation packet sent");
         CreationPacket thisPacket = creationPacketQueue[counter++];
         [self sendCreationPacket:thisPacket isRequired:YES];
     }
@@ -549,6 +565,9 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         GKMatchSendDataMode mode = GKMatchSendDataReliable;
         if (!required) {
             mode = GKMatchSendDataUnreliable;
+        }
+        for (NSString* playerID in otherPlayerArrayID) {
+            NSLog(@"Sending to player: %@", playerID);
         }
 		[currentMatch sendData:data 
 					 toPlayers:otherPlayerArrayID
@@ -851,15 +870,33 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             break;
         }
         case kObjectStructureRefineryID: {
-            
+            RefineryStructureObject* newStructure = [[RefineryStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureCraftUpgradesID: {
-            
+            CraftUpgradesStructureObject* newStructure = [[CraftUpgradesStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         case kObjectStructureStructureUpgradesID: {
-            
+            StructureUpgradesStructureObject* newStructure = [[StructureUpgradesStructureObject alloc] initWithLocation:location isTraveling:NO];
+            [newStructure setRemoteLocation:location];
+            [newStructure setObjectAlliance:kAllianceEnemy];
+            [[self currentScene] addTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+            newStructure.objectImage.flipHorizontally = YES;
+            newStructure.isRemoteObject = YES;
+            [objectsReceivedArray setObject:newStructure forKey:index];
             break;
         }
         default:

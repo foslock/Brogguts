@@ -9,26 +9,32 @@
 #import "CampaignSceneTwo.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
+#import "StartMissionObject.h"
+
+#define CAMPAIGN_TWO_BROGGUT_GOAL 10 // 2500
 
 @implementation CampaignSceneTwo
 
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:1 wasLoaded:loaded];
     if (self) {
-        
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts", CAMPAIGN_TWO_BROGGUT_GOAL]];
     }
     return self;  
 }
 
 - (BOOL)checkObjective {
     int count = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (count >= 1000) {
+    if (count >= CAMPAIGN_TWO_BROGGUT_GOAL) {
         return YES;
     }
-    return NO;
+    return YES; // NO
 }
 
 - (BOOL)checkFailure {
+    if ([self checkDefaultFailure]) {
+        return YES;
+    }
     return NO;
 }
 

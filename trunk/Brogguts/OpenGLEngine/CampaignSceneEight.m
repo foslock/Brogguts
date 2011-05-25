@@ -43,6 +43,9 @@
 }
 
 - (BOOL)checkFailure {
+    if ([self checkDefaultFailure]) {
+        return YES;
+    }
     if (numberOfCurrentStructures <= 0) {
         return YES;
     }

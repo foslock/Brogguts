@@ -47,6 +47,7 @@
 @property (readonly) BOOL isPushed;
 @property (readonly) BOOL wasJustReleased;
 @property (nonatomic, assign) BOOL isDisabled;
+@property (readonly) CGRect drawRect;
 
 // This rect must have an EVEN width and height both above 48 pixels
 - (id)initWithRect:(CGRect)buttonRect;

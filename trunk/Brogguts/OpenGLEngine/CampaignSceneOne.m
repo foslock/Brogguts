@@ -9,30 +9,33 @@
 #import "CampaignSceneOne.h"
 #import "PlayerProfile.h"
 #import "GameController.h"
+#import "StartMissionObject.h"
+
+#define CAMPAIGN_ONE_BROGGUT_GOAL 10 // 1000
 
 @implementation CampaignSceneOne
 
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:0 wasLoaded:loaded];
     if (self) {
-        
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts", CAMPAIGN_ONE_BROGGUT_GOAL]];
     }
     return self;  
 }
 
 - (BOOL)checkObjective {
     int count = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (count >= 100) {
+    if (count >= CAMPAIGN_ONE_BROGGUT_GOAL) {
+        return YES;
+    }
+    return YES; // NO
+}
+
+- (BOOL)checkFailure {
+    if ([self checkDefaultFailure]) {
         return YES;
     }
     return NO;
 }
-
-- (BOOL)checkFailure {
-    // No way to lose this level
-    return NO;
-}
-
-
 
 @end

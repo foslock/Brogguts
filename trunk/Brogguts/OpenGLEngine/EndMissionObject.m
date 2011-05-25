@@ -115,10 +115,15 @@
         [object renderCenteredAtPoint:object.objectLocation withScrollVector:Vector2fZero];
     }
     
-    BitmapFont* font = [[currentScene fontArray] objectAtIndex:kFontGothicID];
+    BitmapFont* font = [[[self currentScene] fontArray] objectAtIndex:kFontGothicID];
     for (TextObject* text in textArray) {
         [text renderWithFont:font withScrollVector:Vector2fZero centered:YES];
     }
+    
+    // Render button text
+    BitmapFont* buttonfont = [[[self currentScene] fontArray] objectAtIndex:kFontBlairID];
+    [buttonfont renderStringJustifiedInFrame:[menuButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Menu" onLayer:kLayerHUDTopLayer];
+    [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Next" onLayer:kLayerHUDTopLayer];
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {

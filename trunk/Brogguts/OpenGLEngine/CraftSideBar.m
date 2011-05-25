@@ -143,6 +143,7 @@ NSString* kCraftButtonLockedText = @"???";
 	[super renderWithOffset:vector];
 	if (isTouchDraggingButton) {
 		enablePrimitiveDraw();
+        glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		drawDashedLine([[buttonArray objectAtIndex:currentDragButtonID] buttonCenter], currentDragButtonLocation, CRAFT_BUTTON_DRAG_SEGMENTS, vector);
 		disablePrimitiveDraw();
 	}

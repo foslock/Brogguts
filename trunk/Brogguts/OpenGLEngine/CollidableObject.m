@@ -88,10 +88,10 @@ static int globalUniqueID = 0;
 
 - (BroggutScene*)currentScene {
     if (!currentScene) {
-        currentScene = [[GameController sharedGameController] currentScene];
+        currentScene = [[GameController sharedGameController] justMadeScene];
     }
     if (!currentScene) {
-        currentScene = [[GameController sharedGameController] justMadeScene];
+        currentScene = [[GameController sharedGameController] currentScene];
     }
     return currentScene;
 }

@@ -26,7 +26,6 @@
         float distance = 128.0f;
         switch (size) {
             case kExplosionSizeSmall: {
-                [[self currentScene] startShakingScreenWithMagnitude:5.0f];
                 animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionSmallSprite withSubImageCount:8];
                 for (int i = 0; i < 3; i++) {
                     float randX = RANDOM_MINUS_1_TO_1() * distance;
@@ -37,7 +36,6 @@
             }
                 break;
             case kExplosionSizeMedium: {
-                [[self currentScene] startShakingScreenWithMagnitude:10.0f];
                 animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionSmallSprite withSubImageCount:8];
                 [animatedImage setScale:Scale2fMake(1.5f, 1.5f)];
                 for (int i = 0; i < 3; i++) {
@@ -49,7 +47,6 @@
             }
                 break;
             case kExplosionSizeLarge: {
-                [[self currentScene] startShakingScreenWithMagnitude:20.0f];
                 animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionLargeSprite withSubImageCount:8];
                 [[ParticleSingleton sharedParticleSingleton] createParticles:40 withType:kParticleTypeSpark atLocation:objectLocation];
                 for (int i = 0; i < 3; i++) {
@@ -66,6 +63,11 @@
         self.objectRotation = RANDOM_0_TO_1() * 360.0f;
         [animatedImage setAnimationSpeed:0.15f + (RANDOM_0_TO_1() * 0.05f)];
         [animatedImage setRenderLayer:kLayerBottomLayer];
+        
+        float distanceFromCenter = GetDistanceBetweenPoints(objectLocation, [[self currentScene] middleOfVisibleScreen]);
+        if (distanceFromCenter < kPadScreenLandscapeWidth) {
+            [[self currentScene] startShakingScreenWithMagnitude:10.0f];
+        }
         
     }
     return self;

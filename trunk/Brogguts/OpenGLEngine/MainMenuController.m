@@ -8,13 +8,16 @@
 
 #import "MainMenuController.h"
 #import "GameController.h"
+#import "PlayerProfile.h"
 #import "TutorialScene.h"
 #import "CampaignScene.h"
 #import "OptionsMenuController.h"
-#import "ProfileMenuController.h"
 #import "SkirmishMenuController.h"
 #import "BroggupediaViewController.h"
 #import "SavedGameChoiceController.h"
+#import "InfoMenuController.h"
+#import "MenuHelpController.h"
+#import "MapChoiceController.h"
 
 @implementation MainMenuController
 @synthesize backgroundOne, backgroundTwo, backgroundThree;
@@ -32,7 +35,8 @@
 @synthesize basecampButton;
 @synthesize settingsButton;
 @synthesize infoButton;
-@synthesize tutorialButton;
+@synthesize tutorialButton, broggutCountButton, spaceYearButton;
+@synthesize broggutCount, spaceYearCount;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,6 +50,7 @@
 
 - (void)dealloc
 {
+    [starsArray release];
     [super dealloc];
 }
 
@@ -84,20 +89,97 @@
     [options release];
 }
 
+- (IBAction)loadInfoViewController; {
+    InfoMenuController* info = [[InfoMenuController alloc] init];
+    [self presentModalViewController:info animated:YES];
+    [info release];
+}
+
 - (IBAction)loadProfileViewController {
-    /*
-    ProfileMenuController* profile = [[ProfileMenuController alloc] init];
-    [self presentModalViewController:profile animated:YES];
-    [profile release];
-     */
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
     [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
 }
 
 - (IBAction)loadSkirmishViewController {
+    /*
     SkirmishMenuController* skirmish = [[SkirmishMenuController alloc] init];
     [self presentModalViewController:skirmish animated:YES];
     [skirmish release];
+     */
+    MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
+    [mapchoice setOnlineMatch:YES];
+    mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentModalViewController:mapchoice animated:YES];
+    [mapchoice release];
+}
+
+- (IBAction)spaceYearButtonPressed {
+    MenuHelpController* spaceYear = [[MenuHelpController alloc] initWithNibName:@"SpaceYearController" bundle:nil];
+    [spaceYear setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:spaceYear animated:YES];
+    [spaceYear release];
+}
+
+- (IBAction)broggutCountButtonPressed {
+    MenuHelpController* broggutController = [[MenuHelpController alloc] initWithNibName:@"BroggutCountController" bundle:nil];
+    [broggutController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:broggutController animated:YES];
+    [broggutController release];
+}
+
+- (void)animateStars {
+    float randomTime = 1.0f + RANDOM_0_TO_1();
+    [UIView animateWithDuration:randomTime delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        for (int i = 0; i < [starsArray count]; i++) {
+            UIImageView* tempStar = [starsArray objectAtIndex:i];
+            float randomAlpha = RANDOM_0_TO_1();
+            [tempStar setAlpha:randomAlpha];
+        }
+    }completion:^(BOOL finished){
+        // 
+    }];
+}
+
+- (void)animateLetters {
+    CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
+    float width = [letterB image].size.width;
+    [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationCurveLinear animations:^{
+        float randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        float randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterB setCenter:CGPointMake( center.x - (3.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterR setCenter:CGPointMake( center.x - (2.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterO setCenter:CGPointMake( center.x - (1.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterG1 setCenter:CGPointMake(center.x - (0.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterG2 setCenter:CGPointMake(center.x + (0.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterU setCenter:CGPointMake( center.x + (1.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterT setCenter:CGPointMake( center.x + (2.5 * width) + randX, center.y + randY)];
+        randX = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        randY = RANDOM_MINUS_1_TO_1() * LETTER_JITTER_DISTANCE;
+        [letterS setCenter:CGPointMake( center.x + (3.5 * width) + randX, center.y + randY)];
+    }completion:^(BOOL finished) {
+        // if (finished)
+            // [self animateLetters];
+    }];
+}
+
+- (void)updateCountLabels {
+    // Update the space year and broggut count labels
+    int spaceYear = [[[GameController sharedGameController] currentProfile] playerSpaceYear];
+    int brogguts = [[[GameController sharedGameController] currentProfile] broggutCount];
+    [broggutCount setText:[NSString stringWithFormat:@"Broggut Count: %i", brogguts]];
+    [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i A.C.", spaceYear]];
 }
 
 #pragma mark - View lifecycle
@@ -105,7 +187,32 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    starsArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < MAIN_MENU_STAR_COUNT; i++) {
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"defaultTexture" ofType:@"png"];
+        UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImageView* tempStar = [[UIImageView alloc] initWithImage:image];
+        float randomX = RANDOM_0_TO_1() * kPadScreenLandscapeWidth;
+        float randomY = RANDOM_0_TO_1() * kPadScreenLandscapeHeight;
+        float randomScale = 0.05f + (RANDOM_0_TO_1() * 0.15f);
+        [tempStar setTransform:CGAffineTransformMakeScale(randomScale, randomScale)];
+        [tempStar setCenter:CGPointMake(randomX, randomY)];
+        [self.view addSubview:tempStar];
+        [starsArray addObject:tempStar];
+        [image release];
+        [tempStar release];
+    }
+    [self animateStars];
     
+    lettersArray = [[NSMutableArray alloc] init];
+    [lettersArray addObject:letterB];
+    [lettersArray addObject:letterR];
+    [lettersArray addObject:letterO];
+    [lettersArray addObject:letterG1];
+    [lettersArray addObject:letterG2];
+    [lettersArray addObject:letterU];
+    [lettersArray addObject:letterT];
+    [lettersArray addObject:letterS];
 }
 
 - (void)viewDidUnload
@@ -177,7 +284,11 @@
         [letterU setCenter:CGPointMake( center.x + (1.5 * width), center.y)];
         [letterT setCenter:CGPointMake( center.x + (2.5 * width), center.y)];
         [letterS setCenter:CGPointMake( center.x + (3.5 * width), center.y)];
-    } completion:nil];
+    } completion:^(BOOL finished){
+        // if (finished)
+        //    [self animateLetters];
+    }];
+    [self updateCountLabels];
 }
 
 - (void)updateBackgroundsWithTouchLocation:(CGPoint)location {

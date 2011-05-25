@@ -30,6 +30,10 @@
 	return self;
 }
 
+- (void)rotateTowardsAngle:(float)angle {
+    
+}
+
 - (void)accelerateTowardsLocation:(CGPoint)location withMaxVelocity:(float)otherMaxVelocity {
 	if (otherMaxVelocity < 0.0f) {
         otherMaxVelocity = maxVelocity;
@@ -40,8 +44,8 @@
 	}
 	
 	// Are the points close enough to set velocity directly?
-	if (GetDistanceBetweenPoints(objectLocation, location) < boundingCircle.radius) {
-		// If point is closer than the objects radius, move it in the direct velocity
+	if (GetDistanceBetweenPointsSquared(objectLocation, location) < POW2(boundingCircle.radius)) {
+		// If point is closer than the objects radius, move it in the direct 1velocity
 		float dx = location.x - objectLocation.x;
 		float dy = location.y - objectLocation.y;
 		objectVelocity.x = CLAMP(dx, -otherMaxVelocity, otherMaxVelocity);

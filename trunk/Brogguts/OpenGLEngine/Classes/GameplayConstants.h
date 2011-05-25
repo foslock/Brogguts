@@ -140,10 +140,10 @@ enum TheAntValues {
 	kCraftAntSpecialCoolDown = 0, // frames for special to recharge
 	kCraftAntHull = 30,
 	// Special Values
-	kCraftAntCargoSpace = 50, // brogguts
+	kCraftAntCargoSpace = 25, // brogguts
 	kCraftAntCargoSpaceBonus = 50,
 	kCraftAntEnginesBonus = 1,
-	kCraftAntMiningCooldown = 6, // (frames / broggut)
+	kCraftAntMiningCooldown = 10, // (frames / broggut)
 };
 
 enum TheMothValues {
@@ -223,8 +223,8 @@ enum TheCamelValues {
 	kCraftCamelSpecialCoolDown = 500, // frames for special to recharge
 	kCraftCamelHull = 60,
 	// Special Values
-	kCraftCamelCargoSpace = 200, // brogguts
-	kCraftCamelMiningCooldown = 3, // (frames / broggut)
+	kCraftCamelCargoSpace = 100, // brogguts
+	kCraftCamelMiningCooldown = 5, // (frames / broggut)
 	kCraftCamelTunnelingTime = 300, // milliseconds
 };
 
@@ -473,12 +473,12 @@ enum BroggutDataValues {
 	kBroggutOldSmallMaxValue = 20,
 	kBroggutAncientSmallMinValue = 80,
 	kBroggutAncientSmallMaxValue = 100,
-	kBroggutYoungMediumMinValue = 400,
-	kBroggutYoungMediumMaxValue = 500,
+	kBroggutYoungMediumMinValue = 200,
+	kBroggutYoungMediumMaxValue = 400,
 	kBroggutOldMediumMinValue = 500,
-	kBroggutOldMediumMaxValue = 750,
-	kBroggutAncientMediumMinValue = 750,
-	kBroggutAncientMediumMaxValue = 2000,
+	kBroggutOldMediumMaxValue = 1000,
+	kBroggutAncientMediumMinValue = 2500,
+	kBroggutAncientMediumMaxValue = 5000,
 };
 
 enum BroggutAgeConstants {

@@ -33,6 +33,7 @@
 #import "ExplosionObject.h"
 #import "BuildingObject.h"
 #import "EndMissionObject.h"
+#import "NotificationObject.h"
 
 
 NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
@@ -42,7 +43,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must build only in empty space",
     @"You've reached the limit for that structure",
     @"You've reached the limit for that unit",
-    @"You must only mine brogguts on the edge",
+    @"You must only mine brogguts on edges",
 };
 
 @implementation BroggutScene
@@ -60,6 +61,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 @synthesize isMultiplayerMatch, isMissionOver;
 @synthesize isShowingBuildingValues, currentBuildBroggutCost, currentBuildDragLocation, currentBuildMetalCost;
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
+@synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -117,6 +119,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     numberOfSmallBrogguts = 0;
     numberOfRefineries = 0;
     currentRefineries = [[NSMutableArray alloc] initWithCapacity:4];
+    numberOfEnemyShips = 0;
+    numberOfEnemyStructures = 0;
     CGPoint helpMessagePoint = CGPointMake(kPadScreenLandscapeWidth / 2, 0.0f);
     helpMessageObject = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:helpMessagePoint withDuration:-1.0f];
     [helpMessageObject setRenderLayer:kLayerHUDBottomLayer];
@@ -136,6 +140,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     isFadingOverviewIn = NO;
     isFadingOverviewOut = NO;
     overviewAlpha = 0.0f;
+    
+    isShowingNotification = NO;
     
     // Set up fonts
     fontArray = [[NSMutableArray alloc] initWithCapacity:10];
@@ -160,17 +166,26 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     [metalCounter setScrollWithBounds:NO];
     [textObjectArray addObject:metalCounter];
     
+    
+    float width = [self getWidthForFontID:kFontBlairID withString:@"Wave: 00:00"];
+    countdownTimer = [[TextObject alloc]
+                      initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake((kPadScreenLandscapeWidth / 2) - width/2, kPadScreenLandscapeHeight - 128.0f) withDuration:-1.0f];
+    [countdownTimer setRenderLayer:kLayerHUDBottomLayer];
+    [countdownTimer setScrollWithBounds:NO];
+    [countdownTimer setFontColor:Color4fMake(0.8f, 0.1f, 0.1f, 1.0f)];
+    [self addTextObject:countdownTimer];
+    
     valueTextObject = [[TextObject alloc]
-                       initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
+                       initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
     [self addTextObject:valueTextObject];
     [valueTextObject setIsTextHidden:YES];
     [valueTextObject setRenderLayer:kLayerTopLayer];
     isShowingValueText = NO;
     
     buildBroggutValue = [[TextObject alloc]
-                         initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
+                         initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
     buildMetalValue = [[TextObject alloc]
-                       initWithFontID:kFontBlairID Text:@"" withLocation:CGPointMake(0, 0) withDuration:-1.0f];
+                       initWithFontID:kFontBlairID Text:@"" withLocation:CGPointZero withDuration:-1.0f];
     [buildBroggutValue setRenderLayer:kLayerHUDTopLayer];
     [buildMetalValue setRenderLayer:kLayerHUDTopLayer];
     [self addTextObject:buildBroggutValue];
@@ -281,6 +296,9 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [pointArray release];
             }
         }
+        
+        [[self collisionManager] remakeGenerator];
+        [[self collisionManager] updateAllMediumBroggutsEdges];
         
         // Iterate through the object array
         for (int i = 0; i < [objectArray count]; i++) {
@@ -537,9 +555,6 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         } // Loop ending
         
         [self addSmallBrogguts:newNumberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
-        
-        [[self collisionManager] remakeGenerator];
-        [[self collisionManager] updateAllMediumBroggutsEdges];
         [locationArray release];
         [array release];
     }
@@ -550,6 +565,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 	if (cameraImage) {
 		[cameraImage release];
 	}
+    [countdownTimer release];
+    [notification release];
     [helpMessageObject release];
     [sceneFileName release];
     [currentRefineries release];
@@ -701,7 +718,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     if (numberOfRefineries == 0) {
         return;
     }
-    if ([[sharedGameController currentProfile] subtractBrogguts:(metal * 10) metal:0]) {
+    if ([[sharedGameController currentProfile] subtractBrogguts:(metal * 10) metal:0] == kProfileNoFail) {
         int divided = metal / numberOfRefineries;
         int remainder = metal % numberOfRefineries;
         
@@ -712,6 +729,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [refinery addRefiningCount:remainder];
             }
         }
+    } else {
+        [self showHelpMessageWithMessageID:kHelpMessageNeedBrogguts];
     }
 }
 
@@ -824,6 +843,14 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         frameCounter = 0;
     }
     
+    if (isScreenShaking) {
+        screenShakingAmount /= 1.1;
+        if (screenShakingAmount <= 0.0f) {
+            isScreenShaking = NO;
+            screenShakingAmount = 0.0f;
+        }
+    }
+    
     // Update the current broggut count
     NSString* brogCount = [NSString stringWithFormat:@"Brogguts: %i",[sharedGameController currentProfile].broggutCount];
     [broggutCounter setObjectText:brogCount];
@@ -835,6 +862,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     
     if (isMissionOver) {
         [endMissionObject endMissionDidAppear];
+        isShowingBroggutCount = NO;
+        isShowingMetalCount = NO;
         if (!didAddBrogguts) {
             didAddBrogguts = YES;
             [[sharedGameController currentProfile] endSceneWithType:sceneType wasSuccessful:isMissionOver];
@@ -844,14 +873,6 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             fadeBackgroundAlpha += 0.005f;
         }
         return;
-    }
-    
-    if (isScreenShaking) {
-        screenShakingAmount /= 1.1;
-        if (screenShakingAmount <= 0.0f) {
-            isScreenShaking = NO;
-            screenShakingAmount = 0.0f;
-        }
     }
     
     // Update the stars' positions and brightness if applicable
@@ -986,6 +1007,13 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [enemyAIController updateAIController];
     }
     
+    if (isShowingNotification) {
+        if (!notification || [notification destroyNow]) {
+            isShowingNotification = NO;
+            notification = nil;
+        }
+    }
+    
     // Destroy all objects in the destory array, and remove them from other arrays
     for (int i = 0; i < [renderableDestroyed count]; i++) {
         CollidableObject* tempObj = [renderableDestroyed objectAtIndex:i];
@@ -1004,18 +1032,27 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             }
         }
         [tempObj objectWasDestroyed];
-        if ([tempObj isKindOfClass:[CraftObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
+        if ([tempObj isKindOfClass:[CraftObject class]]) {
             // It is a ship
             // If was being controlled, remove it
             [self removeControlledCraft:(CraftObject*)tempObj];
+            if (tempObj.objectAlliance == kAllianceFriendly) {
+                numberOfCurrentShips--;
+            } else if (tempObj.objectAlliance == kAllianceEnemy) {
+                numberOfEnemyShips--;
+            }
             numberOfCurrentShips--;
         }
-        if ([tempObj isKindOfClass:[StructureObject class]] && tempObj.objectAlliance == kAllianceFriendly) {
+        if ([tempObj isKindOfClass:[StructureObject class]]) {
             // It is a structure
-            numberOfCurrentStructures--;
-            if (tempObj.objectType == kObjectStructureRefineryID) {
-                numberOfRefineries--;
-                [currentRefineries removeObject:tempObj];
+            if (tempObj.objectAlliance == kAllianceFriendly) {
+                numberOfCurrentStructures--;
+                if (tempObj.objectType == kObjectStructureRefineryID) {
+                    numberOfRefineries--;
+                    [currentRefineries removeObject:tempObj];
+                }
+            } else if (tempObj.objectAlliance == kAllianceEnemy) {
+                numberOfEnemyStructures--;
             }
         }
         if ([tempObj isKindOfClass:[BroggutObject class]]) {
@@ -1072,11 +1109,13 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     // Rendering stars
     [sharedStarSingleton renderStars];
     
-    enablePrimitiveDraw();
-    // Draw the grid that collisions are based in
-    glLineWidth(1.0f);
-    [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:SCENE_GRID_RENDER_ALPHA];
-    disablePrimitiveDraw();
+    if (doesSceneShowGrid) {
+        enablePrimitiveDraw();
+        // Draw the grid that collisions are based in
+        glLineWidth(1.0f);
+        [collisionManager drawCellGridAtPoint:[self middleOfEntireMap] withScale:Scale2fMake(1.0f, 1.0f) withScroll:scroll withAlpha:SCENE_GRID_RENDER_ALPHA];
+        disablePrimitiveDraw();
+    }
     
     // Draw the medium/large brogguts
     [collisionManager renderMediumBroggutsInScreenBounds:visibleScreenBounds withScrollVector:scroll];
@@ -1192,13 +1231,19 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
     [obj setCurrentScene:self];
-    if ([obj isKindOfClass:[CraftObject class]] && obj.objectAlliance == kAllianceFriendly) {
-        // It is a ship
-        numberOfCurrentShips++;
+    if ([obj isKindOfClass:[CraftObject class]]) {
+        if (obj.objectAlliance == kAllianceFriendly) {
+            numberOfCurrentShips++;
+        } else if (obj.objectAlliance == kAllianceEnemy) {
+            numberOfEnemyShips++;
+        }
     }
-    if ([obj isKindOfClass:[StructureObject class]] && obj.objectAlliance == kAllianceFriendly) {
-        // It is a structure
-        numberOfCurrentStructures++;
+    if ([obj isKindOfClass:[StructureObject class]]) {
+        if (obj.objectAlliance == kAllianceFriendly) {
+            numberOfCurrentStructures++;
+        } else if (obj.objectAlliance == kAllianceEnemy) {
+            numberOfEnemyStructures++;
+        }
     }
     if (collides) {
         [collisionManager addCollidableObject:obj]; // Adds to the collision detection
@@ -1233,6 +1278,14 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 - (void)addTextObject:(TextObject*)obj {
     [obj setCurrentScene:self];
     [textObjectArray addObject:obj];
+}
+
+- (void)setNotification:(NotificationObject *)noti {
+    if (!isShowingNotification) {
+        isShowingNotification = YES;
+        notification = noti;
+        [self addCollidableObject:notification];
+    }
 }
 
 - (void)addRefinery:(RefineryStructureObject*)refinery {

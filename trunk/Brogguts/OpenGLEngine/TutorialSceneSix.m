@@ -30,7 +30,7 @@
         [block release];
         
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:block.objectLocation withDuration:-1.0f];
-        [notiObj attachToObject:notiObj];
+        [notiObj attachToObject:block];
         [self addCollidableObject:notiObj];
         [notiObj release];
         
