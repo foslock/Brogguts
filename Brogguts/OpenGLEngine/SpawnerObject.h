@@ -19,10 +19,14 @@
     CGPoint spawnerLocation;
     CGPoint sendingLocation;
     float sendingLocationVariance;
+    float startingLocationVariance;
+    BOOL isDoneSpawning;
 }
 
 @property (assign) CGPoint sendingLocation;
 @property (assign) float sendingLocationVariance;
+@property (assign) float startingLocationVariance;
+@property (readonly) BOOL isDoneSpawning;
 
 // Pass -1 in to count for infinite spawning
 - (id)initWithLocation:(CGPoint)location objectID:(int)objectID withDuration:(float)duration withCount:(int)count;

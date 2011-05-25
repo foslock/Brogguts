@@ -7,7 +7,7 @@
 //
 
 #import "OptionsMenuController.h"
-
+#import "GameController.h"
 
 @implementation OptionsMenuController
 
@@ -35,6 +35,11 @@
 
 - (IBAction)popOptionsController {
     [self.parentViewController dismissModalViewControllerAnimated:YES];
+}
+
+- (IBAction)switchGrid:(id)sender {
+    UISwitch* gridSwitch = (UISwitch*)sender;
+    doesSceneShowGrid = [gridSwitch isOn];
 }
 
 #pragma mark - View lifecycle

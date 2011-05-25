@@ -14,5 +14,6 @@
 }
 
 - (IBAction)popOptionsController;
+- (IBAction)switchGrid:(id)sender;
 
 @end

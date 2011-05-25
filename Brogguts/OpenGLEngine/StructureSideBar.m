@@ -176,7 +176,7 @@ NSString* kStructureButtonLockedText = @"???";
     if (isTouchDraggingButton) {
         enablePrimitiveDraw();
         Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
-        
+        glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
         drawDashedLine([[buttonArray objectAtIndex:currentDragButtonID] buttonCenter], currentDragButtonLocation, STRUCTURE_BUTTON_DRAG_SEGMENTS, Vector2fZero);
         disablePrimitiveDraw();
         CGPoint flooredLocation = CGPointMake(currentDragButtonLocation.x + scroll.x,

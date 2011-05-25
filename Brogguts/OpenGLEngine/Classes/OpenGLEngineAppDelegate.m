@@ -28,6 +28,7 @@
 
 - (void)stopGLAnimation {
     [window bringSubviewToFront:mainMenuController.view];
+    [mainMenuController updateCountLabels];
     [mainMenuController dismissModalViewControllerAnimated:NO];
     glView.hidden = YES;
     [glView stopAnimation];
@@ -82,6 +83,8 @@
 	} else {
 		[[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:NO];
 	}
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     // Initialize the game controller
     sharedGameController = [GameController sharedGameController];

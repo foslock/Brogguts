@@ -17,7 +17,6 @@
 @interface TutorialSceneFour : TutorialScene {
     TriggerObject* antTrigger;
     CraftObject* myCraft;
-    NotificationObject* notification;
     FingerObject* fingerOne;
     FingerObject* fingerTwo;
     FingerObject* fingerThree;

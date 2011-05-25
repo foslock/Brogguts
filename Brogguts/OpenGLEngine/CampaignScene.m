@@ -12,6 +12,7 @@
 #import "TextObject.h"
 #import "EndMissionObject.h"
 #import "PlayerProfile.h"
+#import "StartMissionObject.h"
 
 NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Campaign 1",
@@ -33,6 +34,12 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 };
 
 @implementation CampaignScene
+@synthesize isStartingMission;
+
+- (void)dealloc {
+    [startObject release];
+    [super dealloc];
+}
 
 - (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded {
     self = [super initWithFileName:kCampaignSceneFileNames[campIndex] wasLoaded:loaded];
@@ -41,6 +48,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
         
         sceneType = kSceneTypeCampaign;
         campaignIndex = campIndex;
+        isStartingMission = YES;
         isObjectiveComplete = NO;
         isAdvancingOrReset = NO;
         
@@ -49,6 +57,9 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
         isShowingBroggutCount = YES;
         isShowingMetalCount = YES;
         isAllowingOverview = YES;
+        
+        startObject = [[StartMissionObject alloc] init];
+        [startObject setMissionHeader:@"Mission Objectives"];
         
         [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
@@ -61,6 +72,10 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
+    if (isStartingMission) {
+        [startObject updateObjectLogicWithDelta:aDelta];
+        return;
+    }
     if ([self checkObjective]) {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
@@ -85,6 +100,14 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     [super updateSceneWithDelta:aDelta];
 }
 
+- (void)renderScene {
+    if (isStartingMission) {
+        Vector2f scroll = [self scrollVectorFromScreenBounds];
+        [startObject renderCenteredAtPoint:[self middleOfVisibleScreen] withScrollVector:scroll];
+    }
+    [super renderScene];
+}
+
 - (BOOL)checkObjective {
     // OVERRIDE, return YES if the objective is complete, and the level should transition.
     return NO;
@@ -92,6 +115,14 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 
 - (BOOL)checkFailure {
     // OVERRIDE, return YES if the mission has failed, and the level should restart.
+    return NO;
+}
+
+- (BOOL)checkDefaultFailure {
+    int brogCount = [[[GameController sharedGameController] currentProfile] broggutCount];
+    if (brogCount < kCraftAntCostBrogguts && numberOfCurrentShips == 0) {
+        return YES;
+    }
     return NO;
 }
 
@@ -110,5 +141,55 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
         [[GameController sharedGameController] fadeOutToSceneWithFilename:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:YES isLoading:NO];
     }
 }
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
+    if (isStartingMission) {
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+        
+        if (CGRectContainsPoint([startObject rect], touchLocation)) {
+            [startObject touchesBeganAtLocation:touchLocation];
+        }
+        return;
+    }
+    [super touchesBegan:touches withEvent:event view:aView];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
+    if (isStartingMission) {
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        CGPoint previousOrigTouchLocation = [touch previousLocationInView:aView];
+        CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+        CGPoint prevTouchLocation = [sharedGameController adjustTouchOrientationForTouch:previousOrigTouchLocation inScreenBounds:CGRectZero];
+        
+        if (CGRectContainsPoint([startObject rect], touchLocation)) {
+            [startObject touchesMovedToLocation:touchLocation from:prevTouchLocation];
+        }
+        return;
+    }
+    [super touchesMoved:touches withEvent:event view:aView];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
+    [self touchesEnded:touches withEvent:event view:aView];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
+    if (isStartingMission) {
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+        
+        if (CGRectContainsPoint([startObject rect], touchLocation)) {
+            [startObject touchesEndedAtLocation:touchLocation];
+        }
+        return;
+    }
+    [super touchesEnded:touches withEvent:event view:aView];
+}
+
+
 
 @end

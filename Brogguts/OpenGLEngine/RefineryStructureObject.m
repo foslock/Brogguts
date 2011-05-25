@@ -41,7 +41,7 @@
     [animatedImage updateAnimatedImageWithDelta:aDelta];
     if (!hasBeenAdded && !isTraveling) {
         hasBeenAdded = YES;
-        [currentScene addRefinery:self];
+        [[self currentScene] addRefinery:self];
     }
     
     if (refiningCounter > 0) {
@@ -58,14 +58,14 @@
             refiningCounter -= metalCount;
             [[[GameController sharedGameController] currentProfile] addMetal:metalCount];
             NSString* metalString = [NSString stringWithFormat:@"+%i Metal", metalCount];
-            float width = [currentScene getWidthForFontID:kFontBlairID withString:metalString];
+            float width = [[self currentScene] getWidthForFontID:kFontBlairID withString:metalString];
             TextObject* metalText = [[TextObject alloc] initWithFontID:kFontBlairID 
                                                                   Text:metalString
                                                           withLocation:CGPointMake(objectLocation.x - width / 2, objectLocation.y)
                                                           withDuration:2.0f];
             [metalText setObjectVelocity:Vector2fMake(0.0f, 0.3f)];
             [metalText setFontColor:Color4fMake(0.4f, 0.5f, 1.0f, 1.0f)];
-            [currentScene addTextObject:metalText];
+            [[self currentScene] addTextObject:metalText];
             [metalText release];
         }
     } else {

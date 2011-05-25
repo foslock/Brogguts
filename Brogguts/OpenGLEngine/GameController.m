@@ -28,6 +28,8 @@ NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
 NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
 
+BOOL doesSceneShowGrid = YES;
+
 #pragma mark -
 #pragma mark Private interface
 
@@ -237,6 +239,20 @@ static GameController* sharedGameController = nil;
     
     for (int i = 0; i < TUTORIAL_SCENES_COUNT; i++) {
         NSString* name = kTutorialSceneFileNames[i];
+        NSString* fileName = [name stringByAppendingString:@".plist"];
+        if (![self doesFilenameExistInDocuments:fileName]) {
+            NSString* filePath = [[NSBundle mainBundle] pathForResource:name ofType:@"plist"];
+            NSArray* newArray = [[NSArray alloc] initWithContentsOfFile:filePath];
+            if (newArray) {
+                NSString* newPath = [self documentsPathWithFilename:fileName];
+                [newArray writeToFile:newPath atomically:YES];
+                [newArray release];
+            }
+        }
+    }
+    
+    for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+        NSString* name = kCampaignSceneFileNames[i];
         NSString* fileName = [name stringByAppendingString:@".plist"];
         if (![self doesFilenameExistInDocuments:fileName]) {
             NSString* filePath = [[NSBundle mainBundle] pathForResource:name ofType:@"plist"];
@@ -733,7 +749,6 @@ static GameController* sharedGameController = nil;
         }
         transitionName = [fileName copy];
         [currentScene sceneDidDisappear];
-        [currentScene autorelease];
         [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
         self.currentScene = [gameScenes objectForKey:transitionName];
         [[ParticleSingleton sharedParticleSingleton] resetAllEmitters];

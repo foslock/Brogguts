@@ -14,6 +14,7 @@
 #import "CraftAndStructures.h"
 #import "ExplosionObject.h"
 #import "ImageRenderSingleton.h"
+#import "NotificationObject.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent;
@@ -176,6 +177,12 @@
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
 	[super attackedByEnemy:enemy withDamage:damage];
+    if (objectAlliance == kAllianceFriendly) {
+        NotificationObject* noti = [[NotificationObject alloc] initWithLocation:self.objectLocation withDuration:3.0f];
+        [noti attachToObject:self];
+        [[self currentScene] setNotification:noti];
+        [noti release];
+    }
 	attributeHullCurrent -= damage;
 	if (attributeHullCurrent <= 0) {
 		destroyNow = YES;

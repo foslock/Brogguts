@@ -61,6 +61,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class AIController;
 @class EndMissonObject;
 @class RefineryStructureObject;
+@class NotificationObject;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -122,10 +123,18 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 	int numberOfSmallBrogguts;
     int numberOfRefineries;
     NSMutableArray* currentRefineries;
+    
+    // Counters for enemy craft and structures
+    int numberOfEnemyShips;
+    int numberOfEnemyStructures;
 	
 	// Location of the home base
 	CGPoint homeBaseLocation;
 	CGPoint enemyBaseLocation;
+    
+    // Notification object
+    BOOL isShowingNotification;
+    NotificationObject* notification;
 	
 	// Display of brogguts
 	TextObject* broggutCounter;
@@ -138,6 +147,9 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
     TextObject* helpMessageObject;
     float messageTimer;
     BOOL isShowingMessageTimer;
+    
+    // Timer counter
+    TextObject* countdownTimer;
     
     // Only allow one structure to be built at once.
     BOOL isBuildingStructure;
@@ -233,8 +245,12 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @property (nonatomic, assign) int currentBuildMetalCost;
 @property (nonatomic, assign) CGPoint currentBuildDragLocation;
 @property (nonatomic, assign) BOOL isBuildingStructure;
+@property (nonatomic, assign) BOOL isShowingNotification;
+@property (nonatomic, assign) NotificationObject* notification;
 @property (readonly) BOOL isAllowingCraft;
 @property (readonly) BOOL isAllowingStructures;
+@property (nonatomic, assign) int numberOfEnemyShips;
+@property (nonatomic, assign) int numberOfEnemyStructures;
 
 
 #pragma mark -

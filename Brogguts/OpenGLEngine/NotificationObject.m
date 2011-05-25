@@ -41,13 +41,17 @@
     if (notificationDuration != -1.0f) {
         if (notificationTimer > 0.0f) {
             notificationTimer -= aDelta;
+            if (notificationTimer < 0.75f) {
+                Color4f color = [objectImage color];
+                [objectImage setColor:Color4fMake(color.red, color.green, color.blue, notificationTimer)];
+            }
         } else if (notificationTimer <= 0.0f) {
             [self setDestroyNow:YES];
         }
     }
     
     if (objectAttachedTo) {
-        self.objectLocation = objectAttachedTo.objectLocation;
+        notificationLocation = objectAttachedTo.objectLocation;
     }
     
     CGRect visibleBounds = [[self currentScene] visibleScreenBounds];

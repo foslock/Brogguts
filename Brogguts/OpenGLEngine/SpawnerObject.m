@@ -13,68 +13,72 @@
 #import "CollisionManager.h"
 
 @implementation SpawnerObject
-@synthesize sendingLocation, sendingLocationVariance;
+@synthesize sendingLocation, sendingLocationVariance, startingLocationVariance, isDoneSpawning;
 
 - (id)initWithLocation:(CGPoint)location objectID:(int)objectID withDuration:(float)duration withCount:(int)count {
     self = [super init];
     if (self) {
         spawnerLocation = location;
         spawnerDuration = duration;
-        currentTimer = duration;
+        currentTimer = spawnerDuration;
         totalUnitCount = count;
         hasTriggeredOnce = NO;
+        isDoneSpawning = NO;
         spawnerObjectID = objectID;
         sendingLocationVariance = 0.0f;
+        startingLocationVariance = 0.0f;
     }
     return self;
 }
 
 - (void)createObjectWithID:(int)objectID withEndingLocation:(CGPoint)endLocation {
     BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    CGPoint startingPoint = CGPointMake(spawnerLocation.x + (RANDOM_MINUS_1_TO_1() * startingLocationVariance),
+                                        spawnerLocation.y + (RANDOM_MINUS_1_TO_1() * startingLocationVariance));
     switch (objectID) {
         case kObjectCraftAntID: {
-            AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftMothID: {
-            MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftBeetleID: {
-            BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftMonarchID: {
-            MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftCamelID: {
-            CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftRatID: {
-            RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
@@ -82,16 +86,16 @@
             break;
         }
         case kObjectCraftSpiderID: {
-            SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
             break;
         }
         case kObjectCraftEagleID: {
-            EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:spawnerLocation isTraveling:NO];
-            NSArray* path = [[scene collisionManager] pathFrom:spawnerLocation to:endLocation allowPartial:YES isStraight:YES];
+            EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
+            NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
@@ -113,8 +117,12 @@
         CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
                                        sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
         [self createObjectWithID:spawnerObjectID withEndingLocation:newPoint];
-        if (totalUnitCount > 0)
+        if (totalUnitCount > 0) {
             totalUnitCount--;
+            if (totalUnitCount == 0) {
+                isDoneSpawning = YES;
+            }
+        }
     }
 }
 

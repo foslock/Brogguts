@@ -52,6 +52,8 @@ extern NSString* kSavedCampaignFileName;
 extern NSString* kSavedSkirmishFileName;
 extern NSString* kNewMapScenesFileName;
 
+extern BOOL doesSceneShowGrid;
+
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.015f

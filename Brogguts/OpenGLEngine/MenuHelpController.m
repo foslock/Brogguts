@@ -1,17 +1,15 @@
 //
-//  ProfileMenuController.m
+//  MenuHelpController.m
 //  OpenGLEngine
 //
-//  Created by James F Lockwood on 3/10/11.
+//  Created by James F Lockwood on 5/12/11.
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
-#import "ProfileMenuController.h"
-#import "GameController.h"
-#import "OpenGLEngineAppDelegate.h"
-#import "TutorialFiles.h"
+#import "MenuHelpController.h"
 
-@implementation ProfileMenuController
+
+@implementation MenuHelpController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -35,22 +33,27 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)startBaseCamp {
-    NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
-}
-
-- (IBAction)popProfileController {
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesEnded:touches withEvent:event];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark - View lifecycle
 
+/*
+// Implement loadView to create a view hierarchy programmatically, without using a nib.
+- (void)loadView
+{
+}
+*/
+
+/*
+// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 }
+*/
 
 - (void)viewDidUnload
 {
@@ -61,11 +64,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-        return YES;
-    } else {
-        return NO;
-    }
+    // Return YES for supported orientations
+	return YES;
 }
 
 @end

@@ -31,9 +31,9 @@
         antTrigger = [[TriggerObject alloc] initWithLocation:triggerLoc];
         antTrigger.numberOfObjectsNeeded = 1;
         antTrigger.objectIDNeeded = kObjectCraftAntID;
-        notification = [[NotificationObject alloc] initWithLocation:antTrigger.objectLocation withDuration:-1.0f];
-        [self addCollidableObject:notification];
-        [notification release];
+        NotificationObject* noti = [[NotificationObject alloc] initWithLocation:antTrigger.objectLocation withDuration:-1.0f];
+        [self addCollidableObject:noti];
+        [noti release];
         AntCraftObject* newAnt = [[AntCraftObject alloc] initWithLocation:antLoc isTraveling:NO];
         myCraft = newAnt;
         [newAnt setObjectAlliance:kAllianceFriendly];

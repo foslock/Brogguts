@@ -8,7 +8,7 @@
 
 #import "PlayerProfile.h"
 #import "GameController.h"
-
+#import "CampaignScene.h"
 
 int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
     0, 0, 0, 0, 0, 0, 0,
@@ -191,11 +191,11 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
             return kProfileNoFail;
         }
     } else {
-        if (brogs > broggutCount && metal > metalCount) {
+        if (brogs > skirmishBroggutCount && metal > skirmishMetalCount) {
             return kProfileFailBroggutsAndMetal;
-        } else if (brogs > broggutCount) {
+        } else if (brogs > skirmishBroggutCount) {
             return kProfileFailBrogguts;
-        } else if (metal > metalCount) {
+        } else if (metal > skirmishMetalCount) {
             return kProfileFailMetal;
         } else {
             skirmishMetalCount -= metal;
@@ -231,6 +231,14 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     } else {
         return skirmishMetalCount;
     }
+}
+
+- (int)playerSpaceYear {
+    float sceneRatio = ((float)playerExperience / (float)CAMPAIGN_SCENES_COUNT);
+    float broggutRatio = ((float)broggutCount / (float)PROFILE_BROGGUT_MAX_COUNT);
+    float spaceYear = (float)PROFILE_SPACE_YEAR_MAX * 0.5f * (sceneRatio + broggutRatio);
+    playerSpaceYear = (int)spaceYear;
+    return playerSpaceYear;
 }
 
 - (void)updateSpaceYearUnlocks {

@@ -26,7 +26,7 @@
 			[buttonArray addObject:button];
 			switch (i) {
 				case 0:
-					[button setButtonText:@"Refinery"];
+					[button setButtonText:@"Metal"];
                     [button setIsDisabled:YES];
 					break;
 				case 1:
@@ -41,7 +41,7 @@
 					[button setButtonText:@"Broggupedia"];
 					break;
                 case 4:
-					[button setButtonText:@"MAIN MENU"];
+					[button setButtonText:@"Main Menu"];
 					break;
 				default:
 					break;
