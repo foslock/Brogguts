@@ -7,12 +7,18 @@
 //
 
 #import "SoundSingleton.h"
+#import "GameController.h"
 #import "MyOpenALSupport.h"
+#import "BroggutScene.h"
 
-const NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
+NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
     @"testsound.wav",
     @"lightsound.wav",
     @"doorclose.wav",
+    @"menubuttonpressed.wav",
+    @"missionsuccessful.wav",
+    @"shipconfirm.wav",
+    @"shipdeny.wav",
 };
 
 #pragma mark -
@@ -159,7 +165,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 - (id)init {
     self = [super init];
 	if(self != nil) {
-		
+               
         // Initialize the array and dictionaries we are going to use
 		soundSources = [[NSMutableArray alloc] init];
 		soundLibrary = [[NSMutableDictionary alloc] init];
@@ -206,6 +212,20 @@ static SoundSingleton* sharedSoundSingleton = nil;
             NSString* fileName = [NSString stringWithFormat:@"%@",kSoundFileNames[i]];
             [self loadSoundWithKey:fileName soundFile:fileName];
         }
+        
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults boolForKey:@"setInitialSoundVolumes"]) {
+            fxVolume = [defaults floatForKey:@"savedFXVolume"];
+            musicVolume = [defaults floatForKey:@"savedMusicVolume"];
+        } else {
+            fxVolume = 0.5f;
+            musicVolume = 0.5f;
+            [defaults setFloat:fxVolume forKey:@"savedFXVolume"];
+            [defaults setFloat:musicVolume forKey:@"savedMusicVolume"];
+            [defaults setBool:YES forKey:@"setInitialSoundVolumes"];
+        }
+        
+        [defaults synchronize];
 	}
     return self;
 }
@@ -218,6 +238,10 @@ static SoundSingleton* sharedSoundSingleton = nil;
                 NSString* fileName = [NSString stringWithFormat:@"%@",kSoundFileNames[i]];
                 [self removeSoundWithKey:fileName];
             }
+            NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setFloat:fxVolume forKey:@"savedFXVolume"];
+            [defaults setFloat:musicVolume forKey:@"savedMusicVolume"];
+            [defaults synchronize];
 			[self dealloc];
 		}
 	}
@@ -464,11 +488,20 @@ static SoundSingleton* sharedSoundSingleton = nil;
 #pragma mark Sound control
 
 - (NSUInteger)playSoundWithKey:(NSString*)aSoundKey {
-	return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:CGPointMake(0, 0) shouldLoop:NO];
+	return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:CGPointZero shouldLoop:NO];
 }
 
 - (NSUInteger)playSoundWithKey:(NSString *)aSoundKey location:(CGPoint)aLocation {
-	return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:aLocation shouldLoop:NO];
+    CGRect visibleBounds = [[[GameController sharedGameController] currentScene] visibleScreenBounds];
+    CGRect hearableRect = CGRectInset(visibleBounds, -HEARABLE_RECT_WIDTH_PADDING, -HEARABLE_RECT_HEIGHT_PADDING);
+    if (CGRectContainsPoint(visibleBounds, aLocation)) {
+        return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:CGPointZero shouldLoop:NO];
+    }
+    if (!CGRectContainsPoint(visibleBounds, aLocation) && 
+        CGRectContainsPoint(hearableRect, aLocation)) {
+        return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:aLocation shouldLoop:NO];
+    }
+    return 0;
 }
 
 - (NSUInteger)playSoundWithKey:(NSString*)aSoundKey gain:(float)aGain pitch:(float)aPitch location:(CGPoint)aLocation shouldLoop:(BOOL)aLoop {

@@ -122,6 +122,16 @@ static GameController* sharedGameController = nil;
     return self;
 }
 
+- (BroggutScene*)currentScene {
+    if (currentScene) {
+        return currentScene;
+    } else if (justMadeScene) {
+        return justMadeScene;
+    } else {
+        return nil;
+    }
+}
+
 - (void)presentBroggupedia {
     if (!isShowingBroggupediaInScene) {
         isShowingBroggupediaInScene = YES;
@@ -449,45 +459,7 @@ static GameController* sharedGameController = nil;
 		[thisCraftArray release];
 		[objectCurrentPath release];
 	}
-	/*
-     // Create a bunch of enemies to try to kill
-     for (int i = 0; i < 100; i++) {
-     for (int j = 0; j < 1; j++) {
-     NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
-     
-     int objectTypeID = kObjectTypeCraft;
-     int objectID = kObjectCraftAntID;
-     NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
-     int objectAlliance = kAllianceEnemy;
-     float objectRotation = 360 * RANDOM_MINUS_1_TO_1();
-     BOOL objectIsTraveling = NO;
-     CGPoint objectEndLocation = CGPointMake((100 + j) * COLLISION_CELL_WIDTH / 2, (i + 5) * COLLISION_CELL_HEIGHT / 2);
-     CGPoint objectCurrentLocation = objectEndLocation;
-     int objectCurrentHull = -1; // Means full
-     BOOL objectIsControlledShip = NO;
-     BOOL objectIsMining = NO;
-     CGPoint objectMiningLocation = CGPointZero;
-     int objectCurrentCargo = 0;
-     
-     [thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
-     [thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
-     [thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
-     [thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
-     [thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
-     [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
-     [self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
-     [self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
-     [thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
-     [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
-     [thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
-     [self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
-     [thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
-     [finalObjectArray addObject:thisCraftArray];
-     [thisCraftArray release];
-     [objectCurrentPath release];
-     }
-     }
-     */
+    
 	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
     [finalObjectArray release];
 	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
@@ -497,12 +469,26 @@ static GameController* sharedGameController = nil;
 	[plistArray release];
 }
 
+- (NSArray*)convertSavedPath:(NSArray*)savedPath {
+    NSMutableArray* array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < [savedPath count]; i++) {
+        NSArray* subArray = [savedPath objectAtIndex:i];
+        NSNumber* valueOne = [subArray objectAtIndex:0];
+        NSNumber* valueTwo = [subArray objectAtIndex:1];
+        CGPoint point = CGPointMake([valueOne floatValue], [valueTwo floatValue]);
+        NSValue* value = [NSValue valueWithCGPoint:point];
+        [array addObject:value];
+    }
+    return [array autorelease];
+}
+
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite {
     if (!currentScene) {
         return NO;
     }
-    if (currentScene.sceneType == kSceneTypeTutorial) {
-        NSLog(@"Scene filename: %@, it is a tutorial level", filename);
+    if (currentScene.sceneType == kSceneTypeTutorial || 
+        currentScene.sceneType == kSceneTypeSkirmish) {
+        NSLog(@"Scene filename: %@, it is a tutorial/skirmish level", filename);
         return NO;
     }
     if ([self doesFilenameExistInDocuments:filename] && !overwrite) {
@@ -515,6 +501,8 @@ static GameController* sharedGameController = nil;
 	int widthCells = currentScene.widthCells;
 	int heightCells = currentScene.heightCells;
 	int numberOfSmallBrogguts = currentScene.numberOfSmallBrogguts;
+    int currentBroggutCount = [[sharedGameController currentProfile] realBroggutCount];
+    int currentMetalCount = [[sharedGameController currentProfile] realMetalCount];
     
 	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
 	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
@@ -522,7 +510,9 @@ static GameController* sharedGameController = nil;
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
-    NSArray* tempArray = [[NSArray alloc] init];
+    NSMutableArray* tempArray = [[NSMutableArray alloc] init];
+    [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
+    [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
     [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
     [tempArray release];
 	
@@ -563,7 +553,7 @@ static GameController* sharedGameController = nil;
 			
 			int objectTypeID = kObjectTypeStructure;
 			int objectID = thisStructure.objectType;
-			NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
+			NSArray* objectCurrentPath = [[NSArray alloc] initWithArray:[thisStructure getSavablePath]];
 			int objectAlliance = thisStructure.objectAlliance;
 			float objectRotation = thisStructure.objectRotation;
 			BOOL objectIsTraveling = thisStructure.isTraveling;
@@ -611,7 +601,7 @@ static GameController* sharedGameController = nil;
 			
 			int objectTypeID = kObjectTypeCraft;
 			int objectID = thisCraft.objectType;
-			NSArray* objectCurrentPath = [[NSArray alloc] init]; // Nothing in this array for now
+			NSArray* objectCurrentPath = [[NSArray alloc] initWithArray:[thisCraft getSavablePath]];
 			int objectAlliance = thisCraft.objectAlliance;
 			float objectRotation = thisCraft.objectRotation;
 			BOOL objectIsTraveling = thisCraft.isTraveling;
@@ -647,20 +637,26 @@ static GameController* sharedGameController = nil;
 	
 	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
     [finalObjectArray release];
-    NSString* fileNameAlone = [filename stringByDeletingPathExtension];
-    NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
-	NSString* filePath = [self documentsPathWithFilename:fileNameExt];
+    
+    NSString* filePath;
+    if (currentScene.sceneType == kSceneTypeCampaign) {
+        CampaignScene* campScene = (CampaignScene*)currentScene;
+        NSString* savedTitleName = kCampaignSceneSaveTitles[campScene.campaignIndex];
+        [self addFilenameToSavedCampaignFileList:savedTitleName];
+        NSString* fileNameAlone = [savedTitleName stringByDeletingPathExtension];
+        NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
+        filePath = [self documentsPathWithFilename:fileNameExt];
+    } else {
+        NSString* fileNameAlone = [filename stringByDeletingPathExtension];
+        NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
+        filePath = [self documentsPathWithFilename:fileNameExt];
+    }
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the current Scene!");
         [plistArray release];
         return NO;
 	}
-    if (currentScene.sceneType == kSceneTypeSkirmish) {
-        [self addFilenameToSkirmishFileList:filename];
-    }
-    if (currentScene.sceneType == kSceneTypeCampaign) {
-        [self addFilenameToSavedCampaignFileList:filename];
-    }
+    
     [plistArray release];
     return YES;
 }
@@ -777,86 +773,91 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)loadCampaignLevelsForIndex:(int)index withLoaded:(BOOL)loaded {
+    CampaignScene* campaignScene;
     switch (index) {
         case 0: {
             CampaignSceneOne* newCamp = [[CampaignSceneOne alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 1: {
             CampaignSceneTwo* newCamp = [[CampaignSceneTwo alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 2: {
             CampaignSceneThree* newCamp = [[CampaignSceneThree alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 3: {
             CampaignSceneFour* newCamp = [[CampaignSceneFour alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 4: {
             CampaignSceneFive* newCamp = [[CampaignSceneFive alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 5: {
             CampaignSceneSix* newCamp = [[CampaignSceneSix alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 6: {
             CampaignSceneSeven* newCamp = [[CampaignSceneSeven alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 7: {
             CampaignSceneEight* newCamp = [[CampaignSceneEight alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 8: {
             CampaignSceneNine* newCamp = [[CampaignSceneNine alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 9: {
             CampaignSceneTen* newCamp = [[CampaignSceneTen alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 10: {
             CampaignSceneEleven* newCamp = [[CampaignSceneEleven alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 11: {
             CampaignSceneTwelve* newCamp = [[CampaignSceneTwelve alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 12: {
             CampaignSceneThirteen* newCamp = [[CampaignSceneThirteen alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 13: {
             CampaignSceneFourteen* newCamp = [[CampaignSceneFourteen alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         case 14: {
             CampaignSceneFifteen* newCamp = [[CampaignSceneFifteen alloc] initWithLoaded:loaded];
-            [gameScenes setValue:newCamp forKey:kCampaignSceneFileNames[index]];
+            campaignScene = newCamp;
         }
             break;
         default:
             break;
     }
-    
+    if (!loaded) {
+        [gameScenes setValue:campaignScene forKey:kCampaignSceneFileNames[index]];
+    } else {
+        [gameScenes setValue:campaignScene forKey:kCampaignSceneSaveTitles[index]];
+    }
 }
 
 - (void)loadTutorialLevelsForIndex:(int)index {
@@ -989,6 +990,28 @@ static GameController* sharedGameController = nil;
 	}
 }
 
+- (void)checkForRemotePlayer:(NSTimer*)timer {
+    if ([GameCenterSingleton sharedGCSingleton].matchStarted) {
+        if (![GameCenterSingleton sharedGCSingleton].sceneStarted) {
+            if ([GameCenterSingleton sharedGCSingleton].localConfirmed) {
+                if ([GameCenterSingleton sharedGCSingleton].remoteConfirmed) {
+                    // Start the scene!
+                    [[GameCenterSingleton sharedGCSingleton] moveMatchToScene];
+                    [timer invalidate];
+                } else {
+                    /*
+                     // Send the request packet
+                     MatchPacket packet;
+                     packet.packetType = kPacketTypeMatchPacket;
+                     packet.matchMarker = kMatchMarkerRequestStart;
+                     [[GameCenterSingleton sharedGCSingleton] sendMatchPacket:packet isRequired:YES];
+                     */
+                }
+            }
+        }
+    }
+}
+
 
 #pragma mark -
 #pragma mark Orientation adjustment
@@ -1043,11 +1066,6 @@ static GameController* sharedGameController = nil;
 	
 	// Load the game scenes
 	gameScenes = [[NSMutableDictionary alloc] init];
-	
-	/*
-	 [[SoundSingleton sharedSoundSingleton] loadSoundWithKey:@"testSound" soundFile:@"testsound.wav"];
-	 [[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"testSound"];
-	 */
     
 	NSLog(@"INFO - GameController: Finished game initialization.");
 }

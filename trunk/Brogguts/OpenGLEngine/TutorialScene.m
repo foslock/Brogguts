@@ -68,6 +68,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         // Turn off the complicated stuff
         isShowingBroggutCount = NO;
         isShowingMetalCount = NO;
+        isShowingSupplyCount = NO;
         isAllowingOverview = NO;
         isAllowingCraft = NO;
         isAllowingStructures = NO;

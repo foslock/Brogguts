@@ -28,7 +28,6 @@
         animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectStructureRefinerySprite withSubImageCount:4];
         [animatedImage setAnimationSpeed:0.0f];
 		isCheckedForRadialEffect = NO;
-		isTouchable = NO;
         hasBeenAdded = NO;
         isRefining = NO;
         refiningTimer = 0;

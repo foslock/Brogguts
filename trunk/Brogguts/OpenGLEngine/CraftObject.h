@@ -81,6 +81,7 @@ typedef struct Point_Array {
     
     // If the dirty image is being shown
     BOOL isDirtyImage;
+    BOOL craftDoesRotate;
 }
 
 @property (readonly) BOOL isFollowingPath;
@@ -89,6 +90,7 @@ typedef struct Point_Array {
 @property (readonly) int attributePlayerCurrentCargo;
 @property (readonly) int attributeHullCurrent;
 @property (readonly) BOOL isUnderAura;
+@property (readonly) BOOL craftDoesRotate;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 - (void)createLightLocationsWithCount:(int)lightCount;
@@ -122,6 +124,7 @@ typedef struct Point_Array {
 - (void)updateCraftTurretLocations;
 
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
+- (NSArray*)getSavablePath;
 - (void)stopFollowingCurrentPath;
 - (void)resumeFollowingCurrentPath;
 

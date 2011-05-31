@@ -123,7 +123,11 @@
     // Render button text
     BitmapFont* buttonfont = [[[self currentScene] fontArray] objectAtIndex:kFontBlairID];
     [buttonfont renderStringJustifiedInFrame:[menuButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Menu" onLayer:kLayerHUDTopLayer];
-    [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Next" onLayer:kLayerHUDTopLayer];
+    if (wasSuccessfulMission) {
+        [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Next" onLayer:kLayerHUDTopLayer];
+    } else {
+        [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Restart" onLayer:kLayerHUDTopLayer];
+    }
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
@@ -146,7 +150,7 @@
     
     if ([confirmButton wasJustReleased]) {
         BroggutScene* scene = [self currentScene];
-        if ([scene isKindOfClass:[CampaignScene class]]) {
+        if (scene.sceneType == kSceneTypeCampaign) {
             if (wasSuccessfulMission)
                 [(CampaignScene*)scene advanceToNextLevel];
             else

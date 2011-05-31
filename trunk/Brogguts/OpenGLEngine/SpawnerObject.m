@@ -21,10 +21,12 @@
         spawnerLocation = location;
         spawnerDuration = duration;
         currentTimer = spawnerDuration;
-        totalUnitCount = count;
         hasTriggeredOnce = NO;
         isDoneSpawning = NO;
-        spawnerObjectID = objectID;
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            idCount[i] = 0;
+        }
+        idCount[objectID] = count;
         sendingLocationVariance = 0.0f;
         startingLocationVariance = 0.0f;
     }
@@ -107,23 +109,36 @@
     }
 }
 
+- (void)addObjectWithID:(int)objectID withCount:(int)count {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        idCount[objectID] += count;
+    }
+}
+
 - (void)updateSpawnerWithDelta:(float)aDelta {
     if (currentTimer > 0.0f) {
         currentTimer -= aDelta;
     }
-    if (currentTimer <= 0.0f && (totalUnitCount > 0 || totalUnitCount == -1)) {
-        hasTriggeredOnce = YES;
-        currentTimer = spawnerDuration;
-        CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
-                                       sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
-        [self createObjectWithID:spawnerObjectID withEndingLocation:newPoint];
-        if (totalUnitCount > 0) {
-            totalUnitCount--;
-            if (totalUnitCount == 0) {
-                isDoneSpawning = YES;
+    for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
+        if (currentTimer <= 0.0f && (idCount[index] > 0 || idCount[index] == -1)) {
+            hasTriggeredOnce = YES;
+            currentTimer = spawnerDuration;
+            CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
+                                           sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
+            
+            [self createObjectWithID:index withEndingLocation:newPoint];
+            if (idCount[index] > 0) {
+                idCount[index]--;
             }
         }
     }
+    BOOL allDone = YES;
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        if (idCount[i] != 0) {
+            allDone = NO;
+        }
+    }
+    isDoneSpawning = allDone;
 }
 
 - (void)pauseSpawnerForDuration:(float)duration {

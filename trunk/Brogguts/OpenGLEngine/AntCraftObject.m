@@ -14,6 +14,7 @@
 #import "PlayerProfile.h"
 #import "ParticleSingleton.h"
 #import "Image.h"
+#import "SoundSingleton.h"
 
 enum MiningStates {
 	kMiningStateMining,
@@ -87,8 +88,11 @@ enum MiningStates {
         }
         for (int i = 0; i < [pointArray count]; i++) {
             CGPoint point = [[pointArray objectAtIndex:i] CGPointValue];
-            if ([self startMiningBroggutWithLocation:point])
+            if ([self startMiningBroggutWithLocation:point]) {
+                [copy release];
+                [pointArray release];
                 return;
+            }
         }
         [copy release];
 	}
@@ -111,6 +115,7 @@ enum MiningStates {
         } else {
             miningState = kMiningStateNone;
             [self setMovingAIState:kMovingAIStateStill];
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipDeny] location:objectLocation];
             [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
             return NO;
         }
@@ -131,10 +136,18 @@ enum MiningStates {
 
 - (void)returnBroggutsHome {
     if (objectAlliance == kAllianceFriendly) {
-        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
+        CGPoint home = [self.currentScene homeBaseLocation];
+        float dist = 256.0f;
+        float angle = GetAngleInDegreesFromPoints(home, objectLocation);
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:CGPointMake(home.x + dist * cosf(DEGREES_TO_RADIANS(angle)),
+                                                                                           home.y + dist * sinf(DEGREES_TO_RADIANS(angle)))]];
         [self followPath:homePath isLooped:NO];
     } else if (objectAlliance == kAllianceEnemy) {
-        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene enemyBaseLocation]]];
+        CGPoint home = [self.currentScene enemyBaseLocation];
+        float dist = 256.0f;
+        float angle = GetAngleInDegreesFromPoints(home, objectLocation);
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:CGPointMake(home.x + dist * cosf(DEGREES_TO_RADIANS(angle)),
+                                                                                           home.y + dist * sinf(DEGREES_TO_RADIANS(angle)))]];
         [self followPath:homePath isLooped:NO];
     }
 	[self setMovingAIState:kMovingAIStateMining];

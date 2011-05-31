@@ -15,10 +15,11 @@
 @class StartMissionObject;
 
 extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1];
+extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1];
 
 @interface CampaignScene : BroggutScene {
     int campaignIndex; 
-    NSString* nextSceneName;
+    NSString* nextSceneFileName;
     BOOL isStartingMission;
     BOOL isObjectiveComplete;
     BOOL isAdvancingOrReset;
@@ -26,6 +27,7 @@ extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1];
 }
 
 @property (nonatomic, assign) BOOL isStartingMission;
+@property (nonatomic, assign) int campaignIndex;
 
 - (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded;
 - (id)initWithLoaded:(BOOL)loaded;

@@ -15,12 +15,15 @@
 #import "BroggutsSideBar.h"
 #import "GameController.h"
 #import "BroggupediaViewController.h"
+#import "CampaignScene.h"
 
 @implementation MainMenuSideBar
 
 - (id)init {
 	self = [super init];
 	if (self) {
+        BroggutScene* scene = [[GameController sharedGameController] currentScene];
+        currentSceneType = scene.sceneType;
 		for (int i = 0; i < 5; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
@@ -41,7 +44,11 @@
 					[button setButtonText:@"Broggupedia"];
 					break;
                 case 4:
-					[button setButtonText:@"Main Menu"];
+                    if (currentSceneType == kSceneTypeCampaign) {
+                        [button setButtonText:@"Pause"];
+                    } else {
+                        [button setButtonText:@"Main Menu"];
+                    }
 					break;
 				default:
 					break;
@@ -97,8 +104,13 @@
             [[GameController sharedGameController] presentBroggupedia];
         }
         if (buttonID == 4) {
-            [myController moveSideBarOut];
-            [[GameController sharedGameController] returnToMainMenuWithSave:YES];
+            if (currentSceneType == kSceneTypeCampaign) {
+                CampaignScene* scene = (CampaignScene*)[[GameController sharedGameController] currentScene];
+                [scene setIsStartingMission:YES];
+            } else {
+                [myController moveSideBarOut];
+                [[GameController sharedGameController] returnToMainMenuWithSave:YES];
+            }
         }
     }
     [super buttonReleasedWithID:buttonID atLocation:location];

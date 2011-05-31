@@ -70,6 +70,7 @@
 
 - (void)updateCountLabels;
 
+- (IBAction)playButtonSound:(id)sender;
 - (IBAction)loadOptionsViewController;
 - (IBAction)loadInfoViewController;
 - (IBAction)startTutorialLevels;

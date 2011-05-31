@@ -29,7 +29,7 @@
 	if (self) {
 		buttonArray = [[NSMutableArray alloc] init];
 		currentYOffset = 0.0f;
-		totalSideBarHeight = 0.0f;
+		totalSideBarHeight = kPadScreenLandscapeHeight - SIDE_BAR_BOTTOM_VALUE;
 		isTouchMovingScroll = NO;
 		isTouchDraggingButton = NO;
 		scrollTouchTimer = -1;

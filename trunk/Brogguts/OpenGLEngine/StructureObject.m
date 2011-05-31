@@ -261,9 +261,9 @@
         }
     }
     
-	CGPoint oldPoint = objectLocation;
+	CGPoint oldPoint = CGPointMake(objectLocation.x, objectLocation.y);
 	[super updateObjectLogicWithDelta:aDelta];
-    CGPoint newPoint = objectLocation;
+    CGPoint newPoint = CGPointMake(objectLocation.x, objectLocation.y);
     movingDirection = GetAngleInDegreesFromPoints(oldPoint, newPoint);
 }
 
@@ -328,7 +328,6 @@
         glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
         drawLine(point3, point1, scroll);
         disablePrimitiveDraw();
-        
     }
 }
 
@@ -360,31 +359,47 @@
 	}
 }
 
+- (NSArray*)getSavablePath {
+    if (isFollowingPath) {
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        for (int i = 0; i < [pathPointArray count]; i++) {
+            CGPoint point = [[pathPointArray objectAtIndex:i] CGPointValue];
+            NSArray* subArray = [[NSArray alloc] initWithObjects:[NSNumber numberWithFloat:point.x], 
+                                 [NSNumber numberWithFloat:point.y], nil];
+            [array addObject:subArray];
+            [subArray release];
+        }
+        return [array autorelease];
+    } else {
+        return nil;
+    }
+}
+
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
-	if ([array count] == 0) {
-		NSLog(@"Path contained no points!");
-		return;
-	}
-	[pathPointArray autorelease];
-	pathPointArray = [[NSMutableArray alloc] initWithArray:array];
-	isFollowingPath = YES;
-	pathPointNumber = 0;
-	isPathLooped = looped;
-	hasCurrentPathFinished = NO;
+    if ([array count] == 0) {
+        NSLog(@"Path contained no points!");
+        return;
+    }
+    [pathPointArray autorelease];
+    pathPointArray = [[NSMutableArray alloc] initWithArray:array];
+    isFollowingPath = YES;
+    pathPointNumber = 0;
+    isPathLooped = looped;
+    hasCurrentPathFinished = NO;
 }
 
 - (void)stopFollowingCurrentPath {
-	isFollowingPath = NO;
-	hasCurrentPathFinished = YES;
-	[self setMovingAIState:kMovingAIStateStill];
+    isFollowingPath = NO;
+    hasCurrentPathFinished = YES;
+    [self setMovingAIState:kMovingAIStateStill];
 }
 
 - (void)resumeFollowingCurrentPath {
-	if (pathPointArray && [pathPointArray count] != 0) {
-		isFollowingPath = YES;
-		hasCurrentPathFinished = NO;
-		[self setMovingAIState:kMovingAIStateMoving];
-	}
+    if (pathPointArray && [pathPointArray count] != 0) {
+        isFollowingPath = YES;
+        hasCurrentPathFinished = NO;
+        [self setMovingAIState:kMovingAIStateMoving];
+    }
 }
 
 - (void)objectWasDestroyed {
@@ -398,20 +413,20 @@
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
-	// OVERRIDE ME
+    // OVERRIDE ME
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
-	// OVERRIDE ME
+    // OVERRIDE ME
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
-	// OVERRIDE ME
+    // OVERRIDE ME
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {
-	// OVERRIDE ME
-	NSLog(@"Object (%i) was double tapped!", uniqueObjectID);
+    // OVERRIDE ME
+    NSLog(@"Object (%i) was double tapped!", uniqueObjectID);
 }
 
 @end

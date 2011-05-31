@@ -59,7 +59,7 @@
             for (int i = 0; i < [nearbyObjects count]; i++) {
                 CollidableObject* obj = [nearbyObjects objectAtIndex:i];
                 if (obj.objectType == objectIDNeeded) {
-                    if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2(self.boundingCircle.radius)) {
+                    if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2([self boundingCircle ].radius)) {
                         count++;
                         /*
                         if ([obj isKindOfClass:[CraftObject class]]) {
@@ -97,7 +97,7 @@
     }
     currentTriggerAlpha = CLAMP(currentTriggerAlpha, TRIGGER_MIN_ALPHA, TRIGGER_MAX_ALPHA);
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentTriggerAlpha)];
-    effectRadius = [objectImage imageSize].width;
+    effectRadius = ([objectImage imageSize].width / 2) * [objectImage scale].x;
 }
 
 @end

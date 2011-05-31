@@ -18,9 +18,10 @@
 #import "ExplosionObject.h"
 #import "PlayerProfile.h"
 #import "NotificationObject.h"
+#import "SoundSingleton.h"
 
 @implementation CraftObject
-@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, isUnderAura;
+@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, isUnderAura, craftDoesRotate;
 
 - (void)dealloc {
     if (turretPointsArray) {
@@ -207,6 +208,7 @@
 		pathPointNumber = 0;
 		isFollowingPath = NO;
         isDirtyImage = NO;
+        craftDoesRotate = YES;
 		hasCurrentPathFinished = YES;
 		[self setMovingAIState:kMovingAIStateStill];
 		[self setAttackingAIState:kAttackingAIStateNeutral];
@@ -316,9 +318,24 @@
     return CGPointZero;
 }
 
+- (NSArray*)getSavablePath {
+    if (isFollowingPath) {
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        for (int i = 0; i < [pathPointArray count]; i++) {
+            CGPoint point = [[pathPointArray objectAtIndex:i] CGPointValue];
+            NSArray* subArray = [[NSArray alloc] initWithObjects:[NSNumber numberWithFloat:point.x], 
+                                 [NSNumber numberWithFloat:point.y], nil];
+            [array addObject:subArray];
+            [subArray release];
+        }
+        return [array autorelease];
+    } else {
+        return nil;
+    }
+}
+
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped {
     if ([array count] == 0) {
-        NSLog(@"Path contained no points!");
         return;
     }
     [pathPointArray autorelease];
@@ -839,31 +856,19 @@
                 
                 NSArray* newPath = [[self.currentScene
                                      collisionManager]
-                                    pathFrom:objectLocation to:dragLocation allowPartial:NO isStraight:NO];
+                                    pathFrom:objectLocation to:dragLocation allowPartial:YES isStraight:YES];
                 [self followPath:newPath isLooped:NO];
                 [self setMovingAIState:kMovingAIStateMoving];
                 [self setAttackingAIState:kAttackingAIStateNeutral];
                 
+                
                 TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:dragLocation];
                 if (enemy) {
                     [self setPriorityEnemyTarget:enemy];
+                } else {
+                    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipConfirm] location:objectLocation];
                 }
-                /*
-                 if (![self isKindOfClass:[MonarchCraftObject class]]) {
-                 if ([self.currentScene attemptToPutCraft:self inSquadAtLocation:location]) {
-                 [self setMovingAIState:kMovingAIStateMoving];
-                 }
-                 }
-                 */
             }
-            /*
-             if (isBeingControlled) {
-             if (![self.currentScene attemptToControlCraftAtLocation:location]) {
-             if (movingAIState != kMovingAIStateMining)
-             [self performSpecialAbilityAtLocation:location];
-             }
-             }
-             */
         }
         isBeingDragged = NO;
         dragLocation = objectLocation;

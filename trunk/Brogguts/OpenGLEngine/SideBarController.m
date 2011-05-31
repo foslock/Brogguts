@@ -89,55 +89,56 @@
 }
 
 - (void)updateSideBar {
-	if (isSideBarShowing) {
+    if (isSideBarMovingIn) {
+        sideBarLocation = CGPointMake(sideBarLocation.x + SIDEBAR_MOVE_SPEED, sideBarLocation.y);
+        if (sideBarLocation.x >= originalLocation.x + sideBarWidth) {
+            isSideBarMovingIn = NO;
+            sideBarLocation = CGPointMake(originalLocation.x + sideBarWidth, sideBarLocation.y);
+        }
+        sideBarObjectLocation = sideBarLocation;
+    }
+    if (isSideBarMovingOut) {
+        sideBarLocation = CGPointMake(sideBarLocation.x - SIDEBAR_MOVE_SPEED, sideBarLocation.y);
+        if (sideBarLocation.x <= originalLocation.x) {
+            isSideBarMovingOut = NO;
+            isSideBarShowing = NO;
+            sideBarLocation = CGPointMake(originalLocation.x, sideBarLocation.y);
+        }
+        sideBarObjectLocation = sideBarLocation;
+    }
+    
+    if (!isMovingObjectIn && !isMovingObjectOut) {
+        sideBarObjectLocation = sideBarLocation;
+    }
+    
+    SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+    [topObject updateSideBar];
+    
+    if (!isSideBarMovingIn && !isSideBarMovingOut) {
+        // update the current object on the top of the stack
+        if (topObject) {
+            if (isMovingObjectIn) {
+                isMovingObjectOut = NO;
+                sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x + SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
+                if (sideBarObjectLocation.x >= sideBarLocation.x) {
+                    sideBarObjectLocation = sideBarLocation;
+                    isMovingObjectIn = NO;
+                }
+            }
+            if (isMovingObjectOut) {
+                isMovingObjectIn = NO;
+                sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x - SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
+                if (sideBarObjectLocation.x <= sideBarLocation.x - sideBarWidth) {
+                    sideBarObjectLocation = CGPointMake(sideBarLocation.x - sideBarWidth, sideBarLocation.y);
+                    isMovingObjectOut = NO;
+                    [sideBarStack removeLastObject];
+                }
+            }
+        }
+    }
+    
+    if (isSideBarShowing) {
         [sideBarButtonImage setFlipHorizontally:YES];
-		if (isSideBarMovingIn) {
-			sideBarLocation = CGPointMake(sideBarLocation.x + SIDEBAR_MOVE_SPEED, sideBarLocation.y);
-			if (sideBarLocation.x >= originalLocation.x + sideBarWidth) {
-				isSideBarMovingIn = NO;
-				sideBarLocation = CGPointMake(originalLocation.x + sideBarWidth, sideBarLocation.y);
-			}
-			sideBarObjectLocation = sideBarLocation;
-		}
-		if (isSideBarMovingOut) {
-			sideBarLocation = CGPointMake(sideBarLocation.x - SIDEBAR_MOVE_SPEED, sideBarLocation.y);
-			if (sideBarLocation.x <= originalLocation.x) {
-				isSideBarMovingOut = NO;
-				isSideBarShowing = NO;
-				sideBarLocation = CGPointMake(originalLocation.x, sideBarLocation.y);
-			}
-			sideBarObjectLocation = sideBarLocation;
-		}
-		
-		if (!isMovingObjectIn && !isMovingObjectOut) {
-			sideBarObjectLocation = sideBarLocation;
-		}
-        
-		SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
-		[topObject updateSideBar];
-		
-		if (!isSideBarMovingIn && !isSideBarMovingOut) {
-			// update the current object on the top of the stack
-			if (topObject) {
-				if (isMovingObjectIn) {
-					isMovingObjectOut = NO;
-					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x + SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
-					if (sideBarObjectLocation.x >= sideBarLocation.x) {
-						sideBarObjectLocation = sideBarLocation;
-						isMovingObjectIn = NO;
-					}
-				}
-				if (isMovingObjectOut) {
-					isMovingObjectIn = NO;
-					sideBarObjectLocation = CGPointMake(sideBarObjectLocation.x - SIDEBAR_MOVE_SPEED, sideBarObjectLocation.y);
-					if (sideBarObjectLocation.x <= sideBarLocation.x - sideBarWidth) {
-						sideBarObjectLocation = CGPointMake(sideBarLocation.x - sideBarWidth, sideBarLocation.y);
-						isMovingObjectOut = NO;
-						[sideBarStack removeLastObject];
-					}
-				}
-			}
-		}
 	} else {
         [sideBarButtonImage setFlipHorizontally:NO];
     }
@@ -152,28 +153,13 @@
 }
 
 - (CGPoint)backButtonPoint {
-	CGPoint point = CGPointMake(sideBarLocation.x,
-                                sideBarLocation.y + sideBarHeight);
+	CGPoint point = CGPointMake(sideBarLocation.x + 16,
+                                sideBarLocation.y + sideBarHeight - 16);
 	return point;
 }
 
 - (void)renderSideBar {
-	// CGRect renderRect = [self sideBarRect];
 	CGRect buttonRect = [self buttonRect];
-	/*
-	if (isSideBarShowing) {
-		glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
-		enablePrimitiveDraw();
-		drawRect(renderRect, Vector2fZero);
-		disablePrimitiveDraw();
-	}
-    */
-	/*
-	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
-	enablePrimitiveDraw();
-	drawRect(buttonRect, Vector2fZero);
-	disablePrimitiveDraw();
-    */
     
     [sideBarButtonImage renderAtPoint:buttonRect.origin];
 	
@@ -185,12 +171,6 @@
 	if ([sideBarStack count] > 1) {
 		// Draw the back button
         [sideBarBackButtonImage renderCenteredAtPoint:[self backButtonPoint]];
-        /*
-		enablePrimitiveDraw();
-		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		drawFilledRect([self backButtonRect], Vector2fZero);
-		disablePrimitiveDraw();
-         */
 	}
 }
 

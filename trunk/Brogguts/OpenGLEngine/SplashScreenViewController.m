@@ -58,7 +58,7 @@
 - (void)turnLogoSplashOn {
     if (didSkipIntro) return;
     // Play the light click sound
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"lightsound.wav"];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileLightSwitch]];
     maskSplash.alpha = 1.0f;
     logoSplash.alpha = 1.0f;
     [NSTimer scheduledTimerWithTimeInterval:LOGO_MASK_WAIT_TIME target:self selector:@selector(fadeLogoIn) userInfo:nil repeats:NO];
@@ -76,7 +76,7 @@
 - (void)turnLogoOff {
     if (didSkipIntro) return;
     // Play the door shut sound
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:@"doorclose.wav"];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileDoorShut]];
     maskSplash.alpha = 0.0f;
     logoSplash.alpha = 0.0f;
     [NSTimer scheduledTimerWithTimeInterval:FINAL_DARK_WAIT_TIME target:self selector:@selector(endSplashSequence) userInfo:nil repeats:NO];

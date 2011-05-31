@@ -11,7 +11,7 @@
 #import "PlayerProfile.h"
 #import "StartMissionObject.h"
 
-#define CAMPAIGN_TWO_BROGGUT_GOAL 10 // 2500
+#define CAMPAIGN_TWO_BROGGUT_GOAL 5000 // 2500
 
 @implementation CampaignSceneTwo
 

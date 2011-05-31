@@ -19,6 +19,7 @@
     Image* newImage = [[Image alloc] initWithImageNamed:filename filter:GL_LINEAR];
     self = [super initWithImage:newImage withLocation:location withObjectType:kObjectBuildingObjectID];
     if (self) {
+        isCheckedForCollisions = NO;
         [objectImage setScale:[object objectImage].scale];
         if ([object isKindOfClass:[CraftObject class]]) {
             [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];

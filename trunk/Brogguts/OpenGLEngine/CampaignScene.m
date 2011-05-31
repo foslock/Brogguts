@@ -33,8 +33,27 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Credits",
 };
 
+NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
+    @"Mission 1 - Another Man's Trash",
+    @"Mission 2 - Garbage Collector",
+    @"Mission 3 - The Tides",
+    @"Mission 4 - Twice the Terror",
+    @"Mission 5 - Promoted",
+    @"Mission 6 - From All Sides",
+    @"Mission 7 - On Your Own",
+    @"Mission 8 - Without Representation",
+    @"Mission 9 - Ancient Material",
+    @"Mission 10 - Captive and Active",
+    @"Mission 11 - Passive Aggressive",
+    @"Mission 12 - There’s No Time",
+    @"Mission 13 - Stand Your Ground",
+    @"Mission 14 - Professional Escort",
+    @"Mission 15 - An Important Delivery",
+    @"Credits",
+};
+
 @implementation CampaignScene
-@synthesize isStartingMission;
+@synthesize isStartingMission, campaignIndex;
 
 - (void)dealloc {
     [startObject release];
@@ -42,9 +61,14 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded {
-    self = [super initWithFileName:kCampaignSceneFileNames[campIndex] wasLoaded:loaded];
+    if (!loaded) {
+        self = [super initWithFileName:kCampaignSceneFileNames[campIndex] wasLoaded:loaded];
+    } else {
+        self = [super initWithFileName:kCampaignSceneSaveTitles[campIndex] wasLoaded:loaded];
+    }
     if (self) {
-        nextSceneName = kCampaignSceneFileNames[campIndex+1];
+        nextSceneFileName = kCampaignSceneFileNames[campIndex+1];
+        sceneFileName = kCampaignSceneFileNames[campIndex];
         
         sceneType = kSceneTypeCampaign;
         campaignIndex = campIndex;
@@ -130,7 +154,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
         if (campaignIndex < CAMPAIGN_SCENES_COUNT - 1) {
-            [[GameController sharedGameController] fadeOutToSceneWithFilename:nextSceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:YES isLoading:NO];
+            [[GameController sharedGameController] fadeOutToSceneWithFilename:nextSceneFileName sceneType:kSceneTypeCampaign withIndex:campaignIndex + 1 isNew:YES isLoading:NO];
         }
     }
 }
@@ -138,7 +162,7 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
 - (void)restartCurrentLevel {
     if (!isAdvancingOrReset) {
         isAdvancingOrReset = YES;
-        [[GameController sharedGameController] fadeOutToSceneWithFilename:sceneName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:YES isLoading:NO];
+        [[GameController sharedGameController] fadeOutToSceneWithFilename:sceneFileName sceneType:kSceneTypeCampaign withIndex:campaignIndex isNew:YES isLoading:NO];
     }
 }
 

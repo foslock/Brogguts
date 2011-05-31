@@ -36,19 +36,23 @@
                                        START_MISSION_BUTTON_HEIGHT);
         background = [[TiledButtonObject alloc] initWithRect:rect];
         [background setIsPushable:NO];
-        CGRect confirmRect = CGRectOffset(buttonRect, (START_MISSION_BACKGROUND_WIDTH / 2) - (START_MISSION_BUTTON_WIDTH / 2) - START_MISSION_BUTTON_INSET, 0);
+        menuButton = [[TiledButtonObject alloc] initWithRect:buttonRect];
+        CGRect confirmRect = CGRectOffset(buttonRect, START_MISSION_BACKGROUND_WIDTH - START_MISSION_BUTTON_WIDTH - (START_MISSION_BUTTON_INSET * 2), 0);
         confirmButton = [[TiledButtonObject alloc] initWithRect:confirmRect];
         CGPoint textPoint = CGPointMake(center.x, center.y + 150);
         headerText = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"TEXT" withLocation:textPoint withDuration:-1.0f];
-        textPoint = CGPointMake(center.x, center.y + 50);
+        textPoint = CGPointMake(center.x, center.y + 60);
         missionTextOne = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:textPoint withDuration:-1.0f];
-        textPoint = CGPointMake(center.x, center.y + 0);
+        textPoint = CGPointMake(center.x, center.y + 20);
         missionTextTwo = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:textPoint withDuration:-1.0f];
-        textPoint = CGPointMake(center.x, center.y - 50);
+        textPoint = CGPointMake(center.x, center.y - 20);
         missionTextThree = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:textPoint withDuration:-1.0f];
+        textPoint = CGPointMake(center.x, center.y - 60);
+        missionTextFour = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"" withLocation:textPoint withDuration:-1.0f];
         buttonArray = [[NSMutableArray alloc] initWithCapacity:3];
         textArray = [[NSMutableArray alloc] initWithCapacity:3];
         [buttonArray addObject:background];
+        [buttonArray addObject:menuButton];
         [buttonArray addObject:confirmButton];
         [textArray addObject:headerText];
         [textArray addObject:missionTextOne];
@@ -61,13 +65,16 @@
         }
         [background setRenderLayer:kLayerHUDBottomLayer];
         [confirmButton setRenderLayer:kLayerHUDMiddleLayer];
+        [menuButton setRenderLayer:kLayerHUDMiddleLayer];
         
         [background release];
         [confirmButton release];
+        [menuButton release];
         [headerText release];
         [missionTextOne release];
         [missionTextTwo release];
         [missionTextThree release];
+        [missionTextFour release];
     }
     return self;
 }
@@ -88,6 +95,10 @@
     [missionTextThree setObjectText:text];
 }
 
+- (void)setMissionTextFour:(NSString*)text {
+    [missionTextFour setObjectText:text];
+}
+
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     [super renderCenteredAtPoint:center withScrollVector:Vector2fZero];
@@ -102,17 +113,22 @@
     
     // Render button text
     BitmapFont* buttonfont = [[[self currentScene] fontArray] objectAtIndex:kFontBlairID];
-    [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Accept Mission" onLayer:kLayerHUDTopLayer];
+    [buttonfont renderStringJustifiedInFrame:[menuButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Main Menu" onLayer:kLayerHUDTopLayer];
+    [buttonfont renderStringJustifiedInFrame:[confirmButton drawRect] justification:BitmapFontJustification_MiddleCentered text:@"Continue" onLayer:kLayerHUDTopLayer];
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
     if ([confirmButton wasJustReleased]) {
         BroggutScene* scene = [self currentScene];
         if ([scene isKindOfClass:[CampaignScene class]]) {
             [(CampaignScene*)scene setIsStartingMission:NO];
         }
+    } else if ([menuButton wasJustReleased]) {
+        [[GameController sharedGameController] returnToMainMenuWithSave:YES];
     }
+    
     for (TiledButtonObject* object in buttonArray) {
         [object updateObjectLogicWithDelta:aDelta];
     }
@@ -123,16 +139,19 @@
 
 - (void)touchesBeganAtLocation:(CGPoint)location {
     [super touchesBeganAtLocation:location];
+    [menuButton touchesBeganAtLocation:location];
     [confirmButton touchesBeganAtLocation:location];
 }
 
 - (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
     [super touchesMovedToLocation:toLocation from:fromLocation];
+    [menuButton touchesMovedToLocation:toLocation from:fromLocation];
     [confirmButton touchesMovedToLocation:toLocation from:fromLocation];
 }
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
     [super touchesEndedAtLocation:location];
+    [menuButton touchesEndedAtLocation:location];
     [confirmButton touchesEndedAtLocation:location];
 }
 

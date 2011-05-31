@@ -17,6 +17,10 @@
 @implementation TutorialSceneFour
 
 - (void)dealloc {
+    [noti release];
+    [fingerOne release];
+    [fingerTwo release];
+    [fingerThree release];
     [antTrigger release];
     [super dealloc];
 }
@@ -31,9 +35,10 @@
         antTrigger = [[TriggerObject alloc] initWithLocation:triggerLoc];
         antTrigger.numberOfObjectsNeeded = 1;
         antTrigger.objectIDNeeded = kObjectCraftAntID;
-        NotificationObject* noti = [[NotificationObject alloc] initWithLocation:antTrigger.objectLocation withDuration:-1.0f];
+        
+        noti = [[NotificationObject alloc] initWithLocation:antTrigger.objectLocation withDuration:-1.0f];
         [self addCollidableObject:noti];
-        [noti release];
+        
         AntCraftObject* newAnt = [[AntCraftObject alloc] initWithLocation:antLoc isTraveling:NO];
         myCraft = newAnt;
         [newAnt setObjectAlliance:kAllianceFriendly];
@@ -41,28 +46,22 @@
         [self addTouchableObject:antTrigger withColliding:NO];        
         [newAnt release];
         
-        FingerObject* tempFingerOne = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+        fingerOne = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
                                                                                               myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)
                                                                   withEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
                                                                                               myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)
                                                                           repeats:YES];
-        fingerOne = tempFingerOne;
-        [self addCollidableObject:tempFingerOne];
-        [tempFingerOne release];
+        [self addCollidableObject:fingerOne];
         
-        FingerObject* tempFingerTwo = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
+        fingerTwo = [[FingerObject alloc] initWithStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
                                                                                               myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)
                                                                   withEndLocation:CGPointMake(myCraft.objectLocation.x + COLLISION_CELL_WIDTH,
                                                                                               myCraft.objectLocation.y + COLLISION_CELL_HEIGHT)
                                                                           repeats:YES];
-        fingerTwo = tempFingerTwo;
-        [self addCollidableObject:tempFingerTwo];
-        [tempFingerTwo release];
+        [self addCollidableObject:fingerTwo];
         
-        FingerObject* tempFingerThree = [[FingerObject alloc] initWithStartLocation:notification.objectLocation withEndLocation:notification.objectLocation repeats:YES];
-        fingerThree = tempFingerThree;
-        [self addCollidableObject:tempFingerThree];
-        [tempFingerThree release];
+        fingerThree = [[FingerObject alloc] initWithStartLocation:noti.objectLocation withEndLocation:noti.objectLocation repeats:YES];
+        [self addCollidableObject:fingerThree];
         
         [helpText setObjectText:@"The screen will only scroll for selected ships. Select this one using two fingers and move it towards the right."];
     }
@@ -70,9 +69,6 @@
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
-    [fingerThree setEndLocation:notification.objectLocation];
-    [fingerThree setStartLocation:notification.objectLocation];
-    [fingerThree setObjectLocation:notification.objectLocation];
     if (!myCraft.isBeingControlled) {
         [fingerOne setStartLocation:CGPointMake(myCraft.objectLocation.x - COLLISION_CELL_WIDTH,
                                                 myCraft.objectLocation.y - COLLISION_CELL_HEIGHT)];
@@ -91,6 +87,9 @@
         fingerTwo.isHidden = YES;
     }
     [super updateSceneWithDelta:aDelta];
+    [fingerThree setEndLocation:noti.objectLocation];
+    [fingerThree setStartLocation:noti.objectLocation];
+    [fingerThree setObjectLocation:noti.objectLocation];
 }
 
 - (BOOL)checkObjective {

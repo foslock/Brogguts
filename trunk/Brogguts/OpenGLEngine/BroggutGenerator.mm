@@ -28,6 +28,9 @@ static NSString* kMediumBroggutAncientImageSprite = @"spritetrashancient";
 										   COLLISION_CELL_HEIGHT + BROGGUT_PADDING,
 										   BROGGUT_POINTINESS,
 										   true);
+    if (verticies[index]) {
+        free(verticies[index]);
+    }
 	verticies[index] = (float*)malloc(size);
 	
 	generator->createShapeIntoArray(verticies[index]);
@@ -54,9 +57,11 @@ static NSString* kMediumBroggutAncientImageSprite = @"spritetrashancient";
 		cellsHigh = broggutArray->bHeight;
 		broggutCount = broggutArray->broggutCount;
 		verticies = (float**)malloc( cellsWide * cellsHigh * sizeof(*verticies) );
+        
 		for (int i = 0; i < cellsWide * cellsHigh; i++) {
-			verticies[i] = (float*)malloc((2 * VERTICIES_PER_BROGGUT) + (2 * VERTICIES_PER_BROGGUT) - 4);
+			verticies[i] = NULL;
 		}
+        
 		for (int j = 0; j < cellsHigh; j++) {
 			for (int i = 0; i < cellsWide; i++) {
 				int straightIndex = [self indexForRow:j forColumn:i];

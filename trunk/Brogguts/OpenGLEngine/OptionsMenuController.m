@@ -8,8 +8,10 @@
 
 #import "OptionsMenuController.h"
 #import "GameController.h"
+#import "SoundSingleton.h"
 
 @implementation OptionsMenuController
+@synthesize fxVolumeSlider, musicVolumeSlider;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,6 +35,22 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (IBAction)fxVolumeChanged:(id)sender {
+    UISlider* slider = (UISlider*)sender;
+    [[SoundSingleton sharedSoundSingleton] setFxVolume:[slider value]];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileTestSound]];
+}
+
+- (IBAction)musicVolumeChanged:(id)sender {
+    UISlider* slider = (UISlider*)sender;
+    [[SoundSingleton sharedSoundSingleton] setMusicVolume:[slider value]];
+    
+    float tempVol = [[SoundSingleton sharedSoundSingleton] fxVolume];
+    [[SoundSingleton sharedSoundSingleton] setFxVolume:[slider value]];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileTestSound]];
+    [[SoundSingleton sharedSoundSingleton] setFxVolume:tempVol];
+}
+
 - (IBAction)popOptionsController {
     [self.parentViewController dismissModalViewControllerAnimated:YES];
 }
@@ -48,6 +66,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [fxVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] fxVolume]];
+    [musicVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] musicVolume]];
 }
 
 - (void)viewDidUnload

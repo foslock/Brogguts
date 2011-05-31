@@ -23,8 +23,8 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:2 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextOne:@"- Survive the wave approaching in 5 minutes"];
-        [startObject setMissionTextTwo:@"- Destroy all 10 enemy Ants in the wave"];
+        [startObject setMissionTextTwo:@"- Survive the wave approaching in 5 minutes"];
+        [startObject setMissionTextThree:@"- Destroy all 10 enemy Ants in the wave"];
         spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
         [spawner pauseSpawnerForDuration:(5.0f * 60.0f) + 1.0f];
         [spawner setSendingLocation:homeBaseLocation];
