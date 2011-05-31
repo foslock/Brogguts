@@ -18,6 +18,7 @@
 #import "InfoMenuController.h"
 #import "MenuHelpController.h"
 #import "MapChoiceController.h"
+#import "SoundSingleton.h"
 
 @implementation MainMenuController
 @synthesize backgroundOne, backgroundTwo, backgroundThree;
@@ -43,13 +44,13 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [[SoundSingleton sharedSoundSingleton] removeSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
     [starsArray release];
     [super dealloc];
 }
@@ -60,6 +61,10 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (IBAction)playButtonSound:(id)sender {
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
 }
 
 - (IBAction)startTutorialLevels {

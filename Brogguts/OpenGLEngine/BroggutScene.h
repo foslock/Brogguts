@@ -10,11 +10,11 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
-#define HELP_MESSAGE_COUNT 7
 #define HELP_MESSAGE_TIME 4.0f
 #define SCROLL_BOUNDS_X_INSET 500.0f
 #define SCROLL_BOUNDS_Y_INSET 350.0f
-#define SCROLL_MAX_SPEED 35.0f
+#define SCROLL_MAX_SPEED 40.0f
+#define CRAFT_ROTATION_TURNING_RANGE 10.0f
 #define INITIAL_OBJECT_CAPACITY 100
 #define FRAME_COUNTER_MAX 100
 #define OVERVIEW_FADE_IN_RATE 0.025f
@@ -29,6 +29,8 @@
 #define TOTAL_CRAFT_LIMIT 200
 #define TOTAL_STRUCTURE_LIMIT 200
 
+#define HELP_MESSAGE_COUNT 8
+
 enum kHelpMessageIDs {
     kHelpMessageNeedBrogguts,
     kHelpMessageNeedMetal,
@@ -37,6 +39,7 @@ enum kHelpMessageIDs {
     kHelpMessageNeedStructureLimit,
     kHelpMessageNeedUnitLimit,
     kHelpMessageMiningEdges,
+    kHelpMessageNeedMoreBlocks,
 };
 
 extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
@@ -61,6 +64,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class AIController;
 @class EndMissonObject;
 @class RefineryStructureObject;
+@class BlockStructureObject;
 @class NotificationObject;
 
 // This is an abstract class which contains the basis for any game scene which is going
@@ -84,6 +88,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
     BOOL isAllowingSidebar;
     BOOL isShowingBroggutCount;
     BOOL isShowingMetalCount;
+    BOOL isShowingSupplyCount;
     BOOL isAllowingOverview;
     BOOL isMultiplayerMatch;
     BOOL isMissionOver;
@@ -124,6 +129,10 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
     int numberOfRefineries;
     NSMutableArray* currentRefineries;
     
+    // Counter and array for all the blocks that the player currently owns
+    int numberOfBlocks;
+    NSMutableArray* currentBlocks;
+    
     // Counters for enemy craft and structures
     int numberOfEnemyShips;
     int numberOfEnemyStructures;
@@ -137,8 +146,12 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
     NotificationObject* notification;
 	
 	// Display of brogguts
+    Image* broggutIconImage;
+    Image* metalIconImage;
+    Image* supplyIconImage;
 	TextObject* broggutCounter;
 	TextObject* metalCounter;
+    TextObject* supplyCounter;
     
     TextObject* valueTextObject;		// Text object that shows the medium broggut value
 	BOOL isShowingValueText;			// Boolean about if the text is showing
@@ -235,11 +248,13 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
+@property (readonly) TextObject* supplyCounter;
 @property (readonly) NSMutableArray* touchableObjects;
 @property (readonly) int widthCells;
 @property (readonly) int heightCells;
 @property (readonly) int numberOfSmallBrogguts;
 @property (readonly) int numberOfRefineries;
+@property (readonly) int numberOfBlocks;
 @property (nonatomic, assign) BOOL isShowingBuildingValues;
 @property (nonatomic, assign) int currentBuildBroggutCost;
 @property (nonatomic, assign) int currentBuildMetalCost;
@@ -311,6 +326,12 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 
 // Increments the refinery count
 - (void)addRefinery:(RefineryStructureObject*)refinery;
+
+// Increments the block count
+- (void)addBlock:(BlockStructureObject*)block;
+
+// Returns the current max number of ships the player can own
+- (int)currentMaxShipSupply;
 
 // Show medium broggut value
 - (void)showBroggutValueAtLocation:(CGPoint)location;

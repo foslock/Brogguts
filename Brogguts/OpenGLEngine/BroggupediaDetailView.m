@@ -9,6 +9,7 @@
 #import "BroggupediaDetailView.h"
 #import "Image.h"
 #import "GameController.h"
+#import "SoundSingleton.h"
 
 
 @implementation BroggupediaDetailView
@@ -168,7 +169,7 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:@"Brogguts Cost: N/A"];
             [unitMetalCostLabel setText:@"Metal Cost: N/A"];
-            NSString* description = [NSString stringWithFormat:@"\t\tThe Base Station is the standard in commanding stations. It provides storage for all mined brogguts, it builds craft and other important structures that help progress the current mission. Each commander may only have one Base Station at a time."];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Base Station is the standard in commanding stations. It provides storage for all mined brogguts, it builds craft and other important structures that help progress the current mission. Each commander may only have one Base Station at a time. It initially supports up to %i ships.", kStructureBaseStationSupplyBonus];
             [unitLabel setText:description];
             [image release];
             break;
@@ -184,7 +185,7 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureBlockCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureBlockCostMetal]];
-            NSString* description = [NSString stringWithFormat:@"\t\tThe Block is essentially created from the worst and most useless of the brogguts brought in. While it may seemingly serve no purpose as a structure, the built-in alert system can be helpful when interested in knowing when and where an attack may be coming."];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Block is essentially a storage cube that is deployed into nearby space. Each block allows for %i additional ships to be built. By making more space inside of the space station, complicated communication systems can be installed. This is the most common and cheapest structure.", kStructureBlockSupplyBonus];
             [unitLabel setText:description];
             [image release];
             break;

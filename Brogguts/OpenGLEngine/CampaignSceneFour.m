@@ -24,20 +24,22 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:3 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextOne:@"- Survive the wave approaching in 7.5 minutes"];
+        [startObject setMissionTextOne:@"- Survive the wave approaching in 10 minutes"];
         [startObject setMissionTextTwo:@"- Destroy all 15 enemy Ants in the wave"];
         [startObject setMissionTextThree:@"- Destroy both enemy Beetles in the wave"];
         
-        spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:15];
-        [spawnerOne pauseSpawnerForDuration:(7.5f * 60.0f) + 1.0f];
+        spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
+        [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:1];
+        [spawnerOne pauseSpawnerForDuration:(10.0f * 60.0f) + 1.0f];
         [spawnerOne setSendingLocation:homeBaseLocation];
-        [spawnerOne setSendingLocationVariance:100.0f];
+        [spawnerOne setSendingLocationVariance:128.0f];
         [spawnerOne setStartingLocationVariance:128.0f];
         
-        spawnerTwo = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, 0.0f) objectID:kObjectCraftBeetleID withDuration:0.1f withCount:2];
-        [spawnerTwo pauseSpawnerForDuration:(7.5f * 60.0f) + 1.0f];
+        spawnerTwo = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
+        [spawnerTwo addObjectWithID:kObjectCraftBeetleID withCount:1];
+        [spawnerTwo pauseSpawnerForDuration:(10.0f * 60.0f) + 1.0f];
         [spawnerTwo setSendingLocation:homeBaseLocation];
-        [spawnerTwo setSendingLocationVariance:100.0f];
+        [spawnerTwo setSendingLocationVariance:128.0f];
         [spawnerTwo setStartingLocationVariance:128.0f];
     }
     return self;
@@ -72,7 +74,7 @@
     if ([spawnerOne isDoneSpawning] && [spawnerTwo isDoneSpawning] && enemyShipCount == 0) {
         return YES;
     }
-    return NO;
+    return YES;
 }
 
 - (BOOL)checkFailure {

@@ -76,7 +76,7 @@ enum ObjectTypeIDs { // When loading a scene, used for parsing
 	kObjectTypeStructure,	
 };
 
-#define TOTAL_OBJECT_TYPES_COUNT 26
+#define TOTAL_OBJECT_TYPES_COUNT 29
 
 enum ObjectIDs { // How objects are indentified
 	kObjectTextID,
@@ -323,6 +323,8 @@ enum kObjectStructureBaseStation {
 	kStructureBaseStationCostMetal = 0,
 	kStructureBaseStationMovingTime = 0, // seconds to move to active spot
 	kStructureBaseStationHull = 500,
+    // Special
+    kStructureBaseStationSupplyBonus = 4,
 };
 
 enum TheBlockValues {
@@ -337,6 +339,7 @@ enum TheBlockValues {
 	kStructureBlockMovingTime = 1, // seconds to move to active spot
 	kStructureBlockHull = 60,
 	// Special Values
+    kStructureBlockSupplyBonus = 2,
 };
 
 enum TheRefineryValues {

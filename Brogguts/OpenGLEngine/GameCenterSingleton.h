@@ -22,14 +22,18 @@
 
 @class GameController;
 @class BroggutScene;
+@class SkirmishMatchController;
 
 @interface GameCenterSingleton : UIViewController <GKMatchDelegate, GKMatchmakerViewControllerDelegate> {
 	GameController* sharedGameController;
+    SkirmishMatchController* matchController;
     BroggutScene* currentScene;
     NSMutableDictionary* objectsReceivedArray;
 	GKLocalPlayer* localPlayer;
 	NSString* localPlayerID;
 	NSString* otherPlayerID;
+    NSString* localPlayerAlias;
+	NSString* otherPlayerAlias;
     NSArray* otherPlayerArrayID;
     NSString* hostedFileName; 
 	GKMatch* currentMatch;
@@ -49,16 +53,22 @@
     int destructionQueueCount;
     
 	BOOL matchStarted;  // YES when the two clients have first initially made a connection (data sending is not reliable)
-    BOOL gameStarted;   // YES when the two clients games can start (data can be reliably sent)
-    BOOL queuedPacketsSent;
+    BOOL sceneStarted;  // YES when the scene is being entered by both players
+    BOOL localConfirmed; // YES when the local player has pushed the confirm button 
+    BOOL remoteConfirmed; // YES when the remote player has pushed their confirm button
 }
 
 @property (nonatomic, assign) BroggutScene* currentScene;
 @property (retain) GKMatch* currentMatch;
 @property (copy) NSString* localPlayerID;
 @property (copy) NSString* otherPlayerID;
+@property (copy) NSString* localPlayerAlias;
+@property (copy) NSString* otherPlayerAlias;
+@property (copy) NSString* hostedFileName;
 @property (assign) BOOL matchStarted;
-@property (nonatomic, assign) BOOL gameStarted;
+@property (assign) BOOL sceneStarted;
+@property (assign) BOOL localConfirmed;
+@property (assign) BOOL remoteConfirmed;
 
 + (GameCenterSingleton*)sharedGCSingleton;
 - (void)authenticateLocalPlayer;
@@ -71,10 +81,11 @@
 - (void)findProgrammaticMatch;
 - (void)match:(GKMatch*)match player:(NSString*)playerID didChangeState:(GKPlayerConnectionState)state;
 - (CGPoint)translatedPointForMultiplayer:(Vector2f)point;
+- (void)openMatchController;
+- (void)moveMatchToScene;
 - (void)disconnectFromGame;
 
 - (void)processQueuedPackets;
-- (void)sendQueuedPackets;
 
 // Sending packets
 - (void)sendMatchPacket:(MatchPacket)packet isRequired:(BOOL)required;

@@ -52,6 +52,7 @@
 
 - (void)moveTowardsLocation:(CGPoint)location;
 - (void)followPath:(NSArray*)array isLooped:(BOOL)looped;
+- (NSArray*)getSavablePath;
 - (void)stopFollowingCurrentPath;
 - (void)resumeFollowingCurrentPath;
 

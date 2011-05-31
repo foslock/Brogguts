@@ -22,6 +22,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftSpiderID withLocation:location isTraveling:traveling];
 	if (self) {
+        craftDoesRotate = NO;
 		droneArray = [[NSMutableArray alloc] initWithCapacity:SPIDER_NUMBER_OF_DRONES];
 		droneCount = 0;
 		droneCountLimit = SPIDER_NUMBER_OF_DRONES;

@@ -15,6 +15,7 @@
 @class NotificationObject;
 
 @interface TutorialSceneFour : TutorialScene {
+    NotificationObject* noti;
     TriggerObject* antTrigger;
     CraftObject* myCraft;
     FingerObject* fingerOne;

@@ -11,7 +11,7 @@
 #import "GameController.h"
 #import "StartMissionObject.h"
 
-#define CAMPAIGN_ONE_BROGGUT_GOAL 10 // 1000
+#define CAMPAIGN_ONE_BROGGUT_GOAL 2500 // 1000
 
 @implementation CampaignSceneOne
 

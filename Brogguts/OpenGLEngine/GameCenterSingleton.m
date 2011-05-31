@@ -16,13 +16,15 @@
 #import "CollisionManager.h"
 #import "GameplayConstants.h"
 #import "CraftAndStructures.h"
+#import "SkirmishMatchController.h"
 
 static GameCenterSingleton* sharedGCSingleton = nil;
 
 @implementation GameCenterSingleton
 @synthesize currentScene, currentMatch;
-@synthesize otherPlayerID, localPlayerID;
-@synthesize matchStarted, gameStarted;
+@synthesize otherPlayerID, localPlayerID, localPlayerAlias, otherPlayerAlias;
+@synthesize matchStarted, sceneStarted, hostedFileName;
+@synthesize localConfirmed, remoteConfirmed;
 
 + (GameCenterSingleton*)sharedGCSingleton
 {
@@ -86,7 +88,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         free(broggutPacketQueue);
     if (destructionPacketQueue)
         free(destructionPacketQueue);
-    
+    [localPlayerAlias release];
+    [otherPlayerAlias release];
 	[localPlayerID release];
 	[otherPlayerID release];
     [otherPlayerArrayID release];
@@ -118,9 +121,12 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			sharedGameController = [GameController sharedGameController];
             objectsReceivedArray = [[NSMutableDictionary alloc] init];
 			matchStarted = NO;
-            gameStarted = NO;
-            queuedPacketsSent = NO;
+            sceneStarted = NO;
+            localConfirmed = NO;
+            remoteConfirmed = NO;
             otherPlayerArrayID = nil;
+            localPlayerAlias = nil;
+            otherPlayerAlias = nil;
             
             creationPacketQueue = calloc(PACKET_QUEUE_CAPACITY, sizeof(*creationPacketQueue));
             creationQueueCount = 0;
@@ -169,6 +175,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 		if (error == nil)
 		{
             self.localPlayerID = [[GKLocalPlayer localPlayer] playerID];
+            self.localPlayerAlias = [[GKLocalPlayer localPlayer] alias];
 			NSLog(@"Authentication was successful!");
              NSLog(@"I am Player: %@", localPlayerID);
 			// Insert code here to handle a successful authentication.
@@ -227,11 +234,22 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     [GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler:^(NSArray *players, NSError *error) {
         if (error != nil)
         {
+            NSLog(@"Error processing the names: %@", [error localizedDescription]);
             // Handle the error.
         }
         if (players != nil)
         {
             // Process the array of GKPlayer objects.
+            for (GKPlayer* player in players) {
+                NSString* playerID = [player playerID];
+                if ([playerID caseInsensitiveCompare:localPlayerID] == NSOrderedSame) {
+                    self.localPlayerAlias = [player alias];
+                }
+                if ([playerID caseInsensitiveCompare:otherPlayerID] == NSOrderedSame) {
+                    self.otherPlayerAlias = [player alias];
+                }
+            }
+            [matchController setPlayerText];
         }
 	}];
 }
@@ -257,10 +275,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 
 - (void)hostMatchWithHostedFileName:(NSString*)filename
 {
-    if (hostedFileName)
-        [hostedFileName release];
-    
-    hostedFileName = [filename copy];
+    [self setHostedFileName:filename];
     
     [[((OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate]) window] addSubview:self.view];
     
@@ -319,11 +334,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     // Start the game using the match.
     if (!self.matchStarted && match.expectedPlayerCount == 0)
     {
-        NSLog(@"Match has started!");
-        [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-        [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
-        self.matchStarted = YES;
-        [self.view removeFromSuperview];
+        [self loadPlayerData:[match playerIDs]];
+        [self openMatchController];
     }
 }
 
@@ -342,11 +354,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             }
             if (!self.matchStarted && match.expectedPlayerCount == 0)
             {
-                NSLog(@"Match has started!");
-                [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] startGLAnimation];
-                [[GameController sharedGameController] fadeOutToSceneWithFilename:hostedFileName sceneType:kSceneTypeSkirmish withIndex:0 isNew:YES isLoading:NO];
-                self.matchStarted = YES;
-                [self.view removeFromSuperview];
+                [self loadPlayerData:[match playerIDs]];
+                [self openMatchController];
                 // handle initial match negotiation.
             }
 			break;
@@ -411,62 +420,33 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     destructionQueueCount = 0;
 }
 
-- (void)sendQueuedPackets {
-    if (queuedPacketsSent) {
-        return; // Only call this once at the beginning of the match
-    } else {
-        queuedPacketsSent = YES;
-    }
-    // Go through each queue and send the packets waiting!
-    
-    int counter = 0;
-    while (counter < creationQueueCount) {
-        NSLog(@"Queued creation packet sent");
-        CreationPacket thisPacket = creationPacketQueue[counter++];
-        [self sendCreationPacket:thisPacket isRequired:YES];
-    }
-    
-    counter = 0;
-    while (counter < destructionQueueCount) {
-        DestructionPacket thisPacket = destructionPacketQueue[counter++];
-        [self sendDestructionPacket:thisPacket isRequired:YES];
-    }
-    
-    counter = 0;
-    while (counter < simpleQueueCount) {
-        SimpleEntityPacket thisPacket = simplePacketQueue[counter++];
-        [self sendSimplePacket:thisPacket isRequired:NO];
-    }
-    
-    counter = 0;
-    while (counter < complexQueueCount) {
-        ComplexEntityPacket thisPacket = complexPacketQueue[counter++];
-        [self sendComplexPacket:thisPacket isRequired:NO];
-    }
-    
-    counter = 0;
-    while (counter < broggutQueueCount) {
-        BroggutUpdatePacket thisPacket = broggutPacketQueue[counter++];
-        [self sendBroggutUpdatePacket:thisPacket isRequired:YES];
-    }
-    
-    // Reset all counts
-    creationQueueCount = 0;
-    simpleQueueCount = 0;
-    complexQueueCount = 0;
-    broggutQueueCount = 0;
-    destructionQueueCount = 0;
+- (void)openMatchController {
+    [self dismissModalViewControllerAnimated:NO];
+    matchController = [[SkirmishMatchController alloc] initWithNibName:@"SkirmishMatchController" bundle:nil];
+    [matchController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:matchController animated:NO];
+    self.matchStarted = YES;
+}
+
+- (void)moveMatchToScene {
+    sceneStarted = YES;
+    [matchController moveMatchToScene];
+    [self.view removeFromSuperview];
 }
 
 - (void)disconnectFromGame {
     [currentMatch disconnect];
+    [self.view removeFromSuperview];
+    [matchController release];
+    matchController = nil;
     currentMatch = nil;
     currentScene = nil;
     otherPlayerID = nil;
     otherPlayerArrayID = nil;
     matchStarted = NO;
-    gameStarted = NO;
-    queuedPacketsSent = NO;
+    sceneStarted = NO;
+    localConfirmed = NO;
+    remoteConfirmed = NO;
     creationQueueCount = 0;
     simpleQueueCount = 0;
     complexQueueCount = 0;
@@ -477,7 +457,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 // SENDING DATA
 
 - (void)sendMatchPacket:(MatchPacket)packet isRequired:(BOOL)required {
-	if (currentMatch && matchStarted) {
+    if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeMatchPacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(MatchPacket)];
@@ -498,7 +478,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 }
 
 - (void)sendSimplePacket:(SimpleEntityPacket)packet isRequired:(BOOL)required {
-	if (currentMatch && matchStarted && gameStarted) {
+	if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeSimpleEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(SimpleEntityPacket)];
@@ -515,20 +495,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the simple packet");
 			// handle the error
 		}
-	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
-        // If the game is still loading for the other player
-        packet.packetType = kPacketTypeSimpleEntity;
-        if (simpleQueueCount < PACKET_QUEUE_CAPACITY - 1) {
-            SimpleEntityPacket* packetPointer = &simplePacketQueue[simpleQueueCount++];
-            (*packetPointer) = packet;
-        } else {
-            NSLog(@"Simple packet queue is full!");
-        }
-    }
+	}
 }
 
 - (void)sendComplexPacket:(ComplexEntityPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted && gameStarted) {
+	if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeComplexEntity;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(ComplexEntityPacket)];
@@ -545,20 +516,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the complex packet");
 			// handle the error
 		}
-	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
-        // If the game is still loading for the other player
-        packet.packetType = kPacketTypeComplexEntity;
-        if (complexQueueCount < PACKET_QUEUE_CAPACITY - 1) {
-            ComplexEntityPacket* packetPointer = &complexPacketQueue[complexQueueCount++];
-            (*packetPointer) = packet;
-        } else {
-            NSLog(@"Complex packet queue is full!");
-        }
-    }
+	}
 }
 
 - (void)sendCreationPacket:(CreationPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted && gameStarted) {
+	if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeCreationPacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(CreationPacket)];
@@ -578,20 +540,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the creation packet: %@", error);
 			// handle the error
 		}
-	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
-        // If the game is still loading for the other player
-        packet.packetType = kPacketTypeCreationPacket;
-        if (creationQueueCount < PACKET_QUEUE_CAPACITY - 1) {
-            CreationPacket* packetPointer = &creationPacketQueue[creationQueueCount++];
-            (*packetPointer) = packet;
-        } else {
-            NSLog(@"Creation packet queue is full!");
-        }
-    }
+	}
 }
 
 - (void)sendDestructionPacket:(DestructionPacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted && gameStarted) {
+	if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeDestructionPacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(DestructionPacket)];
@@ -608,20 +561,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the destruction packet");
 			// handle the error
 		}
-	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
-        // If the game is still loading for the other player
-        packet.packetType = kPacketTypeDestructionPacket;
-        if (destructionQueueCount < PACKET_QUEUE_CAPACITY - 1) {
-            DestructionPacket* packetPointer = &destructionPacketQueue[destructionQueueCount++];
-            (*packetPointer) = packet;
-        } else {
-            NSLog(@"Destruction packet queue is full!");
-        }
-    }
+	}
 }
 
 - (void)sendBroggutUpdatePacket:(BroggutUpdatePacket)packet isRequired:(BOOL)required  {
-	if (currentMatch && matchStarted && gameStarted) {
+	if (currentMatch && matchStarted) {
 		NSError *error = nil;
 		packet.packetType = kPacketTypeBroggutUpdatePacket;
 		NSData *data = [NSData dataWithBytes:&packet length:sizeof(BroggutUpdatePacket)];
@@ -638,16 +582,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Can't send the broggut update packet");
 			// handle the error
 		}
-	} else if (currentMatch && !gameStarted && !queuedPacketsSent) {
-        // If the game is still loading for the other player
-        packet.packetType = kPacketTypeBroggutUpdatePacket;
-        if (broggutQueueCount < PACKET_QUEUE_CAPACITY - 1) {
-            BroggutUpdatePacket* packetPointer = &broggutPacketQueue[broggutQueueCount++];
-            (*packetPointer) = packet;
-        } else {
-            NSLog(@"Broggut packet queue is full!");
-        }
-    }
+	}
 }
 
 // RECEIVING DATA
@@ -662,11 +597,10 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     DestructionPacket receivedDestructionPacket = *(DestructionPacket*)dataBytes;
     BroggutUpdatePacket receivedBroggutPacket = *(BroggutUpdatePacket*)dataBytes;
     
-	if ((receivedMatchPacket).packetType == kPacketTypeMatchPacket) {
-        // Got a match initiation packet
+    if ((receivedMatchPacket).packetType == kPacketTypeMatchPacket) {
         [self matchPacketReceived:receivedMatchPacket];
-		return;
-	}
+    }
+    
     if ((receivedSimplePacket).packetType == kPacketTypeSimpleEntity) {
         // Get current queue location
         if (simpleQueueCount < PACKET_QUEUE_CAPACITY - 1) {
@@ -718,15 +652,13 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 - (void)matchPacketReceived:(MatchPacket)packet {
     switch (packet.matchMarker) {
         case kMatchMarkerRequestStart: {
-            MatchPacket packet;
-            packet.matchMarker = kMatchMarkerConfirmStart;
-            [self sendMatchPacket:packet isRequired:YES];
+            remoteConfirmed = YES;
         }
             break;
-        case kMatchMarkerConfirmStart:
-            gameStarted = YES;
-            [self sendQueuedPackets];
-            break;   
+        case kMatchMarkerConfirmStart: {
+            remoteConfirmed = YES;
+        }
+            break;
         default:
             break;
     }

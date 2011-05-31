@@ -10,7 +10,7 @@
 #import "StructureObject.h"
 
 @interface BlockStructureObject : StructureObject {
-
+    BOOL hasBeenAdded;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

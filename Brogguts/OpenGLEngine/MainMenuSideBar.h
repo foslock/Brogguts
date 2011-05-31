@@ -10,7 +10,7 @@
 #import "SideBarObject.h"
 
 @interface MainMenuSideBar : SideBarObject {
-
+    int currentSceneType;
 }
 
 @end

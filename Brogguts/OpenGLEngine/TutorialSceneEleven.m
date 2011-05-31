@@ -21,6 +21,7 @@
     if (self) {
         isAllowingOverview = YES;
         isShowingBroggutCount = YES;
+        isShowingSupplyCount = YES;
         isAllowingSidebar = YES;
         isAllowingCraft = YES;
         isAllowingStructures = NO;

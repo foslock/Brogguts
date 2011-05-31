@@ -10,10 +10,16 @@
 
 
 @interface OptionsMenuController : UIViewController {
-    
+    UISlider* fxVolumeSlider;
+    UISlider* musicVolumeSlider;
 }
 
+@property (assign) IBOutlet UISlider* fxVolumeSlider;
+@property (assign) IBOutlet UISlider* musicVolumeSlider;
+
 - (IBAction)popOptionsController;
+- (IBAction)fxVolumeChanged:(id)sender;
+- (IBAction)musicVolumeChanged:(id)sender;
 - (IBAction)switchGrid:(id)sender;
 
 @end

@@ -54,10 +54,12 @@
 
 - (void)applicationEnded { // Custom method called whenever the application ends
     if (applicationSaved) return;
+    
     applicationSaved = YES;
     [[GameCenterSingleton sharedGCSingleton] disconnectFromGame];
     [self saveSceneAndPlayer];
     [self stopGLAnimation];
+    [[SoundSingleton sharedSoundSingleton] shutdownSoundManager];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
@@ -120,7 +122,7 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	 [self applicationEnded];
+    [self applicationEnded];
 }
 
 - (void)dealloc

@@ -50,7 +50,7 @@
 	Circle tempBoundingCircle;
 	tempBoundingCircle.x = objectLocation.x;
 	tempBoundingCircle.y = objectLocation.y;
-	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x)/ 2; // Same as the bounding circle for now
+	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x) / 2; // Same as the bounding circle for now
 	return tempBoundingCircle;
 }
 
@@ -84,9 +84,11 @@
 		}
 	}
     // Check if upgraded and perform action if so
+    /*
     if ([[[GameController sharedGameController] currentProfile] isUpgradePurchasedWithID:objectType]) {
         [self performPassiveAbility:aDelta];
     }
+     */
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
@@ -102,7 +104,19 @@
     
     if (!isTraveling && isDrawingEffectRadius) {
         enablePrimitiveDraw();
-        glColor4f(1.0f, 1.0f, 1.0f, 0.25f);
+        if (objectAlliance == kAllianceFriendly) {
+            if (!isCurrentlyHoveredOver) {
+                glColor4f(0.5f, 1.0f, 0.5f, 0.25f);
+            } else {
+                glColor4f(0.5f, 1.0f, 0.5f, 0.6f);
+            }
+        } else if (objectAlliance == kAllianceEnemy) {
+            if (!isCurrentlyHoveredOver) {
+                glColor4f(1.0f, 0.5f, 0.5f, 0.25f);
+            } else {
+                glColor4f(1.0f, 0.5f, 0.5f, 0.6f);
+            }
+        }
         glLineWidth(1.0f);
         drawDashedCircle([self effectRadiusCircle], CIRCLE_SEGMENTS_COUNT * 2, scroll);
         disablePrimitiveDraw();
@@ -195,16 +209,6 @@
 	for (TouchableObject* enemy in setCopy) {
 		[enemy targetWasDestroyed:self];
 	}
-    /*
-    int numberOfSmallBrogguts = 3;
-    CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
-                             objectLocation.y - (objectImage.imageSize.height / 2),
-                             objectImage.imageSize.width,
-                             objectImage.imageSize.height);
-    if (![self isKindOfClass:[SpiderDroneObject class]]) {
-        [[self currentScene] addSmallBrogguts:numberOfSmallBrogguts inBounds:rect withLocationArray:nil];
-    }
-    */
 	[super objectWasDestroyed];
 }
 

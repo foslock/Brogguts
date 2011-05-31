@@ -22,6 +22,7 @@
         isAllowingOverview = YES;
         isShowingBroggutCount = YES;
         isShowingMetalCount = YES;
+        isShowingSupplyCount = YES;
         isAllowingSidebar = YES;
         isAllowingCraft = YES;
         isAllowingStructures = YES;

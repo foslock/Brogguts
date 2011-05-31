@@ -219,21 +219,24 @@ enum SectionNames {
         }
             break;
         case kSectionSavedScenes: {
-            NSString* name = [savedGamesNames objectAtIndex:indexPath.row];
-            NSLog(@"Load the saved scene with name %@", name);
+            NSString* savedTitleName = [savedGamesNames objectAtIndex:indexPath.row];
+            NSLog(@"Load the saved scene with name %@", savedTitleName);
             NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
             [savedGamesNames removeObjectAtIndex:indexPath.row];
             if (![savedGamesNames writeToFile:savedScenePath atomically:YES]) {
-                NSLog(@"Error overwriting previously saved scene: %@", name);
+                NSLog(@"Error overwriting previously saved scene: %@", savedTitleName);
             }
             int index = 0;
+            NSString* savedFileName;
             for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
-                NSString* otherName = kCampaignSceneFileNames[i];
-                if ([otherName caseInsensitiveCompare:name] == NSOrderedSame) {
+                NSString* otherName = kCampaignSceneSaveTitles[i];
+                if ([otherName caseInsensitiveCompare:savedTitleName] == NSOrderedSame) {
                     index = i;
+                    savedFileName = otherName;
+                    break;
                 }
             }
-            [sharedGameController fadeOutToSceneWithFilename:name sceneType:kSceneTypeCampaign withIndex:index isNew:NO isLoading:YES];
+            [sharedGameController fadeOutToSceneWithFilename:savedFileName sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:YES];
         }
             break;
         case kSectionExitButton: {

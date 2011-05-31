@@ -492,9 +492,6 @@
 	int i = 0;
 	// This inserts the vertical lines into first half of the vertex array
 	for (i = 0; i < numberOfColumns + 1; i++) { // Columns index
-		if (i == 0) {
-			continue;
-		}
 		int currentIndex = i * 4;
 		gridVertexArray[currentIndex] = i * cellWidth * scale.x;					// X1
 		gridVertexArray[currentIndex+1] = fullMapBounds.origin.y * scale.y;			// Y1
@@ -504,9 +501,6 @@
 	
 	// This inserts the horizontal lines into second half of the vertex array
 	for (int j = 0; j < numberOfRows + 1; j++) { // Rows index
-		if (j == 0) {
-			continue;
-		}
 		int currentIndex = (i * 4) + (j * 4);
 		gridVertexArray[currentIndex] = fullMapBounds.origin.x * scale.x;		// X1
 		gridVertexArray[currentIndex+1] = j * cellHeight * scale.y;				// Y1
@@ -523,10 +517,14 @@
 		currentGridScale = scale;
 	}
 	glPushMatrix();
-	
-	float xOffset = center.x - ((fullMapBounds.size.width / 2) * scale.x) + scroll.x;
-	float yOffset = center.y - ((fullMapBounds.size.height / 2) * scale.y) + scroll.y;
-	glTranslatef(- xOffset + 1, - yOffset + 1, 0.0f);
+    // Move the grid's origin to the center
+	glTranslatef(center.x, center.y, 0.0f);
+    // Move the grid into place to center it at the point
+	glTranslatef(-((fullMapBounds.size.width / 2) * scale.x),
+                 -((fullMapBounds.size.height / 2) * scale.y), 0.0f);
+    // Move the grid for scrolling
+    glTranslatef(-scroll.x, -scroll.y, 0.0f);
+    
 	glColor4f(1.0f, 1.0f, 1.0f, alpha);
 	glVertexPointer(2, GL_FLOAT, 0, gridVertexArray);
 	glDrawArrays(GL_LINES, 0, 2 * (numberOfColumns + numberOfRows + 2));

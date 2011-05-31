@@ -31,6 +31,11 @@ enum kSceneStorageGlobals {
     kSceneStorageGlobalObjectArray,
 };
 
+enum kSceneAIControllerIndexs {
+    kSceneAIControllerBrogguts,
+    kSceneAIControllerMetal,    
+};
+
 enum kSceneStorageIndexs {
 	kSceneStorageIndexTypeID, // - object type ID
 	kSceneStorageIndexID, // - object ID
@@ -129,6 +134,7 @@ enum SceneTypes {
 - (void)placeInitialFilesInDocumentsFolder;
 - (void)createBlankSceneWithWidthCells:(int)width withHeightCells:(int)height withName:(NSString*)name;
 - (void)createInitialBaseCampLevel;
+- (NSArray*)convertSavedPath:(NSArray*)savedPath;
 - (BOOL)saveCurrentSceneWithFilename:(NSString*)filename allowOverwrite:(BOOL)overwrite; // Returns success
 - (void)addFilenameToSkirmishFileList:(NSString*)filename;
 - (void)addFilenameToSavedCampaignFileList:(NSString*)filename;
@@ -144,6 +150,9 @@ enum SceneTypes {
 
 // Renders the current scene
 - (void)renderCurrentScene;
+
+// Called on a timer when the current player wants to start a multiplayer match
+- (void)checkForRemotePlayer:(NSTimer*)timer;
 
 // Returns an adjusted touch point based on the orientation of the device and the scrolled visible viewport
 - (CGPoint)adjustTouchOrientationForTouch:(CGPoint)aTouch inScreenBounds:(CGRect)bounds;

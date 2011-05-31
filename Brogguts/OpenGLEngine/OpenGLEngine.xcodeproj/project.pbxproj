@@ -38,7 +38,7 @@
 		6F006A83137A459A000C13C6 /* structurecraftupgradesdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A77137A459A000C13C6 /* structurecraftupgradesdirty.png */; };
 		6F006A84137A459A000C13C6 /* structurestructureupgradesdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A78137A459A000C13C6 /* structurestructureupgradesdirty.png */; };
 		6F006A85137A459A000C13C6 /* structureradardirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A79137A459A000C13C6 /* structureradardirty.png */; };
-		6F006A86137A459A000C13C6 /* structurespacestationdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A7A137A459A000C13C6 /* structurespacestationdirty.png */; };
+		6F006A86137A459A000C13C6 /* structurebasestationdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A7A137A459A000C13C6 /* structurebasestationdirty.png */; };
 		6F006A87137A459A000C13C6 /* craftbeetledirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A7B137A459A000C13C6 /* craftbeetledirty.png */; };
 		6F006A89137A46CC000C13C6 /* structureblockdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A88137A46CC000C13C6 /* structureblockdirty.png */; };
 		6F006A92137A48AC000C13C6 /* structureblock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8A137A48AC000C13C6 /* structureblock.png */; };
@@ -116,6 +116,13 @@
 		6F3AF23213303837008CFB79 /* Tutorial 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F3AF23113303837008CFB79 /* Tutorial 1.plist */; };
 		6F3AF23513303935008CFB79 /* TutorialScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F3AF23413303935008CFB79 /* TutorialScene.m */; };
 		6F3AF23813306F5F008CFB79 /* TutorialSceneOne.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F3AF23713306F5F008CFB79 /* TutorialSceneOne.m */; };
+		6F4EA033139169620068DBCB /* menubuttonpressed.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA032139169620068DBCB /* menubuttonpressed.wav */; };
+		6F4EA03513917D810068DBCB /* shipconfirm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA03413917D810068DBCB /* shipconfirm.wav */; };
+		6F4EA03713917F090068DBCB /* missionsuccessful.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA03613917F090068DBCB /* missionsuccessful.wav */; };
+		6F4EA039139180BF0068DBCB /* shipdeny.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA038139180BF0068DBCB /* shipdeny.wav */; };
+		6F4EA03D139291A40068DBCB /* broggutsicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA03A139291A40068DBCB /* broggutsicon.png */; };
+		6F4EA03E139291A40068DBCB /* metalicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA03B139291A40068DBCB /* metalicon.png */; };
+		6F4EA03F139291A40068DBCB /* supplyicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EA03C139291A40068DBCB /* supplyicon.png */; };
 		6F4EE674136E0140003B0038 /* explosionlarge[0].png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE66C136E0140003B0038 /* explosionlarge[0].png */; };
 		6F4EE675136E0140003B0038 /* explosionlarge[1].png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE66D136E0140003B0038 /* explosionlarge[1].png */; };
 		6F4EE676136E0140003B0038 /* explosionlarge[2].png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE66E136E0140003B0038 /* explosionlarge[2].png */; };
@@ -266,6 +273,8 @@
 		6FD777C21345573A00F734D5 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777C01345573A00F734D5 /* splash.png */; };
 		6FD777C31345573A00F734D5 /* splashmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777C11345573A00F734D5 /* splashmask.png */; };
 		6FE19D7B138DA257008B2AFD /* Campaign 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7A138DA257008B2AFD /* Campaign 3.plist */; };
+		6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */; };
+		6FE19D80138DF5D4008B2AFD /* SkirmishMatchController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */; };
 		6FE699CC1376EDA800319F7B /* TutorialSceneThirteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */; };
 		6FE699CE1376EDF400319F7B /* Tutorial 13.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE699CD1376EDF400319F7B /* Tutorial 13.plist */; };
 		6FE6A5CF137B702500A0E4D8 /* broggupediabutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5CD137B702500A0E4D8 /* broggupediabutton.png */; };
@@ -334,7 +343,7 @@
 		6F006A77137A459A000C13C6 /* structurecraftupgradesdirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurecraftupgradesdirty.png; sourceTree = "<group>"; };
 		6F006A78137A459A000C13C6 /* structurestructureupgradesdirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurestructureupgradesdirty.png; sourceTree = "<group>"; };
 		6F006A79137A459A000C13C6 /* structureradardirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureradardirty.png; sourceTree = "<group>"; };
-		6F006A7A137A459A000C13C6 /* structurespacestationdirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurespacestationdirty.png; sourceTree = "<group>"; };
+		6F006A7A137A459A000C13C6 /* structurebasestationdirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurebasestationdirty.png; sourceTree = "<group>"; };
 		6F006A7B137A459A000C13C6 /* craftbeetledirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbeetledirty.png; sourceTree = "<group>"; };
 		6F006A88137A46CC000C13C6 /* structureblockdirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureblockdirty.png; sourceTree = "<group>"; };
 		6F006A8A137A48AC000C13C6 /* structureblock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureblock.png; sourceTree = "<group>"; };
@@ -452,6 +461,13 @@
 		6F3AF23413303935008CFB79 /* TutorialScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialScene.m; sourceTree = "<group>"; };
 		6F3AF23613306F5F008CFB79 /* TutorialSceneOne.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneOne.h; sourceTree = "<group>"; };
 		6F3AF23713306F5F008CFB79 /* TutorialSceneOne.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneOne.m; sourceTree = "<group>"; };
+		6F4EA032139169620068DBCB /* menubuttonpressed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = menubuttonpressed.wav; sourceTree = "<group>"; };
+		6F4EA03413917D810068DBCB /* shipconfirm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shipconfirm.wav; sourceTree = "<group>"; };
+		6F4EA03613917F090068DBCB /* missionsuccessful.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = missionsuccessful.wav; sourceTree = "<group>"; };
+		6F4EA038139180BF0068DBCB /* shipdeny.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shipdeny.wav; sourceTree = "<group>"; };
+		6F4EA03A139291A40068DBCB /* broggutsicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = broggutsicon.png; sourceTree = "<group>"; };
+		6F4EA03B139291A40068DBCB /* metalicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metalicon.png; sourceTree = "<group>"; };
+		6F4EA03C139291A40068DBCB /* supplyicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = supplyicon.png; sourceTree = "<group>"; };
 		6F4EE66C136E0140003B0038 /* explosionlarge[0].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explosionlarge[0].png"; sourceTree = "<group>"; };
 		6F4EE66D136E0140003B0038 /* explosionlarge[1].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explosionlarge[1].png"; sourceTree = "<group>"; };
 		6F4EE66E136E0140003B0038 /* explosionlarge[2].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explosionlarge[2].png"; sourceTree = "<group>"; };
@@ -661,6 +677,9 @@
 		6FD777C01345573A00F734D5 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		6FD777C11345573A00F734D5 /* splashmask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splashmask.png; sourceTree = "<group>"; };
 		6FE19D7A138DA257008B2AFD /* Campaign 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 3.plist"; sourceTree = "<group>"; };
+		6FE19D7C138DF5D4008B2AFD /* SkirmishMatchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkirmishMatchController.h; sourceTree = "<group>"; };
+		6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkirmishMatchController.m; sourceTree = "<group>"; };
+		6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkirmishMatchController.xib; sourceTree = "<group>"; };
 		6FE699CA1376EDA500319F7B /* TutorialSceneThirteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneThirteen.h; sourceTree = "<group>"; };
 		6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneThirteen.m; sourceTree = "<group>"; };
 		6FE699CD1376EDF400319F7B /* Tutorial 13.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 13.plist"; sourceTree = "<group>"; };
@@ -869,7 +888,7 @@
 		6F006AAD137A4A5D000C13C6 /* Structures */ = {
 			isa = PBXGroup;
 			children = (
-				6F006A7A137A459A000C13C6 /* structurespacestationdirty.png */,
+				6F006A7A137A459A000C13C6 /* structurebasestationdirty.png */,
 				6F006A88137A46CC000C13C6 /* structureblockdirty.png */,
 				6F006AAE137A4AD0000C13C6 /* structurerefinerydirty.png */,
 				6F006A77137A459A000C13C6 /* structurecraftupgradesdirty.png */,
@@ -1104,6 +1123,9 @@
 				6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */,
 				6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */,
 				6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */,
+				6FE19D7C138DF5D4008B2AFD /* SkirmishMatchController.h */,
+				6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */,
+				6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */,
 			);
 			name = GameCenter;
 			sourceTree = "<group>";
@@ -1111,9 +1133,13 @@
 		6F797E2D134660B700B168D1 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				6F797E2E1346613C00B168D1 /* doorclose.wav */,
-				6F03122B134669C200292047 /* lightsound.wav */,
 				6F2CB40D131A073C001A10E3 /* testsound.wav */,
+				6F03122B134669C200292047 /* lightsound.wav */,
+				6F797E2E1346613C00B168D1 /* doorclose.wav */,
+				6F4EA032139169620068DBCB /* menubuttonpressed.wav */,
+				6F4EA03613917F090068DBCB /* missionsuccessful.wav */,
+				6F4EA03413917D810068DBCB /* shipconfirm.wav */,
+				6F4EA038139180BF0068DBCB /* shipdeny.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -1307,6 +1333,9 @@
 				6F61188213734C7B0039DB7C /* broggutmediumancient.png */,
 				6F61188313734C7B0039DB7C /* broggutmediumold.png */,
 				6F61188413734C7B0039DB7C /* broggutmediumyoung.png */,
+				6F4EA03A139291A40068DBCB /* broggutsicon.png */,
+				6F4EA03B139291A40068DBCB /* metalicon.png */,
+				6F4EA03C139291A40068DBCB /* supplyicon.png */,
 			);
 			name = Brogguts;
 			sourceTree = "<group>";
@@ -1753,7 +1782,7 @@
 				6F006A83137A459A000C13C6 /* structurecraftupgradesdirty.png in Resources */,
 				6F006A84137A459A000C13C6 /* structurestructureupgradesdirty.png in Resources */,
 				6F006A85137A459A000C13C6 /* structureradardirty.png in Resources */,
-				6F006A86137A459A000C13C6 /* structurespacestationdirty.png in Resources */,
+				6F006A86137A459A000C13C6 /* structurebasestationdirty.png in Resources */,
 				6F006A87137A459A000C13C6 /* craftbeetledirty.png in Resources */,
 				6F006A89137A46CC000C13C6 /* structureblockdirty.png in Resources */,
 				6F006A92137A48AC000C13C6 /* structureblock.png in Resources */,
@@ -1799,6 +1828,14 @@
 				6FAE1C65137DDB2300DCF28F /* Default-Landscape.png in Resources */,
 				6FAE1C66137DDB2300DCF28F /* Default-Landscape~ipad.png in Resources */,
 				6FE19D7B138DA257008B2AFD /* Campaign 3.plist in Resources */,
+				6FE19D80138DF5D4008B2AFD /* SkirmishMatchController.xib in Resources */,
+				6F4EA033139169620068DBCB /* menubuttonpressed.wav in Resources */,
+				6F4EA03513917D810068DBCB /* shipconfirm.wav in Resources */,
+				6F4EA03713917F090068DBCB /* missionsuccessful.wav in Resources */,
+				6F4EA039139180BF0068DBCB /* shipdeny.wav in Resources */,
+				6F4EA03D139291A40068DBCB /* broggutsicon.png in Resources */,
+				6F4EA03E139291A40068DBCB /* metalicon.png in Resources */,
+				6F4EA03F139291A40068DBCB /* supplyicon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1916,6 +1953,7 @@
 				6FE6A5E0137C614400A0E4D8 /* InfoMenuController.m in Sources */,
 				6FE6A5EC137C844200A0E4D8 /* MenuHelpController.m in Sources */,
 				6FE6A608137CC2E300A0E4D8 /* StartMissionObject.m in Sources */,
+				6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

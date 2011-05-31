@@ -26,7 +26,6 @@
 	self = [super initWithTypeID:kObjectStructureBaseStationID withLocation:location isTraveling:traveling];
 	if (self) {
 		isCheckedForRadialEffect = YES;
-		isTouchable = NO;
         blinkingStructureLightImage = [[Image alloc] initWithImageNamed:@"defaultTexture.png" filter:GL_LINEAR];
         [blinkingStructureLightImage setScale:Scale2fMake(0.25f, 0.25f)];
         [blinkingStructureLightImage setRenderLayer:kLayerTopLayer];
@@ -45,6 +44,14 @@
         }
 	}
 	return self;
+}
+
+- (Circle)touchableBounds {
+    Circle tempBoundingCircle;
+	tempBoundingCircle.x = objectLocation.x;
+	tempBoundingCircle.y = objectLocation.y;
+	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x) / 8; // Smaller than normal so it doesn't crowd erra'thing
+	return tempBoundingCircle;
 }
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
