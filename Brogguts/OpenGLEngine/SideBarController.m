@@ -153,8 +153,8 @@
 }
 
 - (CGPoint)backButtonPoint {
-	CGPoint point = CGPointMake(sideBarLocation.x + 16,
-                                sideBarLocation.y + sideBarHeight - 16);
+	CGPoint point = CGPointMake(sideBarLocation.x + 32,
+                                sideBarLocation.y + sideBarHeight - 32);
 	return point;
 }
 

@@ -24,6 +24,7 @@
 {
     self = [super initWithImage:nil withLocation:[currentScene middleOfVisibleScreen] withObjectType:kObjectEndMissionObjectID];
     if (self) {
+        isCheckedForCollisions = NO;
         didAppear = NO;
         broggutsLeft = 0;
         broggutsEarned = 0;
@@ -155,6 +156,9 @@
                 [(CampaignScene*)scene advanceToNextLevel];
             else
                 [(CampaignScene*)scene restartCurrentLevel];
+        }
+        if (scene.sceneType == kSceneTypeBaseCamp) {
+            [[GameController sharedGameController] createInitialBaseCampLevel];
         }
     } else if ([menuButton wasJustReleased]) {
         [[GameController sharedGameController] returnToMainMenuWithSave:NO];

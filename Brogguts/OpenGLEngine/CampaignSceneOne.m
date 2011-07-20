@@ -28,7 +28,7 @@
     if (count >= CAMPAIGN_ONE_BROGGUT_GOAL) {
         return YES;
     }
-    return YES; // NO
+    return NO; // NO
 }
 
 - (BOOL)checkFailure {

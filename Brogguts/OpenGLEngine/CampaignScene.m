@@ -53,7 +53,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 };
 
 @implementation CampaignScene
-@synthesize isStartingMission, campaignIndex;
+@synthesize isStartingMission, isMissionPaused, campaignIndex;
 
 - (void)dealloc {
     [startObject release];
@@ -73,13 +73,15 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
         sceneType = kSceneTypeCampaign;
         campaignIndex = campIndex;
         isStartingMission = YES;
+        isMissionPaused = YES;
         isObjectiveComplete = NO;
         isAdvancingOrReset = NO;
         
-        // Turn off the complicated stuff
+        // Turn on the complicated stuff
         isAllowingSidebar = YES;
         isShowingBroggutCount = YES;
         isShowingMetalCount = YES;
+        isShowingSupplyCount = YES;
         isAllowingOverview = YES;
         
         startObject = [[StartMissionObject alloc] init];
@@ -87,6 +89,12 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
         
         [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
+        
+        int currentExperience = [[sharedGameController currentProfile] playerExperience];
+        if (campaignIndex >= currentExperience) {
+            [[sharedGameController currentProfile] setPlayerExperience:campaignIndex];
+            [[sharedGameController currentProfile] updateSpaceYearUnlocks];
+        }
     }
     return self;
 }
@@ -96,7 +104,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         [startObject updateObjectLogicWithDelta:aDelta];
         return;
     }
@@ -125,7 +133,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)renderScene {
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         Vector2f scroll = [self scrollVectorFromScreenBounds];
         [startObject renderCenteredAtPoint:[self middleOfVisibleScreen] withScrollVector:scroll];
     }
@@ -145,6 +153,9 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 - (BOOL)checkDefaultFailure {
     int brogCount = [[[GameController sharedGameController] currentProfile] broggutCount];
     if (brogCount < kCraftAntCostBrogguts && numberOfCurrentShips == 0) {
+        return YES;
+    }
+    if (!isFriendlyBaseStationAlive) {
         return YES;
     }
     return NO;
@@ -167,7 +178,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         UITouch* touch = [touches anyObject];
         CGPoint originalTouchLocation = [touch locationInView:aView];
         CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
@@ -181,7 +192,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         UITouch* touch = [touches anyObject];
         CGPoint originalTouchLocation = [touch locationInView:aView];
         CGPoint previousOrigTouchLocation = [touch previousLocationInView:aView];
@@ -201,7 +212,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event view:(UIView *)aView {
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         UITouch* touch = [touches anyObject];
         CGPoint originalTouchLocation = [touch locationInView:aView];
         CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];

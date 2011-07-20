@@ -15,9 +15,10 @@
 // The percent of the brogguts earned in a skirmish are added to the total count
 #define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f
 
-#define PROFILE_BROGGUT_START_COUNT 0
+#define PROFILE_BROGGUT_START_COUNT 100
 #define PROFILE_METAL_START_COUNT 0
 #define BROGGUT_DISPLAY_CHANGE_RATE 6
+#define BROGGUTS_NEEDED_FOR_ONE_METAL 10
 
 extern int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
@@ -60,6 +61,8 @@ enum kProfileFailTypes {
 
 - (void)addBrogguts:(int)brogs;
 - (void)addMetal:(int)metal;
+- (void)setBrogguts:(int)brogs;
+- (void)setMetal:(int)metal;
 
 // Returns the correct FAIL TYPE (see above) if there isn't enough of a particular resource
 - (int)subtractBrogguts:(int)brogs metal:(int)metal;

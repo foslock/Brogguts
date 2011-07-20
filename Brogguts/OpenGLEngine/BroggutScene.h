@@ -67,7 +67,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class BlockStructureObject;
 @class NotificationObject;
 
-// This is an abstract class which contains the basis for any game scene which is going
+// Thi is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
 // the logic and rendering the screen for the current scene.  It is simply a way to 
 // encapsulate a specific scenes code in a single class.
@@ -75,6 +75,12 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 // The Director class controls which scene is the current scene and it is this scene which
 // is updated and rendered during the game loop.
 //
+
+enum kProcessFrameOffset {
+    kFrameOffsetCollisions,
+    kFrameOffsetRadialEffect,
+};
+
 @interface BroggutScene : NSObject {
 	
 	// Name of the scene, will be displayed when loaded
@@ -94,6 +100,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
     BOOL isMissionOver;
     BOOL isAllowingCraft;
     BOOL isAllowingStructures;
+    BOOL isLoadedScene;
     
     // The final box that pops up when the scene is done
     EndMissonObject* endMissionObject;
@@ -126,6 +133,8 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 	int numberOfCurrentShips;
 	int numberOfCurrentStructures;
 	int numberOfSmallBrogguts;
+    BOOL isFriendlyBaseStationAlive;
+    BOOL isEnemyBaseStationAlive;
     int numberOfRefineries;
     NSMutableArray* currentRefineries;
     
@@ -245,6 +254,9 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @property (nonatomic, assign) BOOL isShowingOverview;
 @property (nonatomic, assign) BOOL isMultiplayerMatch;
 @property (nonatomic, assign) BOOL isMissionOver;
+@property (nonatomic, assign) BOOL isLoadedScene;
+@property (nonatomic, assign) BOOL isFriendlyBaseStationAlive;
+@property (nonatomic, assign) BOOL isEnemyBaseStationAlive;
 @property (nonatomic, assign) SideBarController* sideBar;
 @property (readonly) TextObject* broggutCounter;
 @property (readonly) TextObject* metalCounter;
@@ -354,6 +366,9 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 // Attempt to select craft inside of the given rect
 - (BOOL)attemptToSelectCraftWithinRect:(CGRect)selectionRect;
 
+// Attempt to select craft with given ID inside of the visible rect
+- (void)attemptToSelectCraftInVisibleRectWithID:(int)objectID;
+
 // Try to select the ships between the two arrays of points
 - (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo;
 
@@ -389,6 +404,9 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 
 // Called when the other player disconnects (only in multiplayer)
 - (void)otherPlayerDisconnected;
+
+// Check if the Base Camp fail conditions are valid
+- (BOOL)baseCampCheckFailCondition;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

@@ -23,6 +23,8 @@
 - (id)initWithLocation:(CGPoint)location withSize:(int)size {
     self = [super initWithImage:nil withLocation:location withObjectType:kObjectExplosionObjectID];
     if (self) {
+        isCheckedForCollisions = NO;
+        isCheckedForMultipleCollisions = NO;
         float distance = 128.0f;
         switch (size) {
             case kExplosionSizeSmall: {

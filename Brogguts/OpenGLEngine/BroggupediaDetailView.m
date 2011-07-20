@@ -281,7 +281,7 @@
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureFixerCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureFixerCostMetal]];
-            NSString* description = [NSString stringWithFormat:@"\t\tThe Fixer is a useful structure that repairs the closest damaged friendly craft. Even though it repairs fairly slowly, "];
+            NSString* description = [NSString stringWithFormat:@"\t\tThe Fixer is a useful structure that repairs the closest damaged friendly craft. Even though it repairs fairly slowly, it can repair %i ships at once.", kStructureFixerFriendlyTargetLimit];
             [unitLabel setText:description];
             [image release];
             break;

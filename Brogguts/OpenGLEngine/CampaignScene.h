@@ -21,12 +21,14 @@ extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1];
     int campaignIndex; 
     NSString* nextSceneFileName;
     BOOL isStartingMission;
+    BOOL isMissionPaused;
     BOOL isObjectiveComplete;
     BOOL isAdvancingOrReset;
     StartMissionObject* startObject;
 }
 
 @property (nonatomic, assign) BOOL isStartingMission;
+@property (nonatomic, assign) BOOL isMissionPaused;
 @property (nonatomic, assign) int campaignIndex;
 
 - (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded;

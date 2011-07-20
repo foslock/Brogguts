@@ -13,7 +13,9 @@
 @interface SavedGameChoiceController : UITableViewController {
     GameController* sharedGameController;
     int numberOfSavedGames;
+    int numberOfUnlockedMissions;
     NSMutableArray* savedGamesNames;
+    NSMutableArray* unlockedMissionNames;
 }
 
 @end

@@ -23,6 +23,7 @@
     self = [super initWithImage:image withLocation:startLoc withObjectType:kObjectFingerObjectID];
     [image release];
     if (self) {
+        isCheckedForCollisions = NO;
         isRenderedInOverview = NO;
         touchImage = [[Image alloc] initWithImageNamed:@"spritetouch.png" filter:GL_LINEAR];
         touchImage.color = Color4fMake(1.0f, 1.0f, 1.0f, 0.5f);

@@ -8,12 +8,17 @@
 
 #import "CollidableObject.h"
 
-#define CIRCLE_BLINK_FREQUENCY 50	// The number of times the selection circle blinks when "selected"
-#define CIRCLE_BLINK_FRAMES 150	// The frames it takes for the circle to blink (must be larger than the above number)
+#define CIRCLE_BLINK_FADE_SPEED 0.05f // The speed at which the circle fades in and out
+#define CIRCLE_BLINK_FRAMES 100	// The total frames the circle blinks
+#define CIRCLE_SHOW_FRAMES 100	// The total frames the circle is shown
 
 #define LIGHT_BLINK_FREQUENCY 200	 // Number of steps between the light's flashes
 #define LIGHT_BLINK_BRIGHTNESS 0.8f	 // Brightness that the lights blink at
 #define LIGHT_BLINK_FADE_SPEED 0.05f // Rate at which the blinking light fades out
+
+#define SHADOW_OFFSET_HORIZONTAL 3.0f
+#define SHADOW_OFFSET_VERTICAL -3.0f
+#define SHADOW_ALPHA 0.3f
 
 @interface TouchableObject : CollidableObject {
 	BOOL isTouchable;
@@ -24,7 +29,11 @@
 	// Selection circle blinking vars
 	BOOL isBlinkingSelectionCircle;
 	int blinkingSelectionCircleTimer;
-	
+    BOOL isBlinkingCircleFadingIn;
+    float blinkingCircleAlpha;
+    BOOL isShowingSelectionCircle;
+	int showingSelectionCircleTimer;
+    
 	// True if the structure should be checked for ships/structures in it's area
 	BOOL isCheckedForRadialEffect;
     BOOL isDrawingEffectRadius;
@@ -70,6 +79,9 @@
 // Blinks the selection circle around the object
 - (void)blinkSelectionCircle;
 
+// Shows the circle, this takes precedence over blinking
+- (void)showSelectionCircle;
+
 // Called every step if the upgrade is unlocked and PURCHASED
 - (void)performPassiveAbility:(float)aDelta;
 
@@ -83,7 +95,7 @@
 // Called on an object (enemy targeting the object) when destroyed, passes itself
 - (void)targetWasDestroyed:(TouchableObject*)target;
 
-- (void)drawHoverSelectionWithScroll:(Vector2f)scroll;
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll withAlpha:(float)alpha;
 - (void)touchesHoveredOver;
 - (void)touchesHoveredLeft;
 - (void)touchesBeganAtLocation:(CGPoint)location;

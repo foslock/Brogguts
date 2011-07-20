@@ -34,6 +34,7 @@
 #import "BuildingObject.h"
 #import "EndMissionObject.h"
 #import "NotificationObject.h"
+#import "AnimatedImage.h"
 
 NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -62,7 +63,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 @synthesize isShowingBuildingValues, currentBuildBroggutCost, currentBuildDragLocation, currentBuildMetalCost;
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
-@synthesize numberOfBlocks;
+@synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -72,8 +73,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     sharedGameCenterSingleton = [GameCenterSingleton sharedGCSingleton];
     sharedStarSingleton = [StarSingleton sharedStarSingleton];
     sharedParticleSingleton = [ParticleSingleton sharedParticleSingleton];
-    // Clear the texture cache for each new scene
-    // [[TextureSingleton sharedTextureSingleton] releaseAllTextures];
+    
+    // Preload the explosions animation
+    AnimatedImage* animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectExplosionSmallSprite withSubImageCount:8];
+    AnimatedImage* animatedImageTwo = [[AnimatedImage alloc] initWithFileName:kObjectExplosionLargeSprite withSubImageCount:8];
+    [animatedImage release];
+    [animatedImageTwo release];
     
     if ([sharedGameCenterSingleton currentMatch]) {
         isMultiplayerMatch = YES;
@@ -91,6 +96,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     isAllowingStructures = YES;
     isMissionOver = NO;
     isBuildingStructure = NO;
+    isFriendlyBaseStationAlive = NO;
+    isEnemyBaseStationAlive = NO;
     endMissionObject = [[EndMissionObject alloc] init];
     fadeBackgroundAlpha = 0.0f;
     didAddBrogguts = NO;
@@ -135,6 +142,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
      if (!isMultiplayerMatch)
      enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
      */
+    
     // Set up the sidebar
     sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
     
@@ -157,23 +165,27 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     [gothic release];
     [blair release];
     
-    NSString* brogCount = [NSString stringWithFormat:@"%i",[sharedGameController currentProfile].broggutCount];
+    NSString* brogCount = [NSString stringWithFormat:@"0"];
     broggutCounter = [[TextObject alloc]
                       initWithFontID:kFontBlairID Text:brogCount withLocation:CGPointMake(kPadScreenLandscapeWidth - (64 * 5), visibleScreenBounds.size.height - 32) withDuration:-1.0f];
     [broggutCounter setScrollWithBounds:NO];
     [textObjectArray addObject:broggutCounter];
     
-    NSString* metalCount = [NSString stringWithFormat:@"%i",[sharedGameController currentProfile].metalCount];
+    NSString* metalCount = [NSString stringWithFormat:@"0"];
     metalCounter = [[TextObject alloc]
                     initWithFontID:kFontBlairID Text:metalCount withLocation:CGPointMake(kPadScreenLandscapeWidth - (64 * 3), visibleScreenBounds.size.height - 32) withDuration:-1.0f];
     [metalCounter setScrollWithBounds:NO];
     [textObjectArray addObject:metalCounter];
     
-    NSString* supplyCount = [NSString stringWithFormat:@"%i/%i", numberOfCurrentShips, [self currentMaxShipSupply]];
+    NSString* supplyCount = [NSString stringWithFormat:@"0/%i",kStructureBaseStationSupplyBonus];
     supplyCounter = [[TextObject alloc]
-                    initWithFontID:kFontBlairID Text:supplyCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 64, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
+                     initWithFontID:kFontBlairID Text:supplyCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 72, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
     [supplyCounter setScrollWithBounds:NO];
     [textObjectArray addObject:supplyCounter];
+    
+    [broggutCounter setFontColor:Color4fMake(1.0f, 1.0f, 0.75f, 1.0f)];
+    [metalCounter setFontColor:Color4fMake(0.75f, 0.75f, 1.0f, 1.0f)];
+    [supplyCounter setFontColor:Color4fMake(0.75f, 1.0f, 0.75f, 1.0f)];
     
     broggutIconImage = [[Image alloc] initWithImageNamed:@"broggutsicon.png" filter:GL_LINEAR];
     metalIconImage = [[Image alloc] initWithImageNamed:@"metalicon.png" filter:GL_LINEAR];
@@ -221,6 +233,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         sharedGameController = [GameController sharedGameController];
         [sharedGameController setJustMadeScene:self];
         
+        isLoadedScene = loaded;
         self.sceneFileName = [NSString stringWithString:filename];
         NSString* fileNameExt = [filename stringByAppendingString:@".plist"];
         NSString* filePath = [sharedGameController documentsPathWithFilename:fileNameExt];
@@ -249,8 +262,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             metalNumber = [AIArray objectAtIndex:kSceneAIControllerMetal];
         }
         
-        int currentBrogguts = 0;
-        int currentMetal = 0;
+        int currentBrogguts = PROFILE_BROGGUT_START_COUNT;
+        int currentMetal = PROFILE_METAL_START_COUNT;
         
         if (broggutNumber) {
             currentBrogguts = [broggutNumber intValue];
@@ -262,8 +275,18 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         CGRect fullMapRect = CGRectMake(0, 0, COLLISION_CELL_WIDTH * cellsWide, COLLISION_CELL_HEIGHT * cellsHigh);
         CGRect visibleRect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
         
-        // Initialize the entire scene, get it ready for adding objects
+        // Set the sceneType
         sceneType = thisSceneType;
+        
+        // Set the broggut and metal count back
+        [[sharedGameController currentProfile] startSceneWithType:sceneType];
+        
+        if (sceneType == kSceneTypeCampaign) {
+            [[sharedGameController currentProfile] setBrogguts:currentBrogguts];
+            [[sharedGameController currentProfile] setMetal:currentMetal];
+        }
+        
+        // Initialize the entire scene, get it ready for adding objects
         [self initializeWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:thisSceneName];
         
         // Array used to store locations where small brogguts should be created
@@ -361,6 +384,11 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                             [newStructure setObjectAlliance:objectAlliance];
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
+                            if (objectAlliance == kAllianceFriendly) {
+                                [self setIsFriendlyBaseStationAlive:YES];
+                            } else if (objectAlliance == kAllianceEnemy) {
+                                [self setIsEnemyBaseStationAlive:YES];
+                            }
                             [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             if (newStructure.objectAlliance == kAllianceFriendly) {
                                 self.homeBaseLocation = objectEndLocation;
@@ -474,7 +502,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                                 [self addControlledCraft:newCraft];
                             }
                             if (objectIsMining) {
-                                [newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
+                                [newCraft tryMiningBroggutsWithCenter:objectMiningLocation wasCommanded:NO];
                             }
                             [newCraft release];
                             break;
@@ -553,7 +581,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                                 [self addControlledCraft:newCraft];
                             }
                             if (objectIsMining) {
-                                [newCraft tryMiningBroggutsWithCenter:objectMiningLocation];
+                                [newCraft tryMiningBroggutsWithCenter:objectMiningLocation wasCommanded:NO];
                             }
                             [newCraft release];
                             break;
@@ -631,10 +659,6 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         } // Loop ending
         
         [self addSmallBrogguts:newNumberOfSmallBrogguts inBounds:fullMapRect withLocationArray:locationArray]; // Add the small brogguts
-        if (sceneType == kSceneTypeCampaign) {
-            [[sharedGameController currentProfile] addBrogguts:currentBrogguts];
-            [[sharedGameController currentProfile] addMetal:currentMetal];
-        }
         [locationArray release];
         [array release];
     }
@@ -709,10 +733,10 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
     }
+    
     // Just to be sure
     [sharedStarSingleton randomizeStars];
     [[GameController sharedGameController] setCurrentScene:self];
-    [[sharedGameController currentProfile] startSceneWithType:sceneType];
 }
 
 - (void)sceneDidDisappear {
@@ -803,9 +827,21 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     if (numberOfRefineries == 0) {
         return;
     }
-    if ([[sharedGameController currentProfile] subtractBrogguts:(metal * 10) metal:0] == kProfileNoFail) {
+    if ([[sharedGameController currentProfile] subtractBrogguts:(metal * BROGGUTS_NEEDED_FOR_ONE_METAL) metal:0] == kProfileNoFail) {
         int divided = metal / numberOfRefineries;
         int remainder = metal % numberOfRefineries;
+        
+        NSString* string = [NSString stringWithFormat:@"%i Bgs", -(metal * BROGGUTS_NEEDED_FOR_ONE_METAL)];
+        TextObject* obj = [[TextObject alloc] initWithFontID:kFontBlairID
+                                                        Text:string
+                                                withLocation:CGPointMake(broggutCounter.objectLocation.x, broggutCounter.objectLocation.y - 20)
+                                                withDuration:1.8f];
+        [obj setScrollWithBounds:NO];
+        [obj setObjectVelocity:Vector2fMake(0.0f, -0.25f)];
+        [obj setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, 1.0f)];
+        [obj setRenderLayer:kLayerTopLayer];
+        [textObjectArray addObject:obj];
+        [obj release];
         
         for (int i = 0; i < numberOfRefineries; i++) {
             RefineryStructureObject* refinery = [currentRefineries objectAtIndex:i];
@@ -895,12 +931,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         return Vector2fMake(visibleScreenBounds.origin.x + randX, visibleScreenBounds.origin.y + randY);   
     }
 }
-     
+
 - (CGPoint)middleOfVisibleScreen {
     return CGPointMake(visibleScreenBounds.origin.x + (visibleScreenBounds.size.width / 2),
                        visibleScreenBounds.origin.y + (visibleScreenBounds.size.height / 2));
 }
-     
+
 - (void)setMiddleOfVisibleScreenToCamera {
     float originX = cameraLocation.x - (visibleScreenBounds.size.width / 2);
     float originY = cameraLocation.y - (visibleScreenBounds.size.height / 2);
@@ -909,7 +945,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                                      visibleScreenBounds.size.width,
                                      visibleScreenBounds.size.height);
 }
-     
+
 - (CGPoint)middleOfEntireMap {
     return CGPointMake(fullMapBounds.origin.x + (fullMapBounds.size.width / 2),
                        fullMapBounds.origin.y + (fullMapBounds.size.height / 2));
@@ -961,9 +997,11 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [endMissionObject endMissionDidAppear];
         isShowingBroggutCount = NO;
         isShowingMetalCount = NO;
-        if (!didAddBrogguts) {
-            didAddBrogguts = YES;
-            [[sharedGameController currentProfile] endSceneWithType:sceneType wasSuccessful:isMissionOver];
+        if (sceneType == kSceneTypeCampaign || sceneType == kSceneTypeSkirmish) {
+            if (!didAddBrogguts) {
+                didAddBrogguts = YES;
+                [[sharedGameController currentProfile] endSceneWithType:sceneType wasSuccessful:isMissionOver];
+            }
         }
         [endMissionObject updateObjectLogicWithDelta:aDelta];
         if (fadeBackgroundAlpha < END_MISSION_BACKGROUND_ALPHA) {
@@ -972,11 +1010,36 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         return;
     }
     
+    if (sceneType == kSceneTypeBaseCamp) {
+        if ([self baseCampCheckFailCondition]) {
+            [self setIsMissionOver:YES];
+            [endMissionObject setWasSuccessfulMission:NO];
+            [endMissionObject setCurrentScene:self];
+        }
+    }
+    
     // Update the stars' positions and brightness if applicable
     [sharedStarSingleton updateStars];
     
     // Update the particle manager's particles
     [sharedParticleSingleton updateParticlesWithDelta:aDelta];
+    
+    // Update alpha of the overview map
+    if (isFadingOverviewIn) {
+        overviewAlpha += OVERVIEW_FADE_IN_RATE;
+        if (overviewAlpha >= 1.0f) {
+            isFadingOverviewIn = NO;
+        }
+    } else if (isFadingOverviewOut) {
+        overviewAlpha -= OVERVIEW_FADE_IN_RATE;
+        if (overviewAlpha <= 0.0f) {
+            isShowingOverview = NO; // Ending fade out
+            isFadingOverviewOut = NO;
+        }
+    } else if (!isShowingOverview) {
+        overviewAlpha = 0.0f;
+    }
+    overviewAlpha = CLAMP(overviewAlpha, 0.0f, 1.0f);
     
     // Update the camera's location
     if (controlledShips && [controlledShips count] != 0) { // If there is a controlling ship
@@ -1051,23 +1114,6 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     // Update side bar
     [sideBar updateSideBar];
     
-    // Update alpha of the overview map
-    if (isFadingOverviewIn) {
-        overviewAlpha += OVERVIEW_FADE_IN_RATE;
-        if (overviewAlpha >= 1.0f) {
-            isFadingOverviewIn = NO;
-        }
-    } else if (isFadingOverviewOut) {
-        overviewAlpha -= OVERVIEW_FADE_IN_RATE;
-        if (overviewAlpha <= 0.0f) {
-            isShowingOverview = NO; // Ending fade out
-            isFadingOverviewOut = NO;
-        }
-    } else if (!isShowingOverview) {
-        overviewAlpha = 0.0f;
-    }
-    overviewAlpha = CLAMP(overviewAlpha, 0.0f, 1.0f);
-    
     // Loop through all text objects and update them
     for (int i = 0; i < [textObjectArray count]; i++) {
         TextObject* tempObj = [textObjectArray objectAtIndex:i];
@@ -1100,14 +1146,14 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     }
     
     // Check for collisions
-    if (frameCounter % (COLLISION_DETECTION_FREQ + 1) == 0) {
+    if (frameCounter % (COLLISION_DETECTION_FREQ + 1) == kFrameOffsetCollisions) {
         [collisionManager processAllCollisionsWithScreenBounds:visibleScreenBounds];
     } else {
         [collisionManager updateAllObjectsInTableInScreenBounds:visibleScreenBounds];
     }
     
     // Check for radial effects
-    if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == 0) {
+    if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == kFrameOffsetRadialEffect) {
         [collisionManager processAllEffectRadii];
     }
     
@@ -1383,6 +1429,19 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     }
     [renderableObjects addObject:obj];				// Adds to the rendering queue
     [touchableObjects addObject:obj];				// Adds to the touchable queue
+    
+    // Sort the touchable objects so the structures are on the bottom and see touches last
+    [touchableObjects sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        if ([obj1 isKindOfClass:[TouchableObject class]] && [obj2 isKindOfClass:[TouchableObject class]]) {
+            if ([obj1 isKindOfClass:[StructureObject class]]) {
+                return (NSComparisonResult)NSOrderedDescending;
+            } else if ([obj1 isKindOfClass:[CraftObject class]]) {
+                return (NSComparisonResult)NSOrderedAscending;
+            }
+        }
+        return (NSComparisonResult)NSOrderedSame;
+    }];
+    
     [enemyAIController updateArraysWithTouchableObjects:touchableObjects];  // Updates AI controller with new objects
 }
 
@@ -1401,7 +1460,9 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 
 - (void)addCollidableObject:(CollidableObject*)obj {
     [obj setCurrentScene:self];
-    [collisionManager addCollidableObject:obj];
+    if (obj.isCheckedForCollisions) {
+        [collisionManager addCollidableObject:obj];
+    }
     [renderableObjects addObject:obj];
 }
 
@@ -1668,6 +1729,45 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     return anySelected;
 }
 
+- (void)attemptToSelectCraftInVisibleRectWithID:(int)objectID {
+    NSMutableArray* tempShips = [[NSMutableArray alloc] init];
+    // Go through all friendly craft and check if we can select them
+    for (int i = 0; i < [touchableObjects count]; i++) {
+        TouchableObject* object = [touchableObjects objectAtIndex:i];
+        if (object.objectType == objectID) {
+            if (object.isTouchable) {
+                if (CGRectContainsPoint([self visibleScreenBounds], object.objectLocation)) {
+                    if (object.objectAlliance == kAllianceFriendly) {
+                        if (CGRectContainsPoint([self visibleScreenBounds], object.objectLocation)) {
+                            CraftObject* craft = (CraftObject*)object;
+                            [tempShips addObject:craft]; // Select ship
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if ([tempShips count] > 0) {
+        // Deselect all current ships
+        for (CraftObject* craft in controlledShips) {
+            [craft setIsBeingControlled:NO];
+        }
+        [controlledShips removeAllObjects];
+        for (CraftObject* craft in tempShips) {
+            [controlledShips addObject:craft];
+            [craft blinkSelectionCircle];
+            [craft setIsBeingControlled:YES];
+        }
+    }
+    
+    if ([controlledShips count] > 1) {
+        [self spreadOutCurrentlySelectedShips];
+    }
+    
+    [tempShips release];
+}
+
 - (void)attemptToSelectCraftWithinPoints:(NSArray*)pointsOne andPoints:(NSArray*)pointsTwo {
     NSArray* pointsAll = [pointsOne arrayByAddingObjectsFromArray:pointsTwo];
     int pointCount = [pointsAll count];
@@ -1737,6 +1837,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         averageX += pointsX[i] / (float)shipCount;
         averageY += pointsY[i] / (float)shipCount;
         if ([craft isFollowingPath]) {
+            free(pointsX);
+            free(pointsY);
             return;
         }
     }
@@ -2237,6 +2339,16 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [[GameController sharedGameController] returnToMainMenuWithSave:NO];
 }
 
+- (BOOL)baseCampCheckFailCondition {
+    if (!isFriendlyBaseStationAlive) {
+        return YES;
+    }
+    if (numberOfEnemyShips <= 0 && numberOfEnemyStructures <= 0) {
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark -
 #pragma mark Touch Events
 
@@ -2271,19 +2383,23 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         }
         
         // Check if there are more than 1 touches (start selection area)
-        if ([touches count] == 2) {
-            if ([touch hash] == [[touchesArray objectAtIndex:0] hash]) {
-                selectionTouchHashOne = [[touchesArray objectAtIndex:0] hash];
-                NSValue* value = [NSValue valueWithCGPoint:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
-                [selectionPointsOne addObject:value];
+        if (!isShowingOverview) {
+            if ([touches count] == 2) {
+                if ([touch hash] == [[touchesArray objectAtIndex:0] hash]) {
+                    selectionTouchHashOne = [[touchesArray objectAtIndex:0] hash];
+                    NSValue* value = [NSValue valueWithCGPoint:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
+                    [selectionPointsOne addObject:value];
+                }
+                if ([touch hash] == [[touchesArray objectAtIndex:1] hash]) {
+                    selectionTouchHashTwo = [[touchesArray objectAtIndex:1] hash];
+                    NSValue* value = [NSValue valueWithCGPoint:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
+                    [selectionPointsTwo insertObject:value atIndex:0];
+                }
+                isSelectingShips = YES;
+                isTouchScrolling = NO;
+                movingTouchHash = -1;
+                continue;
             }
-            if ([touch hash] == [[touchesArray objectAtIndex:1] hash]) {
-                selectionTouchHashTwo = [[touchesArray objectAtIndex:1] hash];
-                NSValue* value = [NSValue valueWithCGPoint:[sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero]];
-                [selectionPointsTwo insertObject:value atIndex:0];
-            }
-            isSelectingShips = YES;
-            continue;
         }
         
         // Check if the touch is in the button to bring out the sidebar
@@ -2299,20 +2415,27 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         }
         
         if (isAllowingOverview) {
-            if (isShowingOverview) {
-                if (!isTouchMovingOverview) {
-                    float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
-                    float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
-                    CGRect viewportRect = CGRectMake(visibleScreenBounds.origin.x * xRatio,
-                                                     visibleScreenBounds.origin.y * yRatio,
-                                                     visibleScreenBounds.size.width * xRatio,
-                                                     visibleScreenBounds.size.height * yRatio);
-                    CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
-                    if (CGRectContainsPoint(viewportRect, localTouchLoc)) {
-                        isTouchMovingOverview = YES;
-                        movingOverviewTouchHash = [touch hash];
-                        currentOverViewPoint = localTouchLoc;
-                        break;
+            if ([touches count] < 3) {
+                if (isShowingOverview && !isFadingOverviewIn && !isFadingOverviewOut) {
+                    if (!isTouchMovingOverview) {
+                        float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
+                        float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
+                        CGRect viewportRect = CGRectMake(visibleScreenBounds.origin.x * xRatio,
+                                                         visibleScreenBounds.origin.y * yRatio,
+                                                         visibleScreenBounds.size.width * xRatio,
+                                                         visibleScreenBounds.size.height * yRatio);
+                        CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+                        if (CGRectContainsPoint(viewportRect, localTouchLoc)) {
+                            isTouchMovingOverview = YES;
+                            movingOverviewTouchHash = [touch hash];
+                            float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
+                            float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
+                            CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+                            currentOverViewPoint = localTouchLoc;
+                            [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
+                            [self setMiddleOfVisibleScreenToCamera];
+                            break;
+                        }
                     }
                 }
             }
@@ -2392,6 +2515,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             float dy = touchLocation.y - prevTouchLocation.y;
             if (fabsf(dy) > OVERVIEW_MIN_FINGER_DISTANCE
                 && !isFadingOverviewIn && !isFadingOverviewOut) {
+                isTouchScrolling = NO;
+                movingTouchHash = -1;
                 [selectionPointsOne removeAllObjects];
                 [selectionPointsTwo removeAllObjects];
                 selectionTouchHashOne = -1;
@@ -2400,14 +2525,20 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 if (!isShowingOverview) {
                     [self fadeOverviewMapIn];
                     [sideBar moveSideBarOut];
-                } else
+                } else {
+                    if (isTouchMovingOverview) {
+                        overviewAlpha /= OVERVIEW_TRANSPARENT_ALPHA_DIVISOR;
+                    }
+                    isTouchMovingOverview = NO;
+                    movingOverviewTouchHash = -1;
                     [self fadeOverviewMapOut];
+                }
                 break;
             }
         }
         
         if (isAllowingOverview) {
-            if (isShowingOverview) {
+            if (isShowingOverview && !isFadingOverviewIn && !isFadingOverviewOut) {
                 if (isTouchMovingOverview && movingOverviewTouchHash == [touch hash]) {
                     float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
                     float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
@@ -2522,26 +2653,20 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         }
         
         if (isAllowingOverview) {
-            if (isShowingOverview) {
+            if (isShowingOverview && !isFadingOverviewIn && !isFadingOverviewOut) {
                 if (isTouchMovingOverview && movingOverviewTouchHash == [touch hash]) {
                     isTouchMovingOverview = NO;
                     float xRatio = visibleScreenBounds.size.width / fullMapBounds.size.width;
                     float yRatio = visibleScreenBounds.size.height / fullMapBounds.size.height;
                     CGPoint localTouchLoc = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
                     currentOverViewPoint = localTouchLoc;
-                    /*
-                     if ([self attemptToSelectCraftWithinRect:[self visibleScreenBounds]]) {
-                     [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
-                     [self setMiddleOfVisibleScreenToCamera];
-                     [self fadeOverviewMapOut];
-                     }
-                     */
                     for (CraftObject* craft in controlledShips) {
                         [craft setIsBeingControlled:NO];
                     }
                     [controlledShips removeAllObjects];
                     [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
                     [self setMiddleOfVisibleScreenToCamera];
+                    overviewAlpha /= OVERVIEW_TRANSPARENT_ALPHA_DIVISOR;
                     [self fadeOverviewMapOut];
                     break;
                 }

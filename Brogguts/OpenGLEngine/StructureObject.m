@@ -17,7 +17,7 @@
 #import "NotificationObject.h"
 
 @implementation StructureObject
-@synthesize attributeHullCurrent;
+@synthesize attributeHullCurrent, attributeHullCapacity;
 
 - (void)initStructureWithID:(int)typeID {
 	switch (typeID) {
@@ -166,11 +166,13 @@
     if (objectAlliance == kAllianceFriendly) {
         Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
-        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / STRUCTURE_HEALTH_PER_NOTCH,
+                                attributeHullCapacity / STRUCTURE_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     } else {
         Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
-        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / STRUCTURE_HEALTH_PER_NOTCH,
+                                attributeHullCapacity / STRUCTURE_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     }
     glLineWidth(1.0f);
 }
@@ -184,6 +186,8 @@
         [noti release];
     }
 	attributeHullCurrent -= damage;
+    [self showSelectionCircle];
+    
 	if (attributeHullCurrent <= 0) {
 		destroyNow = YES;
 		return YES;
@@ -196,6 +200,12 @@
 		destroyNow = YES;
 		return;
 	}
+    
+    if (objectAlliance == kAllianceFriendly) {
+        [objectImage setColor:Color4fMake(1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f)];
+    } else if (objectAlliance == kAllianceEnemy) {
+        [objectImage setColor:Color4fMake(1.0f, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f)];
+    }
     
     if (attributeHullCurrent <= (attributeHullCapacity / 2)) {
         if (!isDirtyImage) {
@@ -222,7 +232,9 @@
 		NSValue* pointValue = [pathPointArray objectAtIndex:pathPointNumber];
 		CGPoint moveTowardsPoint = [pointValue CGPointValue];
 		// If the structure has reached the point...
-		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, 0.1f)) {
+		if (AreCGPointsEqual(objectLocation, moveTowardsPoint, 1.0f)) {
+            objectVelocity = Vector2fZero;
+            objectLocation = moveTowardsPoint;
 			pathPointNumber++;
 		}
 		if (pathPointNumber < [pathPointArray count]) {
@@ -260,11 +272,8 @@
             lightBlinkAlpha = 0.0f;
         }
     }
-    
-	CGPoint oldPoint = CGPointMake(objectLocation.x, objectLocation.y);
+    movingDirection = GetAngleInDegreesFromPoints(CGPointZero, CGPointMake(objectVelocity.x, objectVelocity.y));
 	[super updateObjectLogicWithDelta:aDelta];
-    CGPoint newPoint = CGPointMake(objectLocation.x, objectLocation.y);
-    movingDirection = GetAngleInDegreesFromPoints(oldPoint, newPoint);
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
@@ -299,6 +308,19 @@
         [self drawHoverSelectionWithScroll:scroll];
         disablePrimitiveDraw();
     }
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
+#ifdef STRUCTURE_SHADOWS
+    int tempLayer = [objectImage renderLayer];
+    [objectImage setRenderLayer:CLAMP(tempLayer - 1, 0, RENDERING_LAYER_COUNT - 1)];
+    Color4f color = [objectImage color];
+    [objectImage setColor:Color4fMake(0.0f, 0.0f, 0.0f, SHADOW_ALPHA)];
+    [objectImage renderCenteredAtPoint:CGPointMake(aPoint.x + SHADOW_OFFSET_HORIZONTAL, aPoint.y + SHADOW_OFFSET_VERTICAL) withScrollVector:vector];
+    [objectImage setRenderLayer:tempLayer];
+    [objectImage setColor:color];
+#endif
 }
 
 - (void)renderUnderObjectWithScroll:(Vector2f)scroll {
@@ -357,6 +379,13 @@
 		else
 			objectVelocity.y = location.y - objectLocation.y;
 	}
+    
+    if (location.x == objectLocation.x) {
+        objectVelocity.x = 0.0f;
+    }
+    if (location.y == objectLocation.y) {
+        objectVelocity.y = 0.0f;
+    }
 }
 
 - (NSArray*)getSavablePath {

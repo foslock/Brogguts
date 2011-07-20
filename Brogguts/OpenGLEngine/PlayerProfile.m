@@ -177,6 +177,30 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
+- (void)setBrogguts:(int)brogs {
+    if (!isInSkirmish) {
+        broggutCount = brogs;
+        broggutCount = CLAMP(broggutCount, 0, PROFILE_BROGGUT_MAX_COUNT);
+        broggutDisplayNumber = broggutCount;
+    } else {
+        skirmishBroggutCount = brogs;
+        skirmishBroggutCount = CLAMP(skirmishBroggutCount, 0, PROFILE_BROGGUT_MAX_COUNT);
+        broggutDisplayNumber = skirmishBroggutCount;
+    }
+}
+
+- (void)setMetal:(int)metal {
+    if (!isInSkirmish) {
+        metalCount = metal;
+        metalCount = CLAMP(metalCount, 0, PROFILE_METAL_MAX_COUNT);
+        metalDisplayNumber = metalCount;
+    } else {
+        skirmishMetalCount = metal;
+        skirmishMetalCount = CLAMP(skirmishMetalCount, 0, PROFILE_METAL_MAX_COUNT);
+        metalDisplayNumber = skirmishMetalCount;
+    }
+}
+
 - (int)subtractBrogguts:(int)brogs metal:(int)metal {
     if (!isInSkirmish) {
         if (brogs > broggutCount && metal > metalCount) {

@@ -11,6 +11,8 @@
 #import "AIController.h"
 
 #define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
+#define CRAFT_HEALTH_PER_NOTCH 4
+#define CRAFT_ALLIANCE_TINT_AMOUNT 0.15f
 
 @class MonarchCraftObject;
 @class Image;
@@ -89,6 +91,7 @@ typedef struct Point_Array {
 @property (readonly) int attributePlayerCargoCapacity;
 @property (readonly) int attributePlayerCurrentCargo;
 @property (readonly) int attributeHullCurrent;
+@property (readonly) int attributeHullCapacity;
 @property (readonly) BOOL isUnderAura;
 @property (readonly) BOOL craftDoesRotate;
 

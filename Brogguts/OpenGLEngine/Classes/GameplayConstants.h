@@ -22,7 +22,7 @@
 // Password: hippos123
 //
 
-#define MULTIPLAYER
+// #define MULTIPLAYER
 // #define BOUNDING_DEBUG
 // #define DRAW_PATH
 #define STARS
@@ -30,6 +30,8 @@
 #define GRID
 #define BROGGUTS
 #define ALL_STRAIGHT_PATHS
+#define CRAFT_SHADOWS
+// #define STRUCTURE_SHADOWS
 
 
 //
@@ -76,7 +78,7 @@ enum ObjectTypeIDs { // When loading a scene, used for parsing
 	kObjectTypeStructure,	
 };
 
-#define TOTAL_OBJECT_TYPES_COUNT 29
+#define TOTAL_OBJECT_TYPES_COUNT 31
 
 enum ObjectIDs { // How objects are indentified
 	kObjectTextID,
@@ -108,6 +110,8 @@ enum ObjectIDs { // How objects are indentified
     kObjectBuildingObjectID,
     kObjectTiledButtonID,
     kObjectEndMissionObjectID,
+    kObjectStartMissionObjectID,
+    kObjectHealthDropObjectID,
 };
 
 // 
@@ -134,11 +138,12 @@ enum TheAntValues {
 	kCraftAntCostBrogguts = 100,
 	kCraftAntCostMetal = 0,
 	kCraftAntEngines = 3,
-	kCraftAntWeapons = 1, // Damage per attack
-	kCraftAntAttackRange = 256, // pixels
+	kCraftAntWeapons = 8, // Damage per attack
+	kCraftAntAttackRange = 128, // pixels
 	kCraftAntAttackCooldown = 100, // frames for weapon to recharge
 	kCraftAntSpecialCoolDown = 0, // frames for special to recharge
-	kCraftAntHull = 30,
+	kCraftAntHull = 160,
+    kCraftAntViewDistance = 256,
 	// Special Values
 	kCraftAntCargoSpace = 25, // brogguts
 	kCraftAntCargoSpaceBonus = 50,
@@ -153,14 +158,15 @@ enum TheMothValues {
 	kCraftMothUpgradeUnlockYears = 6,
 	kCraftMothUpgradeCost = 100, // brogguts
 	kCraftMothUpgradeTime = 20, // seconds
-	kCraftMothCostBrogguts = 100,
-	kCraftMothCostMetal = 10,
+	kCraftMothCostBrogguts = 200,
+	kCraftMothCostMetal = 0,
 	kCraftMothEngines = 5,
-	kCraftMothWeapons = 1,
+	kCraftMothWeapons = 4,
 	kCraftMothAttackRange = 128, // pixels
 	kCraftMothAttackCooldown = 30, // frames for weapon to recharge
 	kCraftMothSpecialCoolDown = 500, // frames for special to recharge
-	kCraftMothHull = 20,
+	kCraftMothHull = 80,
+    kCraftMothViewDistance = 256,
 	// Special Values
 	kCraftMothEvadeTime = 4, // seconds
 };
@@ -175,11 +181,12 @@ enum TheBeetleValues {
 	kCraftBeetleCostBrogguts = 200,
 	kCraftBeetleCostMetal = 20,
 	kCraftBeetleEngines = 2,
-	kCraftBeetleWeapons = 3,
+	kCraftBeetleWeapons = 12,
 	kCraftBeetleAttackRange = 200, // pixels
 	kCraftBeetleAttackCooldown = 60, // frames for weapon to recharge
 	kCraftBeetleSpecialCoolDown = 500, // frames for special to recharge
-	kCraftBeetleHull = 50,
+	kCraftBeetleHull = 200,
+    kCraftBeetleViewDistance = 256,
 	// Special Values
 	kCraftBeetleSelfRepairSpeed = 1, // HP / seconds
 };
@@ -198,11 +205,12 @@ enum TheMonarchValues {
 	kCraftMonarchAttackRange = 0, // pixels
 	kCraftMonarchAttackCooldown = 0, // frames for weapon to recharge
 	kCraftMonarchSpecialCoolDown = 1, // frames for special to recharge
-	kCraftMonarchHull = 30,
+	kCraftMonarchHull = 120,
+    kCraftMonarchViewDistance = 256,
 	// Special Values
 	kCraftMonarchAuraRangeLimit = 256,
 	kCraftMonarchAuraNumberLimit = 10, // Number of additional units allowed in squad
-    kCraftMonarchAuraResistanceValue = 1,
+    kCraftMonarchAuraResistanceValue = 3,
 };
 
 // Advanced Craft
@@ -217,11 +225,12 @@ enum TheCamelValues {
 	kCraftCamelCostBrogguts = 400,
 	kCraftCamelCostMetal = 40,
 	kCraftCamelEngines = 3,
-	kCraftCamelWeapons = 2,
+	kCraftCamelWeapons = 8,
 	kCraftCamelAttackRange = 512, // pixels
 	kCraftCamelAttackCooldown = 50, // frames for weapon to recharge
 	kCraftCamelSpecialCoolDown = 500, // frames for special to recharge
-	kCraftCamelHull = 60,
+	kCraftCamelHull = 240,
+    kCraftCamelViewDistance = 256,
 	// Special Values
 	kCraftCamelCargoSpace = 100, // brogguts
 	kCraftCamelMiningCooldown = 5, // (frames / broggut)
@@ -238,11 +247,12 @@ enum TheRatValues {
 	kCraftRatCostBrogguts = 500,
 	kCraftRatCostMetal = 50,
 	kCraftRatEngines = 5,
-	kCraftRatWeapons = 3,
+	kCraftRatWeapons = 12,
 	kCraftRatAttackRange = 100, // pixels
 	kCraftRatAttackCooldown = 30, // frames for weapon to recharge
 	kCraftRatSpecialCoolDown = 500, // frames for special to recharge
-	kCraftRatHull = 20,
+	kCraftRatHull = 80,
+    kCraftRatViewDistance = 256,
 	// Special Values
 	kCraftRatEMPRadius = 256, // pixels
 	kCraftRatEMPLastingTime = 5, // seconds
@@ -262,7 +272,8 @@ enum TheSpiderValues {
 	kCraftSpiderAttackRange = 512, // pixels
 	kCraftSpiderAttackCooldown = 0, // frames for weapon to recharge
 	kCraftSpiderSpecialCoolDown = 500, // frames for special to recharge
-	kCraftSpiderHull = 100,
+	kCraftSpiderHull = 400,
+    kCraftSpiderViewDistance = 256,
 	// Special Values
     kCraftSpiderBuildDroneTime = 1000,
 	kCraftSpiderEnginesBonus = 2,
@@ -278,11 +289,12 @@ enum TheSpiderDroneValues {
 	kCraftSpiderDroneCostBrogguts = 50,
 	kCraftSpiderDroneCostMetal = 0,
 	kCraftSpiderDroneEngines = 6,
-	kCraftSpiderDroneWeapons = 1,
+	kCraftSpiderDroneWeapons = 4,
 	kCraftSpiderDroneAttackRange = 32, // pixels
 	kCraftSpiderDroneAttackCooldown = 30, // frames for weapon to recharge
 	kCraftSpiderDroneSpecialCoolDown = 0, // frames for special to recharge
-	kCraftSpiderDroneHull = 10,
+	kCraftSpiderDroneHull = 40,
+    kCraftSpiderDroneViewDistance = 256,
 	// Special Values
 	kCraftSpiderDroneRebuildTime = 6, // seconds
 };
@@ -297,11 +309,12 @@ enum TheEagleValues {
 	kCraftEagleCostBrogguts = 600,
 	kCraftEagleCostMetal = 60,
 	kCraftEagleEngines = 6,
-	kCraftEagleWeapons = 5,
+	kCraftEagleWeapons = 20,
 	kCraftEagleAttackRange = 360, // pixels
 	kCraftEagleAttackCooldown = 30, // frames for weapon to recharge
 	kCraftEagleSpecialCoolDown = 0, // frames for special to recharge
-	kCraftEagleHull = 40,
+	kCraftEagleHull = 200,
+    kCraftEagleViewDistance = 256,
 	// Special Values
 	kCraftEagleExplodeRadius = 256, // pixels
 	kCraftEagleExplodeDamage = 30,
@@ -322,7 +335,8 @@ enum kObjectStructureBaseStation {
 	kStructureBaseStationCostBrogguts = 0,
 	kStructureBaseStationCostMetal = 0,
 	kStructureBaseStationMovingTime = 0, // seconds to move to active spot
-	kStructureBaseStationHull = 500,
+	kStructureBaseStationHull = 750,
+    kStructureBaseStationViewDistance = 256,
     // Special
     kStructureBaseStationSupplyBonus = 4,
 };
@@ -337,9 +351,10 @@ enum TheBlockValues {
 	kStructureBlockCostBrogguts = 100,
 	kStructureBlockCostMetal = 0,
 	kStructureBlockMovingTime = 1, // seconds to move to active spot
-	kStructureBlockHull = 60,
+	kStructureBlockHull = 200,
+    kStructureBlockViewDistance = 256,
 	// Special Values
-    kStructureBlockSupplyBonus = 2,
+    kStructureBlockSupplyBonus = 3,
 };
 
 enum TheRefineryValues {
@@ -352,7 +367,8 @@ enum TheRefineryValues {
 	kStructureRefineryCostBrogguts = 300,
 	kStructureRefineryCostMetal = 0,
 	kStructureRefineryMovingTime = 4, // seconds to move to active spot
-	kStructureRefineryHull = 40,
+	kStructureRefineryHull = 160,
+    kStructureRefineryViewDistance = 256,
 	// Special Values
 	kStructureRefineryBroggutConvertTimeBonus = -2,
 	kStructureRefineryBroggutConversionRate = 5, // number of metal per batch
@@ -369,7 +385,8 @@ enum TheCraftUpgradesValues {
 	kStructureCraftUpgradesCostBrogguts = 400,
 	kStructureCraftUpgradesCostMetal = 0,
 	kStructureCraftUpgradesMovingTime = 4, // seconds to move to active spot
-	kStructureCraftUpgradesHull = 40,
+	kStructureCraftUpgradesHull = 160,
+    kStructureCraftUpgradesViewDistance = 256,
 	// Special Values
 };
 
@@ -383,7 +400,8 @@ enum TheStructureUpgradesValues {
 	kStructureStructureUpgradesCostBrogguts = 400,
 	kStructureStructureUpgradesCostMetal = 0,
 	kStructureStructureUpgradesMovingTime = 4, // seconds to move to active spot
-	kStructureStructureUpgradesHull = 40,
+	kStructureStructureUpgradesHull = 160,
+    kStructureStructureUpgradesViewDistance = 256,
 	// Special Values
 };
 
@@ -394,13 +412,14 @@ enum TheTurretValues {
 	kStructureTurretUpgradeUnlockYears = 6,
 	kStructureTurretUpgradeCost = 100, // brogguts
 	kStructureTurretUpgradeTime = 50, // seconds
-	kStructureTurretCostBrogguts = 100, // 300
-	kStructureTurretCostMetal = 0, // 30
+	kStructureTurretCostBrogguts = 200,
+	kStructureTurretCostMetal = 20,
 	kStructureTurretMovingTime = 6, // seconds to move to active spot
-	kStructureTurretHull = 30,
+	kStructureTurretHull = 200,
+    kStructureTurretViewDistance = 256,
 	// Special Values
-	kStructureTurretWeapons = 2,
-	kStructureTurretAttackCooldown = 30,
+	kStructureTurretWeapons = 1,
+	kStructureTurretAttackCooldown = 10,
 	kStructureTurretAttackRange = 512,
 	kStructureTurretEnemyTargetLimit = 1,
 	kStructureTurretEnemyTargetLimitBonus = 1,
@@ -416,7 +435,8 @@ enum TheRadarValues {
 	kStructureRadarCostBrogguts = 300,
 	kStructureRadarCostMetal = 30,
 	kStructureRadarMovingTime = 8, // seconds to move to active spot
-	kStructureRadarHull = 40,
+	kStructureRadarHull = 160,
+    kStructureRadarViewDistance = 256,
 	// Special Values
 	kStructureRadarRadius = 768,
 	kStructureRadarRadiusBonus = 512,
@@ -432,11 +452,12 @@ enum TheFixerValues {
 	kStructureFixerCostBrogguts = 400,
 	kStructureFixerCostMetal = 40,
 	kStructureFixerMovingTime = 6, // seconds to move to active spot
-	kStructureFixerHull = 50,
+	kStructureFixerHull = 120,
+    kStructureFixerViewDistance = 256,
 	// Special Values
 	kStructureFixerRepairRange = 400,
     kStructureFixerRepairAmount = 2,
-	kStructureFixerRepairCooldown = 150, // HP per 100 frames
+	kStructureFixerRepairCooldown = 125, // HP per 100 frames
 	kStructureFixerFriendlyTargetLimit = 2,
 	kStructureFixerFriendlyTargetLimitBonus = 1,
 };

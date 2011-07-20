@@ -60,10 +60,10 @@
 	}
 }
 
-- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
-    [super drawHoverSelectionWithScroll:scroll];
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll withAlpha:(float)alpha {
+    [super drawHoverSelectionWithScroll:scroll withAlpha:alpha];
     for (SpiderDroneObject* drone in droneArray) {
-		[drone drawHoverSelectionWithScroll:scroll];
+		[drone drawHoverSelectionWithScroll:scroll withAlpha:alpha];
 	}
 }
 
