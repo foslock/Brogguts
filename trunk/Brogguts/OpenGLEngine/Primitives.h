@@ -298,3 +298,59 @@ static inline void drawPartialDashedCircle(Circle aCircle,
 	free(colors);
 	free(vertices);
 }
+
+static inline void drawDashedCircleWithColoredSegment(Circle aCircle,
+										   uint coloredSegmentIndex, uint totalSegments,
+										   Color4f filledColor, Color4f unFilledColor,
+										   Vector2f scroll) {
+	
+	// Set up the array that will store our vertices.  Each segment will need
+	// two vertices {x, y} so we multiply the segments passedin by 2
+	GLfloat* vertices = (GLfloat*)malloc( (totalSegments*2) * sizeof(*vertices) );
+	GLfloat* colors = (GLfloat*)malloc( 2 * (totalSegments*2) * sizeof(*colors) );
+	
+	// Set up the counter that will track the number of vertices we will have
+	int vertexCount = 0;
+	int colorCount = 0;
+	// Loop through each segment creating the vertices for that segment and add
+	// the vertices to the vertices array
+	for(int segment = 0; segment < totalSegments; segment++) 
+	{ 
+		// Insert the first color if it is a filled segment
+		if (segment == coloredSegmentIndex ||
+            segment == coloredSegmentIndex + 1) {
+			colors[colorCount++] = filledColor.red;
+			colors[colorCount++] = filledColor.green;
+			colors[colorCount++] = filledColor.blue;
+			colors[colorCount++] = filledColor.alpha;
+		} else {
+			colors[colorCount++] = unFilledColor.red;
+			colors[colorCount++] = unFilledColor.green;
+			colors[colorCount++] = unFilledColor.blue;
+			colors[colorCount++] = unFilledColor.alpha;
+		}
+		
+		// Calculate the angle based on the number of segments
+		float theta = 2.0f * M_PI * (float)segment / (float)totalSegments;
+		
+		// Calculate the x and y position of the current segment
+		float x = aCircle.radius * cosf(theta + M_PI_2) - scroll.x;
+		float y = aCircle.radius * sinf(theta + M_PI_2) - scroll.y;
+		
+		// Add the new vertices to the vertices array taking into account the circles
+		// current x and y position
+		vertices[vertexCount++] = x + aCircle.x;
+		vertices[vertexCount++] = y + aCircle.y;
+	}
+	
+	// Set up the vertex pointer to the array of vertices we have created and
+	// then use GL_LINE_LOOP to render them
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4, GL_FLOAT, 0, colors);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glDrawArrays(GL_LINES, 0, totalSegments);
+	glDisableClientState(GL_COLOR_ARRAY);
+	
+	free(colors);
+	free(vertices);
+}

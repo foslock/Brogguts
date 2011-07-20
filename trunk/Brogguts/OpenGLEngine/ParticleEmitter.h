@@ -31,7 +31,7 @@ typedef struct {
 	GLfloat timeToLive;
 } Particle;
 
-#define MAXIMUM_UPDATE_RATE 30.0f		// The maximum number of updates that occur per frame
+#define MAXIMUM_UPDATE_RATE 30.0f		// The maximum number of updates that occur per second
 #define MAXIMUM_PARTICLE_COUNT 1000		// Maximum number of particles allowed
 #define PARTICLE_PRIMITIVE_SCALE 8.0f	// Factor the line particles are scaled by 
 
@@ -63,6 +63,7 @@ typedef struct {
 	GLuint verticesID;			// Holds the buffer name of the VBO that stores the color and vertices info for the particles
 	Particle *particles;		// Array of particles that hold the particle emitters particle details
 	PointSprite *vertices;		// Array of vertices and color information for each particle to be rendered
+
 	
 }
 

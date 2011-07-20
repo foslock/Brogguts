@@ -14,6 +14,8 @@
 #import "CraftAndStructures.h"
 #import "PlayerProfile.h"
 #import "GameController.h"
+#import "HealthDropObject.h"
+#import "ImageRenderSingleton.h"
 
 @implementation TouchableObject
 @synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad, touchableBounds;
@@ -41,6 +43,10 @@
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
 		isBlinkingSelectionCircle = NO;
 		blinkingSelectionCircleTimer = 0;
+        isBlinkingCircleFadingIn = NO;
+        blinkingCircleAlpha = 0;
+        isShowingSelectionCircle = NO;
+        showingSelectionCircleTimer = 0;
 		[self setMovingAIState:kMovingAIStateStill];
 	}
 	return self;
@@ -74,32 +80,50 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
+    if (isShowingSelectionCircle) {
+		if (showingSelectionCircleTimer > 0) {
+			showingSelectionCircleTimer--;
+			if (showingSelectionCircleTimer <= 0) {
+				isShowingSelectionCircle = NO;
+				showingSelectionCircleTimer = 0;
+			}
+		}
+	}
+    
 	if (isBlinkingSelectionCircle) {
 		if (blinkingSelectionCircleTimer > 0) {
 			blinkingSelectionCircleTimer--;
+            if (isBlinkingCircleFadingIn) {
+                blinkingCircleAlpha += CIRCLE_BLINK_FADE_SPEED;
+            } else {
+                blinkingCircleAlpha -= CIRCLE_BLINK_FADE_SPEED;
+            }
+            if (isBlinkingCircleFadingIn && blinkingCircleAlpha > 1.0f) {
+                isBlinkingCircleFadingIn = NO;
+                blinkingCircleAlpha = 1.0f;
+            }
+            if (!isBlinkingCircleFadingIn && blinkingCircleAlpha < 0.0f) {
+                isBlinkingCircleFadingIn = YES;
+                blinkingCircleAlpha = 0.0f;
+            }
 			if (blinkingSelectionCircleTimer <= 0) {
 				isBlinkingSelectionCircle = NO;
 				blinkingSelectionCircleTimer = 0;
 			}
 		}
 	}
-    // Check if upgraded and perform action if so
-    /*
-    if ([[[GameController sharedGameController] currentProfile] isUpgradePurchasedWithID:objectType]) {
-        [self performPassiveAbility:aDelta];
-    }
-     */
 }
 
 - (void)renderOverObjectWithScroll:(Vector2f)scroll {
     [super renderOverObjectWithScroll:scroll];
-    if (isBlinkingSelectionCircle) {
-		int modTime = blinkingSelectionCircleTimer % CIRCLE_BLINK_FREQUENCY;
-		if (modTime < (CIRCLE_BLINK_FREQUENCY / 2)) {
-            enablePrimitiveDraw();
-			[self drawHoverSelectionWithScroll:scroll];
-            disablePrimitiveDraw();
-		}
+    if (isShowingSelectionCircle) {
+        enablePrimitiveDraw();
+        [self drawHoverSelectionWithScroll:scroll withAlpha:1.0f];
+        disablePrimitiveDraw();
+	} else if (isBlinkingSelectionCircle) {
+        enablePrimitiveDraw();
+        [self drawHoverSelectionWithScroll:scroll withAlpha:blinkingCircleAlpha];
+        disablePrimitiveDraw();
 	}
     
     if (!isTraveling && isDrawingEffectRadius) {
@@ -117,7 +141,7 @@
                 glColor4f(1.0f, 0.5f, 0.5f, 0.6f);
             }
         }
-        glLineWidth(1.0f);
+        glLineWidth(2.0f);
         drawDashedCircle([self effectRadiusCircle], CIRCLE_SEGMENTS_COUNT * 2, scroll);
         disablePrimitiveDraw();
     }
@@ -126,20 +150,29 @@
 - (void)setMovingAIState:(int)state {
 	if (movingAIState != state)
 		// NSLog(@"Object (%i) changed moving from state (%i) to (%i)", uniqueObjectID, movingAIState, state);
-	movingAIState = state;
+        movingAIState = state;
 }
 
 - (void)setAttackingAIState:(int)state {
 	if (attackingAIState != state)
 		// NSLog(@"Object (%i) changed attacking from state (%i) to (%i)", uniqueObjectID, attackingAIState, state);
-	attackingAIState = state;
+        attackingAIState = state;
 }
 
 - (void)blinkSelectionCircle {
-	if (!isBlinkingSelectionCircle) {
+	if (!isShowingSelectionCircle) {
+        isBlinkingCircleFadingIn = YES;
+        blinkingCircleAlpha = 0.0f;
 		isBlinkingSelectionCircle = YES;
 		blinkingSelectionCircleTimer = CIRCLE_BLINK_FRAMES;		
 	}
+}
+
+- (void)showSelectionCircle {
+    isShowingSelectionCircle = YES;
+    showingSelectionCircleTimer = CIRCLE_SHOW_FRAMES;		
+    isBlinkingSelectionCircle = NO;
+    blinkingSelectionCircleTimer = 0;
 }
 
 - (void)targetedByEnemy:(TouchableObject*)enemy {
@@ -201,6 +234,8 @@
 
 - (BOOL)attackedByEnemy:(TouchableObject*)enemy withDamage:(int)damage {
 	// NSLog(@"Object (%i) attacked by enemy (%i) with damage <%i>", uniqueObjectID, enemy.uniqueObjectID, damage);
+    HealthDropObject* healthDrop = [[HealthDropObject alloc] initWithTouchableObject:self];
+    [[self currentScene] addCollidableObject:healthDrop];
 	return NO;
 }
 
@@ -223,7 +258,7 @@
 	// NSLog(@"Hovered over object (%i)", uniqueObjectID);
 }
 
-- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll withAlpha:(float)alpha {
 	// OVERRIDE
 }
 

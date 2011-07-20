@@ -50,22 +50,14 @@ enum MiningStates {
 	return miningLocation;
 }
 
-/*
- - (void)objectEnteredEffectRadius:(TouchableObject *)other {
- if (objectAlliance != other.objectAlliance) {
- NSLog(@"Object entered");
- }
- [super objectEnteredEffectRadius:other];
- }
- */
-- (void)tryMiningBroggutsWithCenter:(CGPoint)location {
+- (void)tryMiningBroggutsWithCenter:(CGPoint)location wasCommanded:(BOOL)commanded {
 	if (attributePlayerCurrentCargo >= attributePlayerCargoCapacity) {
 		[self returnBroggutsHome];
 		miningLocation = location;
 		return;
 	}
     NSMutableArray* pointArray = [[NSMutableArray alloc] initWithCapacity:9];
-	if (![self startMiningBroggutWithLocation:location]) {
+	if (![self startMiningBroggutWithLocation:location wasCommanded:commanded]) {
 		// Middle broggut isn't minable
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
@@ -88,7 +80,7 @@ enum MiningStates {
         }
         for (int i = 0; i < [pointArray count]; i++) {
             CGPoint point = [[pointArray objectAtIndex:i] CGPointValue];
-            if ([self startMiningBroggutWithLocation:point]) {
+            if ([self startMiningBroggutWithLocation:point wasCommanded:commanded]) {
                 [copy release];
                 [pointArray release];
                 return;
@@ -99,7 +91,7 @@ enum MiningStates {
     [pointArray release];
 }
 
-- (BOOL)startMiningBroggutWithLocation:(CGPoint)location {
+- (BOOL)startMiningBroggutWithLocation:(CGPoint)location wasCommanded:(BOOL)commanded {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
     if (broggut && broggut->broggutValue != -1) {
         if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
@@ -115,8 +107,10 @@ enum MiningStates {
         } else {
             miningState = kMiningStateNone;
             [self setMovingAIState:kMovingAIStateStill];
-            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipDeny] location:objectLocation];
-            [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
+            if (commanded) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipDeny] location:objectLocation];
+                [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
+            }
             return NO;
         }
 	}
@@ -130,7 +124,7 @@ enum MiningStates {
 - (void)cashInBrogguts {
     [super cashInBrogguts];
     if (miningState == kMiningStateReturning) {
-        [self tryMiningBroggutsWithCenter:miningLocation];
+        [self tryMiningBroggutsWithCenter:miningLocation wasCommanded:NO];
     }
 }
 
@@ -232,7 +226,7 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
-		if ([self startMiningBroggutWithLocation:location]) {
+		if ([self startMiningBroggutWithLocation:location wasCommanded:YES]) {
             if (isBeingControlled) {
                 [[self currentScene] removeControlledCraft:self];
                 [self setIsBeingControlled:NO];

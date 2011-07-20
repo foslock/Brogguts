@@ -13,6 +13,8 @@
 #import "TextObject.h"
 #import "StartMissionObject.h"
 
+#define CAMPAIGN_THREE_WAVE_TIME 5.0f
+
 @implementation CampaignSceneThree
 
 - (void)dealloc {
@@ -23,10 +25,10 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:2 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@"- Survive the wave approaching in 5 minutes"];
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Survive the wave approaching in %i minutes",(int)CAMPAIGN_THREE_WAVE_TIME]];
         [startObject setMissionTextThree:@"- Destroy all 10 enemy Ants in the wave"];
         spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
-        [spawner pauseSpawnerForDuration:(5.0f * 60.0f) + 1.0f];
+        [spawner pauseSpawnerForDuration:(CAMPAIGN_THREE_WAVE_TIME * 60.0f) + 1.0f];
         [spawner setSendingLocation:homeBaseLocation];
         [spawner setSendingLocationVariance:100.0f];
         [spawner setStartingLocationVariance:128.0f];
@@ -36,7 +38,7 @@
 
 - (void)updateSceneWithDelta:(float)aDelta {
     [super updateSceneWithDelta:aDelta];
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         return;
     }
     int minutes = [spawner pauseTimeLeft] / 60.0f;
@@ -62,7 +64,7 @@
     if ([spawner isDoneSpawning] && enemyShipCount == 0) {
         return YES;
     }
-    return YES; // NO
+    return NO; // NO
 }
 
 - (BOOL)checkFailure {

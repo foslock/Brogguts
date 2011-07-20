@@ -28,6 +28,7 @@
     if (self) {
         isRenderedInOverview = NO;
         isPaddedForCollisions = NO;
+        isCheckedForCollisions = NO;
         pulsingUp = NO;
         pulsingDown = YES;
         isComplete = NO;

@@ -241,10 +241,7 @@ static GameController* sharedGameController = nil;
     }
     
     if (![self doesFilenameExistInDocuments:kBaseCampFileName]) {
-        // [self createInitialBaseCampLevel];
-        NSString* campNamePath = [[NSBundle mainBundle] pathForResource:kBaseCampFileName ofType:@""];
-        NSArray* campArray = [NSArray arrayWithContentsOfFile:campNamePath];
-        [campArray writeToFile:[self documentsPathWithFilename:kBaseCampFileName] atomically:YES];
+        [self createInitialBaseCampLevel];
     }
     
     for (int i = 0; i < TUTORIAL_SCENES_COUNT; i++) {
@@ -323,151 +320,10 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)createInitialBaseCampLevel {
-	NSString* sceneTitle = @"Base Camp";
-	int sceneType = kSceneTypeBaseCamp;
-	int widthCells = 32;
-	int heightCells = 24;
-	int numberOfSmallBrogguts = 500;
-	
-	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
-	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
-	[plistArray insertObject:[NSNumber numberWithInt:sceneType] atIndex:kSceneStorageGlobalSceneType];
-	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
-	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
-	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
-    NSArray* tempArray = [[NSArray alloc] init];
-    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
-    [tempArray release];
-	
-	// Save all the other crap, medium brogguts first
-	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
-	for (int j = 0; j < heightCells; j++) {
-		for (int i = 0; i < widthCells; i++) {
-			int straightIndex = i + (j * widthCells);
-			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
-			NSNumber* broggutValue;
-			NSNumber* broggutAge;
-			if ( (i > 4 && i < 27) && ((i > 14 && i < 17) || (j > 10 && j < 13)) ) {
-				broggutValue = [NSNumber numberWithInt:400];
-				broggutAge = [NSNumber numberWithInt:kBroggutMediumAgeYoung];
-			} else {
-				broggutValue = [NSNumber numberWithInt:-1];
-				broggutAge = [NSNumber numberWithInt:-1];
-			}			
-			[thisBroggutInfo insertObject:broggutValue atIndex:0];
-			[thisBroggutInfo insertObject:broggutAge atIndex:1];
-			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
-			[thisBroggutInfo release];
-		}
-	}
-	[plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
-	[broggutArray release];
-	
-	// Save structures, namely the base stations
-	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
-	// Create the initial base station: 
-    for (int i = 0; i < 2; i++) {
-		NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
-		
-		int objectTypeID = kObjectTypeStructure;
-		int objectID = kObjectStructureBaseStationID;
-		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
-		int objectAlliance = kAllianceFriendly;
-        if (i == 1) {
-            objectAlliance = kAllianceEnemy;
-        }
-		float objectRotation = 0.0f;
-		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake(COLLISION_CELL_WIDTH / 2,
-                                                COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
-        if (i == 1) {
-            objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH * widthCells) - COLLISION_CELL_WIDTH / 2,
-                                            COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
-        }
-		CGPoint objectCurrentLocation = objectEndLocation;
-		int objectCurrentHull = -1; // Means full
-		BOOL objectIsControlledShip = NO;
-		BOOL objectIsMining = NO;
-		CGPoint objectMiningLocation = CGPointZero;
-		int objectCurrentCargo = 0;
-		
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
-		[thisStructureArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
-		[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
-		[self insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexEndLoc];
-		[self insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexCurrentLoc];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
-		[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
-		[self insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
-		[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
-		if (objectID == kObjectStructureBaseStationID) {
-			[finalObjectArray insertObject:thisStructureArray atIndex:0];
-		} else {
-			[finalObjectArray addObject:thisStructureArray];
-		}
-		[thisStructureArray release];
-		[objectCurrentPath release];
-	}
-	
-	// Create the initial ANT craft for the player: 
-	for (int i = 0; i < 2; i++) {
-		NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
-		
-		int objectTypeID = kObjectTypeCraft;
-		int objectID = kObjectCraftAntID;
-		NSArray* objectCurrentPath = [[NSArray alloc] init]; // NIL for now
-		int objectAlliance = kAllianceFriendly;
-		if (i == 1) {
-            objectAlliance = kAllianceEnemy;
-        }
-		float objectRotation = 0.0f;
-		BOOL objectIsTraveling = NO;
-		CGPoint objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH / 2) * 5,
-                                                COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
-        if (i == 1) {
-            objectEndLocation = CGPointMake((COLLISION_CELL_WIDTH * widthCells) - ( (COLLISION_CELL_WIDTH / 2) * 5),
-                                            COLLISION_CELL_HEIGHT / 2 + (COLLISION_CELL_HEIGHT * heightCells / 2));
-        }
-		CGPoint objectCurrentLocation = objectEndLocation;
-		int objectCurrentHull = -1; // Means full
-		BOOL objectIsControlledShip = YES;
-        if (i == 1) {
-            objectIsControlledShip = NO;
-        }
-		BOOL objectIsMining = NO;
-		CGPoint objectMiningLocation = CGPointZero;
-		int objectCurrentCargo = 0;
-		
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
-		[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
-		[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
-		[self insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
-		[self insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
-		[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
-		[self insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
-		[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
-		[finalObjectArray addObject:thisCraftArray];
-		[thisCraftArray release];
-		[objectCurrentPath release];
-	}
-    
-	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
-    [finalObjectArray release];
-	NSString* filePath = [self documentsPathWithFilename:kBaseCampFileName];
-	if (![plistArray writeToFile:filePath atomically:YES]) {
-		NSLog(@"Cannot save the Base Camp Scene!");
-	}
-	[plistArray release];
-}
+    // Places the original file in the folder
+    NSString* campNamePath = [[NSBundle mainBundle] pathForResource:kBaseCampFileName ofType:@""];
+    NSArray* campArray = [NSArray arrayWithContentsOfFile:campNamePath];
+    [campArray writeToFile:[self documentsPathWithFilename:kBaseCampFileName] atomically:YES];}
 
 - (NSArray*)convertSavedPath:(NSArray*)savedPath {
     NSMutableArray* array = [[NSMutableArray alloc] init];
@@ -510,11 +366,6 @@ static GameController* sharedGameController = nil;
 	[plistArray insertObject:[NSNumber numberWithInt:widthCells] atIndex:kSceneStorageGlobalWidthCells];
 	[plistArray insertObject:[NSNumber numberWithInt:heightCells] atIndex:kSceneStorageGlobalHeightCells];
 	[plistArray insertObject:[NSNumber numberWithInt:numberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
-    NSMutableArray* tempArray = [[NSMutableArray alloc] init];
-    [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
-    [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
-    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
-    [tempArray release];
 	
 	// Save all the other crap, medium brogguts first
 	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:widthCells * heightCells];
@@ -534,8 +385,6 @@ static GameController* sharedGameController = nil;
 			[thisBroggutInfo release];
 		}
 	}
-	[plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
-	[broggutArray release];
 	
 	// Save structures, namely the base stations
 	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
@@ -564,6 +413,11 @@ static GameController* sharedGameController = nil;
 			BOOL objectIsMining = NO; // Since it is a structure
 			CGPoint objectMiningLocation = CGPointZero;
 			int objectCurrentCargo = 0;
+            
+            if (objectID == kObjectStructureRefineryID) {
+                // Add the metal not yet refined to the total metal
+                currentMetalCount += [(RefineryStructureObject*)thisStructure currentPotentialMetal];
+            }
 			
 			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
 			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
@@ -634,7 +488,16 @@ static GameController* sharedGameController = nil;
 			[objectCurrentPath release];
 		}
 	}
-	
+    // After the metal has been finalized, save the brogguts and metal in the plist
+    NSMutableArray* tempArray = [[NSMutableArray alloc] init];
+    [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
+    [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
+    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
+    [tempArray release];
+    
+    [plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
+	[broggutArray release];
+    
 	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
     [finalObjectArray release];
     
@@ -700,10 +563,21 @@ static GameController* sharedGameController = nil;
         }
     }
     if (!duplicate) {
-        [plistArray addObject:filename];
+        [plistArray insertObject:filename atIndex:0];
     } else {
         NSLog(@"Filename already exists!");
     }
+    
+    [plistArray sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        if ([obj1 isKindOfClass:[NSString class]] && [obj2 isKindOfClass:[NSString class]]) {
+            if ([obj1 caseInsensitiveCompare:obj2] == NSOrderedAscending) {
+                return (NSComparisonResult)NSOrderedDescending;
+            } else if ([obj1 caseInsensitiveCompare:obj2] == NSOrderedDescending) {
+                return (NSComparisonResult)NSOrderedAscending;
+            }
+        }
+        return (NSComparisonResult)NSOrderedSame;
+    }];
     
     if (![plistArray writeToFile:filePath atomically:YES]) {
         NSLog(@"Failed to saved the scene name: %@", filename);

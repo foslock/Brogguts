@@ -88,6 +88,13 @@
     [self setIsRefining:YES];
 }
 
+- (int)currentPotentialMetal {
+    if (isRefining)
+        return refiningCounter;
+    else
+        return 0;
+}
+
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
     // [self renderCenteredAtPoint:aPoint withScrollVector:vector];
     [animatedImage renderCurrentSubImageAtPoint:CGPointMake(objectLocation.x - vector.x, objectLocation.y - vector.y)

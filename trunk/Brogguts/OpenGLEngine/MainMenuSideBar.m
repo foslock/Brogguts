@@ -106,7 +106,7 @@
         if (buttonID == 4) {
             if (currentSceneType == kSceneTypeCampaign) {
                 CampaignScene* scene = (CampaignScene*)[[GameController sharedGameController] currentScene];
-                [scene setIsStartingMission:YES];
+                [scene setIsMissionPaused:YES];
             } else {
                 [myController moveSideBarOut];
                 [[GameController sharedGameController] returnToMainMenuWithSave:YES];

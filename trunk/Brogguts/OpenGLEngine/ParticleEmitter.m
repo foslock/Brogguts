@@ -81,7 +81,6 @@
 				texture = nil;
 				break;
 		}
-
 		[self setupArrays];
 		
 	}
@@ -212,24 +211,38 @@
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	} else if (particleType == kParticleTypeBuildLocation ||
 			   particleType == kParticleTypeSpark) {
+        
+        glPushMatrix();
+		// Translate for scroll vector
+		glTranslatef(-scroll.x, -scroll.y, 0.0f);
+        
 		// Draw each particle as a line
 		enablePrimitiveDraw();
+        Particle* particle;
 		for (int i = 0; i < particleCount; i++) {
-			Particle* particle = &particles[i];
+			particle = &particles[i];
+            GLfloat lineLocations[4];
 			CGPoint toPoint = CGPointMake(particle->position.x, particle->position.y);
 			CGPoint fromPoint = CGPointMake(particle->position.x - (particle->velocity.x * PARTICLE_PRIMITIVE_SCALE),
 											particle->position.y - (particle->velocity.y * PARTICLE_PRIMITIVE_SCALE));
-			glColor4f(particle->color.red, particle->color.green, particle->color.blue, particle->color.alpha);
-			glLineWidth(particle->particleSize);
+            lineLocations[0] = fromPoint.x;
+            lineLocations[1] = fromPoint.y;
+            lineLocations[2] = toPoint.x;
+            lineLocations[3] = toPoint.y;
+            
+            glColor4f(particle->color.red, particle->color.green, particle->color.blue, particle->color.alpha);
+            glLineWidth(particle->particleSize);
             if(blendAdditive) {
                 glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE);
-                drawLine(fromPoint, toPoint, scroll);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            } else {
-                drawLine(fromPoint, toPoint, scroll);
             }
+            
+            glVertexPointer(2, GL_FLOAT, 0, lineLocations);
+            glDrawArrays(GL_LINES, 0, 2);
 		}
+        
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glLineWidth(1.0f);
+        glPopMatrix();
 		disablePrimitiveDraw();
 	}
 }

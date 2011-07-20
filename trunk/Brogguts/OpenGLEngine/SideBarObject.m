@@ -75,6 +75,9 @@
         CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
         // Draw button text
         [[myController sideBarFont] setFontColor:[button textColor]];
+        if ([button isPressed]) {
+            [[myController sideBarFont] setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 0.5f)];
+        }
         [[myController sideBarFont] renderStringJustifiedInFrame:scrolledFrame justification:BitmapFontJustification_MiddleCentered text:[button buttonText] onLayer:kLayerHUDMiddleLayer];
     }
 }

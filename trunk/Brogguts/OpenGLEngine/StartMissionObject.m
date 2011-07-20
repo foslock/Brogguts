@@ -22,8 +22,9 @@
 
 - (id)init
 {
-    self = [super initWithImage:nil withLocation:[currentScene middleOfVisibleScreen] withObjectType:kObjectEndMissionObjectID];
+    self = [super initWithImage:nil withLocation:[currentScene middleOfVisibleScreen] withObjectType:kObjectStartMissionObjectID];
     if (self) {
+        isCheckedForCollisions = NO;
         isTouchable = YES;
         CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
         CGRect temprect = CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
@@ -58,6 +59,7 @@
         [textArray addObject:missionTextOne];
         [textArray addObject:missionTextTwo];
         [textArray addObject:missionTextThree];
+        [textArray addObject:missionTextFour];
         
         for (TextObject* text in textArray) {
             [text setScrollWithBounds:NO];
@@ -119,14 +121,18 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
-    
+    CampaignScene* scene = (CampaignScene*)[self currentScene];
     if ([confirmButton wasJustReleased]) {
-        BroggutScene* scene = [self currentScene];
         if ([scene isKindOfClass:[CampaignScene class]]) {
-            [(CampaignScene*)scene setIsStartingMission:NO];
+            [scene setIsStartingMission:NO];
+            [scene setIsMissionPaused:NO];
         }
     } else if ([menuButton wasJustReleased]) {
-        [[GameController sharedGameController] returnToMainMenuWithSave:YES];
+        if (![scene isStartingMission] || [scene isLoadedScene]) {
+            [[GameController sharedGameController] returnToMainMenuWithSave:YES];
+        } else {
+            [[GameController sharedGameController] returnToMainMenuWithSave:NO];
+        }
     }
     
     for (TiledButtonObject* object in buttonArray) {

@@ -23,5 +23,6 @@
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 - (void)addRefiningCount:(int)counter;
+- (int)currentPotentialMetal;
 
 @end

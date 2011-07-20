@@ -65,6 +65,7 @@ enum {
     BitmapFontChar *charsArray;				// Array of BitmapFontChar objects that will hold all the define font characters
     int lineHeight;							// The common line height of the entire font found in the control file
 	Color4f fontColor;						// The color to be used when rendering this font.  This can be changed at any time
+    Scale2f originalScale;
 }
 
 @property(nonatomic, retain) Image *fontImage;
@@ -80,6 +81,9 @@ enum {
 
 // Renders a TextObject
 - (void)renderTextObject:(TextObject*)obj;
+
+- (void)setFontScale:(Scale2f)scale;
+- (void)resetFontScale;
 
 // Renders the string provided at the designated point
 - (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer;

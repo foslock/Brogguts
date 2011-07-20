@@ -57,13 +57,14 @@ extern NSString* kSavedCampaignFileName;
 extern NSString* kSavedSkirmishFileName;
 extern NSString* kNewMapScenesFileName;
 
+// Options menu booleans
 extern BOOL doesSceneShowGrid;
 
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.015f
 #define CRAFT_COLLISION_YESNO YES
-#define STRUCTURE_COLLISION_YESNO YES
+#define STRUCTURE_COLLISION_YESNO NO
 
 enum SceneTypes {
     kSceneTypeBaseCamp,

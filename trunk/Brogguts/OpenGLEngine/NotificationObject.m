@@ -21,6 +21,7 @@
     self = [super initWithImage:image withLocation:location withObjectType:kObjectNotificationID];
     [image release];
     if (self) {
+        isCheckedForCollisions = NO;
         notificationLocation = location;
         isRenderedInOverview = NO;
         notificationDuration = duration;

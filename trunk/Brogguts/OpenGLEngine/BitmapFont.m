@@ -60,6 +60,7 @@
 		
 		// Reference the font image which has been supplied and which contains the character bitmaps
 		fontImage = [[Image alloc] initWithImageNamed:aFileName filter:aFilter];
+        originalScale = aScale;
         fontImage.scale = aScale;
         
 		// Set up the initial color
@@ -82,6 +83,7 @@
 		
 		// Reference the font image which has been supplied and which contains the character bitmaps
 		self.fontImage = aImage;
+        originalScale = aScale;
         self.fontImage.scale = aScale;
         
 		// Set up the initial color
@@ -100,6 +102,14 @@
 	[self renderStringAt:obj.objectLocation text:obj.objectText onLayer:obj.renderLayer];
 }
 
+- (void)setFontScale:(Scale2f)scale {
+    [fontImage setScale:scale];
+}
+
+- (void)resetFontScale {
+    [fontImage setScale:originalScale];
+}
+
 - (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer {
     
 	// Grab the scale that we will be using
@@ -112,6 +122,7 @@
 		// Grab the character value of the current character.  We take off 32 as the first
 		// 32 characters of the fonts are not used
 		unichar charID = [aText characterAtIndex:i] - 32;
+        charsArray[charID].image.scale = fontImage.scale;
         Image* charImage = charsArray[charID].image;
 		
 		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.

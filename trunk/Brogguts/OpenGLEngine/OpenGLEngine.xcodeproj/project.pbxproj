@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -46,7 +46,7 @@
 		6F006A94137A48AC000C13C6 /* structurefixer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8C137A48AC000C13C6 /* structurefixer.png */; };
 		6F006A95137A48AC000C13C6 /* structureradar.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8D137A48AC000C13C6 /* structureradar.png */; };
 		6F006A96137A48AC000C13C6 /* structurerefinery.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8E137A48AC000C13C6 /* structurerefinery.png */; };
-		6F006A97137A48AC000C13C6 /* structurespacestation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8F137A48AC000C13C6 /* structurespacestation.png */; };
+		6F006A97137A48AC000C13C6 /* structurebasestation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A8F137A48AC000C13C6 /* structurebasestation.png */; };
 		6F006A98137A48AC000C13C6 /* structurestructureupgrades.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A90137A48AC000C13C6 /* structurestructureupgrades.png */; };
 		6F006A99137A48AC000C13C6 /* structureturret.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A91137A48AC000C13C6 /* structureturret.png */; };
 		6F006A9E137A48D2000C13C6 /* craftant.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006A9A137A48D2000C13C6 /* craftant.png */; };
@@ -143,11 +143,11 @@
 		6F4EE691136E1B1F003B0038 /* smallbroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE690136E1B1F003B0038 /* smallbroggut.png */; };
 		6F4EE693136E1BB2003B0038 /* particlebroggut.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F4EE692136E1BB2003B0038 /* particlebroggut.png */; };
 		6F4EE698136E7B86003B0038 /* CampaignSceneThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F4EE697136E7B86003B0038 /* CampaignSceneThree.m */; };
+		6F5E808B13A26B8600540E3E /* HealthDropObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F5E808A13A26B8500540E3E /* HealthDropObject.m */; };
 		6F609F6C134D0B7F006C1E0C /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F609F6B134D0B7F006C1E0C /* Entitlements.plist */; };
 		6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181313707E250039DB7C /* craftbuilddrone.png */; };
 		6F61181A1370DE430039DB7C /* SpawnerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118191370DE430039DB7C /* SpawnerObject.m */; };
 		6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181B1370EAB30039DB7C /* Campaign 2.plist */; };
-		6F6118251370F1720039DB7C /* Campaign 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181E1370F1720039DB7C /* Campaign 4.plist */; };
 		6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181F1370F1720039DB7C /* Campaign 5.plist */; };
 		6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118201370F1720039DB7C /* Campaign 6.plist */; };
 		6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118211370F1720039DB7C /* Campaign 7.plist */; };
@@ -220,7 +220,6 @@
 		6F8421B21365BA7C008CAFE2 /* spritetrashold.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8421B01365BA7C008CAFE2 /* spritetrashold.png */; };
 		6F894431137AEAD100B3DD0F /* spritesheild.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F894430137AEAD100B3DD0F /* spritesheild.png */; };
 		6F894433137AF2BA00B3DD0F /* spritesidebarbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F894432137AF2BA00B3DD0F /* spritesidebarbutton.png */; };
-		6F894435137AF42100B3DD0F /* spritesidebarback.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F894434137AF42100B3DD0F /* spritesidebarback.png */; };
 		6F894437137B290E00B3DD0F /* Map 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F894436137B290D00B3DD0F /* Map 2.plist */; };
 		6F8B859E13074552009CD1BF /* SideBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B859D13074552009CD1BF /* SideBarController.m */; };
 		6F8B869D13076AE0009CD1BF /* PlayerProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B869C13076AE0009CD1BF /* PlayerProfile.m */; };
@@ -266,6 +265,11 @@
 		6FCACA2D12F8717400662BDA /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCACA2C12F8717400662BDA /* NSDataAdditions.m */; };
 		6FCACA3512F871D300662BDA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FCACA3412F871D300662BDA /* libz.dylib */; };
 		6FCACA5012F9DDCD00662BDA /* BroggutScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCACA4F12F9DDCD00662BDA /* BroggutScene.m */; };
+		6FD74DCA1396AD760027E5C4 /* Campaign 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DC91396AD750027E5C4 /* Campaign 4.plist */; };
+		6FD74DCE1396B77F0027E5C4 /* spritesidebarback.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */; };
+		6FD74DD2139809180027E5C4 /* Campaign 11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCF139809150027E5C4 /* Campaign 11.plist */; };
+		6FD74DD3139809180027E5C4 /* Campaign 12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DD0139809160027E5C4 /* Campaign 12.plist */; };
+		6FD74DD4139809180027E5C4 /* Campaign 13.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DD1139809170027E5C4 /* Campaign 13.plist */; };
 		6FD777A613429CA400F734D5 /* spritetrashyoung.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777A513429CA400F734D5 /* spritetrashyoung.png */; };
 		6FD777A81342AF6600F734D5 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FD777A71342AF6600F734D5 /* CoreFoundation.framework */; };
 		6FD777BD1345568E00F734D5 /* SplashScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD777BB1345568E00F734D5 /* SplashScreenViewController.m */; };
@@ -294,7 +298,6 @@
 		6FE6A5EF137C87F400A0E4D8 /* rexlia free.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5EE137C87F400A0E4D8 /* rexlia free.ttf */; };
 		6FE6A5F1137CAB3400A0E4D8 /* craftspiderdronedirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5F0137CAB3400A0E4D8 /* craftspiderdronedirty.png */; };
 		6FE6A5F3137CBA6000A0E4D8 /* backbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5F2137CBA5F00A0E4D8 /* backbutton.png */; };
-		6FE6A605137CC0EF00A0E4D8 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A604137CC0EF00A0E4D8 /* BaseCamp.plist */; };
 		6FE6A608137CC2E300A0E4D8 /* StartMissionObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE6A607137CC2E200A0E4D8 /* StartMissionObject.m */; };
 		6FE6A60A137DB83A00A0E4D8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A609137DB83900A0E4D8 /* icon.png */; };
 		6FE75B1C13036DB400A3C6EF /* CollisionManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6FE75B1B13036DB400A3C6EF /* CollisionManager.mm */; };
@@ -351,7 +354,7 @@
 		6F006A8C137A48AC000C13C6 /* structurefixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurefixer.png; sourceTree = "<group>"; };
 		6F006A8D137A48AC000C13C6 /* structureradar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureradar.png; sourceTree = "<group>"; };
 		6F006A8E137A48AC000C13C6 /* structurerefinery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurerefinery.png; sourceTree = "<group>"; };
-		6F006A8F137A48AC000C13C6 /* structurespacestation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurespacestation.png; sourceTree = "<group>"; };
+		6F006A8F137A48AC000C13C6 /* structurebasestation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurebasestation.png; sourceTree = "<group>"; };
 		6F006A90137A48AC000C13C6 /* structurestructureupgrades.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structurestructureupgrades.png; sourceTree = "<group>"; };
 		6F006A91137A48AC000C13C6 /* structureturret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = structureturret.png; sourceTree = "<group>"; };
 		6F006A9A137A48D2000C13C6 /* craftant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftant.png; sourceTree = "<group>"; };
@@ -489,12 +492,13 @@
 		6F4EE692136E1BB2003B0038 /* particlebroggut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlebroggut.png; sourceTree = "<group>"; };
 		6F4EE696136E7B85003B0038 /* CampaignSceneThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneThree.h; sourceTree = "<group>"; };
 		6F4EE697136E7B86003B0038 /* CampaignSceneThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneThree.m; sourceTree = "<group>"; };
+		6F5E808913A26B8500540E3E /* HealthDropObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HealthDropObject.h; sourceTree = "<group>"; };
+		6F5E808A13A26B8500540E3E /* HealthDropObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HealthDropObject.m; sourceTree = "<group>"; };
 		6F609F6B134D0B7F006C1E0C /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		6F61181313707E250039DB7C /* craftbuilddrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbuilddrone.png; sourceTree = "<group>"; };
 		6F6118181370DE430039DB7C /* SpawnerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpawnerObject.h; sourceTree = "<group>"; };
 		6F6118191370DE430039DB7C /* SpawnerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpawnerObject.m; sourceTree = "<group>"; };
 		6F61181B1370EAB30039DB7C /* Campaign 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 2.plist"; sourceTree = "<group>"; };
-		6F61181E1370F1720039DB7C /* Campaign 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 4.plist"; sourceTree = "<group>"; };
 		6F61181F1370F1720039DB7C /* Campaign 5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 5.plist"; sourceTree = "<group>"; };
 		6F6118201370F1720039DB7C /* Campaign 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 6.plist"; sourceTree = "<group>"; };
 		6F6118211370F1720039DB7C /* Campaign 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 7.plist"; sourceTree = "<group>"; };
@@ -596,7 +600,6 @@
 		6F8421B01365BA7C008CAFE2 /* spritetrashold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetrashold.png; sourceTree = "<group>"; };
 		6F894430137AEAD100B3DD0F /* spritesheild.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesheild.png; sourceTree = "<group>"; };
 		6F894432137AF2BA00B3DD0F /* spritesidebarbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesidebarbutton.png; sourceTree = "<group>"; };
-		6F894434137AF42100B3DD0F /* spritesidebarback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesidebarback.png; sourceTree = "<group>"; };
 		6F894436137B290D00B3DD0F /* Map 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Map 2.plist"; sourceTree = "<group>"; };
 		6F8B859C13074552009CD1BF /* SideBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarController.h; sourceTree = "<group>"; };
 		6F8B859D13074552009CD1BF /* SideBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarController.m; sourceTree = "<group>"; };
@@ -669,6 +672,11 @@
 		6FCACA3412F871D300662BDA /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		6FCACA4E12F9DDCD00662BDA /* BroggutScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggutScene.h; sourceTree = "<group>"; };
 		6FCACA4F12F9DDCD00662BDA /* BroggutScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BroggutScene.m; sourceTree = "<group>"; };
+		6FD74DC91396AD750027E5C4 /* Campaign 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 4.plist"; sourceTree = "<group>"; };
+		6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesidebarback.png; sourceTree = "<group>"; };
+		6FD74DCF139809150027E5C4 /* Campaign 11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 11.plist"; sourceTree = "<group>"; };
+		6FD74DD0139809160027E5C4 /* Campaign 12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 12.plist"; sourceTree = "<group>"; };
+		6FD74DD1139809170027E5C4 /* Campaign 13.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 13.plist"; sourceTree = "<group>"; };
 		6FD777A513429CA400F734D5 /* spritetrashyoung.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetrashyoung.png; sourceTree = "<group>"; };
 		6FD777A71342AF6600F734D5 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		6FD777BA1345568E00F734D5 /* SplashScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenViewController.h; sourceTree = "<group>"; };
@@ -1062,13 +1070,16 @@
 				6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */,
 				6F61181B1370EAB30039DB7C /* Campaign 2.plist */,
 				6FE19D7A138DA257008B2AFD /* Campaign 3.plist */,
-				6F61181E1370F1720039DB7C /* Campaign 4.plist */,
+				6FD74DC91396AD750027E5C4 /* Campaign 4.plist */,
 				6F61181F1370F1720039DB7C /* Campaign 5.plist */,
 				6F6118201370F1720039DB7C /* Campaign 6.plist */,
 				6F6118211370F1720039DB7C /* Campaign 7.plist */,
 				6F6118221370F1720039DB7C /* Campaign 8.plist */,
 				6F6118231370F1720039DB7C /* Campaign 9.plist */,
 				6F6118241370F1720039DB7C /* Campaign 10.plist */,
+				6FD74DCF139809150027E5C4 /* Campaign 11.plist */,
+				6FD74DD0139809160027E5C4 /* Campaign 12.plist */,
+				6FD74DD1139809170027E5C4 /* Campaign 13.plist */,
 			);
 			name = "Campaign Levels";
 			sourceTree = "<group>";
@@ -1273,7 +1284,7 @@
 				6FE6A5D3137B77C700A0E4D8 /* basecampbutton.png */,
 				6FE6A5CD137B702500A0E4D8 /* broggupediabutton.png */,
 				6FE6A5CE137B702500A0E4D8 /* tutorialbutton.png */,
-				6F894434137AF42100B3DD0F /* spritesidebarback.png */,
+				6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */,
 				6F894432137AF2BA00B3DD0F /* spritesidebarbutton.png */,
 				6F894430137AEAD100B3DD0F /* spritesheild.png */,
 				6F61189C1373A74F0039DB7C /* blackpixel.png */,
@@ -1292,7 +1303,7 @@
 		6F8B878C13078E62009CD1BF /* Structures */ = {
 			isa = PBXGroup;
 			children = (
-				6F006A8F137A48AC000C13C6 /* structurespacestation.png */,
+				6F006A8F137A48AC000C13C6 /* structurebasestation.png */,
 				6F006A8A137A48AC000C13C6 /* structureblock.png */,
 				6F006A8E137A48AC000C13C6 /* structurerefinery.png */,
 				6F006A8B137A48AC000C13C6 /* structurecraftupgrades.png */,
@@ -1393,6 +1404,8 @@
 				6F6118191370DE430039DB7C /* SpawnerObject.m */,
 				6F8E25D113302F3C00DCD662 /* TriggerObject.h */,
 				6F8E25D213302F3C00DCD662 /* TriggerObject.m */,
+				6F5E808913A26B8500540E3E /* HealthDropObject.h */,
+				6F5E808A13A26B8500540E3E /* HealthDropObject.m */,
 				6F0E327B1331691E0037C789 /* NotificationObject.h */,
 				6F0E327C1331691E0037C789 /* NotificationObject.m */,
 				6F0E32B4133268C60037C789 /* FingerObject.h */,
@@ -1636,8 +1649,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0410;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OpenGLEngine" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -1734,7 +1750,6 @@
 				6F4EE693136E1BB2003B0038 /* particlebroggut.png in Resources */,
 				6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */,
 				6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */,
-				6F6118251370F1720039DB7C /* Campaign 4.plist in Resources */,
 				6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */,
 				6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */,
 				6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */,
@@ -1790,7 +1805,7 @@
 				6F006A94137A48AC000C13C6 /* structurefixer.png in Resources */,
 				6F006A95137A48AC000C13C6 /* structureradar.png in Resources */,
 				6F006A96137A48AC000C13C6 /* structurerefinery.png in Resources */,
-				6F006A97137A48AC000C13C6 /* structurespacestation.png in Resources */,
+				6F006A97137A48AC000C13C6 /* structurebasestation.png in Resources */,
 				6F006A98137A48AC000C13C6 /* structurestructureupgrades.png in Resources */,
 				6F006A99137A48AC000C13C6 /* structureturret.png in Resources */,
 				6F006A9E137A48D2000C13C6 /* craftant.png in Resources */,
@@ -1806,7 +1821,6 @@
 				6F006AB1137A4B8F000C13C6 /* structureturretdirty.png in Resources */,
 				6F894431137AEAD100B3DD0F /* spritesheild.png in Resources */,
 				6F894433137AF2BA00B3DD0F /* spritesidebarbutton.png in Resources */,
-				6F894435137AF42100B3DD0F /* spritesidebarback.png in Resources */,
 				6F894437137B290E00B3DD0F /* Map 2.plist in Resources */,
 				6FE6A5CF137B702500A0E4D8 /* broggupediabutton.png in Resources */,
 				6FE6A5D0137B702500A0E4D8 /* tutorialbutton.png in Resources */,
@@ -1823,7 +1837,6 @@
 				6FE6A5EF137C87F400A0E4D8 /* rexlia free.ttf in Resources */,
 				6FE6A5F1137CAB3400A0E4D8 /* craftspiderdronedirty.png in Resources */,
 				6FE6A5F3137CBA6000A0E4D8 /* backbutton.png in Resources */,
-				6FE6A605137CC0EF00A0E4D8 /* BaseCamp.plist in Resources */,
 				6FE6A60A137DB83A00A0E4D8 /* icon.png in Resources */,
 				6FAE1C65137DDB2300DCF28F /* Default-Landscape.png in Resources */,
 				6FAE1C66137DDB2300DCF28F /* Default-Landscape~ipad.png in Resources */,
@@ -1836,6 +1849,11 @@
 				6F4EA03D139291A40068DBCB /* broggutsicon.png in Resources */,
 				6F4EA03E139291A40068DBCB /* metalicon.png in Resources */,
 				6F4EA03F139291A40068DBCB /* supplyicon.png in Resources */,
+				6FD74DCA1396AD760027E5C4 /* Campaign 4.plist in Resources */,
+				6FD74DCE1396B77F0027E5C4 /* spritesidebarback.png in Resources */,
+				6FD74DD2139809180027E5C4 /* Campaign 11.plist in Resources */,
+				6FD74DD3139809180027E5C4 /* Campaign 12.plist in Resources */,
+				6FD74DD4139809180027E5C4 /* Campaign 13.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1954,6 +1972,7 @@
 				6FE6A5EC137C844200A0E4D8 /* MenuHelpController.m in Sources */,
 				6FE6A608137CC2E300A0E4D8 /* StartMissionObject.m in Sources */,
 				6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */,
+				6F5E808B13A26B8600540E3E /* HealthDropObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1973,6 +1992,7 @@
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = OpenGLEngine;
+				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 			};
 			name = Debug;
 		};
@@ -1987,6 +2007,7 @@
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = OpenGLEngine;
+				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2002,7 +2023,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "589E4C82-26C2-4A2D-B073-A9D2DB8D0F7C";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
@@ -2021,6 +2041,7 @@
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = OpenGLEngine;
+				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "Ad-hoc";
@@ -2037,7 +2058,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2055,7 +2075,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;

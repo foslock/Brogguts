@@ -13,6 +13,9 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
+#define CAMPAIGN_SEVEN_START_BROGGUTS 10000
+#define CAMPAIGN_SEVEN_WAVE_TIME 10.0f
+
 @implementation CampaignSceneSeven
 
 - (void)dealloc {
@@ -25,37 +28,44 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:6 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@"- Survive the large wave in 12 minutes"];
-        [startObject setMissionTextThree:@"- Destroy all enemy craft in the wave"];
+        [startObject setMissionTextOne:@"- There are no minable brogguts nearby"];
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- You are provided with %i Brogguts",CAMPAIGN_SEVEN_START_BROGGUTS]];
+        [startObject setMissionTextThree:[NSString stringWithFormat:@"- Survive the second wave at %i minutes",(int)CAMPAIGN_SEVEN_WAVE_TIME]];
+        [startObject setMissionTextFour:@"- Destroy all enemy craft in the wave"];
         
         spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
         [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:3];
-        [spawnerOne pauseSpawnerForDuration:(12.0f * 60.0f) + 1.0f];
+        [spawnerOne pauseSpawnerForDuration:(CAMPAIGN_SEVEN_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerOne setSendingLocation:homeBaseLocation];
         [spawnerOne setSendingLocationVariance:128.0f];
         [spawnerOne setStartingLocationVariance:128.0f];
         
-        spawnerTwo = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
-        [spawnerTwo addObjectWithID:kObjectCraftBeetleID withCount:3];
+        spawnerTwo = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:4];
+        [spawnerTwo addObjectWithID:kObjectCraftBeetleID withCount:1];
         [spawnerTwo addObjectWithID:kObjectCraftMothID withCount:2];
-        [spawnerTwo pauseSpawnerForDuration:(12.0f * 60.0f) + 1.0f];
+        [spawnerTwo pauseSpawnerForDuration:(CAMPAIGN_SEVEN_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerTwo setSendingLocation:homeBaseLocation];
         [spawnerTwo setSendingLocationVariance:128.0f];
         [spawnerTwo setStartingLocationVariance:128.0f];
         
         spawnerThree = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
         [spawnerThree addObjectWithID:kObjectCraftBeetleID withCount:3];
-        [spawnerThree pauseSpawnerForDuration:(12.0f * 60.0f) + 1.0f];
+        [spawnerThree pauseSpawnerForDuration:(CAMPAIGN_SEVEN_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerThree setSendingLocation:homeBaseLocation];
         [spawnerThree setSendingLocationVariance:128.0f];
         [spawnerThree setStartingLocationVariance:128.0f];
+        
+        if (!loaded) {
+            [[[GameController sharedGameController] currentProfile] setBrogguts:CAMPAIGN_SEVEN_START_BROGGUTS];
+            [[[GameController sharedGameController] currentProfile] setMetal:PROFILE_METAL_START_COUNT];
+        }
     }
     return self;
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
     [super updateSceneWithDelta:aDelta];
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         return;
     }
     

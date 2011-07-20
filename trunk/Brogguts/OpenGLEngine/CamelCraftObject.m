@@ -14,6 +14,7 @@
 #import "PlayerProfile.h"
 #import "ParticleSingleton.h"
 #import "Image.h"
+#import "SoundSingleton.h"
 
 enum MiningStates {
 	kMiningStateMining,
@@ -32,47 +33,31 @@ enum MiningStates {
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftCamelID withLocation:location isTraveling:traveling];
 	if (self) {
+        [self createLightLocationsWithCount:1];
+        [self createTurretLocationsWithCount:1];
 		attributePlayerCargoCapacity = kCraftCamelCargoSpace;
 		attributePlayerCurrentCargo = 0;
 		attributeMiningCooldown = kCraftCamelMiningCooldown;
         miningCooldownTimer = 0;
 		miningState = kMiningStateNone;
         miningAIValue = 0.0f;
+        [objectImage setScale:Scale2fMake(0.75f, 0.75f)];
 	}
 	return self;
-}
-
-- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
-	if ([super performSpecialAbilityAtLocation:location]) {
-		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
-		if (broggut->broggutValue != -1) {
-			broggut->broggutValue = -1;
-			[[self.currentScene collisionManager] removeMediumBroggutWithID:broggut->broggutID];
-		}
-		return YES;
-	}
-	return NO;
-}
-
-- (void)updateCraftLightLocations {
-
-}
-
-- (void)updateCraftTurretLocations {
-
 }
 
 - (CGPoint)miningLocation {
 	return miningLocation;
 }
 
-- (void)tryMiningBroggutsWithCenter:(CGPoint)location {
+- (void)tryMiningBroggutsWithCenter:(CGPoint)location wasCommanded:(BOOL)commanded {
 	if (attributePlayerCurrentCargo >= attributePlayerCargoCapacity) {
 		[self returnBroggutsHome];
 		miningLocation = location;
 		return;
 	}
-	if (![self startMiningBroggutWithLocation:location]) {
+    NSMutableArray* pointArray = [[NSMutableArray alloc] initWithCapacity:9];
+	if (![self startMiningBroggutWithLocation:location wasCommanded:commanded]) {
 		// Middle broggut isn't minable
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
@@ -80,17 +65,35 @@ enum MiningStates {
 					continue;
 				}
 				CGPoint point = CGPointMake(location.x + (i * COLLISION_CELL_WIDTH), location.y + (j * COLLISION_CELL_HEIGHT));
-				if ([self startMiningBroggutWithLocation:point]) {
-					break;
-				}
+                [pointArray addObject:[NSValue valueWithCGPoint:point]];
 			}
 		}
+        // Shuffle it!
+        NSMutableArray* copy = [pointArray mutableCopy];
+        [pointArray removeAllObjects];
+        while ([copy count] > 0)
+        {
+            int index = arc4random() % [copy count];
+            id objectToMove = [copy objectAtIndex:index];
+            [pointArray addObject:objectToMove];
+            [copy removeObjectAtIndex:index];
+        }
+        for (int i = 0; i < [pointArray count]; i++) {
+            CGPoint point = [[pointArray objectAtIndex:i] CGPointValue];
+            if ([self startMiningBroggutWithLocation:point wasCommanded:commanded]) {
+                [copy release];
+                [pointArray release];
+                return;
+            }
+        }
+        [copy release];
 	}
+    [pointArray release];
 }
 
-- (BOOL)startMiningBroggutWithLocation:(CGPoint)location {
+- (BOOL)startMiningBroggutWithLocation:(CGPoint)location wasCommanded:(BOOL)commanded {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
-	if (broggut && broggut->broggutValue != -1) {
+    if (broggut && broggut->broggutValue != -1) {
         if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
             // NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
             CGPoint broggutLoc = [[self.currentScene collisionManager] getBroggutLocationForID:broggut->broggutID];
@@ -104,7 +107,10 @@ enum MiningStates {
         } else {
             miningState = kMiningStateNone;
             [self setMovingAIState:kMovingAIStateStill];
-            [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
+            if (commanded) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipDeny] location:objectLocation];
+                [currentScene showHelpMessageWithMessageID:kHelpMessageMiningEdges];
+            }
             return NO;
         }
 	}
@@ -118,16 +124,24 @@ enum MiningStates {
 - (void)cashInBrogguts {
     [super cashInBrogguts];
     if (miningState == kMiningStateReturning) {
-        [self tryMiningBroggutsWithCenter:miningLocation];
+        [self tryMiningBroggutsWithCenter:miningLocation wasCommanded:NO];
     }
 }
 
 - (void)returnBroggutsHome {
-	if (objectAlliance == kAllianceFriendly) {
-        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene homeBaseLocation]]];
+    if (objectAlliance == kAllianceFriendly) {
+        CGPoint home = [self.currentScene homeBaseLocation];
+        float dist = 256.0f;
+        float angle = GetAngleInDegreesFromPoints(home, objectLocation);
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:CGPointMake(home.x + dist * cosf(DEGREES_TO_RADIANS(angle)),
+                                                                                           home.y + dist * sinf(DEGREES_TO_RADIANS(angle)))]];
         [self followPath:homePath isLooped:NO];
     } else if (objectAlliance == kAllianceEnemy) {
-        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:[self.currentScene enemyBaseLocation]]];
+        CGPoint home = [self.currentScene enemyBaseLocation];
+        float dist = 256.0f;
+        float angle = GetAngleInDegreesFromPoints(home, objectLocation);
+        NSArray* homePath = [NSArray arrayWithObject:[NSValue valueWithCGPoint:CGPointMake(home.x + dist * cosf(DEGREES_TO_RADIANS(angle)),
+                                                                                           home.y + dist * sinf(DEGREES_TO_RADIANS(angle)))]];
         [self followPath:homePath isLooped:NO];
     }
 	[self setMovingAIState:kMovingAIStateMining];
@@ -149,17 +163,6 @@ enum MiningStates {
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
     
-    BroggutObject* closestBrog = [[[self currentScene] collisionManager] closestSmallBroggutToLocation:objectLocation];
-    if (isTouchable && closestBrog && !closestBrog.destroyNow) {
-        if (GetDistanceBetweenPointsSquared(objectLocation, closestBrog.objectLocation) < POW2(attributeAttackRange)) {
-            if ( (attributePlayerCurrentCargo + closestBrog.broggutValue) < attributePlayerCargoCapacity) {
-                [self addCargo:closestBrog.broggutValue];
-                [closestBrog setDestroyNow:YES];
-                [[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:closestBrog.objectLocation];
-            }
-        }
-    }
-    
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -173,7 +176,7 @@ enum MiningStates {
 		MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:miningLocation];
 		if (broggut->broggutValue > 0) {
 			// There are still brogguts left...
-			if (miningCooldownTimer <= 0) {
+            if (miningCooldownTimer <= 0) {
                 int broggutChangeAmount = CLAMP(1, 0, broggut->broggutValue);
                 miningCooldownTimer = attributeMiningCooldown;
                 attributePlayerCurrentCargo += broggutChangeAmount;
@@ -188,8 +191,6 @@ enum MiningStates {
 		if (broggut->broggutValue <= 0) {
 			// The broggut is dead and should be destroyed...
 			[[self.currentScene collisionManager] removeMediumBroggutWithID:broggut->broggutID];
-			// DESTROY BROGGUT
-			[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeBroggut atLocation:miningLocation];
 			// Return home
 			[self returnBroggutsHome];
 		}
@@ -203,10 +204,10 @@ enum MiningStates {
 
 - (void)renderUnderObjectWithScroll:(Vector2f)scroll {
     [super renderUnderObjectWithScroll:scroll];
-    
     enablePrimitiveDraw();
+    
 	if (miningState == kMiningStateMining) {
-		if (![currentScene isMissionOver]) {
+        if (![currentScene isMissionOver]) {
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
             float randY = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_HEIGHT) / 4);
@@ -215,8 +216,8 @@ enum MiningStates {
             glLineWidth(1.0f);
         }
 	}
-    disablePrimitiveDraw();
     
+    disablePrimitiveDraw();
     if (isBeingDragged) {
 		[[self.currentScene collisionManager] drawValidityRectForLocation:dragLocation forMining:YES];
 	}
@@ -225,14 +226,13 @@ enum MiningStates {
 
 - (void)touchesEndedAtLocation:(CGPoint)location {
 	if (isBeingDragged) {
-		if ([self startMiningBroggutWithLocation:location]) {
+		if ([self startMiningBroggutWithLocation:location wasCommanded:YES]) {
             if (isBeingControlled) {
                 [[self currentScene] removeControlledCraft:self];
                 [self setIsBeingControlled:NO];
             }
         }
 	}
-	
 	[super touchesEndedAtLocation:location];
 }
 

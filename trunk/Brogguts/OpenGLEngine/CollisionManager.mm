@@ -935,8 +935,10 @@
 
 - (void)addCollidableObject:(CollidableObject*)object {
 	int UID = object.uniqueObjectID;
+    
+    // This is an invarient of being the input of this function, just double checking
 	object.isCheckedForCollisions = YES;
-	
+    
 	if ([objectTable objectForKey:[NSNumber numberWithInt:UID]] != nil) {
 		NSLog(@"ERROR - Duplicate ObjectID in Collision Manager");
 		return; //Already added this object
@@ -1013,6 +1015,7 @@
 
 - (void)putNearbyObjectsToLocation:(CGPoint)location intoArray:(NSMutableArray*)nearbyObjectArray {
 	[nearbyObjectArray retain];
+    [nearbyObjectArray removeAllObjects];
 	for (int cell = 0; cell < 9; cell++) { // Goes through every adjacent cell as well as the containing
 		CGPoint cellLocation;
 		if (cell / 3 == 0) { // Bottom row

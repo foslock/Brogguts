@@ -14,8 +14,8 @@
 #import "CampaignScene.h"
 
 enum SectionNames {
-    kSectionNewGame,
     kSectionSavedScenes,
+    kSectionUnlockedMissions,
     kSectionExitButton,
 };
 
@@ -30,12 +30,24 @@ enum SectionNames {
         NSArray* savedPlistArray = [NSArray arrayWithContentsOfFile:savedScenePath];
         savedGamesNames = [[NSMutableArray alloc] initWithArray:savedPlistArray];
         numberOfSavedGames = [savedGamesNames count];
+        
+        unlockedMissionNames = [[NSMutableArray alloc] init];
+        // Add each name with index under the current player experience
+        int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
+        playerExperience = 14;
+        for (int i = 0 ; i <= playerExperience; i++) {
+            NSString* mission = [NSString stringWithString:kCampaignSceneSaveTitles[i]];
+            [unlockedMissionNames insertObject:mission atIndex:0];
+        }
+        
+        numberOfUnlockedMissions = [unlockedMissionNames count];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [unlockedMissionNames release];
     [savedGamesNames release];
     [super dealloc];
 }
@@ -101,11 +113,11 @@ enum SectionNames {
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case kSectionNewGame:
-            return @"New Game";
-            break;
         case kSectionSavedScenes:
-            return @"Saved Games";
+            return @"Load a Saved Mission (Current Mission In White)";
+            break;
+        case kSectionUnlockedMissions:
+            return @"Start a New Mission (Most Recent In White)";
             break;
         default:
             return @"";
@@ -123,11 +135,11 @@ enum SectionNames {
 {
     // Return the number of rows in the section.
     switch (section) {
-        case kSectionNewGame:
-            return 1;
-            break;
         case kSectionSavedScenes:
             return numberOfSavedGames;
+            break;
+        case kSectionUnlockedMissions:
+            return numberOfUnlockedMissions;
             break;
         case kSectionExitButton:
             return 1;
@@ -148,15 +160,21 @@ enum SectionNames {
     }
     
     switch (indexPath.section) {
-        case kSectionNewGame:
-            cell.textLabel.textAlignment = UITextAlignmentLeft;
-            cell.textLabel.text = @"Start a New Game";
-            cell.backgroundColor = [UIColor whiteColor];
-            break;
         case kSectionSavedScenes:
-            cell.textLabel.textAlignment = UITextAlignmentLeft;
+            cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.textLabel.text = [savedGamesNames objectAtIndex:indexPath.row];
-            cell.backgroundColor = [UIColor whiteColor];
+            cell.backgroundColor = [UIColor grayColor];
+            if (indexPath.row == 0) {
+                cell.backgroundColor = [UIColor whiteColor];
+            }
+            break;
+        case kSectionUnlockedMissions:
+            cell.textLabel.textAlignment = UITextAlignmentCenter;
+            cell.textLabel.text = [unlockedMissionNames objectAtIndex:indexPath.row];
+            cell.backgroundColor = [UIColor grayColor];
+            if (indexPath.row == 0) {
+                cell.backgroundColor = [UIColor whiteColor];
+            }
             break;
         case kSectionExitButton:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
@@ -214,10 +232,6 @@ enum SectionNames {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.section) {
-        case kSectionNewGame: {
-            [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
-        }
-            break;
         case kSectionSavedScenes: {
             NSString* savedTitleName = [savedGamesNames objectAtIndex:indexPath.row];
             NSLog(@"Load the saved scene with name %@", savedTitleName);
@@ -237,6 +251,19 @@ enum SectionNames {
                 }
             }
             [sharedGameController fadeOutToSceneWithFilename:savedFileName sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:YES];
+        }
+            break;
+        case kSectionUnlockedMissions: {
+            NSString* savedSceneName = [unlockedMissionNames objectAtIndex:indexPath.row];
+            int index = 0;
+            for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+                NSString* otherName = kCampaignSceneSaveTitles[i];
+                if ([otherName caseInsensitiveCompare:savedSceneName] == NSOrderedSame) {
+                    index = i;
+                    break;
+                }
+            }
+            [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[index] sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:NO];
         }
             break;
         case kSectionExitButton: {

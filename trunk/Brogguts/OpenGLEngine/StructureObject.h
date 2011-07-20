@@ -10,6 +10,8 @@
 #import "TouchableObject.h"
 
 #define STRUCTURE_LIGHT_INSET 16.0f
+#define STRUCTURE_HEALTH_PER_NOTCH 4
+#define STRUCTURE_ALLIANCE_TINT_AMOUNT 0.15f
 
 @class Image;
 
@@ -45,6 +47,7 @@
 }
 
 @property (readonly) int attributeHullCurrent;
+@property (readonly) int attributeHullCapacity;
 
 - (id)initWithTypeID:(int)typeID withLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 

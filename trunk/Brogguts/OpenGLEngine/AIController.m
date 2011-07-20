@@ -201,13 +201,13 @@
             case kCraftAICommandMine: { // Deselects craft is successfully started mining
                 if ([craft isKindOfClass:[AntCraftObject class]]) {
                     AntCraftObject* thisAnt = (AntCraftObject*)craft;
-                    [thisAnt tryMiningBroggutsWithCenter:location];
+                    [thisAnt tryMiningBroggutsWithCenter:location wasCommanded:NO];
                     float dist = GetDistanceBetweenPoints(thisAnt.objectLocation, location);
                     currentAIDetails.broggutIncomeRate += (kCraftAntEngines / (float)kCraftAntMiningCooldown) / dist;
                     thisAnt.miningAIValue = (kCraftAntEngines / (float)kCraftAntMiningCooldown) / dist;
                 } else if ([craft isKindOfClass:[CamelCraftObject class]]) {
                     CamelCraftObject* thisCamel = (CamelCraftObject*)craft;
-                    [thisCamel tryMiningBroggutsWithCenter:location];
+                    [thisCamel tryMiningBroggutsWithCenter:location wasCommanded:NO];
                     float dist = GetDistanceBetweenPoints(thisCamel.objectLocation, location);
                     currentAIDetails.broggutIncomeRate += (kCraftCamelEngines / (float)kCraftCamelMiningCooldown) / dist;
                     thisCamel.miningAIValue = (kCraftCamelEngines / (float)kCraftCamelMiningCooldown) / dist;

@@ -70,8 +70,8 @@ typedef struct Path_Node_Queue {
 #define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
 #define INITIAL_TABLE_CAPACITY 100		// Initial capacity of the table holding all CollidableObjects
 #define COLLISION_DETECTION_FREQ 4		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
-#define RADIAL_EFFECT_CHECK_FREQ 4		// " " to check radial effects
-#define RADIAL_EFFECT_MAX_COUNT 10      // Maximum number of objects to check for radial effects
+#define RADIAL_EFFECT_CHECK_FREQ 3		// " " to check radial effects
+#define RADIAL_EFFECT_MAX_COUNT 25      // Maximum number of objects to check for radial effects
 #define MEDIUM_BROGGUT_IMAGE_COUNT 5   // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {

@@ -32,6 +32,7 @@
                                 drawRect.origin.y + drawRect.size.height / 2);
     self = [super initWithImage:nil withLocation:point withObjectType:kObjectTiledButtonID];
     if (self) {
+        isCheckedForCollisions = NO;
         isTouchable = YES;
         isPushed = NO;
         isPushable = YES;

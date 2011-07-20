@@ -21,7 +21,7 @@
 #import "SoundSingleton.h"
 
 @implementation CraftObject
-@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, isUnderAura, craftDoesRotate;
+@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, attributeHullCapacity, isUnderAura, craftDoesRotate;
 
 - (void)dealloc {
     if (turretPointsArray) {
@@ -387,6 +387,7 @@
         [self showCraftSheild];
     }
     attributeHullCurrent -= damage;
+    [self showSelectionCircle];
     
     if (objectAlliance == kAllianceFriendly) {
         NotificationObject* noti = [[NotificationObject alloc] initWithLocation:self.objectLocation withDuration:3.0f];
@@ -549,6 +550,12 @@
         return;
     }
     
+    if (objectAlliance == kAllianceFriendly) {
+        [objectImage setColor:Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f)];
+    } else if (objectAlliance == kAllianceEnemy) {
+        [objectImage setColor:Color4fMake(1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f)];
+    }
+    
     if (isShowingSheild) {
         if (sheildTimer > 0.0f) {
             sheildTimer -= aDelta;
@@ -697,17 +704,21 @@
     [super updateObjectLogicWithDelta:aDelta];
 }
 
-- (void)drawHoverSelectionWithScroll:(Vector2f)scroll {
+- (void)drawHoverSelectionWithScroll:(Vector2f)scroll withAlpha:(float)alpha {
     // Draw "selection circle"
-    glLineWidth(2.0f);
+    glLineWidth(2.5f);
+    float filledAlpha = CLAMP(alpha, 0.0f, 1.0f);
+    float unfilledAlpha = CLAMP(alpha, 0.0f, 0.6f);
     if (objectAlliance == kAllianceFriendly) {
-        Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
-        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
-        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+        Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, filledAlpha);
+        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
+                                attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     } else {
-        Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
-        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
-        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent, attributeHullCapacity, filled, unfilled, scroll);
+        Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, filledAlpha);
+        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
+                                attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     }
     glLineWidth(1.0f);
 }
@@ -744,7 +755,7 @@
     
     if (isCurrentlyHoveredOver || isBeingControlled && !isBlinkingSelectionCircle) {
         enablePrimitiveDraw();
-        [self drawHoverSelectionWithScroll:scroll];
+        [self drawHoverSelectionWithScroll:scroll withAlpha:0.8f];
         disablePrimitiveDraw();
     }
     
@@ -792,6 +803,19 @@
         [craftSheild setColor:Color4fMake(1.0f, 1.0f, 1.0f, alpha)];
         [craftSheild renderCenteredAtPoint:objectLocation withScrollVector:scroll];
     }
+}
+
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    [super renderCenteredAtPoint:aPoint withScrollVector:vector];
+#ifdef CRAFT_SHADOWS
+    int tempLayer = [objectImage renderLayer];
+    [objectImage setRenderLayer:CLAMP(tempLayer - 1, 0, RENDERING_LAYER_COUNT - 1)];
+    Color4f color = [objectImage color];
+    [objectImage setColor:Color4fMake(0.0f, 0.0f, 0.0f, SHADOW_ALPHA)];
+    [objectImage renderCenteredAtPoint:CGPointMake(aPoint.x + SHADOW_OFFSET_HORIZONTAL, aPoint.y + SHADOW_OFFSET_VERTICAL) withScrollVector:vector];
+    [objectImage setRenderLayer:tempLayer];
+    [objectImage setColor:color];
+#endif
 }
 
 - (void)renderUnderObjectWithScroll:(Vector2f)scroll {
@@ -876,8 +900,7 @@
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {
-    // OVERRIDE ME
-    NSLog(@"Object (%i) was double tapped!",uniqueObjectID);
+    [[self currentScene] attemptToSelectCraftInVisibleRectWithID:objectType];
 }
 
 @end

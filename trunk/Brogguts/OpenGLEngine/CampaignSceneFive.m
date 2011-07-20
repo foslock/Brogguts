@@ -13,6 +13,8 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
+#define CAMPAIGN_FIVE_WAVE_TIME 8.0f
+
 @implementation CampaignSceneFive
 
 - (void)dealloc {
@@ -25,26 +27,26 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:4 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@"- Survive the wave in 8 minutes"];
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Survive the wave approaching in %i minutes",(int)CAMPAIGN_FIVE_WAVE_TIME]];
         [startObject setMissionTextThree:@"- Destroy all enemy craft in the wave"];
         
         spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
         [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:2];
-        [spawnerOne pauseSpawnerForDuration:(8.0f * 60.0f) + 1.0f];
+        [spawnerOne pauseSpawnerForDuration:(CAMPAIGN_FIVE_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerOne setSendingLocation:homeBaseLocation];
         [spawnerOne setSendingLocationVariance:128.0f];
         [spawnerOne setStartingLocationVariance:128.0f];
         
         spawnerTwo = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
         [spawnerTwo addObjectWithID:kObjectCraftBeetleID withCount:2];
-        [spawnerTwo pauseSpawnerForDuration:(8.0f * 60.0f) + 1.0f];
+        [spawnerTwo pauseSpawnerForDuration:(CAMPAIGN_FIVE_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerTwo setSendingLocation:homeBaseLocation];
         [spawnerTwo setSendingLocationVariance:128.0f];
         [spawnerTwo setStartingLocationVariance:128.0f];
         
         spawnerThree = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
         [spawnerThree addObjectWithID:kObjectCraftBeetleID withCount:2];
-        [spawnerThree pauseSpawnerForDuration:(8.0f * 60.0f) + 1.0f];
+        [spawnerThree pauseSpawnerForDuration:(CAMPAIGN_FIVE_WAVE_TIME * 60.0f) + 1.0f];
         [spawnerThree setSendingLocation:homeBaseLocation];
         [spawnerThree setSendingLocationVariance:128.0f];
         [spawnerThree setStartingLocationVariance:128.0f];
@@ -54,7 +56,7 @@
 
 - (void)updateSceneWithDelta:(float)aDelta {
     [super updateSceneWithDelta:aDelta];
-    if (isStartingMission) {
+    if (isStartingMission || isMissionPaused) {
         return;
     }
     

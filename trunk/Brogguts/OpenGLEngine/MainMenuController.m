@@ -74,7 +74,8 @@
 - (IBAction)startCampaignLevels {
     NSString* path = [[GameController sharedGameController] documentsPathWithFilename:kSavedCampaignFileName];
     NSArray* savedArray = [NSArray arrayWithContentsOfFile:path];
-    if ([savedArray count] != 0) {
+    int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
+    if ([savedArray count] != 0 || playerExperience != 0) {
         SavedGameChoiceController* controller = [[SavedGameChoiceController alloc] init];
         controller.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentModalViewController:controller animated:YES];
@@ -102,15 +103,10 @@
 
 - (IBAction)loadProfileViewController {
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:NO isLoading:YES];
+    [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
 }
 
 - (IBAction)loadSkirmishViewController {
-    /*
-    SkirmishMenuController* skirmish = [[SkirmishMenuController alloc] init];
-    [self presentModalViewController:skirmish animated:YES];
-    [skirmish release];
-     */
     MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
     [mapchoice setOnlineMatch:YES];
     mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -182,7 +178,7 @@
 - (void)updateCountLabels {
     // Update the space year and broggut count labels
     int spaceYear = [[[GameController sharedGameController] currentProfile] playerSpaceYear];
-    int brogguts = [[[GameController sharedGameController] currentProfile] broggutCount];
+    int brogguts = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
     [broggutCount setText:[NSString stringWithFormat:@"Broggut Count: %i", brogguts]];
     [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i A.C.", spaceYear]];
 }
@@ -230,6 +226,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[GameController sharedGameController] savePlayerProfile];
+     
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     
     [backgroundOne setCenter:center];

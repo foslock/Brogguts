@@ -38,19 +38,19 @@ enum BroggutConvertAmounts {
             NSString* buttonText;
 			switch (i) {
 				case kBroggutButtonConvert50:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert50 * 10, kBroggutAmountConvert50];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert50 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert50];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert100:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert100 * 10, kBroggutAmountConvert100];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert100 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert100];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert200:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert200 * 10, kBroggutAmountConvert200];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert200 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert200];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert500:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert500 * 10, kBroggutAmountConvert500];
+                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert500 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert500];
 					[button setButtonText:buttonText];
 				default:
 					break;
@@ -65,7 +65,7 @@ enum BroggutConvertAmounts {
     [super updateSideBar];
     int broggutCount = [[[GameController sharedGameController] currentProfile] broggutCount];
     
-    if (broggutCount < kBroggutAmountConvert50 * 10) {
+    if (broggutCount < kBroggutAmountConvert50 * BROGGUTS_NEEDED_FOR_ONE_METAL) {
         SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert50];
         [button setIsDisabled:YES];
     } else {
@@ -73,7 +73,7 @@ enum BroggutConvertAmounts {
         [button setIsDisabled:NO];
     }
     
-    if (broggutCount < kBroggutAmountConvert100 * 10) {
+    if (broggutCount < kBroggutAmountConvert100 * BROGGUTS_NEEDED_FOR_ONE_METAL) {
         SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert100];
         [button setIsDisabled:YES];
     } else {
@@ -81,7 +81,7 @@ enum BroggutConvertAmounts {
         [button setIsDisabled:NO];
     }
     
-    if (broggutCount < kBroggutAmountConvert200 * 10) {
+    if (broggutCount < kBroggutAmountConvert200 * BROGGUTS_NEEDED_FOR_ONE_METAL) {
         SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert200];
         [button setIsDisabled:YES];
     } else {
@@ -89,7 +89,7 @@ enum BroggutConvertAmounts {
         [button setIsDisabled:NO];
     }
     
-    if (broggutCount < kBroggutAmountConvert500 * 10) {
+    if (broggutCount < kBroggutAmountConvert500 * BROGGUTS_NEEDED_FOR_ONE_METAL) {
         SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert500];
         [button setIsDisabled:YES];
     } else {
