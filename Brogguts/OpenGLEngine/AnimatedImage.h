@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+// This class automatically loops an animated set of frames
 
 @interface AnimatedImage : NSObject {
     int currentSubImage;

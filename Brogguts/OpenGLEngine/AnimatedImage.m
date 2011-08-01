@@ -74,13 +74,17 @@
 }
 
 - (void)renderCurrentSubImageAtPoint:(CGPoint)aPoint {
-    Image* curImage = [subImageArray objectAtIndex:currentSubImage];
-    [curImage renderCenteredAtPoint:aPoint scale:Scale2fMake(1.0f, 1.0f) rotation:0.0f];
+    if (subImageCount > 0) {
+        Image* curImage = [subImageArray objectAtIndex:currentSubImage];
+        [curImage renderCenteredAtPoint:aPoint scale:Scale2fMake(1.0f, 1.0f) rotation:0.0f];
+    }
 }
 
 - (void)renderCurrentSubImageAtPoint:(CGPoint)aPoint withScale:(Scale2f)aScale withRotation:(float)aRot {
+    if (subImageCount > 0) {
     Image* curImage = [subImageArray objectAtIndex:currentSubImage];
     [curImage renderCenteredAtPoint:aPoint scale:aScale rotation:aRot];
+    }
 }
 
 - (void)setRenderLayer:(int)layer {

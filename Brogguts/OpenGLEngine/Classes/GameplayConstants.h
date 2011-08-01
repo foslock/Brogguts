@@ -14,7 +14,7 @@
 // Password: brogguts123
 //
 // Username: foslock@hotmail.com
-// Password: hippos123
+// Password: h****s123
 //
 
 
@@ -24,7 +24,7 @@
 //
 
 #define MULTIPLAYER
-#define RESET_ACHIEVEMENTS_ON_START
+// #define RESET_ACHIEVEMENTS_ON_START
 // #define BOUNDING_DEBUG
 // #define DRAW_PATH
 #define STARS
@@ -43,6 +43,8 @@
 enum FontIDs {
 	kFontGothicID,
 	kFontBlairID,
+    kFontGulimID,
+    kFontEurostileID,
 };
 
 //

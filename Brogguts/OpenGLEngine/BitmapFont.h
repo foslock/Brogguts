@@ -88,6 +88,9 @@ enum {
 // Renders the string provided at the designated point
 - (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer;
 
+// This will automatically add new lines to the text to fit in the width
+- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer withWidthLimit:(float)widthLimit;
+
 // Renders the string provided justified within the frame provided.  The justification used is defined by the 
 // justification enum supplied
 - (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer;

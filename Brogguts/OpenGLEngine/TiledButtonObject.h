@@ -56,5 +56,6 @@
 - (void)setIsPushable:(BOOL)pushable;
 - (void)setIsPushed:(BOOL)pushed;
 - (void)setRenderLayer:(GLuint)renderLayer;
+- (void)setColor:(Color4f)color;
 
 @end

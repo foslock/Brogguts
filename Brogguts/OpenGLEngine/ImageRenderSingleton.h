@@ -25,7 +25,7 @@ enum LayerNames {
 
 // Defines the maximum number of images that can be sent to the render manager
 // before issuing a render command
-#define kMax_Images 400
+#define kMax_Images 600
 #define kMax_Textures 100
 #define RENDERING_LAYER_COUNT 7
 
