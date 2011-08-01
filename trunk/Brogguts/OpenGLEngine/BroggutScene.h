@@ -102,6 +102,12 @@ enum kProcessFrameOffset {
     BOOL isAllowingStructures;
     BOOL isLoadedScene;
     
+    // No losses achievement
+    BOOL didLoseAnyCraftOrStructure;
+    
+    // USED ONLY FOR CAMPAIGN SCENES TO STORE SPAWNERS
+    NSMutableArray* sceneSpawners;
+    
     // The final box that pops up when the scene is done
     EndMissonObject* endMissionObject;
     float fadeBackgroundAlpha;
@@ -273,12 +279,12 @@ enum kProcessFrameOffset {
 @property (nonatomic, assign) CGPoint currentBuildDragLocation;
 @property (nonatomic, assign) BOOL isBuildingStructure;
 @property (nonatomic, assign) BOOL isShowingNotification;
-@property (nonatomic, assign) NotificationObject* notification;
+@property (nonatomic, readonly) NotificationObject* notification;
 @property (readonly) BOOL isAllowingCraft;
 @property (readonly) BOOL isAllowingStructures;
 @property (nonatomic, assign) int numberOfEnemyShips;
 @property (nonatomic, assign) int numberOfEnemyStructures;
-
+@property (readonly) NSMutableArray* sceneSpawners;
 
 #pragma mark -
 #pragma mark Selectors
@@ -335,6 +341,9 @@ enum kProcessFrameOffset {
 
 // Adds a text object to the scene
 - (void)addTextObject:(TextObject*)obj;
+
+// Sets the scene specific notification object
+- (void)setSceneNotification:(NotificationObject*)noti;
 
 // Increments the refinery count
 - (void)addRefinery:(RefineryStructureObject*)refinery;

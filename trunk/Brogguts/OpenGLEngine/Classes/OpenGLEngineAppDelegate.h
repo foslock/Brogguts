@@ -16,6 +16,7 @@
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
     BOOL applicationSaved;
+    BOOL resignStoppedAnimation;
     MainMenuController* mainMenuController;
 	GameController* sharedGameController;
     UIWindow *window;

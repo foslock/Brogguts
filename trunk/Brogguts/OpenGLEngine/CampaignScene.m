@@ -13,6 +13,8 @@
 #import "EndMissionObject.h"
 #import "PlayerProfile.h"
 #import "StartMissionObject.h"
+#import "GameCenterSingleton.h"
+#import "SpawnerObject.h"
 
 NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Campaign 1",
@@ -66,7 +68,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
     } else {
         self = [super initWithFileName:kCampaignSceneSaveTitles[campIndex] wasLoaded:loaded];
     }
-    if (self) {
+    if (self) {        
         nextSceneFileName = kCampaignSceneFileNames[campIndex+1];
         sceneFileName = kCampaignSceneFileNames[campIndex];
         
@@ -103,6 +105,23 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
     return nil; // OVERRIDE!
 }
 
+- (void)addSpawner:(SpawnerObject*)spawner {
+    [sceneSpawners addObject:spawner];
+}
+
+- (SpawnerObject*)spawnerWithID:(int)spawnerID {
+    if (sceneSpawners && spawnerID < [sceneSpawners count]) {
+        return [sceneSpawners objectAtIndex:spawnerID];
+    }
+    return nil;
+}
+
+- (void)updateSpawnersWithDelta:(float)aDelta {
+    for (SpawnerObject* spawner in sceneSpawners) {
+        [spawner updateSpawnerWithDelta:aDelta];
+    }
+}
+
 - (void)updateSceneWithDelta:(float)aDelta {
     if (isStartingMission || isMissionPaused) {
         [startObject updateObjectLogicWithDelta:aDelta];
@@ -112,6 +131,9 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             isMissionOver = YES;
+            if (!didLoseAnyCraftOrStructure) {
+                [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDNoLossesMission percentComplete:100.0f];
+            }
             [endMissionObject setWasSuccessfulMission:YES];
             [endMissionObject setCurrentScene:self];
             int currentExperience = [[sharedGameController currentProfile] playerExperience];
@@ -125,6 +147,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             isMissionOver = YES;
+            [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDLoseMission percentComplete:100.0f];
             [endMissionObject setWasSuccessfulMission:NO];
             [endMissionObject setCurrentScene:self];
         }

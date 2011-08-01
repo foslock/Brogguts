@@ -12,9 +12,7 @@
 @class SpawnerObject;
 
 @interface CampaignSceneSeven : CampaignScene {
-    SpawnerObject* spawnerOne;
-    SpawnerObject* spawnerTwo;
-    SpawnerObject* spawnerThree;
+
 }
 
 @end

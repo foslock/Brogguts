@@ -78,6 +78,7 @@
 
 - (void)objectWasDestroyed;
 
+- (void)normalizePosition;
 - (BOOL)isOnScreen;
 
 

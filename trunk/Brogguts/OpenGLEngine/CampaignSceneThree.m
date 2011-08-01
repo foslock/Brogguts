@@ -17,21 +17,20 @@
 
 @implementation CampaignSceneThree
 
-- (void)dealloc {
-    [spawner release];
-    [super dealloc];
-}
-
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:2 wasLoaded:loaded];
     if (self) {
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Survive the wave approaching in %i minutes",(int)CAMPAIGN_THREE_WAVE_TIME]];
         [startObject setMissionTextThree:@"- Destroy all 10 enemy Ants in the wave"];
-        spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
-        [spawner pauseSpawnerForDuration:(CAMPAIGN_THREE_WAVE_TIME * 60.0f) + 1.0f];
-        [spawner setSendingLocation:homeBaseLocation];
-        [spawner setSendingLocationVariance:100.0f];
-        [spawner setStartingLocationVariance:128.0f];
+        if (!loaded) {
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
+            [spawner pauseSpawnerForDuration:(CAMPAIGN_THREE_WAVE_TIME * 60.0f) + 1.0f];
+            [spawner setSendingLocation:homeBaseLocation];
+            [spawner setSendingLocationVariance:100.0f];
+            [spawner setStartingLocationVariance:128.0f];
+            [self addSpawner:spawner];
+            [spawner release];
+        }
     }
     return self;
 }
@@ -41,8 +40,8 @@
     if (isStartingMission || isMissionPaused) {
         return;
     }
-    int minutes = [spawner pauseTimeLeft] / 60.0f;
-    int seconds = [spawner pauseTimeLeft] - (60.0f * minutes);
+    int minutes = [[self spawnerWithID:0] pauseTimeLeft] / 60.0f;
+    int seconds = [[self spawnerWithID:0] pauseTimeLeft] - (60.0f * minutes);
     NSString* countdown;
     
     if (seconds >= 10) {
@@ -56,12 +55,12 @@
     } else {
         [countdownTimer setObjectText:@""];
     }
-    [spawner updateSpawnerWithDelta:aDelta];
+    [self updateSpawnersWithDelta:aDelta];
 }
 
 - (BOOL)checkObjective {
     int enemyShipCount = [self numberOfEnemyShips];
-    if ([spawner isDoneSpawning] && enemyShipCount == 0) {
+    if ([[self spawnerWithID:0] isDoneSpawning] && enemyShipCount == 0) {
         return YES;
     }
     return NO; // NO

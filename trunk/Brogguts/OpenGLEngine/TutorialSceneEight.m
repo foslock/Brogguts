@@ -30,13 +30,13 @@
         BeetleCraftObject* enemyBeetleOne = [[BeetleCraftObject alloc] initWithLocation:enemyLocOne isTraveling:NO];
         enemyCraftOne = enemyBeetleOne;
         [enemyBeetleOne setObjectAlliance:kAllianceEnemy];
-        [self addTouchableObject:enemyBeetleOne withColliding:STRUCTURE_COLLISION_YESNO];
+        [self addTouchableObject:enemyBeetleOne withColliding:CRAFT_COLLISION_YESNO];
         [enemyBeetleOne release];
         
         BeetleCraftObject* enemyBeetleTwo = [[BeetleCraftObject alloc] initWithLocation:enemyLocTwo isTraveling:NO];
         enemyCraftTwo = enemyBeetleTwo;
         [enemyBeetleTwo setObjectAlliance:kAllianceEnemy];
-        [self addTouchableObject:enemyBeetleTwo withColliding:STRUCTURE_COLLISION_YESNO];
+        [self addTouchableObject:enemyBeetleTwo withColliding:CRAFT_COLLISION_YESNO];
         [enemyBeetleTwo release];
         
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:enemyBeetleOne.objectLocation withDuration:-1.0f];

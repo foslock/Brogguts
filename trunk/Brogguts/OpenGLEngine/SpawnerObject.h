@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#define SPAWNER_TIMER_SPEED_FACTOR 1.0f
+
 @interface SpawnerObject : NSObject {
     float spawnerDuration;
     float currentTimer;
-    BOOL doesRepeat;
     BOOL hasTriggeredOnce;
     int idCount[TOTAL_OBJECT_TYPES_COUNT];
     CGPoint spawnerLocation;
@@ -28,6 +29,9 @@
 
 // Pass -1 in to count for infinite spawning
 - (id)initWithLocation:(CGPoint)location objectID:(int)objectID withDuration:(float)duration withCount:(int)count;
+
+- (id)initWithSavedArray:(NSArray*)infoArray;
+- (NSArray*)infoArrayFromSpawner;
 
 - (void)addObjectWithID:(int)objectID withCount:(int)count;
 - (void)updateSpawnerWithDelta:(float)aDelta;

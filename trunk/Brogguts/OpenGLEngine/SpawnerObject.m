@@ -33,6 +33,70 @@
     return self;
 }
 
+- (id)initWithSavedArray:(NSArray*)infoArray {
+    self = [super init];
+    if (self) {
+        spawnerLocation.x = [[[infoArray objectAtIndex:0] objectAtIndex:0] floatValue];
+        spawnerLocation.y = [[[infoArray objectAtIndex:0] objectAtIndex:1] floatValue];
+        spawnerDuration = [[infoArray objectAtIndex:1] floatValue];
+        currentTimer = [[infoArray objectAtIndex:2] floatValue];
+        hasTriggeredOnce = [[infoArray objectAtIndex:3] boolValue];
+        isDoneSpawning = [[infoArray objectAtIndex:4] boolValue];
+        
+        NSArray* idCountArray = [infoArray objectAtIndex:5];
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            idCount[i] = [[idCountArray objectAtIndex:i] intValue];
+        }
+        startingLocationVariance = [[infoArray objectAtIndex:6] floatValue];
+        sendingLocationVariance = [[infoArray objectAtIndex:7] floatValue];
+    }
+    return self;
+}
+
+- (NSArray*)infoArrayFromSpawner {
+    NSMutableArray* spawnerArray = [[NSMutableArray alloc] init];
+    
+    // Location
+    NSArray* locationArray = [NSArray arrayWithObjects:[NSNumber numberWithFloat:spawnerLocation.x],
+                              [NSNumber numberWithFloat:spawnerLocation.y], nil];
+    
+    // Duration
+    NSNumber* durationNumber = [NSNumber numberWithFloat:spawnerDuration];
+    
+    // Current Timer
+    NSNumber* timerNumber = [NSNumber numberWithFloat:currentTimer];
+    
+    // Has Triggered
+    NSNumber* hasTriggeredNumber = [NSNumber numberWithBool:hasTriggeredOnce];
+    
+    // isDoneSpawning
+    NSNumber* isDoneNumber = [NSNumber numberWithBool:isDoneSpawning];
+    
+    // IDCount array
+    NSMutableArray* idCountArray = [NSMutableArray arrayWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        NSNumber* idCountNumber = [NSNumber numberWithInt:idCount[i]];
+        [idCountArray addObject:idCountNumber];
+    }
+    
+    // Starting Variance
+    NSNumber* startingVarNumber = [NSNumber numberWithFloat:startingLocationVariance];
+    
+    // Arrival Variance
+    NSNumber* arrivalVarNumber = [NSNumber numberWithFloat:sendingLocationVariance];
+    
+    [spawnerArray addObject:locationArray];
+    [spawnerArray addObject:durationNumber];
+    [spawnerArray addObject:timerNumber];
+    [spawnerArray addObject:hasTriggeredNumber];
+    [spawnerArray addObject:isDoneNumber];
+    [spawnerArray addObject:idCountArray];
+    [spawnerArray addObject:startingVarNumber];
+    [spawnerArray addObject:arrivalVarNumber];
+
+    return [spawnerArray autorelease];
+}
+
 - (void)createObjectWithID:(int)objectID withEndingLocation:(CGPoint)endLocation {
     BroggutScene* scene = [[GameController sharedGameController] currentScene];
     CGPoint startingPoint = CGPointMake(spawnerLocation.x + (RANDOM_MINUS_1_TO_1() * startingLocationVariance),
@@ -44,6 +108,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftMothID: {
@@ -52,6 +117,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftBeetleID: {
@@ -60,6 +126,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftMonarchID: {
@@ -68,6 +135,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftCamelID: {
@@ -76,6 +144,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftRatID: {
@@ -84,7 +153,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-            break;
+            [newCraft release];
             break;
         }
         case kObjectCraftSpiderID: {
@@ -93,6 +162,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         case kObjectCraftEagleID: {
@@ -101,6 +171,7 @@
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
+            [newCraft release];
             break;
         }
         default:
@@ -117,7 +188,7 @@
 
 - (void)updateSpawnerWithDelta:(float)aDelta {
     if (currentTimer > 0.0f) {
-        currentTimer -= aDelta;
+        currentTimer -= aDelta * SPAWNER_TIMER_SPEED_FACTOR;
     }
     for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
         if (currentTimer <= 0.0f && (idCount[index] > 0 || idCount[index] == -1)) {

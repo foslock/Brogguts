@@ -70,6 +70,7 @@
     
     viewInserted = NO;
     applicationSaved = NO;
+    resignStoppedAnimation = NO;
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 	
@@ -92,12 +93,15 @@
     sharedGameController = [GameController sharedGameController];
     // Initialize the sound manager
     sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
+    // Start the game center
+    sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
     
     mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
     [window addSubview:mainMenuController.view];
     
     SplashScreenViewController* splash = [[SplashScreenViewController alloc] initWithNibName:@"SplashScreenViewController" bundle:nil];
     [mainMenuController presentModalViewController:splash animated:NO];
+    [splash release];
     return YES;
 }
 
@@ -106,19 +110,35 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	[self applicationEnded];
+	// [self applicationEnded];
+    if ([glView isAnimating]) {
+        [glView stopAnimation];
+        resignStoppedAnimation = YES;
+    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [self applicationEnded];
+    // [self applicationEnded];
+    if ([glView isAnimating]) {
+        [glView stopAnimation];
+        resignStoppedAnimation = YES;
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // [self startGLAnimation];
+    if (resignStoppedAnimation) {
+        [glView startAnimation];
+        resignStoppedAnimation = NO;
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // [self startGLAnimation];
+    if (resignStoppedAnimation) {
+        [glView startAnimation];
+        resignStoppedAnimation = NO;
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

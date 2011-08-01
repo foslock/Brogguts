@@ -236,6 +236,7 @@
 	// NSLog(@"Object (%i) attacked by enemy (%i) with damage <%i>", uniqueObjectID, enemy.uniqueObjectID, damage);
     HealthDropObject* healthDrop = [[HealthDropObject alloc] initWithTouchableObject:self];
     [[self currentScene] addCollidableObject:healthDrop];
+    [healthDrop release];
 	return NO;
 }
 

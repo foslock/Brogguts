@@ -10,6 +10,40 @@
 #import <GameKit/GameKit.h>
 #import "GameCenterStructs.h"
 
+extern NSString* const kAchievementID100Brogguts;
+extern NSString* const kAchievementID1000Brogguts;
+extern NSString* const kAchievementID5000Brogguts;
+extern NSString* const kAchievementID10000Brogguts;
+extern NSString* const kAchievementID25000Brogguts;
+extern NSString* const kAchievementID31415Brogguts;
+extern NSString* const kAchievementID50000Brogguts;
+extern NSString* const kAchievementID100000Brogguts;
+extern NSString* const kAchievementID500000Brogguts;
+extern NSString* const kAchievementID1000000Brogguts;
+extern NSString* const kAchievementID10000000Brogguts;
+extern NSString* const kAchievementID100000000Brogguts;
+extern NSString* const kAchievementID500000000Brogguts;
+extern NSString* const kAchievementID1000000000Brogguts;
+extern NSString* const kAchievementID1000000100Brogguts;
+extern NSString* const kAchievementID25Craft;
+extern NSString* const kAchievementID50Craft;
+extern NSString* const kAchievementID100Craft;
+extern NSString* const kAchievementID200Craft;
+extern NSString* const kAchievementIDCompletedTutorial;
+extern NSString* const kAchievementIDBuildCamel;
+extern NSString* const kAchievementIDBuildRat;
+extern NSString* const kAchievementIDBuildSpider;
+extern NSString* const kAchievementIDBuildEagle;
+extern NSString* const kAchievementIDNoLossesMission;
+extern NSString* const kAchievementIDWinAllMissions;
+extern NSString* const kAchievementIDWinBaseCamp;
+extern NSString* const kAchievementIDUnlockCraft;
+extern NSString* const kAchievementIDUnlockStructures;
+extern NSString* const kAchievementIDAppreciatedDevs;
+extern NSString* const kAchievementIDLoseMission;
+extern NSString* const kAchievementIDFindBrad;
+extern NSString* const kAchievementIDBarrelRoll;
+
 #define PACKET_QUEUE_CAPACITY 500
 
 // Things that need to be sent over the GameCenter controller
@@ -56,6 +90,8 @@
     BOOL sceneStarted;  // YES when the scene is being entered by both players
     BOOL localConfirmed; // YES when the local player has pushed the confirm button 
     BOOL remoteConfirmed; // YES when the remote player has pushed their confirm button
+    
+    NSMutableDictionary* achievementDictionary; // Stores the achievements that the player is currently enrolled in
 }
 
 @property (nonatomic, assign) BroggutScene* currentScene;
@@ -84,6 +120,21 @@
 - (void)openMatchController;
 - (void)moveMatchToScene;
 - (void)disconnectFromGame;
+
+
+// Specific achievement updaters
+- (void)updateBroggutCountAchievements:(int)brogguts;
+- (void)updateCraftBuiltAchievements:(int)craft;
+- (void)updateCompleteAllMissionsAchievement:(int)missionsWon;
+- (void)updateBaseCampKillsAchievement:(int)kills;
+- (void)updateCraftUnlockAchievement:(int)unlockedCraft;
+- (void)updateStructuresUnlockAchievement:(int)unlockedStructures;
+
+// Achievement Utility functions
+- (void)loadAchievements;
+- (GKAchievement*)getAchievementForIdentifier:(NSString*)identifier;
+- (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent;
+- (void)resetAllAchievements;
 
 - (void)processQueuedPackets;
 

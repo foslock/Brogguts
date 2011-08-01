@@ -165,7 +165,7 @@
 	
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (orientation == UIDeviceOrientationLandscapeRight) {
-		sharedGameController.interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+        [sharedGameController setInterfaceOrientation:UIInterfaceOrientationLandscapeLeft];
 		glLoadIdentity();
 		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
 		glRotatef(90, 0, 0, 1);
@@ -173,7 +173,7 @@
 	}
 	
 	if (orientation == UIDeviceOrientationLandscapeLeft) {
-		sharedGameController.interfaceOrientation = UIInterfaceOrientationLandscapeRight;
+        [sharedGameController setInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
 		glLoadIdentity();
 		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
 		glRotatef(-90, 0, 0, 1);

@@ -22,6 +22,7 @@
 #import "TutorialFiles.h"
 #import "GameCenterSingleton.h"
 #import "BroggupediaViewController.h"
+#import "SpawnerObject.h"
 
 NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
@@ -130,6 +131,15 @@ static GameController* sharedGameController = nil;
     } else {
         return nil;
     }
+}
+
+- (void)setInterfaceOrientation:(UIInterfaceOrientation)io {
+    if (interfaceOrientation != io) {
+        if (!isShowingBroggupediaInScene && [self currentScene]) {
+            [[GameCenterSingleton sharedGCSingleton] reportAchievementIdentifier:(NSString*)kAchievementIDBarrelRoll percentComplete:100.0f];
+        }
+    }
+    interfaceOrientation = io;
 }
 
 - (void)presentBroggupedia {
@@ -488,8 +498,21 @@ static GameController* sharedGameController = nil;
 			[objectCurrentPath release];
 		}
 	}
+    
+    // If this is a campaign, recreate the spawners
+    NSMutableArray* spawnerInfos = [NSMutableArray array];
+    if (thisSceneType == kSceneTypeCampaign) {
+        NSArray* spawners = currentScene.sceneSpawners;
+        for (int i = 0; i < [spawners count]; i++) {
+            SpawnerObject* spawner = [spawners objectAtIndex:i];
+            NSArray* spawnerInfo = [spawner infoArrayFromSpawner];
+            [spawnerInfos addObject:spawnerInfo];
+        }
+    }
+    
     // After the metal has been finalized, save the brogguts and metal in the plist
     NSMutableArray* tempArray = [[NSMutableArray alloc] init];
+    [tempArray insertObject:spawnerInfos atIndex:kSceneAIControllerSpawnerInfos];
     [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
     [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
     [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
@@ -514,6 +537,7 @@ static GameController* sharedGameController = nil;
         NSString* fileNameExt = [fileNameAlone stringByAppendingString:@".plist"];
         filePath = [self documentsPathWithFilename:fileNameExt];
     }
+    
 	if (![plistArray writeToFile:filePath atomically:YES]) {
 		NSLog(@"Cannot save the current Scene!");
         [plistArray release];
@@ -647,7 +671,7 @@ static GameController* sharedGameController = nil;
 }
 
 - (void)loadCampaignLevelsForIndex:(int)index withLoaded:(BOOL)loaded {
-    CampaignScene* campaignScene;
+    CampaignScene* campaignScene = nil;
     switch (index) {
         case 0: {
             CampaignSceneOne* newCamp = [[CampaignSceneOne alloc] initWithLoaded:loaded];
@@ -724,13 +748,18 @@ static GameController* sharedGameController = nil;
             campaignScene = newCamp;
         }
             break;
-        default:
+        default: {
+            NSLog(@"Invalid Campaign Index");
+            campaignScene = nil;
+        }
             break;
     }
     if (!loaded) {
         [gameScenes setValue:campaignScene forKey:kCampaignSceneFileNames[index]];
+        [campaignScene release];
     } else {
         [gameScenes setValue:campaignScene forKey:kCampaignSceneSaveTitles[index]];
+        [campaignScene release];
     }
 }
 
@@ -739,41 +768,49 @@ static GameController* sharedGameController = nil;
         case 0: {
             TutorialSceneOne* newTut = [[TutorialSceneOne alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 1: {
             TutorialSceneTwo* newTut = [[TutorialSceneTwo alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 2: {
             TutorialSceneThree* newTut = [[TutorialSceneThree alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 3: {
             TutorialSceneFour* newTut = [[TutorialSceneFour alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 4: {
             TutorialSceneFive* newTut = [[TutorialSceneFive alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 5: {
             TutorialSceneSix* newTut = [[TutorialSceneSix alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 6: {
             TutorialSceneSeven* newTut = [[TutorialSceneSeven alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 7: {
             TutorialSceneEight* newTut = [[TutorialSceneEight alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 8: {
@@ -784,24 +821,29 @@ static GameController* sharedGameController = nil;
         case 9: {
             TutorialSceneTen* newTut = [[TutorialSceneTen alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 10: {
             TutorialSceneEleven* newTut = [[TutorialSceneEleven alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 11: {
             TutorialSceneTwelve* newTut = [[TutorialSceneTwelve alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 12: {
             TutorialSceneThirteen* newTut = [[TutorialSceneThirteen alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         default:
+            NSLog(@"Invalid Tutorial Index");
             break;
     }
 }

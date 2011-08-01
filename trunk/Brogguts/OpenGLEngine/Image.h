@@ -34,8 +34,8 @@ extern NSString* kObjectStructureRadarSprite;
 extern NSString* kObjectStructureFixerSprite;
 
 extern NSString* kObjectExplosionSmallSprite;
-extern NSString* kObjectExplosionMediumSprite;
 extern NSString* kObjectExplosionLargeSprite;
+extern NSString* kObjectExplosionRingSprite;
 
 @class Texture2D;
 @class TextureSingleton;

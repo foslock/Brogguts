@@ -832,6 +832,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 - (void)setActivated:(BOOL)aState {
     
     OSStatus result;
+    (void)result;
     
     if(aState) {
         NSLog(@"INFO - SoundManager: OpenAL Active");

@@ -31,7 +31,8 @@ enum kSceneStorageGlobals {
     kSceneStorageGlobalObjectArray,
 };
 
-enum kSceneAIControllerIndexs {
+enum kSceneAIControllerIndexes {
+    kSceneAIControllerSpawnerInfos,
     kSceneAIControllerBrogguts,
     kSceneAIControllerMetal,    
 };

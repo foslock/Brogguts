@@ -15,11 +15,12 @@
 // The percent of the brogguts earned in a skirmish are added to the total count
 #define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f
 
-#define PROFILE_BROGGUT_START_COUNT 100
+#define PROFILE_BROGGUT_START_COUNT 0
 #define PROFILE_METAL_START_COUNT 0
 #define BROGGUT_DISPLAY_CHANGE_RATE 6
 #define BROGGUTS_NEEDED_FOR_ONE_METAL 10
 
+// Upgrades and unlocks
 extern int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 extern int kUpgradeUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT];
 
@@ -31,6 +32,8 @@ enum kProfileFailTypes {
 };
 
 @interface PlayerProfile : NSObject <NSCoding> {
+    int totalBroggutCount; // Keeps track of ALL brogguts ever collected
+    
 	int playerSpaceYear;
 	int broggutCount;
 	int broggutDisplayNumber;
@@ -42,8 +45,6 @@ enum kProfileFailTypes {
     BOOL isInSkirmish;
     int skirmishBroggutCount;
     int skirmishMetalCount;
-    
-    // Upgrades and unlocks
 
     // This array is indexed with the ID of the structure or craft that is being unlocked, and the NSNumber (bool value) stored indicates whether or not it is unlocked yet.
     NSMutableArray* currentUnlocksTable;
@@ -51,6 +52,7 @@ enum kProfileFailTypes {
     NSMutableArray* currentUpgradesTable;
 }
 
+@property (nonatomic, assign) int totalBroggutCount;
 @property (nonatomic, assign) int playerSpaceYear;
 @property (nonatomic, assign) int broggutCount;
 @property (nonatomic, assign) int metalCount;
@@ -68,9 +70,9 @@ enum kProfileFailTypes {
 - (int)subtractBrogguts:(int)brogs metal:(int)metal;
 
 - (int)realBroggutCount;
+- (int)baseCampBroggutCount;
 - (int)realMetalCount;
 
-- (int)totalBroggutCount;
 
 - (void)updateSpaceYearUnlocks;
 - (void)startSceneWithType:(int)sceneType;

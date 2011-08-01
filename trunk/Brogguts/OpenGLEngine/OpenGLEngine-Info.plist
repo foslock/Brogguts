@@ -6,16 +6,12 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>Brogguts</string>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
 	<string>icon.png</string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>rexlia free.ttf</string>
-	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.gamesindorms.brogguts</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -26,13 +22,21 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array/>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>0.8</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>rexlia free.ttf</string>
+	</array>
 	<key>UIApplicationExitsOnSuspend</key>
+	<false/>
+	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -45,5 +49,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array/>
+	<key>UTImportedTypeDeclarations</key>
+	<array/>
 </dict>
 </plist>

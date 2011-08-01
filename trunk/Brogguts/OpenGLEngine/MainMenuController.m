@@ -19,6 +19,7 @@
 #import "MenuHelpController.h"
 #import "MapChoiceController.h"
 #import "SoundSingleton.h"
+#import "GameCenterSingleton.h"
 
 @implementation MainMenuController
 @synthesize backgroundOne, backgroundTwo, backgroundThree;
@@ -85,6 +86,33 @@
     }
 }
 
+- (IBAction)showAchievementController {
+    GKAchievementViewController *achievements = [[GKAchievementViewController alloc] init];
+    if (achievements != nil)
+    {
+        achievements.achievementDelegate = self;
+        [self presentModalViewController: achievements animated: YES];
+    }
+    [achievements release];
+}
+
+- (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (IBAction)showLeaderboardController {
+    GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
+    if (leaderboardController != nil)
+    {
+        leaderboardController.leaderboardDelegate = self;
+        [self presentModalViewController: leaderboardController animated: YES];
+    }
+}
+
+- (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
 - (IBAction)openBroggupedia {
     [[GameController sharedGameController] presentBroggupedia];
 }
@@ -128,17 +156,8 @@
     [broggutController release];
 }
 
-- (void)animateStars {
-    float randomTime = 1.0f + RANDOM_0_TO_1();
-    [UIView animateWithDuration:randomTime delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        for (int i = 0; i < [starsArray count]; i++) {
-            UIImageView* tempStar = [starsArray objectAtIndex:i];
-            float randomAlpha = RANDOM_0_TO_1();
-            [tempStar setAlpha:randomAlpha];
-        }
-    }completion:^(BOOL finished){
-        // 
-    }];
+- (void)animateBackgrounds {
+    // 
 }
 
 - (void)animateLetters {
@@ -171,7 +190,7 @@
         [letterS setCenter:CGPointMake( center.x + (3.5 * width) + randX, center.y + randY)];
     }completion:^(BOOL finished) {
         // if (finished)
-            // [self animateLetters];
+        // [self animateLetters];
     }];
 }
 
@@ -179,8 +198,10 @@
     // Update the space year and broggut count labels
     int spaceYear = [[[GameController sharedGameController] currentProfile] playerSpaceYear];
     int brogguts = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
-    [broggutCount setText:[NSString stringWithFormat:@"Broggut Count: %i", brogguts]];
+    [broggutCount setText:[NSString stringWithFormat:@"Collected Brogguts: %i", brogguts]];
     [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i A.C.", spaceYear]];
+    [self reportScore:brogguts forCategory:@"brogguts_leaderboard"];
+    [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:brogguts];
 }
 
 #pragma mark - View lifecycle
@@ -203,7 +224,7 @@
         [image release];
         [tempStar release];
     }
-    [self animateStars];
+    [self animateBackgrounds];
     
     lettersArray = [[NSMutableArray alloc] init];
     [lettersArray addObject:letterB];
@@ -223,11 +244,23 @@
     // e.g. self.myOutlet = nil;
 }
 
+- (void)reportScore:(int64_t)score forCategory:(NSString*)category {
+    GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
+    scoreReporter.value = score;
+    
+    [scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
+        if (error != nil)
+        {
+            // handle the reporting error
+        }
+    }];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[GameController sharedGameController] savePlayerProfile];
-     
+    
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     
     [backgroundOne setCenter:center];
@@ -241,8 +274,6 @@
     [backgroundOne setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
     [backgroundTwo setTransform:CGAffineTransformMakeScale(1.2f, 1.2f)];
     [backgroundThree setTransform:CGAffineTransformMakeScale(1.35f, 1.35f)];
-    
-    [self updateBackgroundsWithTouchLocation:CGPointMake(center.x + 400, center.y + 400.0f)];
     
     float distance = kPadScreenLandscapeWidth;
     float randDir = arc4random() % 360;
@@ -292,27 +323,6 @@
         //    [self animateLetters];
     }];
     [self updateCountLabels];
-}
-
-- (void)updateBackgroundsWithTouchLocation:(CGPoint)location {
-    CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
-    float dx = location.x - center.x;
-    float dy = location.y - center.y;
-    [backgroundOne setCenter:CGPointMake(center.x + (dx * 0.5f), center.y + (dy * 0.5f))];
-    [backgroundTwo setCenter:CGPointMake(center.x + (dx * 0.25f), center.y + (dy * 0.25f))];
-    [backgroundThree setCenter:CGPointMake(center.x + (dx * 0.1f), center.y + (dy * 0.1f))];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesBegan:touches withEvent:event];
-    UITouch* touch = [touches anyObject];
-    [self updateBackgroundsWithTouchLocation:[touch locationInView:self.view]];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesMoved:touches withEvent:event];
-    UITouch* touch = [touches anyObject];
-    [self updateBackgroundsWithTouchLocation:[touch locationInView:self.view]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -13,6 +13,7 @@
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
 #import "TextObject.h"
+#import "GameCenterSingleton.h"
 
 @implementation TutorialSceneThirteen
 
@@ -34,6 +35,10 @@
 
 - (BOOL)checkObjective {
     if ([[sharedGameController currentProfile] metalCount] >= 20) {
+        
+        // Must include this in the last tutorial mission!
+        [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDCompletedTutorial percentComplete:100.0f];
+        
         return YES;
     } else {
         return NO;

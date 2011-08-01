@@ -17,6 +17,7 @@
 #import "GameplayConstants.h"
 #import "CraftAndStructures.h"
 #import "SkirmishMatchController.h"
+#import "AchievementIdentifiers.h"
 
 static GameCenterSingleton* sharedGCSingleton = nil;
 
@@ -88,6 +89,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
         free(broggutPacketQueue);
     if (destructionPacketQueue)
         free(destructionPacketQueue);
+    [achievementDictionary release];
     [localPlayerAlias release];
     [otherPlayerAlias release];
 	[localPlayerID release];
@@ -117,9 +119,16 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	if (self) {
 		if ([self isGameCenterAvailable]) {
 			[self authenticateLocalPlayer];
+            
+#ifdef RESET_ACHIEVEMENTS_ON_START
+            // Purely for debugging
+            [self resetAllAchievements];
+#endif
+            
 			[self.view setBackgroundColor:[UIColor clearColor]];
 			sharedGameController = [GameController sharedGameController];
             objectsReceivedArray = [[NSMutableDictionary alloc] init];
+            achievementDictionary = [[NSMutableDictionary alloc] init];
 			matchStarted = NO;
             sceneStarted = NO;
             localConfirmed = NO;
@@ -174,10 +183,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
 		if (error == nil)
 		{
+            [self loadAchievements];
             self.localPlayerID = [[GKLocalPlayer localPlayer] playerID];
             self.localPlayerAlias = [[GKLocalPlayer localPlayer] alias];
 			NSLog(@"Authentication was successful!");
-             NSLog(@"I am Player: %@", localPlayerID);
+            NSLog(@"I am Player: %@", localPlayerID);
 			// Insert code here to handle a successful authentication.
 		}
 		else
@@ -377,6 +387,216 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     CGRect bounds = [[self currentScene] fullMapBounds];
     CGPoint newPoint = CGPointMake(bounds.size.width - point.x, point.y);
     return newPoint;
+}
+
+#pragma mark -- Update Achievements' status
+
+- (void)updateBroggutCountAchievements:(int)brogguts {
+    { // 100
+        float broggutGoal = 100;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID100Brogguts percentComplete:percentage];
+    }
+    { // 1000
+        float broggutGoal = 1000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID1000Brogguts percentComplete:percentage];
+    }
+    { // 5000
+        float broggutGoal = 5000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID5000Brogguts percentComplete:percentage];
+    }
+    { // 10,000
+        float broggutGoal = 10000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID10000Brogguts percentComplete:percentage];
+    }
+    { // 25,000
+        float broggutGoal = 25000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID25000Brogguts percentComplete:percentage];
+    }
+    { // 31,415
+        float broggutGoal = 31415;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        if (currentCount > 31410) {
+            [self reportAchievementIdentifier:(NSString*)kAchievementID31415Brogguts percentComplete:percentage];
+        }
+    }
+    { // 50,000
+        float broggutGoal = 50000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID50000Brogguts percentComplete:percentage];
+    }
+    { // 100,000
+        float broggutGoal = 100000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID100000Brogguts percentComplete:percentage];
+    }
+    { // 500,000
+        float broggutGoal = 500000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID500000Brogguts percentComplete:percentage];
+    }
+    { // 1,000,000
+        float broggutGoal = 1000000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID1000000Brogguts percentComplete:percentage];
+    }
+    { // 10,000,000
+        float broggutGoal = 10000000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID10000000Brogguts percentComplete:percentage];
+    }
+    { // 100,000,000
+        float broggutGoal = 100000000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID100000000Brogguts percentComplete:percentage];
+    }
+    { // 500,000,000
+        float broggutGoal = 500000000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID500000000Brogguts percentComplete:percentage];
+    }
+    { // 1,000,000,000
+        float broggutGoal = 1000000000;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID1000000000Brogguts percentComplete:percentage];
+    }
+    { // 1,000,000,100
+        float broggutGoal = 1000000100;
+        float currentCount = brogguts;
+        float percentage = CLAMP(currentCount / broggutGoal, 0.0f, 1.0f) * 100.0f;
+        if (currentCount > 1000000000) {
+            [self reportAchievementIdentifier:(NSString*)kAchievementID1000000100Brogguts percentComplete:percentage];
+        }
+    }
+}
+
+- (void)updateCraftBuiltAchievements:(int)craft {
+    { // 25
+        float craftGoal = 25;
+        float currentCount = craft;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID25Craft percentComplete:percentage];
+    }
+    { // 50
+        float craftGoal = 50;
+        float currentCount = craft;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID50Craft percentComplete:percentage];
+    }
+    { // 100
+        float craftGoal = 100;
+        float currentCount = craft;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID100Craft percentComplete:percentage];
+    }
+    { // 200
+        float craftGoal = 200;
+        float currentCount = craft;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementID200Craft percentComplete:percentage];
+    }
+}
+
+- (void)updateCompleteAllMissionsAchievement:(int)missionsWon {
+    { // 15
+        float craftGoal = 15;
+        float currentCount = missionsWon;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementIDWinAllMissions percentComplete:percentage];
+    }
+}
+
+- (void)updateBaseCampKillsAchievement:(int)kills {
+    { // Base camp kills
+        float craftGoal = 100; // Need to get the total enemies that started in the BaseCamp
+        float currentCount = kills;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementIDWinBaseCamp percentComplete:percentage];
+    }
+}
+
+- (void)updateCraftUnlockAchievement:(int)unlockedCraft {
+    { // 8 Total craft
+        float craftGoal = 8; // Need to get the total enemies that started in the BaseCamp
+        float currentCount = unlockedCraft;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementIDUnlockCraft percentComplete:percentage];
+    }
+}
+
+- (void)updateStructuresUnlockAchievement:(int)unlockedStructures {
+    { // 8 Total structures
+        float craftGoal = 8; // Need to get the total enemies that started in the BaseCamp
+        float currentCount = unlockedStructures;
+        float percentage = CLAMP(currentCount / craftGoal, 0.0f, 1.0f) * 100.0f;
+        [self reportAchievementIdentifier:(NSString*)kAchievementIDUnlockStructures percentComplete:percentage];
+    }
+}
+
+- (void)loadAchievements {
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements, NSError *error)
+     {
+         if (error == nil)
+         {
+             for (GKAchievement* achievement in achievements)
+                 [achievementDictionary setObject: achievement forKey: achievement.identifier];
+         }
+     }];
+}
+
+- (GKAchievement*)getAchievementForIdentifier:(NSString*)identifier {
+    GKAchievement *achievement = [achievementDictionary objectForKey:identifier];
+    if (achievement == nil)
+    {
+        achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
+        [achievementDictionary setObject:achievement forKey:achievement.identifier];
+    }
+    return [[achievement retain] autorelease];
+}
+
+- (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent {
+    GKAchievement *achievement = [self getAchievementForIdentifier:identifier];
+    if (achievement)
+    {
+        achievement.percentComplete = percent;
+        [achievement reportAchievementWithCompletionHandler:^(NSError *error)
+         {
+             if (error != nil)
+             {
+                 // Retain the achievement object and try again later (not shown).
+             }
+         }];
+    }
+}
+
+- (void)resetAllAchievements {
+    // Clear all locally saved achievement objects.
+    [achievementDictionary removeAllObjects];
+    // Clear all progress saved on Game Center
+    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError *error)
+     {
+         if (error != nil) {
+             // handle errors
+         }
+     }];
 }
 
 - (void)processQueuedPackets {
@@ -678,6 +898,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftMothID: {
@@ -688,6 +909,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftBeetleID: {
@@ -698,6 +920,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftMonarchID: {
@@ -708,6 +931,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftCamelID: {
@@ -718,6 +942,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftRatID: {
@@ -728,6 +953,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftSpiderID: {
@@ -738,6 +964,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectCraftEagleID: {
@@ -748,6 +975,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newCraft.objectImage.flipHorizontally = YES;
             newCraft.isRemoteObject = YES;
             [objectsReceivedArray setObject:newCraft forKey:index];
+            [newCraft release];
             break;
         }
         case kObjectStructureBaseStationID: {
@@ -759,6 +987,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureBlockID: {
@@ -769,6 +998,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureTurretID: {
@@ -779,6 +1009,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureRadarID: {
@@ -789,6 +1020,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureFixerID: {
@@ -799,6 +1031,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureRefineryID: {
@@ -809,6 +1042,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureCraftUpgradesID: {
@@ -819,6 +1053,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         case kObjectStructureStructureUpgradesID: {
@@ -829,6 +1064,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
             newStructure.objectImage.flipHorizontally = YES;
             newStructure.isRemoteObject = YES;
             [objectsReceivedArray setObject:newStructure forKey:index];
+            [newStructure release];
             break;
         }
         default:

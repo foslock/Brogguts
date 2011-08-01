@@ -13,6 +13,7 @@
 #define CAMPAIGN_SCENES_COUNT 15
 
 @class StartMissionObject;
+@class SpawnerObject;
 
 extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1];
 extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1];
@@ -30,6 +31,10 @@ extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1];
 @property (nonatomic, assign) BOOL isStartingMission;
 @property (nonatomic, assign) BOOL isMissionPaused;
 @property (nonatomic, assign) int campaignIndex;
+
+- (void)addSpawner:(SpawnerObject*)spawner;
+- (SpawnerObject*)spawnerWithID:(int)spawnerID;
+- (void)updateSpawnersWithDelta:(float)aDelta;
 
 - (id)initWithCampaignIndex:(int)campIndex wasLoaded:(BOOL)loaded;
 - (id)initWithLoaded:(BOOL)loaded;
