@@ -116,6 +116,7 @@ static TextureSingleton* sharedTextureSingleton = nil;
 	
 	cachedTexture = [[Texture2D alloc] initWithImage:[image retain] filter:aFilter];
 	[cachedTextures setObject:cachedTexture forKey:aName];
+    [cachedTexture release];
     [image release];
 }
 

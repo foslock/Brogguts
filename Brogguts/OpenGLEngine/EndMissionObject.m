@@ -52,7 +52,7 @@
         textPoint = CGPointMake(center.x - (END_MISSION_BACKGROUND_WIDTH / 4), center.y + 30);
         broggutsEarnedLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"Brogguts Earned: " withLocation:textPoint withDuration:-1.0f];
         textPoint = CGPointMake(center.x - (END_MISSION_BACKGROUND_WIDTH / 4), center.y - 60);
-        broggutsTotalLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"Total Brogguts: " withLocation:textPoint withDuration:-1.0f];
+        broggutsTotalLabel = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"BaseCamp Brogguts: " withLocation:textPoint withDuration:-1.0f];
         textPoint = CGPointMake(center.x + (END_MISSION_BACKGROUND_WIDTH / 4), center.y + 80);
         broggutsLeftNumber = [[TextObject alloc] initWithFontID:kFontBlairID Text:@"0" withLocation:textPoint withDuration:-1.0f];
         [broggutsLeftNumber setFontColor:Color4fMake(0.8f, 1.0f, 1.0f, 1.0f)];
@@ -105,7 +105,7 @@
         NSString* broggutsEarnedText = [NSString stringWithFormat:@"+%i",broggutsEarned];
         [broggutsLeftNumber setObjectText:broggutsLeftText];
         [broggutsEarnedNumber setObjectText:broggutsEarnedText];
-        totalCounter = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
+        totalCounter = [[[GameController sharedGameController] currentProfile] baseCampBroggutCount];
     }
 }
 
@@ -141,7 +141,7 @@
         [headerText setFontColor:Color4fMake(1.0f, 0.0f, 0.2f, 1.0f)];
     }
     if (totalCount == 0) {
-        totalCount = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
+        totalCount = [[[GameController sharedGameController] currentProfile] baseCampBroggutCount];
     }
     if (totalCounter < totalCount) {
         totalCounter += 1;

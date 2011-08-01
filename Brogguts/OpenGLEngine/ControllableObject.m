@@ -103,10 +103,10 @@
 - (void)decelerate {
 	objectVelocity.x /= 1.1f;
 	objectVelocity.y /= 1.1f;
-	if (objectVelocity.x < 0.01f && objectVelocity.x > 0.0f ) { objectVelocity.x = 0.0f; }
-	if (objectVelocity.x > -0.01f && objectVelocity.x < 0.0f ) { objectVelocity.x = 0.0f; }
-	if (objectVelocity.y < 0.01f && objectVelocity.y > 0.0f ) { objectVelocity.y = 0.0f; }
-	if (objectVelocity.y > -0.01f && objectVelocity.y < 0.0f ) { objectVelocity.y = 0.0f; }
+	if (objectVelocity.x < 0.01f && objectVelocity.x > 0.0f ) { objectVelocity.x = 0.0f; [self normalizePosition]; }
+	if (objectVelocity.x > -0.01f && objectVelocity.x < 0.0f ) { objectVelocity.x = 0.0f; [self normalizePosition]; }
+	if (objectVelocity.y < 0.01f && objectVelocity.y > 0.0f ) { objectVelocity.y = 0.0f; [self normalizePosition]; }
+	if (objectVelocity.y > -0.01f && objectVelocity.y < 0.0f ) { objectVelocity.y = 0.0f; [self normalizePosition]; }
 }
 
 - (void)touchesBeganAtLocation:(CGPoint)location {

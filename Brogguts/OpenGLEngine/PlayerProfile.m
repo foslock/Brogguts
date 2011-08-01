@@ -9,6 +9,7 @@
 #import "PlayerProfile.h"
 #import "GameController.h"
 #import "CampaignScene.h"
+#import "GameCenterSingleton.h"
 
 int kObjectUnlockLevelTable[TOTAL_OBJECT_TYPES_COUNT] = {
     0, 0, 0, 0, 0, 0, 0,
@@ -58,6 +59,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 
 @implementation PlayerProfile
+@synthesize totalBroggutCount;
 @synthesize playerSpaceYear;
 @synthesize broggutCount;
 @synthesize metalCount;
@@ -73,6 +75,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     self = [super init];
 	if (self)
 	{
+        totalBroggutCount = PROFILE_BROGGUT_START_COUNT;
 		playerSpaceYear = 0;
 		broggutCount = PROFILE_BROGGUT_START_COUNT;
 		broggutDisplayNumber = 0;
@@ -95,6 +98,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     self = [super init];
 	if (self)
 	{
+        [self setTotalBroggutCount: [coder decodeIntForKey:@"totalBroggutCount"]];
 		[self setPlayerSpaceYear:	[coder decodeIntForKey:@"playerSpaceYear"]];
 		[self setBroggutCount:		CLAMP([coder decodeIntForKey:@"broggutCount"], 0, PROFILE_BROGGUT_MAX_COUNT)];
 		[self setMetalCount:		CLAMP([coder decodeIntForKey:@"metalCount"], 0, PROFILE_METAL_MAX_COUNT)];
@@ -113,6 +117,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 - (void)encodeWithCoder:(NSCoder*)coder
 {
+	[coder encodeInt:totalBroggutCount	forKey:@"totalBroggutCount"];
 	[coder encodeInt:playerSpaceYear	forKey:@"playerSpaceYear"];
 	[coder encodeInt:broggutCount		forKey:@"broggutCount"];
 	[coder encodeInt:metalCount			forKey:@"metalCount"];
@@ -157,7 +162,16 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
+- (void)setPlayerExperience:(int)playerEx {
+    playerExperience = playerEx;
+    [[GameCenterSingleton sharedGCSingleton] updateCompleteAllMissionsAchievement:playerEx];
+}
+
 - (void)addBrogguts:(int)brogs {
+    if (brogs > 0) {
+        totalBroggutCount += brogs;
+        // [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:totalBroggutCount];
+    }
     if (!isInSkirmish) {
         broggutCount += brogs;
         broggutCount = CLAMP(broggutCount, 0, PROFILE_BROGGUT_MAX_COUNT);
@@ -233,7 +247,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 	return broggutDisplayNumber;
 }
 
-- (int)totalBroggutCount {
+- (int)baseCampBroggutCount {
     return broggutCount;
 }
 
@@ -244,6 +258,8 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         return skirmishBroggutCount;
     }
 }
+
+
 
 - (int)metalCount {
 	return metalDisplayNumber;
@@ -265,14 +281,36 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     return playerSpaceYear;
 }
 
+- (BOOL)isIDCraftID:(int)thisid {
+    if (thisid >= kObjectCraftAntID && thisid <= kObjectCraftEagleID) {
+        if (thisid != kObjectCraftSpiderDroneID) { // EXCLUDE THE DRONE
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)isIDStrucutureID:(int)thisid {
+    if (thisid >= kObjectStructureBaseStationID && thisid <= kObjectStructureRadarID) {
+        return YES;
+    }
+    return NO;
+}
+
 - (void)updateSpaceYearUnlocks {
     // Unlock the stuff that comes with the current space year
+    int craftCount = 0;
+    int structureCount = 0;
     for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
         int levelNeeded = [self levelObjectUnlockedWithID:i];
         if (levelNeeded <= playerExperience) {
             [self unlockObjectWithID:i];
+            if ([self isIDCraftID:i]) { craftCount++; }
+            if ([self isIDStrucutureID:i]) { structureCount++; }
         }
     }
+    [[GameCenterSingleton sharedGCSingleton] updateCraftUnlockAchievement:craftCount];
+    [[GameCenterSingleton sharedGCSingleton] updateStructuresUnlockAchievement:structureCount];
 }
 
 - (void)startSceneWithType:(int)sceneType {

@@ -27,7 +27,6 @@
     id displayLink;
     NSTimer *animationTimer;
 	GameController *sharedGameController;
-    CFTimeInterval lastTime;
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;

@@ -10,6 +10,13 @@
 #pragma mark -
 #pragma mark Macros
 
+// Gets rid of NSLogs when building for release
+#ifndef __OPTIMIZE__
+#    define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#    define NSLog(...) {}
+#endif
+
 // Macro which returns a random value between -1 and 1
 #define RANDOM_MINUS_1_TO_1() ((random() / (GLfloat)0x3fffffff )-1.0f)
 

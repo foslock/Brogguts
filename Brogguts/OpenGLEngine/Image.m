@@ -43,8 +43,8 @@ NSString* kObjectStructureRadarSprite = @"structureradar.png";
 NSString* kObjectStructureFixerSprite = @"structurefixer.png";
 
 NSString* kObjectExplosionSmallSprite = @"explosionsmall.png";
-NSString* kObjectExplosionMediumSprite = @"explosionmedium.png"; // Does not exist yet
 NSString* kObjectExplosionLargeSprite = @"explosionlarge.png";
+NSString* kObjectExplosionRingSprite = @"explosionring.png";
 
 #pragma mark -
 #pragma mark Private interface

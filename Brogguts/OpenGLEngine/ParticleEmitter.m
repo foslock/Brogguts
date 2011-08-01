@@ -159,7 +159,7 @@
 		
 		// Bind to the verticesID VBO and popuate it with the necessary vertex & color informaiton
 		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(PointSprite) * MAXIMUM_PARTICLE_COUNT, vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(PointSprite) * particleCount, vertices, GL_DYNAMIC_DRAW);
 		
 		// Configure the vertex pointer which will use the currently bound VBO for its data
 		glVertexPointer(2, GL_FLOAT, sizeof(PointSprite), 0);
@@ -219,9 +219,10 @@
 		// Draw each particle as a line
 		enablePrimitiveDraw();
         Particle* particle;
+        GLfloat lineLocations[4];
 		for (int i = 0; i < particleCount; i++) {
 			particle = &particles[i];
-            GLfloat lineLocations[4];
+            
 			CGPoint toPoint = CGPointMake(particle->position.x, particle->position.y);
 			CGPoint fromPoint = CGPointMake(particle->position.x - (particle->velocity.x * PARTICLE_PRIMITIVE_SCALE),
 											particle->position.y - (particle->velocity.y * PARTICLE_PRIMITIVE_SCALE));

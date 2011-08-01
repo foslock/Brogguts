@@ -392,7 +392,7 @@
     if (objectAlliance == kAllianceFriendly) {
         NotificationObject* noti = [[NotificationObject alloc] initWithLocation:self.objectLocation withDuration:3.0f];
         [noti attachToObject:self];
-        [[self currentScene] setNotification:noti];
+        [[self currentScene] setSceneNotification:noti];
         [noti release];
     }
     
@@ -407,6 +407,11 @@
                 CraftObject* enemyCraft = (CraftObject*)enemy;
                 [enemyCraft calculateCraftAIInfo];
                 NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
+                if (objectAlliance == kAllianceEnemy) {
+                    // Debug!
+                    int test = 0;
+                    (void)test;
+                }
                 [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
                 float totalCraftPower = 0.0f;
                 for (int i = 0; i < [nearbyCraftArray count]; i++) {
@@ -451,7 +456,7 @@
                 yDest -= COLLISION_CELL_HEIGHT;
             }
             xDest = CLAMP(xDest, 0.0f, [[self currentScene] fullMapBounds].size.width);
-            yDest = CLAMP(xDest, 0.0f, [[self currentScene] fullMapBounds].size.height);
+            yDest = CLAMP(yDest, 0.0f, [[self currentScene] fullMapBounds].size.height);
             NSArray* newPath = [[self.currentScene collisionManager] pathFrom:objectLocation to:CGPointMake(xDest, yDest) allowPartial:NO isStraight:NO];
             [self followPath:newPath isLooped:NO];
             [self setMovingAIState:kMovingAIStateMoving];

@@ -8,12 +8,7 @@
 #define kPadScreenLandscapeHeight 768.0f // Without status bar
 #define kFrameRateTarget 60.0f
 
-//
-// Testing Definitions
-//  - Comment out a line to remove that functionality from the game
-//
-
-// Sandbox Apple IDs
+// Sandbox Apple IDs for multiplayer testing (Game Center)
 //
 // Username: brogguts@gmail.com
 // Password: brogguts123
@@ -22,7 +17,14 @@
 // Password: hippos123
 //
 
-// #define MULTIPLAYER
+
+//
+// Testing Definitions
+//  - Comment out a line to remove that functionality from the game
+//
+
+#define MULTIPLAYER
+#define RESET_ACHIEVEMENTS_ON_START
 // #define BOUNDING_DEBUG
 // #define DRAW_PATH
 #define STARS

@@ -13,6 +13,7 @@
     
 }
 
+- (IBAction)tapBradsName;
 - (IBAction)popInfoController;
 
 @end

@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GameKit/GameKit.h>
 
 #define LETTER_MOVE_TIME 2.0f
 #define MAIN_MENU_STAR_COUNT 30
 #define LETTER_JITTER_DISTANCE 8.0f
 
-@interface MainMenuController : UIViewController {
+@interface MainMenuController : UIViewController <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate> {
     NSMutableArray* lettersArray;
     UIImageView* letterB;
     UIImageView* letterR;
@@ -64,11 +65,12 @@
 @property (assign) IBOutlet UILabel* broggutCount;
 @property (assign) IBOutlet UILabel* spaceYearCount;
 
-
-- (void)animateStars;
+- (void)animateBackgrounds;
 - (void)animateLetters;
 
 - (void)updateCountLabels;
+
+- (void)reportScore:(int64_t)score forCategory:(NSString*)category;
 
 - (IBAction)playButtonSound:(id)sender;
 - (IBAction)loadOptionsViewController;
@@ -76,11 +78,11 @@
 - (IBAction)startTutorialLevels;
 - (IBAction)openBroggupedia;
 - (IBAction)startCampaignLevels;
+- (IBAction)showAchievementController;
+- (IBAction)showLeaderboardController;
 - (IBAction)loadProfileViewController;
 - (IBAction)loadSkirmishViewController;
 - (IBAction)spaceYearButtonPressed;
 - (IBAction)broggutCountButtonPressed;
-
-- (void)updateBackgroundsWithTouchLocation:(CGPoint)location;
 
 @end

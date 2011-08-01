@@ -241,6 +241,8 @@
 		6F8B8E86130C91D5009CD1BF /* defaultTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B8E85130C91D5009CD1BF /* defaultTexture.png */; };
 		6F8E25D313302F3C00DCD662 /* TriggerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8E25D213302F3C00DCD662 /* TriggerObject.m */; };
 		6F8E25D71330318400DCD662 /* spritetrigger.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8E25D61330318400DCD662 /* spritetrigger.png */; };
+		6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA299F13E61D57000D560A /* gamecenter-icon.png */; };
+		6FAA29A213E62478000D560A /* explosionring.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA29A113E62478000D560A /* explosionring.png */; };
 		6FAD51F51304579100E5E98F /* gothic.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F31304579100E5E98F /* gothic.fnt */; };
 		6FAD51F61304579100E5E98F /* gothic.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F41304579100E5E98F /* gothic.png */; };
 		6FAD539C13049A6400E5E98F /* TouchableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FAD539B13049A6400E5E98F /* TouchableObject.m */; };
@@ -408,6 +410,7 @@
 		6F0E32B5133268C70037C789 /* FingerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FingerObject.m; sourceTree = "<group>"; };
 		6F0E32B7133270900037C789 /* spritetouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetouch.png; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
+		6F1BB1D313E5BBCD00C96C29 /* AchievementIdentifiers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementIdentifiers.h; sourceTree = "<group>"; };
 		6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 1.plist"; sourceTree = "<group>"; };
 		6F27EE081324118B00579EE5 /* AIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIController.h; sourceTree = "<group>"; };
 		6F27EE091324118B00579EE5 /* AIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIController.m; sourceTree = "<group>"; };
@@ -632,6 +635,8 @@
 		6F8E25D113302F3C00DCD662 /* TriggerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerObject.h; sourceTree = "<group>"; };
 		6F8E25D213302F3C00DCD662 /* TriggerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TriggerObject.m; sourceTree = "<group>"; };
 		6F8E25D61330318400DCD662 /* spritetrigger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetrigger.png; sourceTree = "<group>"; };
+		6FAA299F13E61D57000D560A /* gamecenter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter-icon.png"; sourceTree = "<group>"; };
+		6FAA29A113E62478000D560A /* explosionring.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explosionring.png; sourceTree = "<group>"; };
 		6FAD51F31304579100E5E98F /* gothic.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gothic.fnt; sourceTree = "<group>"; };
 		6FAD51F41304579100E5E98F /* gothic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gothic.png; sourceTree = "<group>"; };
 		6FAD539A13049A6400E5E98F /* TouchableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchableObject.h; sourceTree = "<group>"; };
@@ -811,6 +816,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				8D1107310486CEB800E47090 /* OpenGLEngine-Info.plist */,
 				32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				6F609F6B134D0B7F006C1E0C /* Entitlements.plist */,
@@ -830,7 +836,6 @@
 				6FE699CF13772B8400319F7B /* Fonts */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				6FE6A609137DB83900A0E4D8 /* icon.png */,
-				8D1107310486CEB800E47090 /* OpenGLEngine-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1131,6 +1136,8 @@
 		6F6A2C0D12FC7982002A4201 /* GameCenter */ = {
 			isa = PBXGroup;
 			children = (
+				6F1BB1D313E5BBCD00C96C29 /* AchievementIdentifiers.h */,
+				6F6A2E1612FFBF66002A4201 /* GameCenterStructs.h */,
 				6F6A2C0F12FC7992002A4201 /* GameCenterSingleton.h */,
 				6F6A2C1012FC7992002A4201 /* GameCenterSingleton.m */,
 				6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */,
@@ -1169,6 +1176,7 @@
 		6F7F41F2135CE54100619FFA /* Explosions */ = {
 			isa = PBXGroup;
 			children = (
+				6FAA29A113E62478000D560A /* explosionring.png */,
 				6F4EE66C136E0140003B0038 /* explosionlarge[0].png */,
 				6F4EE66D136E0140003B0038 /* explosionlarge[1].png */,
 				6F4EE66E136E0140003B0038 /* explosionlarge[2].png */,
@@ -1274,6 +1282,7 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6FAA299F13E61D57000D560A /* gamecenter-icon.png */,
 				6FE6A5F2137CBA5F00A0E4D8 /* backbutton.png */,
 				6FE6A5E2137C821000A0E4D8 /* broggutcountbutton.png */,
 				6FE6A5E3137C821000A0E4D8 /* spaceyearbutton.png */,
@@ -1463,7 +1472,6 @@
 			isa = PBXGroup;
 			children = (
 				6FCAC69612F75BB500662BDA /* GameplayConstants.h */,
-				6F6A2E1612FFBF66002A4201 /* GameCenterStructs.h */,
 				6FCAC76912F7D3D700662BDA /* Transform2D.h */,
 				6FCAC74C12F7D2F800662BDA /* Structures.h */,
 				6FF665031305D11900EB76A8 /* Primitives.h */,
@@ -1854,6 +1862,8 @@
 				6FD74DD2139809180027E5C4 /* Campaign 11.plist in Resources */,
 				6FD74DD3139809180027E5C4 /* Campaign 12.plist in Resources */,
 				6FD74DD4139809180027E5C4 /* Campaign 13.plist in Resources */,
+				6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */,
+				6FAA29A213E62478000D560A /* explosionring.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1990,7 +2000,7 @@
 				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PRODUCT_NAME = OpenGLEngine;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 			};
@@ -2005,7 +2015,7 @@
 				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PRODUCT_NAME = OpenGLEngine;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;
@@ -2039,7 +2049,7 @@
 				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PRODUCT_NAME = OpenGLEngine;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;

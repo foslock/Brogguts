@@ -7,6 +7,7 @@
 //
 
 #import "InfoMenuController.h"
+#import "GameCenterSingleton.h"
 
 
 @implementation InfoMenuController
@@ -33,6 +34,10 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (IBAction)tapBradsName {
+    [[GameCenterSingleton sharedGCSingleton] reportAchievementIdentifier:(NSString*)kAchievementIDFindBrad percentComplete:100.0f];
+}
+
 - (IBAction)popInfoController {
     [self.parentViewController dismissModalViewControllerAnimated:YES];
 }
@@ -53,6 +58,7 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [[GameCenterSingleton sharedGCSingleton] reportAchievementIdentifier:(NSString*)kAchievementIDAppreciatedDevs percentComplete:100.0f];
     [super touchesEnded:touches withEvent:event];
     [self dismissModalViewControllerAnimated:YES];
 }

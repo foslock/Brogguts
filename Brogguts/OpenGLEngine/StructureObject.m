@@ -182,7 +182,7 @@
     if (objectAlliance == kAllianceFriendly) {
         NotificationObject* noti = [[NotificationObject alloc] initWithLocation:self.objectLocation withDuration:3.0f];
         [noti attachToObject:self];
-        [[self currentScene] setNotification:noti];
+        [[self currentScene] setSceneNotification:noti];
         [noti release];
     }
 	attributeHullCurrent -= damage;

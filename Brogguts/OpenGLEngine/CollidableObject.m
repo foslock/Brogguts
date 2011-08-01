@@ -151,6 +151,11 @@ static int globalUniqueID = 0;
     return CGRectContainsPoint(CGRectInset(bounds, -objectImage.imageSize.width / 2, -objectImage.imageSize.height / 2), objectLocation);
 }
 
+- (void)normalizePosition {
+    objectLocation.x = roundf(objectLocation.x);
+    objectLocation.y = roundf(objectLocation.y);
+}
+
 - (void)objectWasDestroyed {
 	// NSLog(@"Object (%i) was destroyed", uniqueObjectID);
 }

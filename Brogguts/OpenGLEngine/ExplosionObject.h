@@ -19,6 +19,7 @@ enum kExplosionSizes {
 
 @interface ExplosionObject : CollidableObject {
     AnimatedImage* animatedImage;
+    Image* ringImage;
 }
 
 - (id)initWithLocation:(CGPoint)location withSize:(int)size;

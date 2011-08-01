@@ -26,7 +26,7 @@
         AntCraftObject* enemyAnt = [[AntCraftObject alloc] initWithLocation:enemyLoc isTraveling:NO];
         enemyCraft = enemyAnt;
         [enemyAnt setObjectAlliance:kAllianceEnemy];
-        [self addTouchableObject:enemyAnt withColliding:STRUCTURE_COLLISION_YESNO];
+        [self addTouchableObject:enemyAnt withColliding:CRAFT_COLLISION_YESNO];
         [enemyAnt release];
         
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:enemyAnt.objectLocation withDuration:-1.0f];

@@ -60,8 +60,8 @@ typedef struct Rotating_Entity {
 } RotatingEntityPacket;
 
 typedef struct Complex_Entity {
-	int packetType;
-	int objectID;
+	UInt16 packetType;
+	UInt16 objectID;
 	Vector2f position;
 	Vector2f velocity;
 	float rotation;

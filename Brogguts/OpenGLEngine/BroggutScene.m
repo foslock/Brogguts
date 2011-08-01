@@ -35,6 +35,8 @@
 #import "EndMissionObject.h"
 #import "NotificationObject.h"
 #import "AnimatedImage.h"
+#import "SpawnerObject.h"
+
 
 NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -64,6 +66,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
+@synthesize sceneSpawners;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -86,6 +89,10 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         isMultiplayerMatch = NO;
     }
     
+    didLoseAnyCraftOrStructure = YES;
+    
+    sceneSpawners = [[NSMutableArray alloc] init];
+    
     self.sceneName = sName;
     isAllowingSidebar = YES;
     isShowingBroggutCount = YES;
@@ -98,6 +105,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     isBuildingStructure = NO;
     isFriendlyBaseStationAlive = NO;
     isEnemyBaseStationAlive = NO;
+    homeBaseLocation = CGPointZero;
+    enemyBaseLocation = CGPointZero;
     endMissionObject = [[EndMissionObject alloc] init];
     fadeBackgroundAlpha = 0.0f;
     didAddBrogguts = NO;
@@ -289,6 +298,19 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         // Initialize the entire scene, get it ready for adding objects
         [self initializeWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:thisSceneName];
         
+        // If this is a campaign, recreate the spawners
+        if (sceneType == kSceneTypeCampaign) {
+            if ([AIArray count] != 0) {
+                NSArray* spawnerInfos = [AIArray objectAtIndex:kSceneAIControllerSpawnerInfos];
+                for (int i = 0; i < [spawnerInfos count]; i++) {
+                    NSArray* spawnerInfo = [spawnerInfos objectAtIndex:i];
+                    SpawnerObject* spawner = [[SpawnerObject alloc] initWithSavedArray:spawnerInfo];
+                    [sceneSpawners addObject:spawner];
+                    [spawner release];
+                }
+            }
+        }
+        
         // Array used to store locations where small brogguts should be created
         NSMutableArray* locationArray = [[NSMutableArray alloc] init];
         
@@ -391,10 +413,10 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                             }
                             [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             if (newStructure.objectAlliance == kAllianceFriendly) {
-                                self.homeBaseLocation = objectEndLocation;
+                                homeBaseLocation = CGPointMake(objectEndLocation.x, objectEndLocation.y);
                             }
                             if (newStructure.objectAlliance == kAllianceEnemy) {
-                                self.enemyBaseLocation = objectEndLocation;
+                                enemyBaseLocation = CGPointMake(objectEndLocation.x, objectEndLocation.y);
                             }
                             [newStructure release];
                             break;
@@ -669,6 +691,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 	if (cameraImage) {
 		[cameraImage release];
 	}
+    [sceneSpawners release];
     [broggutIconImage release];
     [metalIconImage release];
     [supplyIconImage release];
@@ -1162,13 +1185,6 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [enemyAIController updateAIController];
     }
     
-    if (isShowingNotification) {
-        if (!notification || [notification destroyNow]) {
-            isShowingNotification = NO;
-            notification = nil;
-        }
-    }
-    
     // Destroy all objects in the destory array, and remove them from other arrays
     for (int i = 0; i < [renderableDestroyed count]; i++) {
         CollidableObject* tempObj = [renderableDestroyed objectAtIndex:i];
@@ -1191,16 +1207,20 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             // It is a ship
             // If was being controlled, remove it
             [self removeControlledCraft:(CraftObject*)tempObj];
-            if (tempObj.objectAlliance == kAllianceFriendly) {
-                numberOfCurrentShips--;
-            } else if (tempObj.objectAlliance == kAllianceEnemy) {
-                numberOfEnemyShips--;
+            if (tempObj.objectType != kObjectCraftSpiderDroneID) {
+                if (tempObj.objectAlliance == kAllianceFriendly) {
+                    numberOfCurrentShips--;
+                    didLoseAnyCraftOrStructure = YES;
+                } else if (tempObj.objectAlliance == kAllianceEnemy) {
+                    numberOfEnemyShips--;
+                }
             }
         }
         if ([tempObj isKindOfClass:[StructureObject class]]) {
             // It is a structure
             if (tempObj.objectAlliance == kAllianceFriendly) {
                 numberOfCurrentStructures--;
+                didLoseAnyCraftOrStructure = YES;
                 if (tempObj.objectType == kObjectStructureRefineryID) {
                     numberOfRefineries--;
                     [currentRefineries removeObject:tempObj];
@@ -1211,6 +1231,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 }
             } else if (tempObj.objectAlliance == kAllianceEnemy) {
                 numberOfEnemyStructures--;
+            }
+        }
+        
+        if (sceneType == kSceneTypeBaseCamp) {
+            if (numberOfEnemyShips == 0 && numberOfEnemyStructures == 0) {
+                [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDWinBaseCamp percentComplete:100.0f];
             }
         }
         if ([tempObj isKindOfClass:[BroggutObject class]]) {
@@ -1226,6 +1252,13 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         }
     }
     [renderableDestroyed removeAllObjects];
+    
+    if (isShowingNotification) {
+        if (!notification || [notification destroyNow]) {
+            [self setSceneNotification:nil];
+            isShowingNotification = NO;
+        }
+    }
     
     if (sceneType == kSceneTypeSkirmish && isMultiplayerMatch && [sharedGameCenterSingleton matchStarted]) {
         if (frameCounter % (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE + 1) == 0) {
@@ -1407,10 +1440,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 
 - (void)addTouchableObject:(TouchableObject*)obj withColliding:(BOOL)collides {
     [obj setCurrentScene:self];
-    if ([obj isKindOfClass:[CraftObject class]]) {
+    if ([obj isKindOfClass:[CraftObject class]] && obj.objectType != kObjectCraftSpiderDroneID) {
         if (obj.objectAlliance == kAllianceFriendly) {
             numberOfCurrentShips++;
+            [sharedGameCenterSingleton updateCraftBuiltAchievements:numberOfCurrentShips];
         } else if (obj.objectAlliance == kAllianceEnemy) {
+            didLoseAnyCraftOrStructure = NO;
             numberOfEnemyShips++;
         }
     }
@@ -1471,11 +1506,18 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     [textObjectArray addObject:obj];
 }
 
-- (void)setNotification:(NotificationObject *)noti {
+- (void)setSceneNotification:(NotificationObject *)noti {
     if (!isShowingNotification) {
         isShowingNotification = YES;
-        notification = noti;
-        [self addCollidableObject:notification];
+    }
+    [self.notification setDestroyNow:YES];
+    
+    // Replacing the setter
+    [notification autorelease];
+    notification = [noti retain];
+    //
+    if (noti) {
+        [self addCollidableObject:noti];
     }
 }
 
@@ -2010,6 +2052,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2029,6 +2073,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2048,6 +2094,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2067,6 +2115,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2079,6 +2129,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
                     [newCraft setObjectLocation:homeBaseLocation];
+                    [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDBuildCamel percentComplete:100.0f];
                 } else if (alliance == kAllianceEnemy) {
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
@@ -2086,6 +2137,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2098,6 +2151,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
                     [newCraft setObjectLocation:homeBaseLocation];
+                    [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDBuildRat percentComplete:100.0f];
                 } else if (alliance == kAllianceEnemy) {
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
@@ -2105,6 +2159,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2121,6 +2177,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 }
                 if (alliance == kAllianceFriendly) {
                     [newCraft setObjectLocation:homeBaseLocation];
+                    [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDBuildSpider percentComplete:100.0f];
                 } else if (alliance == kAllianceEnemy) {
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
@@ -2128,6 +2185,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2140,6 +2199,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
                     [newCraft setObjectLocation:homeBaseLocation];
+                    [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDBuildEagle percentComplete:100.0f];
                 } else if (alliance == kAllianceEnemy) {
                     [newCraft setObjectLocation:enemyBaseLocation];
                 }
@@ -2147,6 +2207,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2189,6 +2251,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2208,6 +2272,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2227,6 +2293,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2246,6 +2314,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2265,6 +2335,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2284,6 +2356,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2303,6 +2377,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                 BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
                 [self addCollidableObject:tempObject];
+                [tempObject release];
+                [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
             }
@@ -2368,6 +2444,13 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         // Get the point where the player has touched the screen
         CGPoint originalTouchLocation = [touch locationInView:aView];
         CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:visibleScreenBounds];
+        
+        // EXPLOSION DEBUG
+        /*
+        ExplosionObject* explosion = [[ExplosionObject alloc] initWithLocation:touchLocation withSize:kExplosionSizeLarge];
+        [self addCollidableObject:explosion];
+        [explosion release];
+        */
         
         // Check if the touch is in the (active) sidebar
         if (CGRectContainsPoint([sideBar sideBarRect], [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero])) {
