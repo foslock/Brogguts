@@ -25,6 +25,8 @@
 	float fadeTime;			// Time that the object will start to fade
 	Color4f fontColor;		// Color the font will be drawn with
 	Scale2f fontScale;		// Scale the font will be drawn with
+    
+    float textWidthLimit;   // Limits the text to be drawn to a certain width (0.0 means no limit)
 }
 
 @property (nonatomic, assign) CGRect textRect;
@@ -33,6 +35,7 @@
 @property (nonatomic, assign) int fontID;
 @property (nonatomic, assign) Color4f fontColor;
 @property (nonatomic, assign) Scale2f fontScale;
+@property (nonatomic, assign) float textWidthLimit;
 @property (copy) NSString* objectText;
 
 // Set duration to -1 for indefinite duration

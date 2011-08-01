@@ -66,6 +66,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class RefineryStructureObject;
 @class BlockStructureObject;
 @class NotificationObject;
+@class DialougeObject;
 
 // Thi is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -87,6 +88,9 @@ enum kProcessFrameOffset {
 	NSString* sceneName;
     NSString* sceneFileName;
     
+    // Timer, counting seconds this scene has lasted
+    float sceneTimer;
+    
     // Type of the scene (enum defined in GameController)
     int sceneType;
     
@@ -105,8 +109,11 @@ enum kProcessFrameOffset {
     // No losses achievement
     BOOL didLoseAnyCraftOrStructure;
     
-    // USED ONLY FOR CAMPAIGN SCENES TO STORE SPAWNERS
+    // Used in campaign scenes, this array stores the raw spawners (not infos)
     NSMutableArray* sceneSpawners;
+    
+    // This array stores the raw dialouge objects (not infos)
+    NSMutableArray* sceneDialouges;
     
     // The final box that pops up when the scene is done
     EndMissonObject* endMissionObject;
@@ -197,7 +204,7 @@ enum kProcessFrameOffset {
 	// The current location at which the screen is being touched
 	CGPoint currentTouchLocation;
 	int movingTouchHash;		// Holds the unique hash value given to a touch on the screen.  
-								// This allows us to track the same touch during touchesMoved events
+								// This allows us to track the same touch during touchesMoved events (-1 is none)
 	BOOL isTouchScrolling;		// YES if a touch is being tracked for scrolling the screen/controlling the current ship
     BOOL isTouchMovingOverview; // YES is a touch is moving the overview around
     int movingOverviewTouchHash;// Hash for the touch moving the overview around
@@ -236,6 +243,13 @@ enum kProcessFrameOffset {
 	BOOL isFadingOverviewIn;
 	BOOL isFadingOverviewOut;
 	float overviewAlpha;
+    
+    // Dialouge pop-up control
+    BOOL isShowingDialouge;
+    BOOL isFadingDialougeIn;
+    BOOL isFadingDialougeOut;
+    float dialougeFadeAlpha;
+    DialougeObject* currentShowingDialouge;
 	
 	// Map vars
 	int widthCells;
@@ -245,6 +259,7 @@ enum kProcessFrameOffset {
 #pragma mark -
 #pragma mark Properties
 
+@property (readonly) float sceneTimer;
 @property (readonly) NSMutableArray* fontArray;
 @property (retain) NSString* sceneName;
 @property (retain) NSString* sceneFileName;
@@ -285,6 +300,7 @@ enum kProcessFrameOffset {
 @property (nonatomic, assign) int numberOfEnemyShips;
 @property (nonatomic, assign) int numberOfEnemyStructures;
 @property (readonly) NSMutableArray* sceneSpawners;
+@property (readonly) NSMutableArray* sceneDialouges;
 
 #pragma mark -
 #pragma mark Selectors
@@ -418,6 +434,7 @@ enum kProcessFrameOffset {
 - (BOOL)baseCampCheckFailCondition;
 
 // Selector that enables a touchesBegan events location to be passed into a scene.
+- (void)disregardAllCurrentTouches;
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView;

@@ -140,6 +140,13 @@
     }
 }
 
+- (void)setColor:(Color4f)color {
+    inactiveColor = color;
+    for (Image* image in images) {
+        [image setColor:inactiveColor];
+    }
+}
+
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
     [super renderCenteredAtPoint:aPoint withScrollVector:vector];
     // Render the top row of images

@@ -144,6 +144,46 @@
 	}
 }
 
+- (void)renderStringAt:(CGPoint)aPoint text:(NSString*)aText onLayer:(GLuint)layer withWidthLimit:(float)widthLimit {
+    
+    // Grab the scale that we will be using
+    CGPoint oldPoint = aPoint;
+	float xScale = fontImage.scale.x;
+	float yScale = fontImage.scale.y;
+    int currentLine = 0;
+	
+	// Loop through all the characters in the text to be rendered
+	for(int i = 0; i < [aText length]; i++) {
+		
+		// Grab the character value of the current character.  We take off 32 as the first
+		// 32 characters of the fonts are not used
+		unichar charID = [aText characterAtIndex:i] - 32;
+        charsArray[charID].image.scale = fontImage.scale;
+        Image* charImage = charsArray[charID].image;
+		
+		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.
+		// This will cause the characters to all sit on the line correctly with tails below the line.  The commonHeight which has
+		// been taken from the fonts control file is used within the calculation.
+        if ( (aPoint.x + charsArray[charID].xOffset) >= (oldPoint.x + widthLimit) ) {
+            aPoint.x = oldPoint.x;
+            currentLine++;
+        }
+		int y = aPoint.y - (currentLine * ((lineHeight * yScale) + 2.0f)) + (lineHeight * yScale) - (charsArray[charID].height + charsArray[charID].yOffset) * yScale;
+		int x = aPoint.x + charsArray[charID].xOffset;
+		CGPoint renderPoint = CGPointMake(x, y);
+		
+		// Set the color of this character based on the fontColor
+		charImage.color = fontColor;
+        charImage.renderLayer = layer;
+		
+		// Render the current character at the renderPoint
+		[charImage renderAtPoint:renderPoint];
+        
+		// Move x based on the amount to advance for the current char
+		aPoint.x += charsArray[charID].xAdvance * xScale;
+	}
+}
+
 - (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer {
 	
 	CGPoint point = CGPointZero;

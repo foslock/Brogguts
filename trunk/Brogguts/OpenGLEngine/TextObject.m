@@ -12,7 +12,7 @@
 
 @implementation TextObject
 @synthesize isTextHidden, fontID, objectText, scrollWithBounds;
-@synthesize fontColor, fontScale, textRect;
+@synthesize fontColor, fontScale, textRect, textWidthLimit;
 
 - (void)dealloc {
 	[objectText release];
@@ -35,6 +35,7 @@
 		isCheckedForCollisions = NO;
 		fontScale = Scale2fMake(1.0f, 1.0f);
 		self.objectText = string;
+        textWidthLimit = 0.0f;
 	}
 	return self;
 }
@@ -80,10 +81,17 @@
 	Color4f savedColor = [font fontColor];
 	
     if (!drawsInRect) {
-        [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
-        [font renderStringAt:CGPointMake(objectLocation.x + TEXT_SHADOW_OFFSET_X, objectLocation.y - TEXT_SHADOW_OFFSET_Y) text:self.objectText onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];
-        [font setFontColor:fontColor];
-        [font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
+        if (textWidthLimit > 0.0f) {
+            [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+            [font renderStringAt:CGPointMake(objectLocation.x + TEXT_SHADOW_OFFSET_X, objectLocation.y - TEXT_SHADOW_OFFSET_Y) text:self.objectText onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer) withWidthLimit:textWidthLimit];
+            [font setFontColor:fontColor];
+            [font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer withWidthLimit:textWidthLimit];
+        } else {
+            [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];
+            [font renderStringAt:CGPointMake(objectLocation.x + TEXT_SHADOW_OFFSET_X, objectLocation.y - TEXT_SHADOW_OFFSET_Y) text:self.objectText onLayer:CLAMP(renderLayer - 1, 0, kLayerHUDTopLayer)];
+            [font setFontColor:fontColor];
+            [font renderStringAt:objectLocation text:self.objectText onLayer:renderLayer];
+        }
     }
     else {
         [font setFontColor:Color4fMake(0.0f, 0.0f, 0.0f, CLAMP(fontColor.alpha - 0.25f, 0.0f, 1.0f))];

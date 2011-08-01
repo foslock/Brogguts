@@ -69,10 +69,14 @@ enum kProfileFailTypes {
 // Returns the correct FAIL TYPE (see above) if there isn't enough of a particular resource
 - (int)subtractBrogguts:(int)brogs metal:(int)metal;
 
+// This returns the broggut count for the current scene (instantly updated)
 - (int)realBroggutCount;
-- (int)baseCampBroggutCount;
+
+// This returns the metal count for the current scene (instantly updated)
 - (int)realMetalCount;
 
+// This returns the broggut amount left in the current Base Camp
+- (int)baseCampBroggutCount;
 
 - (void)updateSpaceYearUnlocks;
 - (void)startSceneWithType:(int)sceneType;

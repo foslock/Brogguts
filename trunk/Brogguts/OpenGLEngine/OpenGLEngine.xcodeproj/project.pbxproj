@@ -62,6 +62,11 @@
 		6F006AB1137A4B8F000C13C6 /* structureturretdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006AB0137A4B8F000C13C6 /* structureturretdirty.png */; };
 		6F006AB4137ADA89000C13C6 /* CraftUpgradesStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F006AB3137ADA84000C13C6 /* CraftUpgradesStructureObject.m */; };
 		6F03122C134669C200292047 /* lightsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F03122B134669C200292047 /* lightsound.wav */; };
+		6F0A7A0813E70856001AD287 /* DialougeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0A7A0713E70856001AD287 /* DialougeObject.m */; };
+		6F0A7A1313E742BC001AD287 /* gulim.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1113E742BC001AD287 /* gulim.fnt */; };
+		6F0A7A1413E742BC001AD287 /* gulim.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1213E742BC001AD287 /* gulim.png */; };
+		6F0A7A1713E7436C001AD287 /* eurostile.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1513E7436C001AD287 /* eurostile.fnt */; };
+		6F0A7A1813E7436C001AD287 /* eurostile.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1613E7436C001AD287 /* eurostile.png */; };
 		6F0E3272133115410037C789 /* TutorialSceneTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3271133115410037C789 /* TutorialSceneTwo.m */; };
 		6F0E3275133123F00037C789 /* Tutorial 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E3274133123F00037C789 /* Tutorial 2.plist */; };
 		6F0E3278133159E90037C789 /* TutorialSceneThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E3277133159E90037C789 /* TutorialSceneThree.m */; };
@@ -373,6 +378,12 @@
 		6F006AB2137ADA81000C13C6 /* CraftUpgradesStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftUpgradesStructureObject.h; sourceTree = "<group>"; };
 		6F006AB3137ADA84000C13C6 /* CraftUpgradesStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftUpgradesStructureObject.m; sourceTree = "<group>"; };
 		6F03122B134669C200292047 /* lightsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lightsound.wav; sourceTree = "<group>"; };
+		6F0A7A0613E70856001AD287 /* DialougeObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialougeObject.h; sourceTree = "<group>"; };
+		6F0A7A0713E70856001AD287 /* DialougeObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialougeObject.m; sourceTree = "<group>"; };
+		6F0A7A1113E742BC001AD287 /* gulim.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gulim.fnt; sourceTree = "<group>"; };
+		6F0A7A1213E742BC001AD287 /* gulim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gulim.png; sourceTree = "<group>"; };
+		6F0A7A1513E7436C001AD287 /* eurostile.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eurostile.fnt; sourceTree = "<group>"; };
+		6F0A7A1613E7436C001AD287 /* eurostile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eurostile.png; sourceTree = "<group>"; };
 		6F0E3270133115410037C789 /* TutorialSceneTwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneTwo.h; sourceTree = "<group>"; };
 		6F0E3271133115410037C789 /* TutorialSceneTwo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneTwo.m; sourceTree = "<group>"; };
 		6F0E327313311FAB0037C789 /* TutorialFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialFiles.h; sourceTree = "<group>"; };
@@ -1429,6 +1440,8 @@
 				6F36BEC81369BF3000CE01C5 /* EndMissionObject.m */,
 				6FE6A606137CC2E200A0E4D8 /* StartMissionObject.h */,
 				6FE6A607137CC2E200A0E4D8 /* StartMissionObject.m */,
+				6F0A7A0613E70856001AD287 /* DialougeObject.h */,
+				6F0A7A0713E70856001AD287 /* DialougeObject.m */,
 			);
 			name = "Scene Objects";
 			sourceTree = "<group>";
@@ -1628,6 +1641,10 @@
 				6F8B88C41307B38B009CD1BF /* blair.png */,
 				6FAD51F31304579100E5E98F /* gothic.fnt */,
 				6FAD51F41304579100E5E98F /* gothic.png */,
+				6F0A7A1113E742BC001AD287 /* gulim.fnt */,
+				6F0A7A1213E742BC001AD287 /* gulim.png */,
+				6F0A7A1513E7436C001AD287 /* eurostile.fnt */,
+				6F0A7A1613E7436C001AD287 /* eurostile.png */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
@@ -1864,6 +1881,10 @@
 				6FD74DD4139809180027E5C4 /* Campaign 13.plist in Resources */,
 				6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */,
 				6FAA29A213E62478000D560A /* explosionring.png in Resources */,
+				6F0A7A1313E742BC001AD287 /* gulim.fnt in Resources */,
+				6F0A7A1413E742BC001AD287 /* gulim.png in Resources */,
+				6F0A7A1713E7436C001AD287 /* eurostile.fnt in Resources */,
+				6F0A7A1813E7436C001AD287 /* eurostile.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1983,6 +2004,7 @@
 				6FE6A608137CC2E300A0E4D8 /* StartMissionObject.m in Sources */,
 				6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */,
 				6F5E808B13A26B8600540E3E /* HealthDropObject.m in Sources */,
+				6F0A7A0813E70856001AD287 /* DialougeObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
