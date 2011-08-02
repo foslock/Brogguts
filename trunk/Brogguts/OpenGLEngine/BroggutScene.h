@@ -66,7 +66,7 @@ extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class RefineryStructureObject;
 @class BlockStructureObject;
 @class NotificationObject;
-@class DialougeObject;
+@class DialogueObject;
 
 // Thi is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -112,8 +112,8 @@ enum kProcessFrameOffset {
     // Used in campaign scenes, this array stores the raw spawners (not infos)
     NSMutableArray* sceneSpawners;
     
-    // This array stores the raw dialouge objects (not infos)
-    NSMutableArray* sceneDialouges;
+    // This array stores the raw dialogue objects (not infos)
+    NSMutableArray* sceneDialogues;
     
     // The final box that pops up when the scene is done
     EndMissonObject* endMissionObject;
@@ -244,12 +244,15 @@ enum kProcessFrameOffset {
 	BOOL isFadingOverviewOut;
 	float overviewAlpha;
     
-    // Dialouge pop-up control
-    BOOL isShowingDialouge;
-    BOOL isFadingDialougeIn;
-    BOOL isFadingDialougeOut;
-    float dialougeFadeAlpha;
-    DialougeObject* currentShowingDialouge;
+    // Dialogue pop-up control
+    BOOL isShowingDialogue;
+    BOOL isFadingDialogueIn;
+    BOOL isFadingDialogueOut;
+    float dialogueFadeAlpha;
+    DialogueObject* currentShowingDialogue;
+    BOOL isTouchSkippingDialogue;
+    float skipDialogueTimer;
+    CGPoint skipDialogueTouchPoint;
 	
 	// Map vars
 	int widthCells;
@@ -300,7 +303,7 @@ enum kProcessFrameOffset {
 @property (nonatomic, assign) int numberOfEnemyShips;
 @property (nonatomic, assign) int numberOfEnemyStructures;
 @property (readonly) NSMutableArray* sceneSpawners;
-@property (readonly) NSMutableArray* sceneDialouges;
+@property (readonly) NSMutableArray* sceneDialogues;
 
 #pragma mark -
 #pragma mark Selectors

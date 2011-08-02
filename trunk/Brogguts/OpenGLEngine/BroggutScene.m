@@ -36,7 +36,7 @@
 #import "NotificationObject.h"
 #import "AnimatedImage.h"
 #import "SpawnerObject.h"
-#import "DialougeObject.h"
+#import "DialogueObject.h"
 
 
 NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
@@ -68,7 +68,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
-@synthesize sceneSpawners, sceneDialouges;
+@synthesize sceneSpawners, sceneDialogues;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -97,7 +97,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     didLoseAnyCraftOrStructure = YES;
     
     sceneSpawners = [[NSMutableArray alloc] init];
-    sceneDialouges = [[NSMutableArray alloc] init];
+    sceneDialogues = [[NSMutableArray alloc] init];
     
     self.sceneName = sName;
     isAllowingSidebar = YES;
@@ -167,11 +167,13 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     isFadingOverviewOut = NO;
     overviewAlpha = 0.0f;
     
-    isShowingDialouge = NO;
-    isFadingDialougeIn = NO;
-    isFadingDialougeOut = NO;
-    dialougeFadeAlpha = 0.0f;
-    currentShowingDialouge = nil;
+    isShowingDialogue = NO;
+    isFadingDialogueIn = NO;
+    isFadingDialogueOut = NO;
+    dialogueFadeAlpha = 0.0f;
+    currentShowingDialogue = nil;
+    isTouchSkippingDialogue = NO;
+    skipDialogueTimer = 0.0f;
     
     isShowingNotification = NO;
     
@@ -187,7 +189,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                          initWithFontImageNamed:@"gulim.png" controlFile:@"gulim" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
     [fontArray insertObject:gulim atIndex:kFontGulimID];
     BitmapFont* euro = [[BitmapFont alloc]
-                         initWithFontImageNamed:@"eurostile.png" controlFile:@"eurostile" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
+                        initWithFontImageNamed:@"eurostile.png" controlFile:@"eurostile" scale:Scale2fMake(1.0f, 1.0f) filter:GL_LINEAR];
     [fontArray insertObject:euro atIndex:kFontEurostileID];
     [gothic release];
     [blair release];
@@ -333,12 +335,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
             NSNumber* timerNumber = [AIArray objectAtIndex:kSceneAIControllerSceneTime];
             sceneTimer = [timerNumber floatValue];
             
-            // Load the dialouge objects
-            NSArray* dialougeInfos = [AIArray objectAtIndex:kSceneAIControllerDialougeInfos];
-            for (int i = 0; i < [dialougeInfos count]; i++) {
-                NSArray* dialougeInfo = [dialougeInfos objectAtIndex:i];
-                DialougeObject* newDia = [[DialougeObject alloc] initWithInfoArray:dialougeInfo];
-                [sceneDialouges addObject:newDia];
+            // Load the dialogue objects
+            NSArray* dialogueInfos = [AIArray objectAtIndex:kSceneAIControllerDialogueInfos];
+            for (int i = 0; i < [dialogueInfos count]; i++) {
+                NSArray* dialogueInfo = [dialogueInfos objectAtIndex:i];
+                DialogueObject* newDia = [[DialogueObject alloc] initWithInfoArray:dialogueInfo];
+                [sceneDialogues addObject:newDia];
                 [newDia release];
             }
         }
@@ -723,7 +725,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 	if (cameraImage) {
 		[cameraImage release];
 	}
-    [sceneDialouges release];
+    [sceneDialogues release];
     [sceneSpawners release];
     [broggutIconImage release];
     [metalIconImage release];
@@ -1029,40 +1031,49 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         }
     }
     
-    for (int i = 0; i < [sceneDialouges count]; i++) {
-        DialougeObject* dialouge = [sceneDialouges objectAtIndex:i];
-        if (!isShowingDialouge) {
-            if ([dialouge shouldDisplayDialougeObjectWithTotalTime:sceneTimer]) {
-                isShowingDialouge = YES;
-                isFadingDialougeIn = YES;
-                currentShowingDialouge = dialouge;
+    for (int i = 0; i < [sceneDialogues count]; i++) {
+        DialogueObject* dialogue = [sceneDialogues objectAtIndex:i];
+        if (!isShowingDialogue) {
+            if ([dialogue shouldDisplayDialogueObjectWithTotalTime:sceneTimer]) {
+                isShowingDialogue = YES;
+                isFadingDialogueIn = YES;
+                currentShowingDialogue = dialogue;
                 [self disregardAllCurrentTouches];
             }
         }
     }
     
-    if (isShowingDialouge) {
-        float maxDialougeAlpha = 0.7f;
-        if (isFadingDialougeIn) {
-            dialougeFadeAlpha += OVERVIEW_FADE_IN_RATE;
-            if (dialougeFadeAlpha >= maxDialougeAlpha) {
-                dialougeFadeAlpha = maxDialougeAlpha;
-                isFadingDialougeIn = NO;
-            }
-        } else if (isFadingDialougeOut) {
-            dialougeFadeAlpha -= OVERVIEW_FADE_IN_RATE;
-            if (dialougeFadeAlpha <= 0.0f) {
-                isShowingDialouge = NO;
-                isFadingDialougeIn = NO;
-                isFadingDialougeOut = NO;
-                dialougeFadeAlpha = 0.0f;
-                [currentShowingDialouge setHasBeenDismissed:YES];
-                currentShowingDialouge = nil;
-            } else {
-                dialougeFadeAlpha = CLAMP(dialougeFadeAlpha, 0.0f, maxDialougeAlpha);
+    if (isShowingDialogue) {
+        float maxDialogueAlpha = 0.7f;
+        if (isTouchSkippingDialogue) {
+            if (skipDialogueTimer < DIALOGUE_SKIP_TIMER) {
+                skipDialogueTimer += aDelta;
+            } else if (!isFadingDialogueOut) {
+                isFadingDialogueOut = YES;
+                isTouchSkippingDialogue = NO;
+                [currentShowingDialogue setHasBeenDismissed:YES];
             }
         }
-        [currentShowingDialouge updateDialougeObjectWithDelta:aDelta];
+        if (isFadingDialogueIn) {
+            dialogueFadeAlpha += OVERVIEW_FADE_IN_RATE;
+            if (dialogueFadeAlpha >= maxDialogueAlpha) {
+                dialogueFadeAlpha = maxDialogueAlpha;
+                isFadingDialogueIn = NO;
+            }
+        } else if (isFadingDialogueOut) {
+            dialogueFadeAlpha -= OVERVIEW_FADE_IN_RATE;
+            if (dialogueFadeAlpha <= 0.0f) {
+                isShowingDialogue = NO;
+                isFadingDialogueIn = NO;
+                isFadingDialogueOut = NO;
+                dialogueFadeAlpha = 0.0f;
+                [currentShowingDialogue setHasBeenDismissed:YES];
+                currentShowingDialogue = nil;
+            } else {
+                dialogueFadeAlpha = CLAMP(dialogueFadeAlpha, 0.0f, maxDialogueAlpha);
+            }
+        }
+        [currentShowingDialogue updateDialogueObjectWithDelta:aDelta];
         return;
     }
     
@@ -1482,7 +1493,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     }
     
     // Render the sidebar button (and sidebar, if activated)
-    if (isAllowingSidebar && !isMissionOver && !isShowingDialouge) {
+    if (isAllowingSidebar && !isMissionOver && !isShowingDialogue) {
         [sideBar renderSideBar];
     }
     
@@ -1491,12 +1502,12 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         [helpMessageObject renderWithFont:[fontArray objectAtIndex:kFontBlairID] withScrollVector:Vector2fZero centered:YES];
     }
     
-    if (isShowingDialouge) {
-        glColor4f(0.0f, 0.0f, 0.0f, dialougeFadeAlpha);
+    if (isShowingDialogue) {
+        glColor4f(0.0f, 0.0f, 0.0f, dialogueFadeAlpha);
         enablePrimitiveDraw();
         drawFilledRect(CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight), Vector2fZero);
         disablePrimitiveDraw();
-        [currentShowingDialouge renderDialougeObjectWithFont:[[self fontArray] objectAtIndex:kFontEurostileID]];
+        [currentShowingDialogue renderDialogueObjectWithFont:[[self fontArray] objectAtIndex:kFontEurostileID]];
     }
     
     if (isMissionOver) {
@@ -1519,6 +1530,18 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         glLineWidth(3.0f);
         drawLine(CGPointMake(center.x - (END_MISSION_BACKGROUND_WIDTH / 3), center.y),
                  CGPointMake(center.x + (END_MISSION_BACKGROUND_WIDTH / 3), center.y), Vector2fZero);
+        disablePrimitiveDraw();
+    }
+    
+    if (isTouchSkippingDialogue) {
+        int filledIn = CIRCLE_SEGMENTS_COUNT * (skipDialogueTimer / DIALOGUE_SKIP_TIMER);
+        enablePrimitiveDraw();
+        Circle touchCircle;
+        touchCircle.x = skipDialogueTouchPoint.x;
+        touchCircle.y = skipDialogueTouchPoint.y;
+        touchCircle.radius = 52.0f;
+        glLineWidth(3.0f);
+        drawPartialDashedCircle(touchCircle, filledIn, CIRCLE_SEGMENTS_COUNT, Color4fOnes, Color4fZeroes, Vector2fZero);
         disablePrimitiveDraw();
     }
 }
@@ -2527,14 +2550,17 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     isTouchScrolling = NO;
     movingOverviewTouchHash = -1;
     movingTouchHash = -1;
+    
+    isTouchSkippingDialogue = NO;
+    skipDialogueTimer = 0.0f;
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
-    if (isShowingDialouge) {
-        if (!isFadingDialougeIn || !isFadingDialougeOut) {
-            isFadingDialougeOut = YES;
-            [currentShowingDialouge setHasBeenDismissed:YES];
-        }
+    if (isShowingDialogue && !isTouchSkippingDialogue) {
+        isTouchSkippingDialogue = YES;
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        skipDialogueTouchPoint = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
         return;
     }
     if (isMissionOver) {
@@ -2672,7 +2698,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
-    if (isShowingDialouge) {
+    if (isShowingDialogue) {
         return;
     }
     if (isMissionOver) {
@@ -2825,7 +2851,9 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
-    if (isShowingDialouge) {
+    if (isShowingDialogue) {
+        isTouchSkippingDialogue = NO;
+        skipDialogueTimer = 0.0f;
         return;
     }
     if (isMissionOver) {

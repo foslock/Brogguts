@@ -23,6 +23,7 @@ extern NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT];
     int tutorialIndex; 
     NSString* nextSceneName;
     BOOL isObjectiveComplete;
+    BOOL hasAddedTutorialDialogue;
     TextObject* helpText;
     Image* blackBar;
     CGRect helpTextRect;

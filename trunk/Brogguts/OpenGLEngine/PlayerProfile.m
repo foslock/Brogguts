@@ -259,8 +259,6 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
-
-
 - (int)metalCount {
 	return metalDisplayNumber;
 }

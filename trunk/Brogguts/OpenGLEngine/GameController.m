@@ -23,7 +23,7 @@
 #import "GameCenterSingleton.h"
 #import "BroggupediaViewController.h"
 #import "SpawnerObject.h"
-#import "DialougeObject.h"
+#import "DialogueObject.h"
 
 NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
@@ -513,18 +513,18 @@ static GameController* sharedGameController = nil;
     }
     
     // If this is a campaign, recreate the spawners
-    NSMutableArray* dialougeInfos = [NSMutableArray array];
-    NSArray* dialouges = currentScene.sceneDialouges;
-    for (int i = 0; i < [dialouges count]; i++) {
-        DialougeObject* dialouge = [dialouges objectAtIndex:i];
-        NSArray* dialougeInfo = [dialouge infoArrayFromDialouge];
-        [dialougeInfos addObject:dialougeInfo];
+    NSMutableArray* dialogueInfos = [NSMutableArray array];
+    NSArray* dialogues = currentScene.sceneDialogues;
+    for (int i = 0; i < [dialogues count]; i++) {
+        DialogueObject* dialogue = [dialogues objectAtIndex:i];
+        NSArray* dialogueInfo = [dialogue infoArrayFromDialogue];
+        [dialogueInfos addObject:dialogueInfo];
     }
     
     // After the metal has been finalized, save the brogguts and metal in the plist
     NSMutableArray* tempArray = [[NSMutableArray alloc] init];
     [tempArray insertObject:spawnerInfos atIndex:kSceneAIControllerSpawnerInfos];
-    [tempArray insertObject:dialougeInfos atIndex:kSceneAIControllerDialougeInfos];
+    [tempArray insertObject:dialogueInfos atIndex:kSceneAIControllerDialogueInfos];
     [tempArray insertObject:[NSNumber numberWithFloat:currentSceneTimer] atIndex:kSceneAIControllerSceneTime];
     [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
     [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];

@@ -121,6 +121,8 @@ static inline BOOL CircleContainsPoint(Circle circle, CGPoint point) {
 
 // Return a Color4f structure populated with 1.0's
 static const Color4f Color4fOnes = {1.0f, 1.0f, 1.0f, 1.0f};
+static const Color4f Color4fZeroes = {0.0f, 0.0f, 0.0f, 0.0f};
+static const Color4f Color4fBlack = {0.0f, 0.0f, 0.0f, 1.0f};
 
 // Return a zero populated Vector2f
 static const Vector2f Vector2fZero = {0.0f, 0.0f};

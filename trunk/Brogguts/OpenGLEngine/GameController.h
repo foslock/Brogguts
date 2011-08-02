@@ -33,7 +33,7 @@ enum kSceneStorageGlobals {
 
 enum kSceneAIControllerIndexes {
     kSceneAIControllerSpawnerInfos,
-    kSceneAIControllerDialougeInfos,
+    kSceneAIControllerDialogueInfos,
     kSceneAIControllerSceneTime,
     kSceneAIControllerBrogguts,
     kSceneAIControllerMetal,    

@@ -10,10 +10,6 @@
 #import "Image.h"
 #import "ImageRenderSingleton.h"
 
-#define BUTTON_UNSCALED_SIZE 24.0f
-#define BUTTON_SCALED_SIZE 8.0f
-#define BUTTON_INSET_AMOUNT 4.0f
-
 @implementation TiledButtonObject
 @synthesize isPushable, isPushed, wasJustReleased;
 @synthesize isDisabled, drawRect;

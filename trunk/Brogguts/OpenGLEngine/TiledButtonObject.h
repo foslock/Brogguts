@@ -13,6 +13,10 @@
 #define BUTTON_ENABLED_COLOR Color4fMake(1.0f, 1.0f, 1.0f, 1.0f)
 #define BUTTON_PRESSED_COLOR Color4fMake(0.8f, 0.8f, 0.8f, 1.0f)
 
+#define BUTTON_UNSCALED_SIZE 24.0f
+#define BUTTON_SCALED_SIZE 8.0f
+#define BUTTON_INSET_AMOUNT 4.0f
+
 @class Image;
 
 @interface TiledButtonObject : TouchableObject {
