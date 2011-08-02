@@ -194,6 +194,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     [gothic release];
     [blair release];
     [gulim release];
+    [euro release];
     
     NSString* brogCount = [NSString stringWithFormat:@"0"];
     broggutCounter = [[TextObject alloc]
