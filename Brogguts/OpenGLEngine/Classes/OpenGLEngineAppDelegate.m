@@ -78,11 +78,15 @@
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     
     // Get current orientation
-	UIInterfaceOrientation orientation = [[UIDevice currentDevice] orientation];
-	
+	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+
 	// If the device is already landscape, set it to the current
-	if (UIInterfaceOrientationIsLandscape(orientation)) {
-		[[UIApplication sharedApplication] setStatusBarOrientation:orientation animated:NO];
+	if (UIDeviceOrientationIsLandscape(orientation)) {
+        if (orientation == UIDeviceOrientationLandscapeLeft) {
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight animated:NO];
+        } else {
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:NO];
+        }
 	} else {
 		[[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:NO];
 	}
@@ -113,6 +117,7 @@
 	// [self applicationEnded];
     if ([glView isAnimating]) {
         [glView stopAnimation];
+        // [self saveSceneAndPlayer];
         resignStoppedAnimation = YES;
     }
 }
@@ -121,6 +126,7 @@
     // [self applicationEnded];
     if ([glView isAnimating]) {
         [glView stopAnimation];
+        // [self saveSceneAndPlayer];
         resignStoppedAnimation = YES;
     }
 }

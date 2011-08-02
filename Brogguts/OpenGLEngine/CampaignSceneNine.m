@@ -13,7 +13,7 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
-#define CAMPAIGN_NINE_WAVE_TIME 15.0f
+#define CAMPAIGN_NINE_WAVE_TIME 10.0f
 
 @implementation CampaignSceneNine
 
@@ -21,15 +21,17 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:8 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@""];
-        [startObject setMissionTextThree:@"- Destroy all 10 enemy Ants in the wave"];
+        [startObject setMissionTextTwo:@"- A massive wave has been detected"];
+        [startObject setMissionTextThree:@"- Survive for as long as you can"];
         if (!loaded) {
-            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.2f withCount:10];
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.05f withCount:10];
             [spawner addObjectWithID:kObjectCraftBeetleID withCount:10];
+            [spawner addObjectWithID:kObjectCraftMothID withCount:10];
+            [spawner addObjectWithID:kObjectCraftSpiderID withCount:4];
             [spawner pauseSpawnerForDuration:(CAMPAIGN_NINE_WAVE_TIME * 60.0f) + 1.0f];
             [spawner setSendingLocation:homeBaseLocation];
             [spawner setSendingLocationVariance:100.0f];
-            [spawner setStartingLocationVariance:128.0f];
+            [spawner setStartingLocationVariance:512.0f];
             [self addSpawner:spawner];
             [spawner release];
         }
@@ -58,19 +60,17 @@
         [countdownTimer setObjectText:@""];
     }
 
-    [self updateSceneWithDelta:aDelta];
+    [self updateSpawnersWithDelta:aDelta];
 }
 
 - (BOOL)checkObjective {
-    int count = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (count >= 2500) {
-        return YES;
-    }
+    // On destruction of the base station, "win"
     return NO;
 }
 
 - (BOOL)checkFailure {
-    if (numberOfCurrentStructures <= 0) {
+    // Can't lose this mission, unless there are no enemies and spawner is done
+    if ([[self spawnerWithID:0] isDoneSpawning] && numberOfEnemyShips == 0) {
         return YES;
     }
     return NO;

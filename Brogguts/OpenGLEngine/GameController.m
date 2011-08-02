@@ -353,6 +353,7 @@ static GameController* sharedGameController = nil;
     if (!currentScene) {
         return NO;
     }
+    
     if (currentScene.sceneType == kSceneTypeTutorial || 
         currentScene.sceneType == kSceneTypeSkirmish) {
         NSLog(@"Scene filename: %@, it is a tutorial/skirmish level", filename);
