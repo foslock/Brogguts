@@ -34,7 +34,8 @@
 }
 
 - (BOOL)checkObjective {
-    if ([[sharedGameController currentProfile] metalCount] >= 20) {
+    int metalCount = [[sharedGameController currentProfile] metalCount];
+    if (metalCount >= 20) {
         
         // Must include this in the last tutorial mission!
         [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDCompletedTutorial percentComplete:100.0f];

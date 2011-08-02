@@ -12,6 +12,7 @@
 #import "TextObject.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "DialogueObject.h"
 
 NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     @"Tutorial 1",
@@ -72,11 +73,25 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         isAllowingOverview = NO;
         isAllowingCraft = NO;
         isAllowingStructures = NO;
+        
+        hasAddedTutorialDialogue = NO;
     }
     return self;
 }
 
 - (void)updateSceneWithDelta:(float)aDelta {
+    if (!hasAddedTutorialDialogue && tutorialIndex != 0) {
+        hasAddedTutorialDialogue = YES;
+        /*
+        DialogueObject* dia = [[DialogueObject alloc] init];
+        [dia setDialogueActivateTime:0.0f];
+        [dia setDialogueImageIndex:0];
+        [dia setDialogueText:helpText.objectText];
+        [sceneDialogues addObject:dia];
+        [dia release];
+         */
+    }
+    
     if (helpTextRect.origin.x > -[self getWidthForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]]) {
         helpTextRect = CGRectOffset(helpTextRect, -TUTORIAL_HELP_TEXT_SCROLL_SPEED, 0);
     } else {

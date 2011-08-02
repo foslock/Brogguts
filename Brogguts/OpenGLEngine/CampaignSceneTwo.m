@@ -21,11 +21,19 @@
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts", CAMPAIGN_TWO_BROGGUT_GOAL]];
         if (!loaded) {
             {
-                DialougeObject* dia = [[DialougeObject alloc] init];
-                [dia setDialougeActivateTime:2.0f];
-                [dia setDialougeImageIndex:0];
-                [dia setDialougeText:@"This is a whole long bunch of text... and some more right here or so... maybe a few more lines?"];
-                [sceneDialouges addObject:dia];
+                DialogueObject* dia = [[DialogueObject alloc] init];
+                [dia setDialogueActivateTime:2.0f];
+                [dia setDialogueImageIndex:0];
+                [dia setDialogueText:@"This is a whole long bunch of text... and some more right here or so... maybe a few more lines?"];
+                [sceneDialogues addObject:dia];
+                [dia release];
+            }
+            {
+                DialogueObject* dia = [[DialogueObject alloc] init];
+                [dia setDialogueActivateTime:2.5f];
+                [dia setDialogueImageIndex:0];
+                [dia setDialogueText:@"Here's a second message, just to make sure erry'things works!"];
+                [sceneDialogues addObject:dia];
                 [dia release];
             }
         }

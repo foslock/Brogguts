@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BroggutScene.h"
 #import "NotificationObject.h"
-#import "DialougeObject.h"
+#import "DialogueObject.h"
 
 #define CAMPAIGN_SCENES_COUNT 15
 
