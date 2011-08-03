@@ -54,7 +54,7 @@ static StarSingleton* sharedStarinstance = nil;
 	return self;
 }
 
-- (void)release
+- (oneway void)release
 {
 	// do nothing
 }

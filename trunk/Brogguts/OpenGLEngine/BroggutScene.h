@@ -42,7 +42,7 @@ enum kHelpMessageIDs {
     kHelpMessageNeedMoreBlocks,
 };
 
-extern NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
+extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 
 @class Image;
 @class ImageRenderSingleton;

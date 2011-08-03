@@ -62,6 +62,7 @@
 		6F006AB1137A4B8F000C13C6 /* structureturretdirty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F006AB0137A4B8F000C13C6 /* structureturretdirty.png */; };
 		6F006AB4137ADA89000C13C6 /* CraftUpgradesStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F006AB3137ADA84000C13C6 /* CraftUpgradesStructureObject.m */; };
 		6F03122C134669C200292047 /* lightsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F03122B134669C200292047 /* lightsound.wav */; };
+		6F0689DE13E9B657004376C8 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F0689DD13E9B657004376C8 /* BaseCamp.plist */; };
 		6F0A7A0813E70856001AD287 /* DialogueObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0A7A0713E70856001AD287 /* DialogueObject.m */; };
 		6F0A7A1313E742BC001AD287 /* gulim.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1113E742BC001AD287 /* gulim.fnt */; };
 		6F0A7A1413E742BC001AD287 /* gulim.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0A7A1213E742BC001AD287 /* gulim.png */; };
@@ -382,7 +383,8 @@
 		6F006AB2137ADA81000C13C6 /* CraftUpgradesStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftUpgradesStructureObject.h; sourceTree = "<group>"; };
 		6F006AB3137ADA84000C13C6 /* CraftUpgradesStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftUpgradesStructureObject.m; sourceTree = "<group>"; };
 		6F03122B134669C200292047 /* lightsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lightsound.wav; sourceTree = "<group>"; };
-		6F0A7A0613E70856001AD287 /* DialogueObject.h */ = {isa = PBXFileReference; fileEncoding = 4; path = DialogueObject.h; sourceTree = "<group>"; };
+		6F0689DD13E9B657004376C8 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
+		6F0A7A0613E70856001AD287 /* DialogueObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogueObject.h; sourceTree = "<group>"; };
 		6F0A7A0713E70856001AD287 /* DialogueObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogueObject.m; sourceTree = "<group>"; };
 		6F0A7A1113E742BC001AD287 /* gulim.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gulim.fnt; sourceTree = "<group>"; };
 		6F0A7A1213E742BC001AD287 /* gulim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gulim.png; sourceTree = "<group>"; };
@@ -734,7 +736,7 @@
 		6FE6A5EE137C87F400A0E4D8 /* rexlia free.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "rexlia free.ttf"; sourceTree = "<group>"; };
 		6FE6A5F0137CAB3400A0E4D8 /* craftspiderdronedirty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftspiderdronedirty.png; sourceTree = "<group>"; };
 		6FE6A5F2137CBA5F00A0E4D8 /* backbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backbutton.png; sourceTree = "<group>"; };
-		6FE6A604137CC0EF00A0E4D8 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
+		6FE6A604137CC0EF00A0E4D8 /* BaseCampREAL.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCampREAL.plist; sourceTree = "<group>"; };
 		6FE6A606137CC2E200A0E4D8 /* StartMissionObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartMissionObject.h; sourceTree = "<group>"; };
 		6FE6A607137CC2E200A0E4D8 /* StartMissionObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartMissionObject.m; sourceTree = "<group>"; };
 		6FE6A609137DB83900A0E4D8 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -1157,7 +1159,8 @@
 				6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */,
 				6F61187B1372F0970039DB7C /* Map 1.plist */,
 				6F894436137B290D00B3DD0F /* Map 2.plist */,
-				6FE6A604137CC0EF00A0E4D8 /* BaseCamp.plist */,
+				6F0689DD13E9B657004376C8 /* BaseCamp.plist */,
+				6FE6A604137CC0EF00A0E4D8 /* BaseCampREAL.plist */,
 				6F61181D1370F1600039DB7C /* Campaign Levels */,
 			);
 			name = "Default Maps";
@@ -1909,6 +1912,7 @@
 				6F0A7A2313E761F6001AD287 /* defaultportrait[1].png in Resources */,
 				6F0A7A2413E761F6001AD287 /* defaultportrait[2].png in Resources */,
 				6F0A7A2513E761F6001AD287 /* defaultportrait[3].png in Resources */,
+				6F0689DE13E9B657004376C8 /* BaseCamp.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

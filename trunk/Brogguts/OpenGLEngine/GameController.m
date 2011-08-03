@@ -88,7 +88,7 @@ static GameController* sharedGameController = nil;
 	return self;
 }
 
-- (void)release
+- (oneway void)release
 {
 	// do nothing
 }
@@ -830,6 +830,7 @@ static GameController* sharedGameController = nil;
         case 8: {
             TutorialSceneNine* newTut = [[TutorialSceneNine alloc] init];
             [gameScenes setValue:newTut forKey:kTutorialSceneFileNames[index]];
+            [newTut release];
         }
             break;
         case 9: {

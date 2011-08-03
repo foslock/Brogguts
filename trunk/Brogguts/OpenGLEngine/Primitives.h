@@ -36,78 +36,72 @@ static inline void disablePrimitiveDraw() {
 
 
 static inline void drawRect(CGRect aRect, Vector2f scroll) {
-	
-	// Setup the array used to store the vertices for our rectangle
-	GLfloat* vertices = (GLfloat*)malloc( 8 * sizeof(*vertices) );
-	
+    
+    // Setup the array used to store the vertices for our rectangle
+	static float _rectPointsArray[8];
+
 	// Using the CGRect that has been passed in, calculate the vertices we
 	// need to render the rectangle
-	vertices[0] = aRect.origin.x - scroll.x;
-	vertices[1] = aRect.origin.y - scroll.y;
-	vertices[2] = aRect.origin.x + aRect.size.width - scroll.x;
-	vertices[3] = aRect.origin.y - scroll.y;
-	vertices[4] = aRect.origin.x + aRect.size.width - scroll.x;
-	vertices[5] = aRect.origin.y + aRect.size.height - scroll.y;
-	vertices[6] = aRect.origin.x - scroll.x;
-	vertices[7] = aRect.origin.y + aRect.size.height - scroll.y;
+	_rectPointsArray[0] = aRect.origin.x - scroll.x;
+	_rectPointsArray[1] = aRect.origin.y - scroll.y;
+	_rectPointsArray[2] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[3] = aRect.origin.y - scroll.y;
+	_rectPointsArray[4] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[5] = aRect.origin.y + aRect.size.height - scroll.y;
+	_rectPointsArray[6] = aRect.origin.x - scroll.x;
+	_rectPointsArray[7] = aRect.origin.y + aRect.size.height - scroll.y;
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _rectPointsArray);
 	glDrawArrays(GL_LINE_LOOP, 0, 4);
-	
-	free(vertices);
 }
 
 static inline void drawFilledRect(CGRect aRect, Vector2f scroll) {
 	
 	// Setup the array used to store the vertices for our rectangle
-	GLfloat* vertices = (GLfloat*)malloc( 12 * sizeof(*vertices) );
+	static float _rectPointsArray[12];
 	
 	// Using the CGRect that has been passed in, calculate the vertices we
 	// need to render the rectangle
-	vertices[0] = aRect.origin.x - scroll.x;
-	vertices[1] = aRect.origin.y - scroll.y;
+	_rectPointsArray[0] = aRect.origin.x - scroll.x;
+	_rectPointsArray[1] = aRect.origin.y - scroll.y;
 	
-	vertices[2] = aRect.origin.x - scroll.x;
-	vertices[3] = aRect.origin.y + aRect.size.height - scroll.y;
+	_rectPointsArray[2] = aRect.origin.x - scroll.x;
+	_rectPointsArray[3] = aRect.origin.y + aRect.size.height - scroll.y;
 	
-	vertices[4] = aRect.origin.x + aRect.size.width - scroll.x;
-	vertices[5] = aRect.origin.y - scroll.y;
+	_rectPointsArray[4] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[5] = aRect.origin.y - scroll.y;
 	
-	vertices[6] = aRect.origin.x + aRect.size.width - scroll.x;
-	vertices[7] = aRect.origin.y - scroll.y;
+	_rectPointsArray[6] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[7] = aRect.origin.y - scroll.y;
 	
-	vertices[8] = aRect.origin.x - scroll.x;
-	vertices[9] = aRect.origin.y + aRect.size.height - scroll.y;
+	_rectPointsArray[8] = aRect.origin.x - scroll.x;
+	_rectPointsArray[9] = aRect.origin.y + aRect.size.height - scroll.y;
 	
-	vertices[10] = aRect.origin.x + aRect.size.width - scroll.x;
-	vertices[11] = aRect.origin.y + aRect.size.height - scroll.y;
+	_rectPointsArray[10] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[11] = aRect.origin.y + aRect.size.height - scroll.y;
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _rectPointsArray);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
-	
-	free(vertices);
 }
 
 static inline void drawLine(CGPoint loc1, CGPoint loc2, Vector2f scroll) {
 	
 	// Setup the array used to store the vertices
-	GLfloat* vertices = (GLfloat*)malloc( 4 * sizeof(*vertices) );
+    static float _rectPointsArray[4];
 	
-	vertices[0] = loc1.x - scroll.x;
-	vertices[1] = loc1.y - scroll.y;
-	vertices[2] = loc2.x - scroll.x;
-	vertices[3] = loc2.y - scroll.y;
+	_rectPointsArray[0] = loc1.x - scroll.x;
+	_rectPointsArray[1] = loc1.y - scroll.y;
+	_rectPointsArray[2] = loc2.x - scroll.x;
+	_rectPointsArray[3] = loc2.y - scroll.y;
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _rectPointsArray);
 	glDrawArrays(GL_LINES, 0, 2);
-    
-	free(vertices);
 }
 
 static inline void drawLines(float* vertices, int count, Vector2f scroll) {
@@ -144,11 +138,21 @@ static inline void drawPath(NSArray* path, Vector2f scroll) {
 	free(vertices);
 }
 
-static inline void drawDashedLine(CGPoint loc1, CGPoint loc2, int segments, Vector2f scroll) {
+static void drawDashedLine(CGPoint loc1, CGPoint loc2, int segments, Vector2f scroll) {
 	float space = 0.2f;
+    
 	// Setup the array used to store the vertices
-	int vertCount = (2 * segments);
-	GLfloat* vertices = (GLfloat*)malloc( vertCount * 2 * sizeof(*vertices) );
+    static float* _dashedLineArray = NULL;
+    static int vertCount = 0;
+    
+    if ( (2*segments) > vertCount ) {
+        if (_dashedLineArray) {
+            free(_dashedLineArray);
+        }
+        _dashedLineArray = (float*)malloc( segments * 4 * sizeof(*_dashedLineArray) );
+    }
+	vertCount = 2*segments;
+    
 	float baseX = loc1.x;
 	float baseY = loc1.y;
 	float xSegmentLength = (loc2.x - loc1.x) / (float)segments;
@@ -157,31 +161,38 @@ static inline void drawDashedLine(CGPoint loc1, CGPoint loc2, int segments, Vect
 	for (int i = 0; i < segments; i++) {
 		// Put in a single segment (two points)
 		int index = i * 4;
-		vertices[index]   = baseX + (i * xSegmentLength) + (xSegmentLength * space) - scroll.x;
-		vertices[index+1] = baseY + (i * ySegmentLength) + (ySegmentLength * space) - scroll.y;
-		vertices[index+2] = baseX + ( (i+1) * xSegmentLength) - (xSegmentLength * space) - scroll.x;
-		vertices[index+3] = baseY + ( (i+1) * ySegmentLength) - (ySegmentLength * space) - scroll.y;
+		_dashedLineArray[index]   = baseX + (i * xSegmentLength) + (xSegmentLength * space) - scroll.x;
+		_dashedLineArray[index+1] = baseY + (i * ySegmentLength) + (ySegmentLength * space) - scroll.y;
+		_dashedLineArray[index+2] = baseX + ( (i+1) * xSegmentLength) - (xSegmentLength * space) - scroll.x;
+		_dashedLineArray[index+3] = baseY + ( (i+1) * ySegmentLength) - (ySegmentLength * space) - scroll.y;
 	}
 	
-	vertices[0] = CLAMP(vertices[0], loc1.x - scroll.x, loc1.x - scroll.x);
-	vertices[1] = CLAMP(vertices[1], loc1.y - scroll.y, loc1.y - scroll.y);
-	vertices[(vertCount * 2) - 2] = CLAMP(vertices[(vertCount * 2) - 2], loc2.x - scroll.x, loc2.x - scroll.x);
-	vertices[(vertCount * 2) - 1] = CLAMP(vertices[(vertCount * 2) - 1], loc2.y - scroll.y, loc2.y - scroll.y);
+	_dashedLineArray[0] = CLAMP(_dashedLineArray[0], loc1.x - scroll.x, loc1.x - scroll.x);
+	_dashedLineArray[1] = CLAMP(_dashedLineArray[1], loc1.y - scroll.y, loc1.y - scroll.y);
+	_dashedLineArray[(vertCount * 2) - 2] = CLAMP(_dashedLineArray[(vertCount * 2) - 2], loc2.x - scroll.x, loc2.x - scroll.x);
+	_dashedLineArray[(vertCount * 2) - 1] = CLAMP(_dashedLineArray[(vertCount * 2) - 1], loc2.y - scroll.y, loc2.y - scroll.y);
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _dashedLineArray);
 	glDrawArrays(GL_LINES, 0, vertCount);
-	
-	free(vertices);
 }
 
-static inline void drawCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
+static void drawCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
 	
 	// Set up the array that will store our vertices.  Each segment will need
 	// two vertices {x, y} so we multiply the segments passedin by 2
-	GLfloat* vertices = (GLfloat*)malloc( (aSegments*2) * sizeof(*vertices) );
-	
+    static float* _circleArray = NULL;
+    static int vertCount = 0;
+    
+    if ( (aSegments) > vertCount ) {
+        if (_circleArray) {
+            free(_circleArray);
+        }
+        _circleArray = (float*)malloc( aSegments * 2 * sizeof(*_circleArray) );
+        vertCount = (aSegments);
+    }
+    
 	// Set up the counter that will track the number of vertices we will have
 	int vertexCount = 0;
 	
@@ -198,23 +209,30 @@ static inline void drawCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
 		
 		// Add the new vertices to the vertices array taking into account the circles
 		// current x and y position
-		vertices[vertexCount++] = x + aCircle.x;
-		vertices[vertexCount++] = y + aCircle.y;
+		_circleArray[vertexCount++] = x + aCircle.x;
+		_circleArray[vertexCount++] = y + aCircle.y;
 	}
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _circleArray);
 	glDrawArrays(GL_LINE_LOOP, 0, aSegments);
-	
-	free(vertices);
 }
 
-static inline void drawDashedCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
+static void drawDashedCircle(Circle aCircle, uint aSegments, Vector2f scroll) {
 	
 	// Set up the array that will store our vertices.  Each segment will need
 	// two vertices {x, y} so we multiply the segments passedin by 2
-	GLfloat* vertices = (GLfloat*)malloc( (aSegments*2) * sizeof(*vertices) );
+	static float* _circleArray = NULL;
+    static int vertCount = 0;
+    
+    if ( (aSegments) > vertCount ) {
+        if (_circleArray) {
+            free(_circleArray);
+        }
+        _circleArray = (float*)malloc( aSegments * 2 * sizeof(*_circleArray) );
+        vertCount = (aSegments);
+    }
 	
 	// Set up the counter that will track the number of vertices we will have
 	int vertexCount = 0;
@@ -232,46 +250,58 @@ static inline void drawDashedCircle(Circle aCircle, uint aSegments, Vector2f scr
 		
 		// Add the new vertices to the vertices array taking into account the circles
 		// current x and y position
-		vertices[vertexCount++] = x + aCircle.x;
-		vertices[vertexCount++] = y + aCircle.y;
+		_circleArray[vertexCount++] = x + aCircle.x;
+		_circleArray[vertexCount++] = y + aCircle.y;
 	}
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glVertexPointer(2, GL_FLOAT, 0, _circleArray);
 	glDrawArrays(GL_LINES, 0, aSegments);
-	
-	free(vertices);
 }
 
-static inline void drawPartialDashedCircle(Circle aCircle,
+static void drawPartialDashedCircle(Circle aCircle,
 										   uint filledSegments, uint totalSegments,
 										   Color4f filledColor, Color4f unFilledColor,
 										   Vector2f scroll) {
 	
 	// Set up the array that will store our vertices.  Each segment will need
 	// two vertices {x, y} so we multiply the segments passedin by 2
-	GLfloat* vertices = (GLfloat*)malloc( (totalSegments*2) * sizeof(*vertices) );
-	GLfloat* colors = (GLfloat*)malloc( 2 * (totalSegments*2) * sizeof(*colors) );
+    static float* _circleArray = NULL;
+    static float* _colorArray = NULL;
+    static int vertCount = 0;
+    
+    if ( (totalSegments) > vertCount ) {
+        if (_circleArray) {
+            free(_circleArray);
+        }
+        if (_colorArray) {
+            free(_colorArray);
+        }
+        _circleArray = (float*)malloc( totalSegments * 2 * sizeof(*_circleArray) );
+        _colorArray = (float*)malloc( totalSegments * 4 * sizeof(*_colorArray) );
+        vertCount = (totalSegments);
+    }
 	
 	// Set up the counter that will track the number of vertices we will have
 	int vertexCount = 0;
 	int colorCount = 0;
+    
 	// Loop through each segment creating the vertices for that segment and add
 	// the vertices to the vertices array
 	for(int segment = 0; segment < totalSegments; segment++) 
 	{ 
 		// Insert the first color if it is a filled segment
 		if (segment <= filledSegments) {
-			colors[colorCount++] = filledColor.red;
-			colors[colorCount++] = filledColor.green;
-			colors[colorCount++] = filledColor.blue;
-			colors[colorCount++] = filledColor.alpha;
+			_colorArray[colorCount++] = filledColor.red;
+			_colorArray[colorCount++] = filledColor.green;
+			_colorArray[colorCount++] = filledColor.blue;
+			_colorArray[colorCount++] = filledColor.alpha;
 		} else {
-			colors[colorCount++] = unFilledColor.red;
-			colors[colorCount++] = unFilledColor.green;
-			colors[colorCount++] = unFilledColor.blue;
-			colors[colorCount++] = unFilledColor.alpha;
+			_colorArray[colorCount++] = unFilledColor.red;
+			_colorArray[colorCount++] = unFilledColor.green;
+			_colorArray[colorCount++] = unFilledColor.blue;
+			_colorArray[colorCount++] = unFilledColor.alpha;
 		}
 		
 		// Calculate the angle based on the number of segments
@@ -283,31 +313,41 @@ static inline void drawPartialDashedCircle(Circle aCircle,
 		
 		// Add the new vertices to the vertices array taking into account the circles
 		// current x and y position
-		vertices[vertexCount++] = x + aCircle.x;
-		vertices[vertexCount++] = y + aCircle.y;
+		_circleArray[vertexCount++] = x + aCircle.x;
+		_circleArray[vertexCount++] = y + aCircle.y;
 	}
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, colors);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glColorPointer(4, GL_FLOAT, 0, _colorArray);
+	glVertexPointer(2, GL_FLOAT, 0, _circleArray);
 	glDrawArrays(GL_LINES, 0, totalSegments);
 	glDisableClientState(GL_COLOR_ARRAY);
-	
-	free(colors);
-	free(vertices);
 }
 
-static inline void drawDashedCircleWithColoredSegment(Circle aCircle,
+static void drawDashedCircleWithColoredSegment(Circle aCircle,
 										   uint coloredSegmentIndex, uint totalSegments,
 										   Color4f filledColor, Color4f unFilledColor,
 										   Vector2f scroll) {
 	
 	// Set up the array that will store our vertices.  Each segment will need
 	// two vertices {x, y} so we multiply the segments passedin by 2
-	GLfloat* vertices = (GLfloat*)malloc( (totalSegments*2) * sizeof(*vertices) );
-	GLfloat* colors = (GLfloat*)malloc( 2 * (totalSegments*2) * sizeof(*colors) );
+	static float* _circleArray = NULL;
+    static float* _colorArray = NULL;
+    static int vertCount = 0;
+    
+    if ( (totalSegments) > vertCount ) {
+        if (_circleArray) {
+            free(_circleArray);
+        }
+        if (_colorArray) {
+            free(_colorArray);
+        }
+        _circleArray = (float*)malloc( totalSegments * 2 * sizeof(*_circleArray) );
+        _colorArray = (float*)malloc( totalSegments * 4 * sizeof(*_colorArray) );
+        vertCount = (totalSegments);
+    }
 	
 	// Set up the counter that will track the number of vertices we will have
 	int vertexCount = 0;
@@ -319,15 +359,15 @@ static inline void drawDashedCircleWithColoredSegment(Circle aCircle,
 		// Insert the first color if it is a filled segment
 		if (segment == coloredSegmentIndex ||
             segment == coloredSegmentIndex + 1) {
-			colors[colorCount++] = filledColor.red;
-			colors[colorCount++] = filledColor.green;
-			colors[colorCount++] = filledColor.blue;
-			colors[colorCount++] = filledColor.alpha;
+			_colorArray[colorCount++] = filledColor.red;
+			_colorArray[colorCount++] = filledColor.green;
+			_colorArray[colorCount++] = filledColor.blue;
+			_colorArray[colorCount++] = filledColor.alpha;
 		} else {
-			colors[colorCount++] = unFilledColor.red;
-			colors[colorCount++] = unFilledColor.green;
-			colors[colorCount++] = unFilledColor.blue;
-			colors[colorCount++] = unFilledColor.alpha;
+			_colorArray[colorCount++] = unFilledColor.red;
+			_colorArray[colorCount++] = unFilledColor.green;
+			_colorArray[colorCount++] = unFilledColor.blue;
+			_colorArray[colorCount++] = unFilledColor.alpha;
 		}
 		
 		// Calculate the angle based on the number of segments
@@ -339,18 +379,15 @@ static inline void drawDashedCircleWithColoredSegment(Circle aCircle,
 		
 		// Add the new vertices to the vertices array taking into account the circles
 		// current x and y position
-		vertices[vertexCount++] = x + aCircle.x;
-		vertices[vertexCount++] = y + aCircle.y;
+		_circleArray[vertexCount++] = x + aCircle.x;
+		_circleArray[vertexCount++] = y + aCircle.y;
 	}
 	
 	// Set up the vertex pointer to the array of vertices we have created and
 	// then use GL_LINE_LOOP to render them
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, colors);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glColorPointer(4, GL_FLOAT, 0, _colorArray);
+	glVertexPointer(2, GL_FLOAT, 0, _circleArray);
 	glDrawArrays(GL_LINES, 0, totalSegments);
 	glDisableClientState(GL_COLOR_ARRAY);
-	
-	free(colors);
-	free(vertices);
 }
