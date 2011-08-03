@@ -14,6 +14,7 @@
 #import "Primitives.h"
 #import "TextObject.h"
 #import "TiledButtonObject.h"
+#import "StarSingleton.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     @"Hundreds of years in the future, the human ",
@@ -83,17 +84,21 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     }
     
     if (isHoldingTouch) {
+        Vector2f scrollingVector = Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED_FAST);
         for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
             TextObject* introText = [textObjects objectAtIndex:i];
             textTimer -= aDelta;
-            [introText setObjectVelocity:Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED_FAST)];
+            [introText setObjectVelocity:scrollingVector];
         }
+        [sharedStarSingleton scrollStarsWithVector:scrollingVector];
     } else {
+        Vector2f scrollingVector = Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED);
         for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
             TextObject* introText = [textObjects objectAtIndex:i];
             
-            [introText setObjectVelocity:Vector2fMake(0.0f, TUTORIAL_INTRO_SCROLL_SPEED)];
+            [introText setObjectVelocity:scrollingVector];
         }
+        [sharedStarSingleton scrollStarsWithVector:scrollingVector];
     }
     
     [super updateSceneWithDelta:aDelta];

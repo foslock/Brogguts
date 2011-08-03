@@ -39,7 +39,7 @@
 #import "DialogueObject.h"
 
 
-NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
+NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
     @"You must refine more Metal",
     @"You must collect more Brogguts and Metal",
@@ -49,6 +49,8 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must only mine brogguts on edges",
     @"Build more Blocks to allow more ships",
 };
+
+NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located in a persistent space that only pauses when inactive. It will resume just as it was left when you return to it. Your goal is to eliminate all enemies on the map and collect all the brogguts you can. Feel free to build up your base and spend your brogguts earned on other missions.";
 
 @implementation BroggutScene
 
@@ -343,6 +345,17 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
                 DialogueObject* newDia = [[DialogueObject alloc] initWithInfoArray:dialogueInfo];
                 [sceneDialogues addObject:newDia];
                 [newDia release];
+            }
+        }
+        
+        if (sceneType == kSceneTypeBaseCamp) {
+            if (sceneTimer == 0.0f) { // Only add if the base camp hasn't started before
+                DialogueObject* dia = [[DialogueObject alloc] init];
+                [dia setDialogueActivateTime:0.0f];
+                [dia setDialogueImageIndex:0];
+                [dia setDialogueText:kBaseCampIntroHelpText];
+                [sceneDialogues addObject:dia];
+                [dia release];
             }
         }
         
@@ -2532,7 +2545,7 @@ NSString* kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
         return YES;
     }
     if (numberOfEnemyShips <= 0 && numberOfEnemyStructures <= 0) {
-        return YES;
+        // return YES;
     }
     return NO;
 }

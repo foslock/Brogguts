@@ -63,7 +63,7 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 	return self;
 }
 
-- (void)release
+- (oneway void)release
 {
 	// do nothing
 }
