@@ -16,7 +16,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureStructureUpgradesID withLocation:location isTraveling:traveling];
 	if (self) {
-		isCheckedForRadialEffect = NO;
+		isCheckedForRadialEffect = YES;
         isBeingPressed = NO;
 	}
 	return self;
