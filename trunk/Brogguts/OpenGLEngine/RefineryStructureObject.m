@@ -27,7 +27,7 @@
 	if (self) {
         animatedImage = [[AnimatedImage alloc] initWithFileName:kObjectStructureRefinerySprite withSubImageCount:4];
         [animatedImage setAnimationSpeed:0.0f];
-		isCheckedForRadialEffect = NO;
+		isCheckedForRadialEffect = YES;
         hasBeenAdded = NO;
         isRefining = NO;
         refiningTimer = 0;
