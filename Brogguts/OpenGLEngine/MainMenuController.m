@@ -69,7 +69,7 @@
 }
 
 - (IBAction)startTutorialLevels {
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:kTutorialSceneFileNames[0] sceneType:kSceneTypeTutorial withIndex:0 isNew:YES isLoading:NO];
+    [[GameController sharedGameController] fadeOutToSceneWithFilename:kTutorialSceneFileNames[9] sceneType:kSceneTypeTutorial withIndex:9 isNew:YES isLoading:NO];
 }
 
 - (IBAction)startCampaignLevels {

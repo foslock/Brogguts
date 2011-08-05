@@ -75,17 +75,6 @@ static int globalUniqueID = 0;
 	// NSLog(@"Object (%i) collided with Object (%i) at location: <%.0f,%.0f>", uniqueObjectID, other.uniqueObjectID, objectLocation.x, objectLocation.y);
 }
 
-- (Circle)boundingCircle {
-	boundingCircle.x = objectLocation.x;
-	boundingCircle.y = objectLocation.y;
-    if (isPaddedForCollisions) {
-        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
-    } else {
-        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2);
-    }
-	return boundingCircle;
-}
-
 - (BroggutScene*)currentScene {
     if (!currentScene) {
         currentScene = [[GameController sharedGameController] justMadeScene];
@@ -116,6 +105,15 @@ static int globalUniqueID = 0;
     if (objectVelocity.x != 0 || objectVelocity.y != 0) {
         objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
                                      objectLocation.y + objectVelocity.y);
+    }
+    
+    // Update bounding circle
+    boundingCircle.x = objectLocation.x;
+	boundingCircle.y = objectLocation.y;
+    if (isPaddedForCollisions) {
+        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
+    } else {
+        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2);
     }
     
     if (rotationSpeed != 0) {

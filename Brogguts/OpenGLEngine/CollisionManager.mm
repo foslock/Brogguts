@@ -43,6 +43,13 @@
 		free(broggutArray->array);
 		free(broggutArray);
 	}
+    
+    // Delete Quad Tree
+    QuadTreeDestroy(collisionQuadTree);
+    
+    if (radialObjectsInTree) {
+        free(radialObjectsInTree);
+    }
 	
 	// Free path node array and such
 	if (pathNodeArray) {
@@ -90,6 +97,19 @@
 		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
         radialObjectsQueue = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
+        radialObjectsInTree = (NodeObject**)malloc(RADIAL_EFFECT_MAX_COUNT_QUADTREE * sizeof((*radialObjectsInTree)));
+        currentRadialObjectCount = 0;
+        
+        if (width > height) {
+            int intValue = ceilf(log2f(COLLISION_CELL_WIDTH * width));
+            int power2 = 1 << intValue;
+            collisionQuadTree = QuadTreeCreate(power2, power2, intValue-1);
+        } else {
+            int intValue = ceilf(log2f(COLLISION_CELL_HEIGHT * height));
+            int power2 = 1 << intValue;
+            collisionQuadTree = QuadTreeCreate(power2, power2, intValue-1);
+        }
+        
         startingRadialIndex = 0;
 		radialAffectedObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		
@@ -135,6 +155,7 @@
 			broggut->broggutAge = -1;
 			broggut->broggutLocation = [self getBroggutLocationForID:i];
 			broggut->broggutEdge = kMediumBroggutEdgeUp; // Default to drawing the broggut
+            broggut->broggutImageIndex = (arc4random() % MEDIUM_BROGGUT_IMAGE_COUNT);
 		}
 		generator = [[BroggutGenerator alloc] initWithBroggutArray:broggutArray];
         mediumBroggutImageArrayYoung = [[NSMutableArray alloc] initWithCapacity:MEDIUM_BROGGUT_IMAGE_COUNT];
@@ -367,8 +388,7 @@
 			if (broggut->broggutValue != -1) {
 				// There is a broggut here, so render it!
 				CGPoint currentPoint = CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT);
-                int fakeRandom = i * j;
-                int texIndex = fakeRandom % MEDIUM_BROGGUT_IMAGE_COUNT;
+                int texIndex = broggut->broggutImageIndex;
                 Image* image;
                 switch (broggut->broggutAge) {
                     case kBroggutMediumAgeYoung:
@@ -437,13 +457,64 @@
 
 - (void)addRadialAffectedObject:(TouchableObject*)obj {
 	[radialAffectedObjects addObject:obj];
+    if (collisionQuadTree) {
+        NodeObject* newNode = QuadTreeCreateNode();
+        newNode->arrayIndex = [radialAffectedObjects indexOfObject:obj];
+        newNode->xPos = obj.objectLocation.x;
+        newNode->yPos = obj.objectLocation.y;
+        newNode->objectRadius = [obj effectRadiusCircle].radius;
+        radialObjectsInTree[currentRadialObjectCount++] = newNode;
+        QuadTreeInsertObject(collisionQuadTree, newNode);
+    }
 }
 
 - (void)removeRadialAffectedObject:(TouchableObject*)obj {
 	[radialAffectedObjects removeObject:obj];
+    if (collisionQuadTree) {
+        NodeObject* node = radialObjectsInTree[--currentRadialObjectCount];
+        QuadTreeDeleteObject(collisionQuadTree, node);
+    }
 }
 
 - (void)processAllEffectRadii {
+    // Quad Tree collision
+    if (collisionQuadTree) {
+        static NodeObject* collisionArray[RADIAL_EFFECT_MAX_COUNT_QUADTREE];
+        
+        for (int i = 0; i < currentRadialObjectCount; i++) { // Update all the stuff
+            NodeObject* obj = radialObjectsInTree[i];
+            TouchableObject* tobj = [radialAffectedObjects objectAtIndex:obj->arrayIndex];
+            obj->xPos = tobj.objectLocation.x;
+            obj->yPos = tobj.objectLocation.y;
+            obj->objectRadius = tobj.effectRadiusCircle.radius;
+            QuadTreeUpdateObject(collisionQuadTree, obj);
+        }
+        
+        for (int i = 0; i < currentRadialObjectCount; i++) { // Go through each element and check collisions (i is array index)
+            NodeObject* obj = radialObjectsInTree[i];
+            int effectRadius = obj->objectRadius;
+            QuadRect thisRect = QuadRectMake(obj->xPos - effectRadius, obj->yPos - effectRadius, effectRadius, effectRadius);
+            int potentialCount = QuadTreeQuery(collisionQuadTree, collisionArray, RADIAL_EFFECT_MAX_COUNT_QUADTREE, thisRect);
+            Circle thisCircle;
+            thisCircle.x = obj->xPos;
+            thisCircle.y = obj->yPos;
+            thisCircle.radius = effectRadius;
+            int collisionCount = 0; // Debug counter
+            for (int j = 0; j < potentialCount; j++) { // Go through and perform collision!
+                NodeObject* otherObj = collisionArray[j];
+                if (obj == otherObj) {
+                    continue;
+                }
+                if (CircleContainsPoint(thisCircle, CGPointMake(otherObj->xPos, otherObj->yPos))) {
+                    TouchableObject* obj1 = [radialAffectedObjects objectAtIndex:obj->arrayIndex];
+                    TouchableObject* obj2 = [radialAffectedObjects objectAtIndex:otherObj->arrayIndex];
+                    [obj1 objectEnteredEffectRadius:obj2];
+                    collisionCount++;
+                }
+            }
+        }
+    }
+    /*
     if ([radialAffectedObjects count] > RADIAL_EFFECT_MAX_COUNT) {
         int startingIndex = startingRadialIndex;
         for (int i = startingIndex; i < startingIndex + RADIAL_EFFECT_MAX_COUNT; i++) {
@@ -482,6 +553,7 @@
         } 
     }
     [radialObjectsQueue removeAllObjects];
+     */
 }
 
 #pragma mark -
