@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+// Used for radius detection
+#import "QuadTree.h"
+
 enum BroggutEdgeValues {
 	kMediumBroggutEdgeLeft,
 	kMediumBroggutEdgeUp,
@@ -29,11 +32,12 @@ typedef struct Object_ID_Array {
 } ObjectIDArray;
 
 typedef struct Medium_Broggut {
+    CGPoint broggutLocation;	// Center of this medium broggut, used for pathfinding
 	int broggutID;		// This is the unique broggut ID, empty or not, all spots have this
-	CGPoint broggutLocation;	// Center of this medium broggut, used for pathfinding
 	int broggutValue;	// This is the number of brogguts in this broggut cell, if -1, then spot is empty
 	int broggutAge;		// The rarity of the broggut (0 - young, 1 - old, 2 - ancient)
 	int broggutEdge;	// If the broggut is on the edge of a large broggut
+    int broggutImageIndex; // The image used for this medium broggut
 } MediumBroggut;
 
 typedef struct Broggut_Array {
@@ -72,7 +76,8 @@ typedef struct Path_Node_Queue {
 #define COLLISION_DETECTION_FREQ 4		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
 #define RADIAL_EFFECT_CHECK_FREQ 3		// " " to check radial effects
 #define RADIAL_EFFECT_MAX_COUNT 25      // Maximum number of objects to check for radial effects
-#define MEDIUM_BROGGUT_IMAGE_COUNT 5   // Number of different textures to use for the medium brogguts
+#define RADIAL_EFFECT_MAX_COUNT_QUADTREE 400      // Maximum number of objects to check for radial effects (in quadtree)
+#define MEDIUM_BROGGUT_IMAGE_COUNT 10   // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {
     BroggutScene* currentScene;         // Reference to the current scene
@@ -82,6 +87,9 @@ typedef struct Path_Node_Queue {
 	NSMutableArray* objectTableValues;	// This array is kept so enumeration is easy through the dictionary, updated whenever an object
 										// is added to the dictionary.
 	
+    NodeObject** radialObjectsInTree;       // Array of the objects that have been created for the quadtree
+    int currentRadialObjectCount;           // Count of objects in array
+    QuadTree* collisionQuadTree;            // Quad tree that holds all radial checking objects
 	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
     NSMutableArray* radialObjectsQueue;     // Queue of objects that need to be checked for radial effects
     int startingRadialIndex;                // Index of object that should be added to the radial queue next
