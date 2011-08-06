@@ -47,7 +47,11 @@ enum kProfileFailTypes {
     int skirmishMetalCount;
 
     // This array is indexed with the ID of the structure or craft that is being unlocked, and the NSNumber (bool value) stored indicates whether or not it is unlocked yet.
-    NSMutableArray* currentUnlocksTable;
+    NSMutableArray* currentObjectUnlocksTable;
+    
+    // This array is indexed with the ID of the object with the upgrade, and the bool is whether THE UPGRADE is unlocked or not
+    NSMutableArray* currentUpgradeUnlocksTable;
+    
     // This array is indexed with the ID of the structure or craft that gets the upgrade, and the NSNumber (bool balue) stored indicates if it has been bought in the current match.
     NSMutableArray* currentUpgradesTable;
 }
@@ -93,8 +97,12 @@ enum kProfileFailTypes {
 - (void)unlockAllObjects;
 
 // Upgrades
+- (BOOL)isUpgradeUnlockedWithID:(int)objectID;
 - (BOOL)isUpgradePurchasedWithID:(int)objectID;
 - (int)levelUpgradeUnlockedWithID:(int)objectID;
+- (void)purchaseUpgradeWithID:(int)objectID; // Exists in current match
+- (void)unlockUpgradeWithID:(int)objectID;   // Unlock for purchase
+
 
 
 @end

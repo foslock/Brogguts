@@ -20,6 +20,7 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
 
 @implementation DialogueObject
 @synthesize dialogueActivateTime, dialogueImageIndex, dialogueText, hasBeenDismissed;
+@synthesize isWantingToBeDismissed;
 
 - (void)dealloc {
     [dialogueText release];
@@ -34,10 +35,10 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
 - (void)initializeMe {
     CGPoint screenCenter = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     
-    CGRect totalRect = CGRectMake(screenCenter.x - (kDialogueDimensionTotalWidth/2),
-                                  screenCenter.y - (kDialogueDimensionTotalHeight/2), 
-                                  kDialogueDimensionTotalWidth, 
-                                  kDialogueDimensionTotalHeight);
+    totalRect = CGRectMake(screenCenter.x - (kDialogueDimensionTotalWidth/2),
+                           screenCenter.y - (kDialogueDimensionTotalHeight/2), 
+                           kDialogueDimensionTotalWidth, 
+                           kDialogueDimensionTotalHeight);
     
     CGRect portraitRect = CGRectMake(totalRect.origin.x,
                                      screenCenter.y - (kDialogueDimensionTotalHeight/2), 
@@ -54,6 +55,12 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
     CGSize imageSize = [portraitImage imageSize];
     float desiredWidth = (float)kDialogueDimensionPortraitWidth - (2 * BUTTON_UNSCALED_SIZE);
     float desiredHeight = (float)kDialogueDimensionTotalHeight - (2 * BUTTON_UNSCALED_SIZE);
+    isWantingToBeDismissed = NO;
+    isZoomingBoxIn = YES;
+    isZoomingBoxOut = NO;
+    isShowingHoldToDismiss = YES;
+    zoomingCounterMax = kDialogueDimensionTotalWidth / BUTTON_SCALED_SIZE;
+    zoomingCounter = kDialogueDimensionTotalWidth / BUTTON_SCALED_SIZE;
     
     [portraitImage setScale:Scale2fMake((desiredWidth / imageSize.width),
                                         (desiredHeight / imageSize.height))];
@@ -154,32 +161,72 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
 - (void)setHasBeenDismissed:(BOOL)dismissed {
     if (isCurrentlyActive && dismissed) {
         isCurrentlyActive = NO;
+        isZoomingBoxIn = NO;
+        zoomingCounter = 0;
+        isZoomingBoxOut = YES;
     }
     hasBeenDismissed = dismissed;
 }
 
 - (void)updateDialogueObjectWithDelta:(float)aDelta {
-    [portraitImage updateAnimatedImageWithDelta:aDelta];
+    if (!isZoomingBoxIn && !isZoomingBoxOut) {
+        [portraitImage updateAnimatedImageWithDelta:aDelta];
+    }
+    
+    if (isZoomingBoxIn) {
+        zoomingCounter--;
+        CGRect thisRect = CGRectInset(totalRect, BUTTON_SCALED_SIZE * zoomingCounter, 0);
+        [fadedBackgroundImage setDrawRect:thisRect];
+        if (zoomingCounter <= 0) {
+            isZoomingBoxIn = NO;
+            zoomingCounter = 0;
+        }
+    }
+    
+    if (isZoomingBoxOut) {
+        zoomingCounter++;
+        CGRect thisRect = CGRectInset(totalRect, BUTTON_SCALED_SIZE * zoomingCounter, 0);
+        [fadedBackgroundImage setDrawRect:thisRect];
+        if (zoomingCounter >= zoomingCounterMax) {
+            isZoomingBoxOut = NO;
+            zoomingCounter = zoomingCounterMax;
+        }
+    }
 }
 
 - (void)renderDialogueObjectWithFont:(BitmapFont*)font {
     [fadedBackgroundImage renderCenteredAtPoint:fadedBackgroundImage.objectLocation
                                withScrollVector:Vector2fZero];
-    [portraitBackgroundImage renderCenteredAtPoint:portraitBackgroundImage.objectLocation 
-                                  withScrollVector:Vector2fZero];
-    [dialogueBackgroundImage renderCenteredAtPoint:dialogueBackgroundImage.objectLocation
-                                  withScrollVector:Vector2fZero];
-    
-    [dialogueTextObject renderWithFont:font];
-    [portraitImage renderCurrentSubImageAtPoint:portraitBackgroundImage.objectLocation];
-    
-    [font setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 0.8f)];
-    float width = [font getWidthForString:kDialogueDismissalString];
-    [font renderStringAt:CGPointMake((kPadScreenLandscapeWidth-width)/2, kPadScreenLandscapeHeight*(1.0f/4.0f)) text:kDialogueDismissalString onLayer:kLayerHUDTopLayer];
+    if (!isZoomingBoxIn && !isZoomingBoxOut) {
+        [portraitBackgroundImage renderCenteredAtPoint:portraitBackgroundImage.objectLocation 
+                                      withScrollVector:Vector2fZero];
+        [dialogueBackgroundImage renderCenteredAtPoint:dialogueBackgroundImage.objectLocation
+                                      withScrollVector:Vector2fZero];
+        
+        [dialogueTextObject renderWithFont:font];
+        [portraitImage renderCurrentSubImageAtPoint:portraitBackgroundImage.objectLocation];
+        if (isShowingHoldToDismiss) {
+            [font setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 0.8f)];
+            float width = [font getWidthForString:kDialogueDismissalString];
+            [font renderStringAt:CGPointMake((kPadScreenLandscapeWidth-width)/2, kPadScreenLandscapeHeight*(1.0f/4.0f)) text:kDialogueDismissalString onLayer:kLayerHUDTopLayer];
+        }
+    }
 }
 
+- (void)presentDialogue {
+    [self setDialogueActivateTime:0.0f];
+}
 
+- (void)touchesBeganAtLocation:(CGPoint)location {
+    
+}
 
+- (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation {
+    
+}
 
+- (void)touchesEndedAtLocation:(CGPoint)location {
+    
+}
 
 @end

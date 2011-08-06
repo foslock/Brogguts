@@ -291,6 +291,9 @@
 		6FE19D7B138DA257008B2AFD /* Campaign 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7A138DA257008B2AFD /* Campaign 3.plist */; };
 		6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */; };
 		6FE19D80138DF5D4008B2AFD /* SkirmishMatchController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */; };
+		6FE2F50313ED947600E640C7 /* UpgradeDialogueObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50213ED947600E640C7 /* UpgradeDialogueObject.m */; };
+		6FE2F50913EDC2E900E640C7 /* CraftUpgradesSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50813EDC2E900E640C7 /* CraftUpgradesSideBar.m */; };
+		6FE2F50F13EDFEA200E640C7 /* StructureUpgradesSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50E13EDFEA200E640C7 /* StructureUpgradesSideBar.m */; };
 		6FE699CC1376EDA800319F7B /* TutorialSceneThirteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */; };
 		6FE699CE1376EDF400319F7B /* Tutorial 13.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE699CD1376EDF400319F7B /* Tutorial 13.plist */; };
 		6FE6A5CF137B702500A0E4D8 /* broggupediabutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5CD137B702500A0E4D8 /* broggupediabutton.png */; };
@@ -715,6 +718,12 @@
 		6FE19D7C138DF5D4008B2AFD /* SkirmishMatchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkirmishMatchController.h; sourceTree = "<group>"; };
 		6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkirmishMatchController.m; sourceTree = "<group>"; };
 		6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkirmishMatchController.xib; sourceTree = "<group>"; };
+		6FE2F50113ED947600E640C7 /* UpgradeDialogueObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpgradeDialogueObject.h; sourceTree = "<group>"; };
+		6FE2F50213ED947600E640C7 /* UpgradeDialogueObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpgradeDialogueObject.m; sourceTree = "<group>"; };
+		6FE2F50713EDC2E900E640C7 /* CraftUpgradesSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CraftUpgradesSideBar.h; sourceTree = "<group>"; };
+		6FE2F50813EDC2E900E640C7 /* CraftUpgradesSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftUpgradesSideBar.m; sourceTree = "<group>"; };
+		6FE2F50D13EDFEA200E640C7 /* StructureUpgradesSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructureUpgradesSideBar.h; sourceTree = "<group>"; };
+		6FE2F50E13EDFEA200E640C7 /* StructureUpgradesSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructureUpgradesSideBar.m; sourceTree = "<group>"; };
 		6FE699CA1376EDA500319F7B /* TutorialSceneThirteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneThirteen.h; sourceTree = "<group>"; };
 		6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneThirteen.m; sourceTree = "<group>"; };
 		6FE699CD1376EDF400319F7B /* Tutorial 13.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 13.plist"; sourceTree = "<group>"; };
@@ -1018,8 +1027,12 @@
 				6F2CB9D2131EE517001A10E3 /* BroggutsSideBar.m */,
 				6F2CB46F131A24B9001A10E3 /* CraftSideBar.h */,
 				6F2CB470131A24B9001A10E3 /* CraftSideBar.m */,
+				6FE2F50713EDC2E900E640C7 /* CraftUpgradesSideBar.h */,
+				6FE2F50813EDC2E900E640C7 /* CraftUpgradesSideBar.m */,
 				6F2CB5DE131AED6D001A10E3 /* StructureSideBar.h */,
 				6F2CB5DF131AED6D001A10E3 /* StructureSideBar.m */,
+				6FE2F50D13EDFEA200E640C7 /* StructureUpgradesSideBar.h */,
+				6FE2F50E13EDFEA200E640C7 /* StructureUpgradesSideBar.m */,
 			);
 			name = "Specific Side Bars";
 			sourceTree = "<group>";
@@ -1465,6 +1478,8 @@
 				6FE6A607137CC2E200A0E4D8 /* StartMissionObject.m */,
 				6F0A7A0613E70856001AD287 /* DialogueObject.h */,
 				6F0A7A0713E70856001AD287 /* DialogueObject.m */,
+				6FE2F50113ED947600E640C7 /* UpgradeDialogueObject.h */,
+				6FE2F50213ED947600E640C7 /* UpgradeDialogueObject.m */,
 			);
 			name = "Scene Objects";
 			sourceTree = "<group>";
@@ -2035,6 +2050,9 @@
 				6F5E808B13A26B8600540E3E /* HealthDropObject.m in Sources */,
 				6F0A7A0813E70856001AD287 /* DialogueObject.m in Sources */,
 				6F9064A313E9D6100016C36C /* QuadTree.c in Sources */,
+				6FE2F50313ED947600E640C7 /* UpgradeDialogueObject.m in Sources */,
+				6FE2F50913EDC2E900E640C7 /* CraftUpgradesSideBar.m in Sources */,
+				6FE2F50F13EDFEA200E640C7 /* StructureUpgradesSideBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

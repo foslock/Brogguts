@@ -25,7 +25,7 @@ enum StructureButtonIDs {
 	kStructureButtonFixerID,
 };
 
-NSString* kStructureButtonText[7] = {
+NSString* const kStructureButtonText[7] = {
     @"Block",
     @"Refinery",
     @"Craft Ups",
@@ -35,7 +35,7 @@ NSString* kStructureButtonText[7] = {
     @"Fixer",
 };
 
-NSString* kStructureButtonLockedText = @"???";
+NSString* const kStructureButtonLockedText = @"LOCKED";
 
 @implementation StructureSideBar
 

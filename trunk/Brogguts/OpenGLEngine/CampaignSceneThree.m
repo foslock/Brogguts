@@ -37,7 +37,7 @@
 
 - (void)updateSceneWithDelta:(float)aDelta {
     [super updateSceneWithDelta:aDelta];
-    if (isStartingMission || isMissionPaused) {
+    if (isStartingMission || isMissionPaused || isShowingDialogue) {
         return;
     }
     int minutes = [[self spawnerWithID:0] pauseTimeLeft] / 60.0f;

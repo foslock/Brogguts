@@ -64,7 +64,7 @@
 
 - (void)updateSceneWithDelta:(float)aDelta {
     [super updateSceneWithDelta:aDelta];
-    if (isStartingMission || isMissionPaused) {
+    if (isStartingMission || isMissionPaused || isShowingDialogue) {
         return;
     }
     
