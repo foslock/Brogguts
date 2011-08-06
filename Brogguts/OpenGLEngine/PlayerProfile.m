@@ -66,8 +66,9 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 @synthesize playerExperience;
 
 - (void)dealloc {
+    [currentUpgradeUnlocksTable release];
     [currentUpgradesTable release];
-    [currentUnlocksTable release];
+    [currentObjectUnlocksTable release];
     [super dealloc];
 }
 
@@ -85,9 +86,11 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         isInSkirmish = NO;
         [self loadDefaultOrPreviousUnlockTable];
         currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradeUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
             NSNumber* num = [NSNumber numberWithBool:NO];
             [currentUpgradesTable addObject:num];
+            [currentUpgradeUnlocksTable addObject:num];
         }
 	}
 	return self;
@@ -107,9 +110,11 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 		broggutDisplayNumber = broggutCount;
 		metalDisplayNumber = metalCount;
         currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradeUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
             NSNumber* num = [NSNumber numberWithBool:NO];
             [currentUpgradesTable addObject:num];
+            [currentUpgradeUnlocksTable addObject:num];
         }
 	}
 	return self;
@@ -299,6 +304,8 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     // Unlock the stuff that comes with the current space year
     int craftCount = 0;
     int structureCount = 0;
+    
+    // Objects
     for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
         int levelNeeded = [self levelObjectUnlockedWithID:i];
         if (levelNeeded <= playerExperience) {
@@ -307,6 +314,14 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
             if ([self isIDStrucutureID:i]) { structureCount++; }
         }
     }
+    // Upgrades
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        int levelNeeded = [self levelUpgradeUnlockedWithID:i];
+        if (levelNeeded <= playerExperience) {
+            [self unlockUpgradeWithID:i];
+        }
+    }
+    
     [[GameCenterSingleton sharedGCSingleton] updateCraftUnlockAchievement:craftCount];
     [[GameCenterSingleton sharedGCSingleton] updateStructuresUnlockAchievement:structureCount];
 }
@@ -348,20 +363,20 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults boolForKey:@"hasStoredUnlockTable"]) {
         NSString* filePath = [[GameController sharedGameController] documentsPathWithFilename:kSavedUnlockedFileName];
-        currentUnlocksTable = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        if (!currentUnlocksTable) {
+        currentObjectUnlocksTable = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        if (!currentObjectUnlocksTable) {
             NSLog(@"Unable to load previous unlock table");
-            currentUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+            currentObjectUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
             for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
                 NSNumber* num = [NSNumber numberWithBool:NO];
-                [currentUnlocksTable addObject:num];
+                [currentObjectUnlocksTable addObject:num];
             }
         }
     } else {
-        currentUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentObjectUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
             NSNumber* num = [NSNumber numberWithBool:NO];
-            [currentUnlocksTable addObject:num];
+            [currentObjectUnlocksTable addObject:num];
         }
     }
 }
@@ -369,7 +384,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 - (void)saveCurrentUnlocksTable {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     NSString* filePath = [[GameController sharedGameController] documentsPathWithFilename:kSavedUnlockedFileName];
-    if ([currentUnlocksTable writeToFile:filePath atomically:YES]) {
+    if ([currentObjectUnlocksTable writeToFile:filePath atomically:YES]) {
         [defaults setBool:YES forKey:@"hasStoredUnlockTable"];
     } else {
         [defaults setBool:NO forKey:@"hasStoredUnlockTable"];
@@ -377,16 +392,16 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 }
 
 - (void)unlockAllObjects {
-    [currentUnlocksTable removeAllObjects];
+    [currentObjectUnlocksTable removeAllObjects];
     for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
         NSNumber* num = [NSNumber numberWithBool:YES];
-        [currentUnlocksTable addObject:num];
+        [currentObjectUnlocksTable addObject:num];
     }
 }
 
 - (BOOL)isObjectUnlockedWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
-        NSNumber* num = [currentUnlocksTable objectAtIndex:objectID];
+        NSNumber* num = [currentObjectUnlocksTable objectAtIndex:objectID];
         return [num boolValue];
     }
     return NO;
@@ -402,17 +417,19 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 - (void)unlockObjectWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
-        [currentUnlocksTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
-    }
-}
-
-- (void)unlockUpgradeWithID:(int)objectID {
-    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
-        [currentUpgradesTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+        [currentObjectUnlocksTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
     }
 }
 
 // Upgrades // 
+
+- (BOOL)isUpgradeUnlockedWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        NSNumber* num = [currentUpgradeUnlocksTable objectAtIndex:objectID];
+        return [num boolValue];
+    }
+    return NO;
+}
 
 - (BOOL)isUpgradePurchasedWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
@@ -422,12 +439,24 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     return NO;
 }
 
-
 - (int)levelUpgradeUnlockedWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
         return kUpgradeUnlockLevelTable[objectID];
     }
     return 0;
 }
+
+- (void)purchaseUpgradeWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUpgradesTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
+- (void)unlockUpgradeWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUpgradeUnlocksTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
 
 @end

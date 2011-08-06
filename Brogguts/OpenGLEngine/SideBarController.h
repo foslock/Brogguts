@@ -34,12 +34,14 @@
 	BOOL isMovingObjectIn;
 	BOOL isMovingObjectOut;
 	CGPoint sideBarObjectLocation;
+    BOOL isShowingUpgradeSideBar;
 	
 	// Font object for text rendering
 	BitmapFont* sideBarFont;
 }
 
 @property (nonatomic, assign) BOOL isSideBarShowing;
+@property (nonatomic, assign) BOOL isShowingUpgradeSideBar;
 @property (assign) BitmapFont* sideBarFont;
 
 - (id)initWithLocation:(CGPoint)location withWidth:(float)width withHeight:(float)height;

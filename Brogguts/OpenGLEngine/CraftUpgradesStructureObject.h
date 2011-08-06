@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "StructureObject.h"
 
+extern NSString* const kCraftUpgradeTexts[8];
+
 @interface CraftUpgradesStructureObject : StructureObject {
     BOOL isBeingPressed;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)presentCraftUpgradeDialogueWithObjectID:(int)objectID;
 
 @end

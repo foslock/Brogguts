@@ -37,6 +37,7 @@
 #import "AnimatedImage.h"
 #import "SpawnerObject.h"
 #import "DialogueObject.h"
+#import "UpgradeDialogueObject.h"
 
 
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
@@ -1055,6 +1056,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 [self disregardAllCurrentTouches];
             }
         }
+        if ([dialogue hasBeenDismissed] &&
+            !isFadingDialogueIn &&
+            !isFadingDialogueOut &&
+            !isShowingDialogue) {
+            [sceneDialogues removeObject:dialogue];
+        }
     }
     
     if (isShowingDialogue) {
@@ -1067,6 +1074,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 isTouchSkippingDialogue = NO;
                 [currentShowingDialogue setHasBeenDismissed:YES];
             }
+        }
+        if ([currentShowingDialogue isWantingToBeDismissed] && !isFadingDialogueOut) {
+            isFadingDialogueOut = YES;
+            isTouchSkippingDialogue = NO;
+            [currentShowingDialogue setHasBeenDismissed:YES];
         }
         if (isFadingDialogueIn) {
             dialogueFadeAlpha += OVERVIEW_FADE_IN_RATE;
@@ -2571,10 +2583,13 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
     if (isShowingDialogue && !isTouchSkippingDialogue) {
-        isTouchSkippingDialogue = YES;
+        if (![currentShowingDialogue isKindOfClass:[UpgradeDialogueObject class]]) {
+            isTouchSkippingDialogue = YES;
+        }
         UITouch* touch = [touches anyObject];
         CGPoint originalTouchLocation = [touch locationInView:aView];
         skipDialogueTouchPoint = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+        [currentShowingDialogue touchesBeganAtLocation:skipDialogueTouchPoint];
         return;
     }
     if (isMissionOver) {
@@ -2713,6 +2728,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
     if (isShowingDialogue) {
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        CGPoint previousOrigTouchLocation = [touch previousLocationInView:aView];
+        CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
+        CGPoint prevTouchLocation = [sharedGameController adjustTouchOrientationForTouch:previousOrigTouchLocation inScreenBounds:CGRectZero];
+        [currentShowingDialogue touchesMovedToLocation:touchLocation from:prevTouchLocation];
         return;
     }
     if (isMissionOver) {
@@ -2866,8 +2887,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event view:(UIView*)aView {
     if (isShowingDialogue) {
+        UITouch* touch = [touches anyObject];
+        CGPoint originalTouchLocation = [touch locationInView:aView];
+        CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
         isTouchSkippingDialogue = NO;
         skipDialogueTimer = 0.0f;
+        [currentShowingDialogue touchesEndedAtLocation:touchLocation];
         return;
     }
     if (isMissionOver) {

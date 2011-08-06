@@ -9,10 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "StructureObject.h"
 
+extern NSString* const kStructureUpgradeTexts[8];
+
+
 @interface StructureUpgradesStructureObject : StructureObject {
     BOOL isBeingPressed;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
+
+- (void)presentStructureUpgradeDialogueWithObjectID:(int)objectID;
 
 @end

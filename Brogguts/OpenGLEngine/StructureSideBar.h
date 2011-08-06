@@ -11,6 +11,8 @@
 
 #define STRUCTURE_BUTTON_DRAG_SEGMENTS 10
 
+extern NSString* const kStructureButtonLockedText;
+
 @interface StructureSideBar : SideBarObject {
 	int currentDragButtonID;
 	CGPoint currentDragButtonLocation;

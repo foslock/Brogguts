@@ -12,10 +12,12 @@
 #import "BitmapFont.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "CraftUpgradesSideBar.h"
+#import "StructureUpgradesSideBar.h"
 
 @implementation SideBarController
 
-@synthesize isSideBarShowing, sideBarFont;
+@synthesize isSideBarShowing, sideBarFont, isShowingUpgradeSideBar;
 
 - (void)dealloc {
     [sideBarBackButtonImage release];
@@ -36,6 +38,7 @@
 		isSideBarMovingOut = NO;
 		sideBarLocation = location;
 		originalLocation = location;
+        isShowingUpgradeSideBar = NO;
 		sideBarWidth = width;
 		sideBarHeight = height;
 		sideBarStack = [[NSMutableArray alloc] init];
@@ -112,6 +115,14 @@
     }
     
     SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
+    
+    if ([topObject isKindOfClass:[CraftUpgradesSideBar class]] ||
+        [topObject isKindOfClass:[StructureUpgradesSideBar class]]) { // OR STRUCTURE UPGRADES
+        isShowingUpgradeSideBar = YES;
+    } else {
+        isShowingUpgradeSideBar = NO;
+    }
+    
     [topObject updateSideBar];
     
     if (!isSideBarMovingIn && !isSideBarMovingOut) {
@@ -175,6 +186,9 @@
 }
 
 - (void)pushSideBarObject:(SideBarObject*)sideBar {
+    if (isShowingUpgradeSideBar) {
+        [sideBarStack removeLastObject];
+    }
 	[sideBarStack addObject:sideBar];
 	isMovingObjectIn = YES;
 	isMovingObjectOut = NO;

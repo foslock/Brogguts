@@ -33,6 +33,13 @@ enum kDialogueDimensionValues {
     NSString* dialogueText;
     
     // Dynamic stuff that doesn't need to be saved
+    BOOL isWantingToBeDismissed;
+    BOOL isZoomingBoxIn;
+    BOOL isZoomingBoxOut;
+    BOOL isShowingHoldToDismiss;
+    int zoomingCounterMax;
+    int zoomingCounter;
+    CGRect totalRect;
     TextObject* dialogueTextObject;
     AnimatedImage* portraitImage;
     TiledButtonObject* fadedBackgroundImage;
@@ -43,14 +50,22 @@ enum kDialogueDimensionValues {
 @property (nonatomic, assign) float dialogueActivateTime;
 @property (nonatomic, assign) int dialogueImageIndex;
 @property (nonatomic, copy) NSString* dialogueText;
+@property (readonly) BOOL isWantingToBeDismissed;
 @property (nonatomic, assign) BOOL hasBeenDismissed;
+
+- (void)initializeMe;
 
 - (BOOL)shouldDisplayDialogueObjectWithTotalTime:(float)sceneTime;
 - (void)updateDialogueObjectWithDelta:(float)aDelta;
 - (void)renderDialogueObjectWithFont:(BitmapFont*)font;
+- (void)presentDialogue;
 
 // Used for saving/loading
 - (id)initWithInfoArray:(NSArray*)infoArray;
 - (NSArray*)infoArrayFromDialogue;
+
+- (void)touchesBeganAtLocation:(CGPoint)location;
+- (void)touchesMovedToLocation:(CGPoint)toLocation from:(CGPoint)fromLocation;
+- (void)touchesEndedAtLocation:(CGPoint)location;
 
 @end

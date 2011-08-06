@@ -14,18 +14,7 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 
-enum CraftButtonIDs {
-	kCraftButtonAntID, // Basic
-	kCraftButtonMothID,
-	kCraftButtonBeetleID,
-	kCraftButtonMonarchID,
-	kCraftButtonCamelID, // Advanced
-	kCraftButtonRatID,
-	kCraftButtonSpiderID,
-	kCraftButtonEagleID,
-};
-
-NSString* kCraftButtonText[8] = {
+NSString* const kCraftButtonText[8] = {
     @"Ant",
     @"Moth",
     @"Beetle",
@@ -36,7 +25,7 @@ NSString* kCraftButtonText[8] = {
     @"Eagle",
 };
 
-NSString* kCraftButtonLockedText = @"???";
+NSString* const kCraftButtonLockedText = @"LOCKED";
 
 @implementation CraftSideBar
 
