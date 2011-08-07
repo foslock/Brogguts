@@ -13,10 +13,20 @@ extern NSString* const kCraftUpgradeTexts[8];
 
 @interface CraftUpgradesStructureObject : StructureObject {
     BOOL isBeingPressed;
+    int pressedObjectID;
+    
+    BOOL isCurrentlyProcessingUpgrade;
+    int currentUpgradeObjectID;
+    float currentUpgradeProgress; // In seconds
+    float upgradeTotalGoal; // In seconds
 }
+
+@property (readonly) BOOL isCurrentlyProcessingUpgrade;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)presentCraftUpgradeDialogueWithObjectID:(int)objectID;
+
+- (void)startUpgradeForCraft:(int)objectID withStartTime:(float)startTime;
 
 @end

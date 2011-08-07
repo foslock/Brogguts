@@ -12,6 +12,7 @@
 #import "BitmapFont.h"
 #import "ImageRenderSingleton.h"
 #import "StructureObject.h"
+#import "CraftAndStructures.h"
 
 @implementation UpgradeDialogueObject
 @synthesize upgradesStructure;
@@ -36,13 +37,13 @@
     isShowingHoldToDismiss = NO;
     CGRect buttonRect = CGRectMake(0, 0, END_MISSION_BUTTON_WIDTH, END_MISSION_BUTTON_HEIGHT);
     cancelButton = [[TiledButtonObject alloc]
-                     initWithRect:CGRectOffset(buttonRect,
-                                               totalRect.origin.x,
-                                               kPadScreenLandscapeHeight * (1.0f/5.0f))];
-    confirmButton = [[TiledButtonObject alloc]
                     initWithRect:CGRectOffset(buttonRect,
-                                              totalRect.origin.x + totalRect.size.width - (END_MISSION_BUTTON_WIDTH),
+                                              totalRect.origin.x,
                                               kPadScreenLandscapeHeight * (1.0f/5.0f))];
+    confirmButton = [[TiledButtonObject alloc]
+                     initWithRect:CGRectOffset(buttonRect,
+                                               totalRect.origin.x + totalRect.size.width - (END_MISSION_BUTTON_WIDTH),
+                                               kPadScreenLandscapeHeight * (1.0f/5.0f))];
     [cancelButton setColor:Color4fMake(1.0f, 0.8f, 0.8f, 1.0f)];
     [confirmButton setColor:Color4fMake(0.8f, 1.0f, 0.8f, 1.0f)];
 }
@@ -67,8 +68,23 @@
         // Just dismiss dialogue
     } else if ([confirmButton wasJustReleased]) {
         // MAKE SURE THE STRUCTURE IS STILL VALID!
+        if (![upgradesStructure destroyNow]) {
+            
+            // Start the upgrade
+            if (upgradesStructure.objectType == kObjectStructureCraftUpgradesID) {
+                CraftUpgradesStructureObject* structure = (CraftUpgradesStructureObject*)upgradesStructure;
+                if (![structure isCurrentlyProcessingUpgrade]) {
+                    [structure startUpgradeForCraft:objectUpgradeID withStartTime:0.0f];
+                }
+            }
+            if (upgradesStructure.objectType == kObjectStructureStructureUpgradesID) {
+                StructureUpgradesStructureObject* structure = (StructureUpgradesStructureObject*)upgradesStructure;
+                if (![structure isCurrentlyProcessingUpgrade]) {
+                    [structure startUpgradeForStructure:objectUpgradeID withStartTime:0.0f];
+                }
+            }
+        }
         isWantingToBeDismissed = YES;
-        // Purchase the upgrade
     }
     
     [confirmButton updateObjectLogicWithDelta:aDelta];

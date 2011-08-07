@@ -913,7 +913,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [obj setObjectVelocity:Vector2fMake(0.0f, -0.25f)];
         [obj setFontColor:Color4fMake(1.0f, 0.0f, 0.0f, 1.0f)];
         [obj setRenderLayer:kLayerTopLayer];
-        [textObjectArray addObject:obj];
+        [self addTextObject:obj];
         [obj release];
         
         for (int i = 0; i < numberOfRefineries; i++) {
