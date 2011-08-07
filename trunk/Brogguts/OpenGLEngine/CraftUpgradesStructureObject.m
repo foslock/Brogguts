@@ -56,6 +56,7 @@ NSString* const kCraftUpgradeTexts[8] = {
         [sideBar setMyController:[[self currentScene] sideBar]];
         [[[self currentScene] sideBar] pushSideBarObject:sideBar];
         [[[self currentScene] sideBar] moveSideBarIn];
+        [sideBar release];
     }
     isBeingPressed = NO;
 }

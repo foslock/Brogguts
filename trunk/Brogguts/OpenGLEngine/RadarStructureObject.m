@@ -25,7 +25,7 @@
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
         effectRadius = kStructureRadarRadius;
-        radarDishImage = [[Image alloc] initWithImageNamed:@"spriteradardish.png" filter:GL_LINEAR];
+        radarDishImage = [[Image alloc] initWithImageNamed:kObjectStructureRadarDishSprite filter:GL_LINEAR];
         [radarDishImage setScale:[objectImage scale]];
         [radarDishImage setRenderLayer:kLayerMiddleLayer];
 	}

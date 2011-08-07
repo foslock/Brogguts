@@ -17,34 +17,37 @@
 #pragma mark -
 #pragma mark Objects filenames interface
 
-NSString* kObjectBroggutSmallSprite = @"smallbroggut.png";
-NSString* kObjectBroggutMediumSprite = @"mediumbroggut.png";
+NSString* const kObjectBroggutSmallSprite = @"smallbroggut.png";
+NSString* const kObjectBroggutMediumSprite = @"mediumbroggut.png";
 
-NSString* kObjectTriggerSprite = @"spritetrigger.png";
+NSString* const kObjectTriggerSprite = @"spritetrigger.png";
 
-NSString* kObjectCraftAntSprite = @"craftant.png";
-NSString* kObjectCraftMothSprite = @"craftmoth.png";
-NSString* kObjectCraftBeetleSprite = @"craftbeetle.png";
-NSString* kObjectCraftMonarchSprite = @"craftmonarch.png";
+NSString* const kObjectCraftAntSprite = @"craftant.png";
+NSString* const kObjectCraftMothSprite = @"craftmoth.png";
+NSString* const kObjectCraftBeetleSprite = @"craftbeetle.png";
+NSString* const kObjectCraftMonarchSprite = @"craftmonarch.png";
 
-NSString* kObjectCraftCamelSprite = @"craftcamel.png";
-NSString* kObjectCraftRatSprite = @"craftrat.png";
-NSString* kObjectCraftSpiderSprite = @"craftspider.png";
-NSString* kObjectCraftSpiderDroneSprite = @"craftspiderdrone.png";
-NSString* kObjectCraftEagleSprite = @"crafteagle.png";
+NSString* const kObjectCraftCamelSprite = @"craftcamel.png";
+NSString* const kObjectCraftRatSprite = @"craftrat.png";
+NSString* const kObjectCraftSpiderSprite = @"craftspider.png";
+NSString* const kObjectCraftSpiderDroneSprite = @"craftspiderdrone.png";
+NSString* const kObjectCraftEagleSprite = @"crafteagle.png";
 
-NSString* kObjectStructureBaseStationSprite = @"structurebasestation.png";
-NSString* kObjectStructureBlockSprite = @"structureblock.png";
-NSString* kObjectStructureRefinerySprite = @"structurerefinery.png";
-NSString* kObjectStructureCraftUpgradesSprite = @"structurecraftupgrades.png";
-NSString* kObjectStructureStructureUpgradesSprite = @"structurestructureupgrades.png";
-NSString* kObjectStructureTurretSprite = @"structureturret.png";
-NSString* kObjectStructureRadarSprite = @"structureradar.png";
-NSString* kObjectStructureFixerSprite = @"structurefixer.png";
+NSString* const kObjectStructureBaseStationSprite = @"structurebasestation.png";
+NSString* const kObjectStructureBlockSprite = @"structureblock.png";
+NSString* const kObjectStructureRefinerySprite = @"structurerefinery.png";
+NSString* const kObjectStructureCraftUpgradesSprite = @"structurecraftupgrades.png";
+NSString* const kObjectStructureStructureUpgradesSprite = @"structurestructureupgrades.png";
+NSString* const kObjectStructureTurretSprite = @"structureturret.png";
+NSString* const kObjectStructureRadarSprite = @"structureradar.png";
+NSString* const kObjectStructureFixerSprite = @"structurefixer.png";
 
-NSString* kObjectExplosionSmallSprite = @"explosionsmall.png";
-NSString* kObjectExplosionLargeSprite = @"explosionlarge.png";
-NSString* kObjectExplosionRingSprite = @"explosionring.png";
+NSString* const kObjectStructureTurretGunSprite = @"spriteturretgun.png";
+NSString* const kObjectStructureRadarDishSprite = @"spriteradardish.png";
+
+NSString* const kObjectExplosionSmallSprite = @"explosionsmall.png";
+NSString* const kObjectExplosionLargeSprite = @"explosionlarge.png";
+NSString* const kObjectExplosionRingSprite = @"explosionring.png";
 
 #pragma mark -
 #pragma mark Private interface

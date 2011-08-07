@@ -8,34 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* kObjectBroggutSmallSprite;
-extern NSString* kObjectBroggutMediumSprite;
+extern NSString* const kObjectBroggutSmallSprite;
+extern NSString* const kObjectBroggutMediumSprite;
 
-extern NSString* kObjectTriggerSprite;
+extern NSString* const kObjectTriggerSprite;
 
-extern NSString* kObjectCraftAntSprite;
-extern NSString* kObjectCraftMothSprite;
-extern NSString* kObjectCraftBeetleSprite;
-extern NSString* kObjectCraftMonarchSprite;
+extern NSString* const kObjectCraftAntSprite;
+extern NSString* const kObjectCraftMothSprite;
+extern NSString* const kObjectCraftBeetleSprite;
+extern NSString* const kObjectCraftMonarchSprite;
 
-extern NSString* kObjectCraftCamelSprite;
-extern NSString* kObjectCraftRatSprite;
-extern NSString* kObjectCraftSpiderSprite;
-extern NSString* kObjectCraftSpiderDroneSprite;
-extern NSString* kObjectCraftEagleSprite;
+extern NSString* const kObjectCraftCamelSprite;
+extern NSString* const kObjectCraftRatSprite;
+extern NSString* const kObjectCraftSpiderSprite;
+extern NSString* const kObjectCraftSpiderDroneSprite;
+extern NSString* const kObjectCraftEagleSprite;
 
-extern NSString* kObjectStructureBaseStationSprite;
-extern NSString* kObjectStructureBlockSprite;
-extern NSString* kObjectStructureRefinerySprite;
-extern NSString* kObjectStructureCraftUpgradesSprite;
-extern NSString* kObjectStructureStructureUpgradesSprite;
-extern NSString* kObjectStructureTurretSprite;
-extern NSString* kObjectStructureRadarSprite;
-extern NSString* kObjectStructureFixerSprite;
+extern NSString* const kObjectStructureBaseStationSprite;
+extern NSString* const kObjectStructureBlockSprite;
+extern NSString* const kObjectStructureRefinerySprite;
+extern NSString* const kObjectStructureCraftUpgradesSprite;
+extern NSString* const kObjectStructureStructureUpgradesSprite;
+extern NSString* const kObjectStructureTurretSprite;
+extern NSString* const kObjectStructureRadarSprite;
+extern NSString* const kObjectStructureFixerSprite;
 
-extern NSString* kObjectExplosionSmallSprite;
-extern NSString* kObjectExplosionLargeSprite;
-extern NSString* kObjectExplosionRingSprite;
+extern NSString* const kObjectStructureTurretGunSprite;
+extern NSString* const kObjectStructureRadarDishSprite;
+
+extern NSString* const kObjectExplosionSmallSprite;
+extern NSString* const kObjectExplosionLargeSprite;
+extern NSString* const kObjectExplosionRingSprite;
 
 @class Texture2D;
 @class TextureSingleton;
