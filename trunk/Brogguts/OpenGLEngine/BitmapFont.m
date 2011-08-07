@@ -151,9 +151,10 @@
 	float xScale = fontImage.scale.x;
 	float yScale = fontImage.scale.y;
     int currentLine = 0;
+    int textLength = [aText length];
 	
 	// Loop through all the characters in the text to be rendered
-	for(int i = 0; i < [aText length]; i++) {
+	for(int i = 0; i < textLength; i++) {
 		
 		// Grab the character value of the current character.  We take off 32 as the first
 		// 32 characters of the fonts are not used
@@ -164,10 +165,21 @@
 		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.
 		// This will cause the characters to all sit on the line correctly with tails below the line.  The commonHeight which has
 		// been taken from the fonts control file is used within the calculation.
-        if ( (aPoint.x + charsArray[charID].xOffset) >= (oldPoint.x + widthLimit) ) {
+        float totalWordLength = 0.0f;
+        for (int j = i; j < textLength; j++) {
+            char thisChar = [aText characterAtIndex:j];
+            unichar charID = thisChar - 32;
+            if ( thisChar == ' ' ) {
+                break;
+            }
+            totalWordLength += charsArray[charID].xAdvance * xScale;
+        }
+        
+        if ( (aPoint.x + totalWordLength) >= (oldPoint.x + widthLimit) ) {
             aPoint.x = oldPoint.x;
             currentLine++;
         }
+            
 		int y = aPoint.y - (currentLine * ((lineHeight * yScale) + 2.0f)) + (lineHeight * yScale) - (charsArray[charID].height + charsArray[charID].yOffset) * yScale;
 		int x = aPoint.x + charsArray[charID].xOffset;
 		CGPoint renderPoint = CGPointMake(x, y);
