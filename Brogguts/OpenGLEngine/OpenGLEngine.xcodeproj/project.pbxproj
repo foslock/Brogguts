@@ -294,6 +294,8 @@
 		6FE2F50313ED947600E640C7 /* UpgradeDialogueObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50213ED947600E640C7 /* UpgradeDialogueObject.m */; };
 		6FE2F50913EDC2E900E640C7 /* CraftUpgradesSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50813EDC2E900E640C7 /* CraftUpgradesSideBar.m */; };
 		6FE2F50F13EDFEA200E640C7 /* StructureUpgradesSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50E13EDFEA200E640C7 /* StructureUpgradesSideBar.m */; };
+		6FE2F51113EE0BB100E640C7 /* spriteturretgun.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE2F51013EE0BB100E640C7 /* spriteturretgun.png */; };
+		6FE2F51313EE0D6E00E640C7 /* spriteradardish.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE2F51213EE0D6E00E640C7 /* spriteradardish.png */; };
 		6FE699CC1376EDA800319F7B /* TutorialSceneThirteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */; };
 		6FE699CE1376EDF400319F7B /* Tutorial 13.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE699CD1376EDF400319F7B /* Tutorial 13.plist */; };
 		6FE6A5CF137B702500A0E4D8 /* broggupediabutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FE6A5CD137B702500A0E4D8 /* broggupediabutton.png */; };
@@ -724,6 +726,8 @@
 		6FE2F50813EDC2E900E640C7 /* CraftUpgradesSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CraftUpgradesSideBar.m; sourceTree = "<group>"; };
 		6FE2F50D13EDFEA200E640C7 /* StructureUpgradesSideBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructureUpgradesSideBar.h; sourceTree = "<group>"; };
 		6FE2F50E13EDFEA200E640C7 /* StructureUpgradesSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructureUpgradesSideBar.m; sourceTree = "<group>"; };
+		6FE2F51013EE0BB100E640C7 /* spriteturretgun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spriteturretgun.png; sourceTree = "<group>"; };
+		6FE2F51213EE0D6E00E640C7 /* spriteradardish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spriteradardish.png; sourceTree = "<group>"; };
 		6FE699CA1376EDA500319F7B /* TutorialSceneThirteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSceneThirteen.h; sourceTree = "<group>"; };
 		6FE699CB1376EDA600319F7B /* TutorialSceneThirteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSceneThirteen.m; sourceTree = "<group>"; };
 		6FE699CD1376EDF400319F7B /* Tutorial 13.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tutorial 13.plist"; sourceTree = "<group>"; };
@@ -824,7 +828,7 @@
 			children = (
 				6F4EE699136F625F003B0038 /* Broggupedia */,
 				6FE75E9E13044C6000A3C6EF /* Bitmap Fonts */,
-				6FE75B2B13036ECB00A3C6EF /* Object Management */,
+				6FE75B2B13036ECB00A3C6EF /* Objects */,
 				6FE758B01302FFE400A3C6EF /* Scenes */,
 				6F27EE061324114200579EE5 /* Artificial Intelligance */,
 				6FCAC71B12F7CDE200662BDA /* Game Control */,
@@ -1346,6 +1350,8 @@
 				6F61189C1373A74F0039DB7C /* blackpixel.png */,
 				6F61188D137356EC0039DB7C /* starbackground.png */,
 				6F006A6D1379FD5A000C13C6 /* starbackgroundrotated.png */,
+				6FE2F51213EE0D6E00E640C7 /* spriteradardish.png */,
+				6FE2F51013EE0BB100E640C7 /* spriteturretgun.png */,
 				6F7F41F2135CE54100619FFA /* Explosions */,
 				6F36BEB41368EF9B00CE01C5 /* Button */,
 				6F0E32B7133270900037C789 /* spritetouch.png */,
@@ -1648,7 +1654,7 @@
 			name = Scenes;
 			sourceTree = "<group>";
 		};
-		6FE75B2B13036ECB00A3C6EF /* Object Management */ = {
+		6FE75B2B13036ECB00A3C6EF /* Objects */ = {
 			isa = PBXGroup;
 			children = (
 				6F8E25D01330196C00DCD662 /* Scene Objects */,
@@ -1661,7 +1667,7 @@
 				6F9064A413E9D6180016C36C /* QuadTree.h */,
 				6F9064A213E9D6100016C36C /* QuadTree.c */,
 			);
-			name = "Object Management";
+			name = Objects;
 			sourceTree = "<group>";
 		};
 		6FE75E9E13044C6000A3C6EF /* Bitmap Fonts */ = {
@@ -1929,6 +1935,8 @@
 				6F0A7A2313E761F6001AD287 /* defaultportrait[1].png in Resources */,
 				6F0A7A2413E761F6001AD287 /* defaultportrait[2].png in Resources */,
 				6F0A7A2513E761F6001AD287 /* defaultportrait[3].png in Resources */,
+				6FE2F51113EE0BB100E640C7 /* spriteturretgun.png in Resources */,
+				6FE2F51313EE0D6E00E640C7 /* spriteradardish.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

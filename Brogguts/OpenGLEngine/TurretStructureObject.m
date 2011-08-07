@@ -29,7 +29,7 @@
 		attributeWeaponsDamage = kStructureTurretWeapons;
 		attributeAttackRange = kStructureTurretAttackRange;
 		attackCooldownTimer = 0;
-        turretGunImage = [[Image alloc] initWithImageNamed:@"spriteturretgun.png" filter:GL_LINEAR];
+        turretGunImage = [[Image alloc] initWithImageNamed:kObjectStructureTurretGunSprite filter:GL_LINEAR];
         [turretGunImage setScale:[objectImage scale]];
         [turretGunImage setRenderLayer:kLayerMiddleLayer];
         [turretGunImage setRotation:45.0f];

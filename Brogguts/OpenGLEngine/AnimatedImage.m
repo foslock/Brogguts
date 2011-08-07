@@ -27,8 +27,10 @@
         animationSpeed = 1.0f;
         subImageCount = 0;
         for (int i = 0; i < count; i++) {
-            NSString* newFileName = [[filename stringByDeletingPathExtension] stringByAppendingFormat:@"[%i]",i];
-            Image* newImage = [[Image alloc] initWithImageNamed:[newFileName stringByAppendingString:@".png"] filter:GL_LINEAR];
+            NSString* fileNameWithNoExt = [filename stringByDeletingPathExtension];
+            NSString* newFileName = [fileNameWithNoExt stringByAppendingFormat:@"[%i]",i];
+            NSString* realFileNameWithExt = [newFileName stringByAppendingString:@".png"];
+            Image* newImage = [[Image alloc] initWithImageNamed:realFileNameWithExt filter:GL_LINEAR];
             if (newImage) {
                 [tempArray addObject:newImage];
                 [newImage release];
