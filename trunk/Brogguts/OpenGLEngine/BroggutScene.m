@@ -2576,12 +2576,17 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     isTouchScrolling = NO;
     movingOverviewTouchHash = -1;
     movingTouchHash = -1;
+    NSArray* hoveringArray = [currentObjectsHovering allValues];
+    for (TouchableObject* object in hoveringArray) {
+        [object touchesHoveredLeft];
+    }
     [currentObjectsHovering removeAllObjects];
     
     // Go through and end all the touches
     NSArray* touchingArray = [currentObjectsTouching allValues];
     for (TouchableObject* object in touchingArray) {
         [object touchesEndedAtLocation:currentTouchLocation];
+        [object setIsCurrentlyTouched:NO];
     }
     [currentObjectsTouching removeAllObjects];
     
