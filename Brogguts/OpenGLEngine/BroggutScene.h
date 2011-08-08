@@ -68,7 +68,7 @@ extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class NotificationObject;
 @class DialogueObject;
 
-// Thi is an abstract class which contains the basis for any game scene which is going
+// This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
 // the logic and rendering the screen for the current scene.  It is simply a way to 
 // encapsulate a specific scenes code in a single class.

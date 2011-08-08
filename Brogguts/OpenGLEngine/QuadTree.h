@@ -20,6 +20,7 @@ extern "C" {
         TreeNode* parent;
         int arrayIndex;
         int objectRadius;
+        int effectRadius;
         int xPos;
         int yPos;
     } NodeObject;
@@ -29,6 +30,7 @@ extern "C" {
     } QuadRect;
     
     QuadRect QuadRectMake(int origin_x, int origin_y, int width, int height);
+    QuadRect QuadRectFromNode(TreeNode* node);
     
     // Width and Height MUST be powers of two for the tree to work correctly
     QuadTree* QuadTreeCreate(int width, int height, int maxDepth);

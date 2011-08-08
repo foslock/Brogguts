@@ -2576,6 +2576,17 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     isTouchScrolling = NO;
     movingOverviewTouchHash = -1;
     movingTouchHash = -1;
+    [currentObjectsHovering removeAllObjects];
+    
+    // Go through and end all the touches
+    NSArray* touchingArray = [currentObjectsTouching allValues];
+    for (TouchableObject* object in touchingArray) {
+        [object touchesEndedAtLocation:currentTouchLocation];
+    }
+    [currentObjectsTouching removeAllObjects];
+    
+    [sideBar touchesEndedAtLocation:currentTouchLocation];
+    [currentTouchesInSideBar removeAllObjects];
     
     isTouchSkippingDialogue = NO;
     skipDialogueTimer = 0.0f;

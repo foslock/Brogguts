@@ -71,13 +71,12 @@ typedef struct Path_Node_Queue {
 
 @class CollidableObject;
 
-#define INITIAL_HASH_CAPACITY 4			// Initial capacity of each cell for UIDs
-#define INITIAL_TABLE_CAPACITY 100		// Initial capacity of the table holding all CollidableObjects
-#define COLLISION_DETECTION_FREQ 4		// How many frames to wait to check collisions (0 - every frame, 1 - every other, 2 every second, etc.)
-#define RADIAL_EFFECT_CHECK_FREQ 3		// " " to check radial effects
-#define RADIAL_EFFECT_MAX_COUNT 25      // Maximum number of objects to check for radial effects
-#define RADIAL_EFFECT_MAX_COUNT_QUADTREE 400      // Maximum number of objects to check for radial effects (in quadtree)
-#define MEDIUM_BROGGUT_IMAGE_COUNT 10   // Number of different textures to use for the medium brogguts
+#define INITIAL_HASH_CAPACITY 4                 // Initial capacity of each cell for UIDs
+#define INITIAL_TABLE_CAPACITY 100              // Initial capacity of the table holding all CollidableObjects
+#define COLLISION_DETECTION_FREQ 4              // How many frames to wait to check collisions (0 - every frame, 1 - every other, etc.)
+#define RADIAL_EFFECT_CHECK_FREQ 3              // " " to check radial effects
+#define RADIAL_EFFECT_MAX_COUNT_QUADTREE 800    // Maximum number of objects to check for radial effects (in quadtree)
+#define MEDIUM_BROGGUT_IMAGE_COUNT 10           // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {
     BroggutScene* currentScene;         // Reference to the current scene
@@ -90,6 +89,7 @@ typedef struct Path_Node_Queue {
     NodeObject** radialObjectsInTree;       // Array of the objects that have been created for the quadtree
     int currentRadialObjectCount;           // Count of objects in array
     QuadTree* collisionQuadTree;            // Quad tree that holds all radial checking objects
+    
 	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
     NSMutableArray* radialObjectsQueue;     // Queue of objects that need to be checked for radial effects
     int startingRadialIndex;                // Index of object that should be added to the radial queue next

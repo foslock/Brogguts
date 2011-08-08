@@ -49,11 +49,12 @@ QuadRect QuadRectGetSubQuadrant(QuadRect originalRect, enum QuadRectQuadrants qu
 enum QuadRectQuadrants QuadrantForPointInRect(QuadRect rect1, int x, int y);
 int QuadRectIntersectsRect(QuadRect rect1, QuadRect rect2);
 int QuadRectContainsPoints(QuadRect rect1, int x, int y);
+int QuadRectFullyContainsCircle(QuadRect rect1, int x, int y, int radius);
 
 TreeNode* QuadTreeCreateTreeNode();
 void QuadTreeDeleteNode(TreeNode* root);
 
-void insertHelper(TreeNode* node, int maxDepth, NodeObject* obj);
+void insertHelper(QuadTree* tree, TreeNode* node, int maxDepth, NodeObject* obj);
 void addObjectToTreeNode(TreeNode* node, NodeObject* obj);
 void checkAndExpandNodeObjects(TreeNode* node);
 
@@ -65,6 +66,10 @@ QuadRect QuadRectMake(int origin_x, int origin_y, int width, int height) {
     rect.x1 = origin_x + width;
     rect.y1 = origin_y + height;
     return rect;
+}
+
+QuadRect QuadRectFromNode(TreeNode* node) {
+    return node->nodeRect;
 }
 
 QuadRect QuadRectGetSubQuadrant(QuadRect originalRect, enum QuadRectQuadrants quadrant) {
@@ -125,13 +130,26 @@ int QuadRectIntersectsRect(QuadRect rect1, QuadRect rect2) {
 
 int QuadRectContainsPoints(QuadRect rect1, int x, int y) {
     int returnBool = 1;
-    if (x < rect1.x0 || x > rect1.x1) {
+    if (x <= rect1.x0 || x >= rect1.x1) {
         returnBool = 0;
         return returnBool;
     }
-    if (y < rect1.y0 || y > rect1.y1) {
+    if (y <= rect1.y0 || y >= rect1.y1) {
         returnBool = 0;
         return returnBool;
+    }
+    return returnBool;
+}
+
+int QuadRectFullyContainsCircle(QuadRect rect1, int x, int y, int radius) {
+    int returnBool = 0;
+    QuadRect newRect;
+    newRect.x0 = rect1.x0 + radius;
+    newRect.x1 = rect1.x1 - radius;
+    newRect.y0 = rect1.y0 + radius;
+    newRect.y1 = rect1.y1 - radius;
+    if (QuadRectContainsPoints(newRect, x, y)) {
+        returnBool = 1;
     }
     return returnBool;
 }
@@ -169,9 +187,6 @@ void QuadTreeDeleteNodes(TreeNode* root) {
 }
 
 void addObjectToTreeNode(TreeNode* node, NodeObject* obj) {
-    if (obj->parent) {
-        obj->parent->objects[--obj->parent->objectCount] = NULL;
-    }
     checkAndExpandNodeObjects(node);
     node->objects[node->objectCount++] = obj;
     obj->parent = node;
@@ -215,11 +230,12 @@ NodeObject* QuadTreeCreateNode() {
     newNode->xPos = 0;
     newNode->yPos = 0;
     newNode->objectRadius = 0;
+    newNode->effectRadius = 0;
     newNode->arrayIndex = -1;
     return newNode;
 }
 
-void insertHelper(TreeNode* node, int maxDepth, NodeObject* obj) {
+void insertHelper(QuadTree* tree, TreeNode* node, int maxDepth, NodeObject* obj) {
     if (!node || !obj) {
         return;
     }
@@ -229,9 +245,9 @@ void insertHelper(TreeNode* node, int maxDepth, NodeObject* obj) {
     } else if (node->nodeDepth < maxDepth) { // Any layer before max
         if (node->objectCount == 0) { // If node has no objects, just add it
             addObjectToTreeNode(node, obj);
-        } else { // If there are already objects in that node, call this on the correct subquadrant node
-            int quadrant = QuadrantForPointInRect(node->nodeRect, obj->xPos, obj->yPos);
-            if (!node->hasMadeChildrenNodes) { // Make the children nodes if they don't alreadt exist
+            return;
+        } else { // If there are already objects in that node, make the children and rearrange all current objects
+            if (!node->hasMadeChildrenNodes) { // Make the children nodes if they don't already exist
                 for (int i = 0; i < 4; i++) {
                     node->childrenNodes[i] = QuadTreeCreateTreeNode();
                     node->childrenNodes[i]->nodeDepth = node->nodeDepth + 1;
@@ -239,7 +255,42 @@ void insertHelper(TreeNode* node, int maxDepth, NodeObject* obj) {
                 }
                 node->hasMadeChildrenNodes = 1;
             }
-            insertHelper(node->childrenNodes[quadrant], maxDepth, obj);
+            // Add the object to the node since we're going rearrange them all anyways
+            addObjectToTreeNode(node, obj);
+            
+            // Go through each object stored and either add it to a child node, or keep it in current node
+            int currentCount = node->objectCount;
+            int* destinationArray = (int*)malloc(currentCount * sizeof(*destinationArray));
+            NodeObject** tempObjsArray = (NodeObject**)malloc(currentCount * sizeof(*tempObjsArray));
+            
+            for (int i = 0; i < currentCount; i++) {
+                NodeObject* thisObj = node->objects[i];
+                tempObjsArray[i] = thisObj;
+                int quadrant = QuadrantForPointInRect(node->nodeRect, thisObj->xPos, thisObj->yPos);
+                if (QuadRectFullyContainsCircle(node->childrenNodes[quadrant]->nodeRect, thisObj->xPos, thisObj->yPos, thisObj->objectRadius)) {
+                    // If a child fully contains it, remove it from the current node, and insert it into that child
+                    destinationArray[i] = quadrant;
+                } else {
+                    // Else keep it in the current array of the current node (do nothing)
+                    destinationArray[i] = -1;
+                }
+            }
+            
+            // Clear all current objects in the node
+            node->objectCount = 0;
+            
+            for (int i = 0; i < currentCount; i++) {
+                NodeObject* thisObj = tempObjsArray[i];
+                if (destinationArray[i] == -1) {
+                    // The object stays in this node and is not removed/moved
+                    addObjectToTreeNode(node, thisObj);
+                } else {
+                    int quadrant = destinationArray[i];
+                    insertHelper(tree, node->childrenNodes[quadrant], maxDepth, thisObj);
+                }
+            }
+            free(destinationArray);
+            free(tempObjsArray);
         }
     }
 }
@@ -247,7 +298,7 @@ void insertHelper(TreeNode* node, int maxDepth, NodeObject* obj) {
 void QuadTreeInsertObject(QuadTree* tree, NodeObject* obj) {
     // Do stuff finding the right node
     if (tree && obj) {
-        insertHelper(tree->treeRoot, tree->maxDepth, obj);
+        insertHelper(tree, tree->treeRoot, tree->maxDepth, obj);
     }
 }
 
@@ -257,11 +308,24 @@ void QuadTreeDeleteObject(QuadTree* tree, NodeObject* obj) {
         free(obj);
     }
 }
+
 void QuadTreeRemoveObject(QuadTree* tree, NodeObject* obj) {
     if (obj) {
         TreeNode* parent = obj->parent;
         if (parent) {
-            parent->objects[--(parent->objectCount)] = NULL;
+            if (parent->objectCount > 1) {
+                // Replace the old one with the last in the array
+                NodeObject* lastObj = parent->objects[parent->objectCount - 1];
+                for (int i = 0; i < parent->objectCount; i++) {
+                    if (parent->objects[i] == obj) {
+                        parent->objects[i] = lastObj;
+                        break;
+                    }
+                }
+            } else if (parent->objectCount == 1) { // obj is only object in parent
+                parent->objects[0] = NULL;
+            }
+            parent->objectCount--;
             obj->parent = NULL;
         }
     }

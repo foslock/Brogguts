@@ -462,7 +462,8 @@
         newNode->arrayIndex = [radialAffectedObjects indexOfObject:obj];
         newNode->xPos = obj.objectLocation.x;
         newNode->yPos = obj.objectLocation.y;
-        newNode->objectRadius = [obj effectRadiusCircle].radius;
+        newNode->objectRadius = [obj boundingCircle].radius;
+        newNode->effectRadius = [obj effectRadiusCircle].radius;
         radialObjectsInTree[currentRadialObjectCount++] = newNode;
         QuadTreeInsertObject(collisionQuadTree, newNode);
     }
@@ -492,7 +493,7 @@
         
         for (int i = 0; i < currentRadialObjectCount; i++) { // Go through each element and check collisions (i is array index)
             NodeObject* obj = radialObjectsInTree[i];
-            int effectRadius = obj->objectRadius;
+            int effectRadius = obj->effectRadius;
             QuadRect thisRect = QuadRectMake(obj->xPos - effectRadius, obj->yPos - effectRadius, effectRadius, effectRadius);
             int potentialCount = QuadTreeQuery(collisionQuadTree, collisionArray, RADIAL_EFFECT_MAX_COUNT_QUADTREE, thisRect);
             Circle thisCircle;
@@ -513,6 +514,7 @@
                 }
             }
         }
+        
     }
     /*
     if ([radialAffectedObjects count] > RADIAL_EFFECT_MAX_COUNT) {
