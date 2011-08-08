@@ -758,7 +758,7 @@
         }
     }
     
-    if (isCurrentlyHoveredOver || isBeingControlled && !isBlinkingSelectionCircle) {
+    if ( (isCurrentlyHoveredOver || isBeingControlled) && !isBlinkingSelectionCircle) {
         enablePrimitiveDraw();
         [self drawHoverSelectionWithScroll:scroll withAlpha:0.8f];
         disablePrimitiveDraw();
