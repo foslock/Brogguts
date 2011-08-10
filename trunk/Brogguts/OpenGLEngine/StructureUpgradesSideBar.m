@@ -14,6 +14,7 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "StructureUpgradesStructureObject.h"
+#import "UpgradeManager.h"
 
 enum StructureUpgradeButtonIDs {
     kStructureUpgradeButtonBaseStationID,
@@ -49,6 +50,8 @@ NSString* const kStructureUpgradeButtonText[8] = {
 	self = [super init];
 	if (self) {
         self.upgradesStructure = structure;
+        BroggutScene* scene = [[GameController sharedGameController] currentScene];
+        UpgradeManager* upgradeManager = [scene upgradeManager];
         PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
 		for (int i = 0; i < 8; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
@@ -58,35 +61,35 @@ NSString* const kStructureUpgradeButtonText[8] = {
             switch (i) {
                 case kStructureUpgradeButtonBaseStationID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureBaseStationID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureBaseStationID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureBaseStationID];
                     break;
                 case kStructureUpgradeButtonBlockID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureBlockID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureBlockID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureBlockID];
                     break;
                 case kStructureUpgradeButtonRefineryID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureRefineryID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureRefineryID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureRefineryID];
                     break;
                 case kStructureUpgradeButtonCraftUpgradesID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureCraftUpgradesID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureCraftUpgradesID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureCraftUpgradesID];
                     break;
                 case kStructureUpgradeButtonStructureUpgradesID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureStructureUpgradesID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureStructureUpgradesID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureStructureUpgradesID];
                     break;
                 case kStructureUpgradeButtonTurretID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureTurretID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureTurretID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureTurretID];
                     break;
                 case kStructureUpgradeButtonRadarID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureFixerID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureFixerID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureFixerID];
                     break;
                 case kStructureUpgradeButtonFixerID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectStructureRadarID];
-                    isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureRadarID];
+                    isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureRadarID];
                     break;
                 default:
                     break;
@@ -114,34 +117,35 @@ NSString* const kStructureUpgradeButtonText[8] = {
     if ([upgradesStructure destroyNow]) {
         [myController popSideBarObject];
     }
-    PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+    BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    UpgradeManager* upgradeManager = [scene upgradeManager];
     for (int i = 0; i < [buttonArray count]; i++) {
         SideBarButton* button = [buttonArray objectAtIndex:i];
         BOOL isPurchased = NO;
         switch (i) {
             case kStructureUpgradeButtonBaseStationID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureBaseStationID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureBaseStationID];
                 break;
             case kStructureUpgradeButtonBlockID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureBlockID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureBlockID];
                 break;
             case kStructureUpgradeButtonRefineryID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureRefineryID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureRefineryID];
                 break;
             case kStructureUpgradeButtonCraftUpgradesID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureCraftUpgradesID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureCraftUpgradesID];
                 break;
             case kStructureUpgradeButtonStructureUpgradesID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureStructureUpgradesID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureStructureUpgradesID];
                 break;
             case kStructureUpgradeButtonTurretID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureTurretID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureTurretID];
                 break;
             case kStructureUpgradeButtonRadarID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureFixerID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureFixerID];
                 break;
             case kStructureUpgradeButtonFixerID:
-                isPurchased = [profile isUpgradePurchasedWithID:kObjectStructureRadarID];
+                isPurchased = [upgradeManager isUpgradePurchasedWithID:kObjectStructureRadarID];
                 break;
             default:
                 break;

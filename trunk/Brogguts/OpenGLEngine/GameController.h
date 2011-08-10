@@ -35,6 +35,7 @@ enum kSceneAIControllerIndexes {
     kSceneAIControllerSpawnerInfos,
     kSceneAIControllerDialogueInfos,
     kSceneAIControllerSceneTime,
+    kSceneAIControllerPurchasedUpgrades,
     kSceneAIControllerCompletedUpgrades,
     kSceneAIControllerBrogguts,
     kSceneAIControllerMetal,

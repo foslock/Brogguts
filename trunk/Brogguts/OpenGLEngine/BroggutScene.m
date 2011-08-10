@@ -38,7 +38,7 @@
 #import "SpawnerObject.h"
 #import "DialogueObject.h"
 #import "UpgradeDialogueObject.h"
-
+#import "UpgradeManager.h"
 
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -71,7 +71,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
-@synthesize sceneSpawners, sceneDialogues;
+@synthesize sceneSpawners, sceneDialogues, upgradeManager;
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -101,6 +101,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     sceneSpawners = [[NSMutableArray alloc] init];
     sceneDialogues = [[NSMutableArray alloc] init];
+    self.upgradeManager = [[[UpgradeManager alloc] init] autorelease];
     
     self.sceneName = sName;
     isAllowingSidebar = YES;
@@ -339,8 +340,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             NSNumber* timerNumber = [AIArray objectAtIndex:kSceneAIControllerSceneTime];
             sceneTimer = [timerNumber floatValue];
             
+            NSArray* purchasedUpgrades = [AIArray objectAtIndex:kSceneAIControllerPurchasedUpgrades];
+            [upgradeManager setPurchasedUpgradesArray:purchasedUpgrades];
+            
             NSArray* completedUpgrades = [AIArray objectAtIndex:kSceneAIControllerCompletedUpgrades];
-            [[sharedGameController currentProfile] setCompletedUpgradesArray:completedUpgrades];
+            [upgradeManager setCompletedUpgradesArray:completedUpgrades];
             
             // Load the dialogue objects
             NSArray* dialogueInfos = [AIArray objectAtIndex:kSceneAIControllerDialogueInfos];
@@ -950,13 +954,15 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [dialogueInfos addObject:dialogueInfo];
     }
     
-    NSArray* completedUpgrades = [[sharedGameController currentProfile] arrayFromCompletedUpgrades];
+    NSArray* purchasedUpgrades = [upgradeManager arrayFromPurchasedUpgrades];
+    NSArray* completedUpgrades = [upgradeManager arrayFromCompletedUpgrades];
     
     // After the metal has been finalized, save the brogguts and metal in the plist
     NSMutableArray* tempArray = [[NSMutableArray alloc] init]; // AI Controller data array
     [tempArray insertObject:spawnerInfos atIndex:kSceneAIControllerSpawnerInfos];
     [tempArray insertObject:dialogueInfos atIndex:kSceneAIControllerDialogueInfos];
     [tempArray insertObject:[NSNumber numberWithFloat:currentSceneTimer] atIndex:kSceneAIControllerSceneTime];
+    [tempArray insertObject:purchasedUpgrades atIndex:kSceneAIControllerPurchasedUpgrades];
     [tempArray insertObject:completedUpgrades atIndex:kSceneAIControllerCompletedUpgrades];
     [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
     [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
@@ -976,6 +982,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 	if (cameraImage) {
 		[cameraImage release];
 	}
+    [upgradeManager release];
     [sceneDialogues release];
     [sceneSpawners release];
     [broggutIconImage release];

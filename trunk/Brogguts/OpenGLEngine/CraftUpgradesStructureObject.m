@@ -16,6 +16,7 @@
 #import "GameController.h"
 #import "TextObject.h"
 #import "ImageRenderSingleton.h"
+#import "UpgradeManager.h"
 
 NSString* const kCraftUpgradeTexts[8] = {
     @"Ant Upgrade",
@@ -59,7 +60,8 @@ NSString* const kCraftUpgradeTexts[8] = {
             currentUpgradeProgress += aDelta;
         } else { // Upgrade is done!
             // Set the upgrade to active in the profile
-            [[[GameController sharedGameController] currentProfile] completeUpgradeWithID:currentUpgradeObjectID];
+            UpgradeManager* upgradeManager = [[self currentScene] upgradeManager];
+            [upgradeManager completeUpgradeWithID:currentUpgradeObjectID];
             isCurrentlyProcessingUpgrade = NO;
             currentUpgradeObjectID = -1;
             currentUpgradeProgress = 0.0f;
@@ -155,8 +157,8 @@ NSString* const kCraftUpgradeTexts[8] = {
 
 - (void)objectWasDestroyed {
     if (isCurrentlyProcessingUpgrade) {
-        PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
-        [profile unPurchaseUpgradeWithID:currentUpgradeObjectID];
+        UpgradeManager* upgradeManager = [[self currentScene] upgradeManager];
+        [upgradeManager unPurchaseUpgradeWithID:currentUpgradeObjectID];
     }
     isCurrentlyProcessingUpgrade = NO;
     currentUpgradeObjectID = -1;
@@ -204,6 +206,7 @@ NSString* const kCraftUpgradeTexts[8] = {
     
     PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
     if ([profile subtractBrogguts:upgradeCost metal:0] == kProfileNoFail) {
+        [[[self currentScene] sideBar] popSideBarObject];
         
         // Create broggut lost text at top of screen
         CGPoint broggutCounterLocation = self.currentScene.broggutCounter.objectLocation;
@@ -259,8 +262,8 @@ NSString* const kCraftUpgradeTexts[8] = {
     }
     
     // Check brogguts
-    PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
-    [profile purchaseUpgradeWithID:objectID];
+    UpgradeManager* upgradeManager = [[self currentScene] upgradeManager];
+    [upgradeManager purchaseUpgradeWithID:objectID];
     isCurrentlyProcessingUpgrade = YES;
     currentUpgradeObjectID = objectID;
     currentUpgradeProgress = startTime;

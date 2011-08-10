@@ -13,6 +13,7 @@
 #import "ImageRenderSingleton.h"
 #import "StructureObject.h"
 #import "CraftAndStructures.h"
+#import "GameController.h"
 
 @implementation UpgradeDialogueObject
 @synthesize upgradesStructure;

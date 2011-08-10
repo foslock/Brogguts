@@ -94,6 +94,7 @@
 		6F0E32B3133268A30037C789 /* spritefinger.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32B2133268A30037C789 /* spritefinger.png */; };
 		6F0E32B6133268C90037C789 /* FingerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F0E32B5133268C70037C789 /* FingerObject.m */; };
 		6F0E32B8133270900037C789 /* spritetouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32B7133270900037C789 /* spritetouch.png */; };
+		6F11207213F2BCB900B0C8D1 /* UpgradeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F1F03DB136669F100B6DBD0 /* Campaign 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */; };
 		6F27EE0A1324118B00579EE5 /* AIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F27EE091324118B00579EE5 /* AIController.m */; };
@@ -434,6 +435,8 @@
 		6F0E32B4133268C60037C789 /* FingerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerObject.h; sourceTree = "<group>"; };
 		6F0E32B5133268C70037C789 /* FingerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FingerObject.m; sourceTree = "<group>"; };
 		6F0E32B7133270900037C789 /* spritetouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetouch.png; sourceTree = "<group>"; };
+		6F11207013F2BCB900B0C8D1 /* UpgradeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpgradeManager.h; sourceTree = "<group>"; };
+		6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpgradeManager.m; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F1BB1D313E5BBCD00C96C29 /* AchievementIdentifiers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementIdentifiers.h; sourceTree = "<group>"; };
 		6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 1.plist"; sourceTree = "<group>"; };
@@ -1647,6 +1650,8 @@
 			children = (
 				6FCACA4E12F9DDCD00662BDA /* BroggutScene.h */,
 				6FCACA4F12F9DDCD00662BDA /* BroggutScene.m */,
+				6F11207013F2BCB900B0C8D1 /* UpgradeManager.h */,
+				6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */,
 				6F8420EF13623025008CAFE2 /* Campaign Scenes */,
 				6F8E25D8133036D100DCD662 /* Tutorial Scenes */,
 				6F8B8CF1130B5867009CD1BF /* Side Bar */,
@@ -2061,6 +2066,7 @@
 				6FE2F50313ED947600E640C7 /* UpgradeDialogueObject.m in Sources */,
 				6FE2F50913EDC2E900E640C7 /* CraftUpgradesSideBar.m in Sources */,
 				6FE2F50F13EDFEA200E640C7 /* StructureUpgradesSideBar.m in Sources */,
+				6F11207213F2BCB900B0C8D1 /* UpgradeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
