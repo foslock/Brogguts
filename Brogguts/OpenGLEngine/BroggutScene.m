@@ -3015,7 +3015,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                     currentOverViewPoint = localTouchLoc;
                     [self setCameraLocation:CGPointMake(currentOverViewPoint.x / xRatio, currentOverViewPoint.y / yRatio)];
                     [self setMiddleOfVisibleScreenToCamera];
-                    [self scrollScreenWithVector:Vector2fMake(touchLocation.x - prevTouchLocation.x, touchLocation.y - prevTouchLocation.y)];
+                    [self scrollScreenWithVector:Vector2fMake( (touchLocation.x - prevTouchLocation.x) / xRatio, (touchLocation.y - prevTouchLocation.y) / yRatio)];
                     break;
                 }
             }
