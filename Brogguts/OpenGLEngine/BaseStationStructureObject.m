@@ -72,6 +72,13 @@
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
     
+    // There must only be one of each (friendly and enemy) base stations in any scene
+    if (objectAlliance == kAllianceFriendly) {
+        [[self currentScene] setHomeBaseLocation:objectLocation];
+    } else if (objectAlliance == kAllianceEnemy) {
+        [[self currentScene] setEnemyBaseLocation:objectLocation];
+    }
+    
     if (blinkCounter > 0.0f) {
         blinkCounter -= aDelta;
     }

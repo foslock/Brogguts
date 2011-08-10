@@ -19,6 +19,7 @@
 #import "PlayerProfile.h"
 #import "NotificationObject.h"
 #import "SoundSingleton.h"
+#import "BuildingObject.h"
 
 @implementation CraftObject
 @synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, attributeHullCapacity, isUnderAura, craftDoesRotate;
@@ -237,6 +238,9 @@
 		specialAbilityCooldownTimer = 0;
 		creationEndLocation = location;
 		if (traveling) {
+            BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:self withLocation:location];
+            [[self currentScene] addCollidableObject:tempObject];
+            [tempObject release];
 			[self setIsTraveling:YES];
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];
 			[self followPath:path isLooped:NO];
