@@ -101,18 +101,7 @@ enum kProfileFailTypes {
 
 // Upgrades
 - (BOOL)isUpgradeUnlockedWithID:(int)objectID;
-- (BOOL)isUpgradePurchasedWithID:(int)objectID;
-- (BOOL)isUpgradeCompleteWithID:(int)objectID;
 - (int)levelUpgradeUnlockedWithID:(int)objectID;
-- (void)purchaseUpgradeWithID:(int)objectID;    // Start the upgrade for this match
-- (void)unPurchaseUpgradeWithID:(int)objectID;  // Cancel the upgrade (building was destroyed)
 - (void)unlockUpgradeWithID:(int)objectID;      // Unlock for purchase
-- (void)completeUpgradeWithID:(int)objectID;    // Sets the upgrade as complete and active for this match
-
-- (void)setCompletedUpgradesArray:(NSArray*)upgradeInfoArray;
-- (NSArray*)arrayFromCompletedUpgrades;
-
-
-
 
 @end

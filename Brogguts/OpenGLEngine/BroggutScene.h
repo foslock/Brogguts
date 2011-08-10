@@ -67,6 +67,7 @@ extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class BlockStructureObject;
 @class NotificationObject;
 @class DialogueObject;
+@class UpgradeManager;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -234,6 +235,9 @@ enum kProcessFrameOffset {
 	// Dealing with text objects
 	NSMutableArray* textObjectArray;    // Array containing all of the objects that want to render fonts
 	NSMutableArray* fontArray;          // Array containing the all the bitmap fonts used
+    
+    // Manages upgrades for this scene
+    UpgradeManager* upgradeManager;
 	
 	// Frame counter
 	int frameCounter;			// The counter for frames (use for functions you want to call NOT every frame with "%" operator)
@@ -304,6 +308,7 @@ enum kProcessFrameOffset {
 @property (nonatomic, assign) int numberOfEnemyStructures;
 @property (readonly) NSMutableArray* sceneSpawners;
 @property (readonly) NSMutableArray* sceneDialogues;
+@property (nonatomic, retain) UpgradeManager* upgradeManager;
 
 #pragma mark -
 #pragma mark Selectors
