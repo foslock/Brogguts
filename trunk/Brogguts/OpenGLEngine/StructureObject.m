@@ -15,6 +15,7 @@
 #import "ExplosionObject.h"
 #import "ImageRenderSingleton.h"
 #import "NotificationObject.h"
+#import "BuildingObject.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent, attributeHullCapacity;
@@ -139,6 +140,9 @@
 		[self initStructureWithID:typeID];
         [[[self currentScene] collisionManager] setPathNodeIsOpen:NO atLocation:location];
 		if (traveling) {
+            BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:self withLocation:location];
+            [[self currentScene] addCollidableObject:tempObject];
+            [tempObject release];
             [[self currentScene] setIsBuildingStructure:YES];
 			[self setIsTraveling:YES];
 			NSArray* path = [NSArray arrayWithObject:[NSValue valueWithCGPoint:location]];

@@ -2430,9 +2430,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2451,9 +2448,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2472,9 +2466,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2493,9 +2484,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2515,9 +2503,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2537,9 +2522,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2563,9 +2545,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2585,9 +2564,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newCraft setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newCraft withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newCraft release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2629,9 +2605,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2650,9 +2623,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2671,9 +2641,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2692,9 +2659,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2713,9 +2677,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2734,9 +2695,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
@@ -2755,9 +2713,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 [newStructure setObjectAlliance:alliance];
                 [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
-                BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:newStructure withLocation:location];
-                [self addCollidableObject:tempObject];
-                [tempObject release];
                 [newStructure release];
             } else {
                 [self failedToCreateAtLocation:location withFailType:failType];
