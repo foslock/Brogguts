@@ -74,13 +74,13 @@
             if (upgradesStructure.objectType == kObjectStructureCraftUpgradesID) {
                 CraftUpgradesStructureObject* structure = (CraftUpgradesStructureObject*)upgradesStructure;
                 if (![structure isCurrentlyProcessingUpgrade]) {
-                    [structure startUpgradeForCraft:objectUpgradeID withStartTime:0.0f];
+                    [structure purchaseUpgradeForCraft:objectUpgradeID withStartTime:0.0f];
                 }
             }
             if (upgradesStructure.objectType == kObjectStructureStructureUpgradesID) {
                 StructureUpgradesStructureObject* structure = (StructureUpgradesStructureObject*)upgradesStructure;
                 if (![structure isCurrentlyProcessingUpgrade]) {
-                    [structure startUpgradeForStructure:objectUpgradeID withStartTime:0.0f];
+                    [structure purchaseUpgradeForStructure:objectUpgradeID withStartTime:0.0f];
                 }
             }
         }

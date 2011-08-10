@@ -10,7 +10,7 @@
 
 #define PROFILE_BROGGUT_MAX_COUNT 1000000
 #define PROFILE_METAL_MAX_COUNT 1000000
-#define PROFILE_SPACE_YEAR_MAX 2000
+#define PROFILE_SPACE_YEAR_MAX 100
 
 // The percent of the brogguts earned in a skirmish are added to the total count
 #define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f
@@ -52,8 +52,11 @@ enum kProfileFailTypes {
     // This array is indexed with the ID of the object with the upgrade, and the bool is whether THE UPGRADE is unlocked or not
     NSMutableArray* currentUpgradeUnlocksTable;
     
-    // This array is indexed with the ID of the structure or craft that gets the upgrade, and the NSNumber (bool balue) stored indicates if it has been bought in the current match.
-    NSMutableArray* currentUpgradesTable;
+    // This array is indexed with the ID of the structure or craft that gets the upgrade, and the NSNumber (bool balue) stored indicates if it has been bought in the current match (it could be in progress).
+    NSMutableArray* currentUpgradesPurchasedTable;
+
+    // This array is indexed with the ID of the object that gets the upgrade, and the NSNumber (bool) indicated if the upgrade is complete and active in the the current match (used to check if should apply update)
+    NSMutableArray* currentUpgradesCompletedTable;
 }
 
 @property (nonatomic, assign) int totalBroggutCount;
@@ -99,9 +102,16 @@ enum kProfileFailTypes {
 // Upgrades
 - (BOOL)isUpgradeUnlockedWithID:(int)objectID;
 - (BOOL)isUpgradePurchasedWithID:(int)objectID;
+- (BOOL)isUpgradeCompleteWithID:(int)objectID;
 - (int)levelUpgradeUnlockedWithID:(int)objectID;
-- (void)purchaseUpgradeWithID:(int)objectID; // Exists in current match
-- (void)unlockUpgradeWithID:(int)objectID;   // Unlock for purchase
+- (void)purchaseUpgradeWithID:(int)objectID;    // Start the upgrade for this match
+- (void)unPurchaseUpgradeWithID:(int)objectID;  // Cancel the upgrade (building was destroyed)
+- (void)unlockUpgradeWithID:(int)objectID;      // Unlock for purchase
+- (void)completeUpgradeWithID:(int)objectID;    // Sets the upgrade as complete and active for this match
+
+- (void)setCompletedUpgradesArray:(NSArray*)upgradeInfoArray;
+- (NSArray*)arrayFromCompletedUpgrades;
+
 
 
 

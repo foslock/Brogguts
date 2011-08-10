@@ -29,7 +29,7 @@ NSString* const kCraftUpgradeTexts[8] = {
 };
 
 @implementation CraftUpgradesStructureObject
-@synthesize isCurrentlyProcessingUpgrade;
+@synthesize isCurrentlyProcessingUpgrade, currentUpgradeProgress, currentUpgradeObjectID;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureCraftUpgradesID withLocation:location isTraveling:traveling];
@@ -59,6 +59,7 @@ NSString* const kCraftUpgradeTexts[8] = {
             currentUpgradeProgress += aDelta;
         } else { // Upgrade is done!
             // Set the upgrade to active in the profile
+            [[[GameController sharedGameController] currentProfile] completeUpgradeWithID:currentUpgradeObjectID];
             isCurrentlyProcessingUpgrade = NO;
             currentUpgradeObjectID = -1;
             currentUpgradeProgress = 0.0f;
@@ -144,8 +145,8 @@ NSString* const kCraftUpgradeTexts[8] = {
         progressCircle.x = objectLocation.x;
         progressCircle.y = objectLocation.y;
         progressCircle.radius = [self boundingCircle].radius + 10.0f;
-        int totalSegments = upgradeTotalGoal;
-        int filledSegments = currentUpgradeProgress;
+        int totalSegments = upgradeTotalGoal * 2;
+        int filledSegments = currentUpgradeProgress * 2;
         glLineWidth(2.0f);
         drawPartialDashedCircle(progressCircle, filledSegments, totalSegments, Color4fOnes, Color4fBlack, scroll);
         disablePrimitiveDraw();
@@ -153,6 +154,10 @@ NSString* const kCraftUpgradeTexts[8] = {
 }
 
 - (void)objectWasDestroyed {
+    if (isCurrentlyProcessingUpgrade) {
+        PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+        [profile unPurchaseUpgradeWithID:currentUpgradeObjectID];
+    }
     isCurrentlyProcessingUpgrade = NO;
     currentUpgradeObjectID = -1;
     currentUpgradeProgress = 0.0f;
@@ -160,7 +165,7 @@ NSString* const kCraftUpgradeTexts[8] = {
     [super objectWasDestroyed];
 }
 
-- (void)startUpgradeForCraft:(int)objectID withStartTime:(float)startTime {
+- (void)purchaseUpgradeForCraft:(int)objectID withStartTime:(float)startTime {
     if (isCurrentlyProcessingUpgrade || destroyNow) {
         return;
     }
@@ -169,35 +174,27 @@ NSString* const kCraftUpgradeTexts[8] = {
     
     switch (objectID) {
         case kObjectCraftAntID:
-            upgradeTotalGoal = kCraftAntUpgradeTime;
             upgradeCost = kCraftAntUpgradeCost;
             break;
         case kObjectCraftMothID:
-            upgradeTotalGoal = kCraftMothUpgradeTime;
             upgradeCost = kCraftMothUpgradeCost;
             break;
         case kObjectCraftBeetleID:
-            upgradeTotalGoal = kCraftBeetleUpgradeTime;
             upgradeCost = kCraftBeetleUpgradeCost;
             break;
         case kObjectCraftMonarchID:
-            upgradeTotalGoal = kCraftMonarchUpgradeTime;
             upgradeCost = kCraftMonarchUpgradeCost;
             break;
         case kObjectCraftCamelID:
-            upgradeTotalGoal = kCraftCamelUpgradeTime;
             upgradeCost = kCraftCamelUpgradeCost;
             break;
         case kObjectCraftRatID:
-            upgradeTotalGoal = kCraftRatUpgradeTime;
             upgradeCost = kCraftRatUpgradeCost;
             break;
         case kObjectCraftSpiderID:
-            upgradeTotalGoal = kCraftSpiderUpgradeTime;
             upgradeCost = kCraftSpiderUpgradeCost;
             break;
         case kObjectCraftEagleID:
-            upgradeTotalGoal = kCraftEagleUpgradeTime;
             upgradeCost = kCraftEagleUpgradeCost;
             break;
         default:
@@ -205,7 +202,6 @@ NSString* const kCraftUpgradeTexts[8] = {
             break;
     }
     
-    // Check brogguts
     PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
     if ([profile subtractBrogguts:upgradeCost metal:0] == kProfileNoFail) {
         
@@ -223,10 +219,51 @@ NSString* const kCraftUpgradeTexts[8] = {
         [[self currentScene] addTextObject:obj];
         [obj release];
         
-        isCurrentlyProcessingUpgrade = YES;
-        currentUpgradeObjectID = objectID;
-        currentUpgradeProgress = 0.0f;
+        [self startUpgradeForCraft:objectID withStartTime:startTime];
     }
+}
+
+- (void)startUpgradeForCraft:(int)objectID withStartTime:(float)startTime {
+    if (isCurrentlyProcessingUpgrade || destroyNow) {
+        return;
+    }
+    
+    switch (objectID) {
+        case kObjectCraftAntID:
+            upgradeTotalGoal = kCraftAntUpgradeTime;
+            break;
+        case kObjectCraftMothID:
+            upgradeTotalGoal = kCraftMothUpgradeTime;
+            break;
+        case kObjectCraftBeetleID:
+            upgradeTotalGoal = kCraftBeetleUpgradeTime;
+            break;
+        case kObjectCraftMonarchID:
+            upgradeTotalGoal = kCraftMonarchUpgradeTime;
+            break;
+        case kObjectCraftCamelID:
+            upgradeTotalGoal = kCraftCamelUpgradeTime;
+            break;
+        case kObjectCraftRatID:
+            upgradeTotalGoal = kCraftRatUpgradeTime;
+            break;
+        case kObjectCraftSpiderID:
+            upgradeTotalGoal = kCraftSpiderUpgradeTime;
+            break;
+        case kObjectCraftEagleID:
+            upgradeTotalGoal = kCraftEagleUpgradeTime;
+            break;
+        default:
+            upgradeTotalGoal = 0;
+            break;
+    }
+    
+    // Check brogguts
+    PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+    [profile purchaseUpgradeWithID:objectID];
+    isCurrentlyProcessingUpgrade = YES;
+    currentUpgradeObjectID = objectID;
+    currentUpgradeProgress = startTime;
 }
 
 @end

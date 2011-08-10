@@ -22,11 +22,14 @@ extern NSString* const kCraftUpgradeTexts[8];
 }
 
 @property (readonly) BOOL isCurrentlyProcessingUpgrade;
+@property (readonly) int currentUpgradeObjectID;
+@property (readonly) float currentUpgradeProgress;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)presentCraftUpgradeDialogueWithObjectID:(int)objectID;
 
+- (void)purchaseUpgradeForCraft:(int)objectID withStartTime:(float)startTime;
 - (void)startUpgradeForCraft:(int)objectID withStartTime:(float)startTime;
 
 @end

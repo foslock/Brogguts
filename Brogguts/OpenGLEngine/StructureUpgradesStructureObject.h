@@ -22,11 +22,14 @@ extern NSString* const kStructureUpgradeTexts[8];
 }
 
 @property (readonly) BOOL isCurrentlyProcessingUpgrade;
+@property (readonly) int currentUpgradeObjectID;
+@property (readonly) float currentUpgradeProgress;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 
 - (void)presentStructureUpgradeDialogueWithObjectID:(int)objectID;
 
+- (void)purchaseUpgradeForStructure:(int)objectID withStartTime:(float)startTime;
 - (void)startUpgradeForStructure:(int)objectID withStartTime:(float)startTime;
 
 

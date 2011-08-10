@@ -66,8 +66,9 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 @synthesize playerExperience;
 
 - (void)dealloc {
+    [currentUpgradesCompletedTable release];
     [currentUpgradeUnlocksTable release];
-    [currentUpgradesTable release];
+    [currentUpgradesPurchasedTable release];
     [currentObjectUnlocksTable release];
     [super dealloc];
 }
@@ -85,12 +86,16 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 		playerExperience = 0;
         isInSkirmish = NO;
         [self loadDefaultOrPreviousUnlockTable];
-        currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradesPurchasedTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         currentUpgradeUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradesCompletedTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
-            NSNumber* num = [NSNumber numberWithBool:NO];
-            [currentUpgradesTable addObject:num];
-            [currentUpgradeUnlocksTable addObject:num];
+            NSNumber* num1 = [NSNumber numberWithBool:NO];
+            NSNumber* num2 = [NSNumber numberWithBool:NO];
+            NSNumber* num3 = [NSNumber numberWithBool:NO];
+            [currentUpgradesPurchasedTable addObject:num1];
+            [currentUpgradeUnlocksTable addObject:num2];
+            [currentUpgradesCompletedTable addObject:num3];
         }
 	}
 	return self;
@@ -109,12 +114,16 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         [self loadDefaultOrPreviousUnlockTable];
 		broggutDisplayNumber = broggutCount;
 		metalDisplayNumber = metalCount;
-        currentUpgradesTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradesPurchasedTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         currentUpgradeUnlocksTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
+        currentUpgradesCompletedTable = [[NSMutableArray alloc] initWithCapacity:TOTAL_OBJECT_TYPES_COUNT];
         for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
-            NSNumber* num = [NSNumber numberWithBool:NO];
-            [currentUpgradesTable addObject:num];
-            [currentUpgradeUnlocksTable addObject:num];
+            NSNumber* num1 = [NSNumber numberWithBool:NO];
+            NSNumber* num2 = [NSNumber numberWithBool:NO];
+            NSNumber* num3 = [NSNumber numberWithBool:NO];
+            [currentUpgradesPurchasedTable addObject:num1];
+            [currentUpgradeUnlocksTable addObject:num2];
+            [currentUpgradesCompletedTable addObject:num3];
         }
 	}
 	return self;
@@ -421,7 +430,7 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
     }
 }
 
-// Upgrades // 
+// Upgrades //
 
 - (BOOL)isUpgradeUnlockedWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
@@ -433,7 +442,15 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 - (BOOL)isUpgradePurchasedWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
-        NSNumber* num = [currentUpgradesTable objectAtIndex:objectID];
+        NSNumber* num = [currentUpgradesPurchasedTable objectAtIndex:objectID];
+        return [num boolValue];
+    }
+    return NO;
+}
+
+- (BOOL)isUpgradeCompleteWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        NSNumber* num = [currentUpgradesCompletedTable objectAtIndex:objectID];
         return [num boolValue];
     }
     return NO;
@@ -448,7 +465,13 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 
 - (void)purchaseUpgradeWithID:(int)objectID {
     if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
-        [currentUpgradesTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+        [currentUpgradesPurchasedTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
+- (void)unPurchaseUpgradeWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUpgradesPurchasedTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:NO]];
     }
 }
 
@@ -457,6 +480,31 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
         [currentUpgradeUnlocksTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
     }
 }
+
+- (void)completeUpgradeWithID:(int)objectID {
+    if (objectID >= 0 && objectID < TOTAL_OBJECT_TYPES_COUNT) {
+        [currentUpgradesCompletedTable replaceObjectAtIndex:objectID withObject:[NSNumber numberWithBool:YES]];
+    }
+}
+
+- (void)setCompletedUpgradesArray:(NSArray*)upgradeInfoArray {
+    if ([upgradeInfoArray count] == [currentUpgradesCompletedTable count]) {
+        // They are both valid arrays
+        [currentUpgradesCompletedTable removeAllObjects];
+        for (int i = 0; i < [upgradeInfoArray count]; i++) {
+            [currentUpgradesCompletedTable addObject:[upgradeInfoArray objectAtIndex:i]];
+        }
+    }
+}
+
+- (NSArray*)arrayFromCompletedUpgrades {
+    NSMutableArray* array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < [currentUpgradesCompletedTable count]; i++) {
+        [array insertObject:[currentUpgradesCompletedTable objectAtIndex:i] atIndex:i];
+    }
+    return [array autorelease];
+}
+
 
 
 @end
