@@ -43,37 +43,51 @@ NSString* const kCraftUpgradeButtonText[8] = {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
             BOOL isUnlocked = NO;
+            BOOL isPurchased = NO;
             switch (i) {
                 case kCraftButtonAntID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftAntID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftAntID];
                     break;
                 case kCraftButtonMothID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftMothID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftMothID];
                     break;
                 case kCraftButtonBeetleID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftBeetleID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftBeetleID];
                     break;
                 case kCraftButtonMonarchID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftMonarchID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftMonarchID];
                     break;
                 case kCraftButtonCamelID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftCamelID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftCamelID];
                     break;
                 case kCraftButtonRatID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftRatID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftRatID];
                     break;
                 case kCraftButtonSpiderID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftSpiderID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftSpiderID];
                     break;
                 case kCraftButtonEagleID:
                     isUnlocked = [profile isUpgradeUnlockedWithID:kObjectCraftEagleID];
+                    isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftEagleID];
                     break;
                 default:
                     break;
             }
             if (isUnlocked) {
-                [button setIsDisabled:NO];
-                [button setButtonText:kCraftUpgradeButtonText[i]];
+                if (isPurchased) {
+                    [button setIsDisabled:YES];
+                    [button setButtonText:kCraftUpgradeButtonText[i]];
+                } else {
+                    [button setIsDisabled:NO];
+                    [button setButtonText:kCraftUpgradeButtonText[i]];
+                }
             } else {
                 [button setIsDisabled:YES];
                 [button setButtonText:kCraftButtonLockedText];
@@ -88,6 +102,42 @@ NSString* const kCraftUpgradeButtonText[8] = {
     [super updateSideBar];
     if ([upgradesStructure destroyNow]) {
         [myController popSideBarObject];
+    }
+    PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+    for (int i = 0; i < [buttonArray count]; i++) {
+        SideBarButton* button = [buttonArray objectAtIndex:i];
+        BOOL isPurchased = NO;
+        switch (i) {
+            case kCraftButtonAntID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftAntID];
+                break;
+            case kCraftButtonMothID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftMothID];
+                break;
+            case kCraftButtonBeetleID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftBeetleID];
+                break;
+            case kCraftButtonMonarchID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftMonarchID];
+                break;
+            case kCraftButtonCamelID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftCamelID];
+                break;
+            case kCraftButtonRatID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftRatID];
+                break;
+            case kCraftButtonSpiderID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftSpiderID];
+                break;
+            case kCraftButtonEagleID:
+                isPurchased = [profile isUpgradePurchasedWithID:kObjectCraftEagleID];
+                break;
+            default:
+                break;
+        }
+        if (isPurchased) {
+            [button setIsDisabled:YES];
+        }
     }
 }
 

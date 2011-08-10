@@ -339,6 +339,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             NSNumber* timerNumber = [AIArray objectAtIndex:kSceneAIControllerSceneTime];
             sceneTimer = [timerNumber floatValue];
             
+            NSArray* completedUpgrades = [AIArray objectAtIndex:kSceneAIControllerCompletedUpgrades];
+            [[sharedGameController currentProfile] setCompletedUpgradesArray:completedUpgrades];
+            
             // Load the dialogue objects
             NSArray* dialogueInfos = [AIArray objectAtIndex:kSceneAIControllerDialogueInfos];
             for (int i = 0; i < [dialogueInfos count]; i++) {
@@ -443,6 +446,10 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             BOOL objectIsMining = [[currentObjectInfo objectAtIndex:kSceneStorageIndexMining] boolValue];
             CGPoint objectMiningLocation = [sharedGameController getCGPointFromArray:currentObjectInfo atIndex:kSceneStorageIndexMiningLoc];
             int objectCurrentCargo = [[currentObjectInfo objectAtIndex:kSceneStorageIndexCargo] intValue];
+            NSArray* objectOtherInfo = nil;
+            if (kSceneStorageIndexOtherInfo < [currentObjectInfo count]) {
+                objectOtherInfo = [currentObjectInfo objectAtIndex:kSceneStorageIndexOtherInfo];
+            }
             
             switch (objectTypeID) {
                 case kObjectTypeStructure: {
@@ -500,6 +507,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                             [newStructure setObjectLocation:objectCurrentLocation];
                             [newStructure setCurrentHull:objectCurrentHull];
                             [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
+                            if (objectOtherInfo && !objectIsTraveling) {
+                                if ([objectOtherInfo count] != 0) {
+                                    NSArray* upgradeInfoArray = [objectOtherInfo objectAtIndex:kSceneStorageOtherInfoUpgradeInfo];
+                                    int currentUpgradeID = [[upgradeInfoArray objectAtIndex:kSceneStorageOtherInfoUpgradeInfoObjectID] intValue];
+                                    float currentUpgradeProgress = [[upgradeInfoArray objectAtIndex:kSceneStorageOtherInfoUpgradeInfoProgressTime] floatValue];
+                                    [newStructure startUpgradeForCraft:currentUpgradeID withStartTime:currentUpgradeProgress];
+                                }
+                            }
                             [newStructure release];
                             break;
                         }
@@ -512,6 +527,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                             [newStructure setCurrentHull:objectCurrentHull];
                             [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             [newStructure release];
+                            if (objectOtherInfo && !objectIsTraveling) {
+                                if ([objectOtherInfo count] != 0) {
+                                    NSArray* upgradeInfoArray = [objectOtherInfo objectAtIndex:kSceneStorageOtherInfoUpgradeInfo];
+                                    int currentUpgradeID = [[upgradeInfoArray objectAtIndex:kSceneStorageOtherInfoUpgradeInfoObjectID] intValue];
+                                    float currentUpgradeProgress = [[upgradeInfoArray objectAtIndex:kSceneStorageOtherInfoUpgradeInfoProgressTime] floatValue];
+                                    [newStructure startUpgradeForStructure:currentUpgradeID withStartTime:currentUpgradeProgress];
+                                }
+                            }
                             break;
                         }
                         case kObjectStructureTurretID: {
@@ -734,6 +757,219 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [array release];
     }
 	return self;
+}
+
+// Get a file from scene
+- (NSArray*)arrayFromScene {
+    GameController* myController = sharedGameController;
+    NSString* sceneTitle = self.sceneName;
+	int thisSceneType = self.sceneType;
+	int thisWidthCells = self.widthCells;
+	int thisHeightCells = self.heightCells;
+	int thisNumberOfSmallBrogguts = self.numberOfSmallBrogguts;
+    int currentBroggutCount = [[sharedGameController currentProfile] realBroggutCount];
+    int currentMetalCount = [[sharedGameController currentProfile] realMetalCount];
+    float currentSceneTimer = sceneTimer;
+    
+	NSMutableArray* plistArray = [[NSMutableArray alloc] init];
+	[plistArray insertObject:sceneTitle atIndex:kSceneStorageGlobalName];
+	[plistArray insertObject:[NSNumber numberWithInt:thisSceneType] atIndex:kSceneStorageGlobalSceneType];
+	[plistArray insertObject:[NSNumber numberWithInt:thisWidthCells] atIndex:kSceneStorageGlobalWidthCells];
+	[plistArray insertObject:[NSNumber numberWithInt:thisHeightCells] atIndex:kSceneStorageGlobalHeightCells];
+	[plistArray insertObject:[NSNumber numberWithInt:thisNumberOfSmallBrogguts] atIndex:kSceneStorageGlobalSmallBrogguts];
+	
+	// Save all the other crap, medium brogguts first
+	NSMutableArray* broggutArray = [[NSMutableArray alloc] initWithCapacity:thisWidthCells * thisHeightCells];
+	for (int j = 0; j < thisHeightCells; j++) {
+		for (int i = 0; i < thisWidthCells; i++) {
+			float currentX = (i * COLLISION_CELL_WIDTH) + (COLLISION_CELL_WIDTH / 2);
+			float currentY = (j * COLLISION_CELL_HEIGHT) + (COLLISION_CELL_HEIGHT / 2);
+			CGPoint currentPoint = CGPointMake(currentX, currentY);
+			int straightIndex = i + (j * thisWidthCells);
+			NSMutableArray* thisBroggutInfo = [[NSMutableArray alloc] init];
+			MediumBroggut* broggut = [[self collisionManager] broggutCellForLocation:currentPoint]; 
+			NSNumber* broggutValue = [NSNumber numberWithInt:broggut->broggutValue];
+			NSNumber* broggutAge = [NSNumber numberWithInt:broggut->broggutAge];
+			[thisBroggutInfo insertObject:broggutValue atIndex:0];
+			[thisBroggutInfo insertObject:broggutAge atIndex:1];
+			[broggutArray insertObject:thisBroggutInfo atIndex:straightIndex];
+			[thisBroggutInfo release];
+		}
+	}
+	
+	// Save structures, namely the base stations
+	NSMutableArray* finalObjectArray = [[NSMutableArray alloc] init];
+	
+	NSArray* currentObjectArray = [NSArray arrayWithArray:[self touchableObjects]];
+	for (int i = 0; i < [currentObjectArray count]; i++) {
+		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+        if ([object destroyNow]) {
+            continue;
+        }
+		if ([object isKindOfClass:[StructureObject class]]) {
+			// It is a structure, so save it!
+			NSMutableArray* thisStructureArray = [[NSMutableArray alloc] init];
+			StructureObject* thisStructure = (StructureObject*)object;
+			
+			int objectTypeID = kObjectTypeStructure;
+			int objectID = thisStructure.objectType;
+			NSArray* objectCurrentPath = [[NSArray alloc] initWithArray:[thisStructure getSavablePath]];
+			int objectAlliance = thisStructure.objectAlliance;
+			float objectRotation = thisStructure.objectRotation;
+			BOOL objectIsTraveling = thisStructure.isTraveling;
+			CGPoint objectEndLocation = thisStructure.creationEndLocation;
+			CGPoint objectCurrentLocation = thisStructure.objectLocation;
+			int objectCurrentHull = thisStructure.attributeHullCurrent;
+			BOOL objectIsControlledShip = NO;
+			BOOL objectIsMining = NO; // Since it is a structure
+			CGPoint objectMiningLocation = CGPointZero;
+			int objectCurrentCargo = 0;
+            NSMutableArray* objectOtherInfo = [NSMutableArray array];
+            
+            if (objectID == kObjectStructureRefineryID) {
+                // Add the metal not yet refined to the total metal
+                currentMetalCount += [(RefineryStructureObject*)thisStructure currentPotentialMetal];
+            }
+			
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+			[thisStructureArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+			[thisStructureArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+			[myController insertCGPoint:objectEndLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexEndLoc];
+			[myController insertCGPoint:objectCurrentLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexCurrentLoc];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+			[thisStructureArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+			[myController insertCGPoint:objectMiningLocation intoArray:thisStructureArray atIndex:kSceneStorageIndexMiningLoc];
+			[thisStructureArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
+            
+            if (objectID == kObjectStructureCraftUpgradesID) {
+                CraftUpgradesStructureObject* upgradesStruct = (CraftUpgradesStructureObject*)thisStructure;
+                if (upgradesStruct.isCurrentlyProcessingUpgrade) {
+                    NSNumber* upgradeIDNum = [NSNumber numberWithInt:upgradesStruct.currentUpgradeObjectID];
+                    NSNumber* upgradeProgressNum = [NSNumber numberWithFloat:upgradesStruct.currentUpgradeProgress];
+                    NSMutableArray* upgradeInfoArray = [NSMutableArray array];
+                    [upgradeInfoArray insertObject:upgradeIDNum atIndex:kSceneStorageOtherInfoUpgradeInfoObjectID];
+                    [upgradeInfoArray insertObject:upgradeProgressNum atIndex:kSceneStorageOtherInfoUpgradeInfoProgressTime];
+                    [objectOtherInfo insertObject:upgradeInfoArray atIndex:kSceneStorageOtherInfoUpgradeInfo];
+                }
+            }
+            if (objectID == kObjectStructureStructureUpgradesID) {
+                StructureUpgradesStructureObject* upgradesStruct = (StructureUpgradesStructureObject*)thisStructure;
+                if (upgradesStruct.isCurrentlyProcessingUpgrade) {
+                    NSNumber* upgradeIDNum = [NSNumber numberWithInt:upgradesStruct.currentUpgradeObjectID];
+                    NSNumber* upgradeProgressNum = [NSNumber numberWithFloat:upgradesStruct.currentUpgradeProgress];
+                    NSMutableArray* upgradeInfoArray = [NSMutableArray array];
+                    [upgradeInfoArray insertObject:upgradeIDNum atIndex:kSceneStorageOtherInfoUpgradeInfoObjectID];
+                    [upgradeInfoArray insertObject:upgradeProgressNum atIndex:kSceneStorageOtherInfoUpgradeInfoProgressTime];
+                    [objectOtherInfo insertObject:upgradeInfoArray atIndex:kSceneStorageOtherInfoUpgradeInfo];
+                }
+            }
+            
+            [thisStructureArray insertObject:objectOtherInfo atIndex:kSceneStorageIndexOtherInfo];
+            
+            if (objectID == kObjectStructureBaseStationID) {
+				[finalObjectArray insertObject:thisStructureArray atIndex:0];
+			} else {
+				[finalObjectArray addObject:thisStructureArray];
+			}
+            
+			[thisStructureArray release];
+			[objectCurrentPath release];
+		}
+	}
+	
+	// Save all craft next
+	for (int i = 0; i < [currentObjectArray count]; i++) {
+		TouchableObject* object = [currentObjectArray objectAtIndex:i];
+        if ([object destroyNow]) {
+            continue;
+        }
+		if ([object isKindOfClass:[CraftObject class]] && ![object isKindOfClass:[SpiderDroneObject class]]) {
+			// It is a craft (and not a drone!) so save it!
+			NSMutableArray* thisCraftArray = [[NSMutableArray alloc] init];
+			CraftObject* thisCraft = (CraftObject*)object;
+			
+			int objectTypeID = kObjectTypeCraft;
+			int objectID = thisCraft.objectType;
+			NSArray* objectCurrentPath = [[NSArray alloc] initWithArray:[thisCraft getSavablePath]];
+			int objectAlliance = thisCraft.objectAlliance;
+			float objectRotation = thisCraft.objectRotation;
+			BOOL objectIsTraveling = thisCraft.isTraveling;
+			CGPoint objectEndLocation = thisCraft.creationEndLocation;
+			CGPoint objectCurrentLocation = thisCraft.objectLocation;
+			int objectCurrentHull = thisCraft.attributeHullCurrent;
+			BOOL objectIsControlledShip = thisCraft.isBeingControlled;
+			BOOL objectIsMining = NO;
+			CGPoint objectMiningLocation = [thisCraft miningLocation];
+			int objectCurrentCargo = [thisCraft attributePlayerCurrentCargo];
+            NSArray* objectOtherInfo = [NSArray array];
+			if (thisCraft.movingAIState == kMovingAIStateMining) {
+				objectIsMining = YES;
+			}
+            
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectTypeID] atIndex:kSceneStorageIndexTypeID];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectID] atIndex:kSceneStorageIndexID];
+			[thisCraftArray insertObject:objectCurrentPath atIndex:kSceneStorageIndexPath];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectAlliance] atIndex:kSceneStorageIndexAlliance];
+			[thisCraftArray insertObject:[NSNumber numberWithFloat:objectRotation] atIndex:kSceneStorageIndexRotation];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsTraveling] atIndex:kSceneStorageIndexTraveling];
+			[myController insertCGPoint:objectEndLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexEndLoc];
+			[myController insertCGPoint:objectCurrentLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexCurrentLoc];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentHull] atIndex:kSceneStorageIndexHull];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsControlledShip] atIndex:kSceneStorageIndexControlledShip];
+			[thisCraftArray insertObject:[NSNumber numberWithBool:objectIsMining] atIndex:kSceneStorageIndexMining];
+			[myController insertCGPoint:objectMiningLocation intoArray:thisCraftArray atIndex:kSceneStorageIndexMiningLoc];
+			[thisCraftArray insertObject:[NSNumber numberWithInt:objectCurrentCargo] atIndex:kSceneStorageIndexCargo];
+			[thisCraftArray insertObject:objectOtherInfo atIndex:kSceneStorageIndexOtherInfo];
+			[finalObjectArray addObject:thisCraftArray];
+			[thisCraftArray release];
+			[objectCurrentPath release];
+		}
+	}
+    
+    // If this is a campaign, recreate the spawners
+    NSMutableArray* spawnerInfos = [NSMutableArray array];
+    if (thisSceneType == kSceneTypeCampaign) {
+        NSArray* spawners = self.sceneSpawners;
+        for (int i = 0; i < [spawners count]; i++) {
+            SpawnerObject* spawner = [spawners objectAtIndex:i];
+            NSArray* spawnerInfo = [spawner infoArrayFromSpawner];
+            [spawnerInfos addObject:spawnerInfo];
+        }
+    }
+    
+    // If this is a campaign, recreate the spawners
+    NSMutableArray* dialogueInfos = [NSMutableArray array];
+    NSArray* dialogues = self.sceneDialogues;
+    for (int i = 0; i < [dialogues count]; i++) {
+        DialogueObject* dialogue = [dialogues objectAtIndex:i];
+        NSArray* dialogueInfo = [dialogue infoArrayFromDialogue];
+        [dialogueInfos addObject:dialogueInfo];
+    }
+    
+    NSArray* completedUpgrades = [[sharedGameController currentProfile] arrayFromCompletedUpgrades];
+    
+    // After the metal has been finalized, save the brogguts and metal in the plist
+    NSMutableArray* tempArray = [[NSMutableArray alloc] init]; // AI Controller data array
+    [tempArray insertObject:spawnerInfos atIndex:kSceneAIControllerSpawnerInfos];
+    [tempArray insertObject:dialogueInfos atIndex:kSceneAIControllerDialogueInfos];
+    [tempArray insertObject:[NSNumber numberWithFloat:currentSceneTimer] atIndex:kSceneAIControllerSceneTime];
+    [tempArray insertObject:completedUpgrades atIndex:kSceneAIControllerCompletedUpgrades];
+    [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
+    [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
+    [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
+    [tempArray release];
+    
+    [plistArray insertObject:broggutArray atIndex:kSceneStorageGlobalMediumBroggutArray];
+	[broggutArray release];
+    
+	[plistArray insertObject:finalObjectArray atIndex:kSceneStorageGlobalObjectArray];
+    [finalObjectArray release];
+    
+    return [plistArray autorelease];
 }
 
 - (void)dealloc {

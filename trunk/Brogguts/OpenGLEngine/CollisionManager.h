@@ -91,8 +91,6 @@ typedef struct Path_Node_Queue {
     QuadTree* collisionQuadTree;            // Quad tree that holds all radial checking objects
     
 	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
-    NSMutableArray* radialObjectsQueue;     // Queue of objects that need to be checked for radial effects
-    int startingRadialIndex;                // Index of object that should be added to the radial queue next
 	
 	ObjectIDArray* cellHashTable;		// Table that contains an array for each cell on the screen, index is the location "hashed"
 										// and the contents is an array of UIDs for each object in that cell

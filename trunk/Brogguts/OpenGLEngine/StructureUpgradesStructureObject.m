@@ -29,7 +29,7 @@ NSString* const kStructureUpgradeTexts[8] = {
 };
 
 @implementation StructureUpgradesStructureObject
-@synthesize isCurrentlyProcessingUpgrade;
+@synthesize isCurrentlyProcessingUpgrade, currentUpgradeProgress, currentUpgradeObjectID;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureStructureUpgradesID withLocation:location isTraveling:traveling];
@@ -59,6 +59,7 @@ NSString* const kStructureUpgradeTexts[8] = {
             currentUpgradeProgress += aDelta;
         } else { // Upgrade is done!
             // Set the upgrade to active in the profile
+            [[[GameController sharedGameController] currentProfile] completeUpgradeWithID:currentUpgradeObjectID];
             isCurrentlyProcessingUpgrade = NO;
             currentUpgradeObjectID = -1;
             currentUpgradeProgress = 0.0f;
@@ -144,8 +145,8 @@ NSString* const kStructureUpgradeTexts[8] = {
         progressCircle.x = objectLocation.x;
         progressCircle.y = objectLocation.y;
         progressCircle.radius = [self boundingCircle].radius + 8.0f;
-        int totalSegments = upgradeTotalGoal;
-        int filledSegments = currentUpgradeProgress;
+        int totalSegments = upgradeTotalGoal * 2;
+        int filledSegments = currentUpgradeProgress * 2;
         glLineWidth(2.0f);
         drawPartialDashedCircle(progressCircle, filledSegments, totalSegments, Color4fOnes, Color4fBlack, scroll);
         disablePrimitiveDraw();
@@ -153,6 +154,10 @@ NSString* const kStructureUpgradeTexts[8] = {
 }
 
 - (void)objectWasDestroyed {
+    if (isCurrentlyProcessingUpgrade) {
+        PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+        [profile unPurchaseUpgradeWithID:currentUpgradeObjectID];
+    }
     isCurrentlyProcessingUpgrade = NO;
     currentUpgradeObjectID = -1;
     currentUpgradeProgress = 0.0f;
@@ -160,7 +165,7 @@ NSString* const kStructureUpgradeTexts[8] = {
     [super objectWasDestroyed];
 }
 
-- (void)startUpgradeForStructure:(int)objectID withStartTime:(float)startTime {
+- (void)purchaseUpgradeForStructure:(int)objectID withStartTime:(float)startTime {
     if (isCurrentlyProcessingUpgrade || destroyNow) {
         return;
     }
@@ -169,35 +174,27 @@ NSString* const kStructureUpgradeTexts[8] = {
     
     switch (objectID) {
         case kObjectStructureBaseStationID:
-            upgradeTotalGoal = kStructureBaseStationUpgradeTime;
             upgradeCost = kStructureBaseStationUpgradeCost;
             break;
         case kObjectStructureBlockID:
-            upgradeTotalGoal = kStructureBlockUpgradeTime;
             upgradeCost = kStructureBlockUpgradeCost;
             break;
         case kObjectStructureRefineryID:
-            upgradeTotalGoal = kStructureRefineryUpgradeTime;
             upgradeCost = kStructureRefineryUpgradeCost;
             break;
         case kObjectStructureCraftUpgradesID:
-            upgradeTotalGoal = kStructureCraftUpgradesUpgradeTime;
             upgradeCost = kStructureCraftUpgradesUpgradeCost;
             break;
         case kObjectStructureStructureUpgradesID:
-            upgradeTotalGoal = kStructureStructureUpgradesUpgradeTime;
             upgradeCost = kStructureStructureUpgradesUpgradeCost;
             break;
         case kObjectStructureTurretID:
-            upgradeTotalGoal = kStructureTurretUpgradeTime;
             upgradeCost = kStructureTurretUpgradeCost;
             break;
         case kObjectStructureFixerID:
-            upgradeTotalGoal = kStructureFixerUpgradeTime;
             upgradeCost = kStructureFixerUpgradeCost;
             break;
         case kObjectStructureRadarID:
-            upgradeTotalGoal = kStructureRadarUpgradeTime;
             upgradeCost = kStructureRadarUpgradeCost;
             break;
         default:
@@ -223,10 +220,52 @@ NSString* const kStructureUpgradeTexts[8] = {
         [[self currentScene] addTextObject:obj];
         [obj release];
         
-        isCurrentlyProcessingUpgrade = YES;
-        currentUpgradeObjectID = objectID;
-        currentUpgradeProgress = 0.0f;
+        [self startUpgradeForStructure:objectID withStartTime:startTime];
     }
+    
+}
+
+- (void)startUpgradeForStructure:(int)objectID withStartTime:(float)startTime {
+    if (isCurrentlyProcessingUpgrade || destroyNow) {
+        return;
+    }
+    
+    switch (objectID) {
+        case kObjectStructureBaseStationID:
+            upgradeTotalGoal = kStructureBaseStationUpgradeTime;
+            break;
+        case kObjectStructureBlockID:
+            upgradeTotalGoal = kStructureBlockUpgradeTime;
+            break;
+        case kObjectStructureRefineryID:
+            upgradeTotalGoal = kStructureRefineryUpgradeTime;
+            break;
+        case kObjectStructureCraftUpgradesID:
+            upgradeTotalGoal = kStructureCraftUpgradesUpgradeTime;
+            break;
+        case kObjectStructureStructureUpgradesID:
+            upgradeTotalGoal = kStructureStructureUpgradesUpgradeTime;
+            break;
+        case kObjectStructureTurretID:
+            upgradeTotalGoal = kStructureTurretUpgradeTime;
+            break;
+        case kObjectStructureFixerID:
+            upgradeTotalGoal = kStructureFixerUpgradeTime;
+            break;
+        case kObjectStructureRadarID:
+            upgradeTotalGoal = kStructureRadarUpgradeTime;
+            break;
+        default:
+            upgradeTotalGoal = 0;
+            break;
+    }
+    
+    // Check brogguts
+    PlayerProfile* profile = [[GameController sharedGameController] currentProfile];    
+    [profile purchaseUpgradeWithID:objectID];
+    isCurrentlyProcessingUpgrade = YES;
+    currentUpgradeObjectID = objectID;
+    currentUpgradeProgress = startTime;
 }
 
 @end

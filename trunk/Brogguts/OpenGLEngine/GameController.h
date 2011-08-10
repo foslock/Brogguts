@@ -35,11 +35,12 @@ enum kSceneAIControllerIndexes {
     kSceneAIControllerSpawnerInfos,
     kSceneAIControllerDialogueInfos,
     kSceneAIControllerSceneTime,
+    kSceneAIControllerCompletedUpgrades,
     kSceneAIControllerBrogguts,
-    kSceneAIControllerMetal,    
+    kSceneAIControllerMetal,
 };
 
-enum kSceneStorageIndexs {
+enum kSceneStorageIndexes {
 	kSceneStorageIndexTypeID, // - object type ID
 	kSceneStorageIndexID, // - object ID
 	kSceneStorageIndexPath, // - Current path
@@ -53,6 +54,16 @@ enum kSceneStorageIndexs {
 	kSceneStorageIndexMining, // - if mining
 	kSceneStorageIndexMiningLoc, // - mining location
 	kSceneStorageIndexCargo, // - broggut cargo
+    kSceneStorageIndexOtherInfo, // - other info (used to store things in progress)
+};
+
+enum kSceneStorageOtherInfoIndexes {
+    kSceneStorageOtherInfoUpgradeInfo, // - Upgrade-in-progress info
+};
+
+enum kSceneStorageOtherInfoUpgradeInfoIndexes {
+    kSceneStorageOtherInfoUpgradeInfoObjectID, // ID of upgrade being researched
+    kSceneStorageOtherInfoUpgradeInfoProgressTime, // Progress of upgrade
 };
 
 extern NSString* kBaseCampFileName;

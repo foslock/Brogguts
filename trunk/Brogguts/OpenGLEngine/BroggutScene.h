@@ -311,6 +311,9 @@ enum kProcessFrameOffset {
 // Get a scene from a file
 - (id)initWithFileName:(NSString*)filename wasLoaded:(BOOL)loaded;
 
+// Get a file from scene
+- (NSArray*)arrayFromScene;
+
 // Set default values, etc.
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName;
 
