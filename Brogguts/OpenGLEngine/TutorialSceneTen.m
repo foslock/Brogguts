@@ -33,7 +33,7 @@
         mothTrigger.numberOfObjectsNeeded = 16;
         mothTrigger.objectIDNeeded = kObjectCraftMothID;
         mothTrigger.objectImage.scale = Scale2fMake(3.5f, 3.5f);
-        [self addTouchableObject:mothTrigger withColliding:NO];        
+        [self addTouchableObject:mothTrigger withColliding:YES];        
         NotificationObject* notiObj = [[NotificationObject alloc] initWithLocation:mothTrigger.objectLocation withDuration:-1.0f];
         [notiObj attachToObject:mothTrigger];
         [self addCollidableObject:notiObj];

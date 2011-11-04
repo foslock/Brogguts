@@ -19,6 +19,7 @@ extern "C" {
     typedef struct _NodeObject {
         TreeNode* parent;
         int arrayIndex;
+        int objectID;
         int objectRadius;
         int effectRadius;
         int xPos;

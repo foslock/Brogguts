@@ -50,7 +50,7 @@
 }
 
 - (IBAction)popSkirmishController {
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark - View lifecycle

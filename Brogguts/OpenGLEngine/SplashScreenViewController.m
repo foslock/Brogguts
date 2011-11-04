@@ -8,6 +8,7 @@
 
 #import "SplashScreenViewController.h"
 #import "SoundSingleton.h"
+#import "OpenGLEngineAppDelegate.h"
 
 #define DEFAULT_FADE_OUT_TIME 0.5f
 
@@ -83,7 +84,11 @@
 }
 
 - (void)endSplashSequence {
-    [self.parentViewController dismissModalViewControllerAnimated:NO];
+    OpenGLEngineAppDelegate* delegate = (OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([delegate mainMenuController]) {
+        [[delegate window] addSubview:[delegate mainMenuController].view];
+    }
+    [self.view removeFromSuperview];
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:YES forKey:@"hasWatchedIntro"];
     [defaults synchronize];
@@ -115,7 +120,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     BOOL canSkip = [defaults boolForKey:@"hasWatchedIntro"];
-    if (canSkip) {
+    if (canSkip && !didSkipIntro) {
         didSkipIntro = YES;
         [self endSplashSequence];
     }

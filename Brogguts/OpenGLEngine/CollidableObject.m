@@ -25,6 +25,7 @@ static int globalUniqueID = 0;
 @synthesize isRenderedInOverview, hasBeenCheckedForCollisions;
 @synthesize objectAlliance, objectType;
 @synthesize staticObject, isRemoteObject;
+@synthesize thisObjectNode;
 
 - (void)dealloc {
 	if (objectImage)
@@ -55,6 +56,7 @@ static int globalUniqueID = 0;
 		staticObject = NO;
         isRemoteObject = NO;
         remoteLocation = CGPointZero;
+        thisObjectNode = NULL;
 		
 		// Set bounding information
 		boundingCircle.x = location.x;

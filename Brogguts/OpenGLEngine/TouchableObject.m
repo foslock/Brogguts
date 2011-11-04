@@ -18,7 +18,7 @@
 #import "ImageRenderSingleton.h"
 
 @implementation TouchableObject
-@synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad, touchableBounds;
+@synthesize isCheckedForRadialEffect, isTouchable, isTraveling, isCurrentlyTouched, isPartOfASquad;
 @synthesize closestEnemyObject;
 @synthesize movingAIState, attackingAIState;
 @synthesize creationEndLocation;

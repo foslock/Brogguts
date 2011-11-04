@@ -86,10 +86,7 @@ typedef struct Path_Node_Queue {
 	NSMutableArray* objectTableValues;	// This array is kept so enumeration is easy through the dictionary, updated whenever an object
 										// is added to the dictionary.
 	
-    NodeObject** radialObjectsInTree;       // Array of the objects that have been created for the quadtree
-    int currentRadialObjectCount;           // Count of objects in array
     QuadTree* collisionQuadTree;            // Quad tree that holds all radial checking objects
-    
 	NSMutableArray* radialAffectedObjects;	// Array of structures that should be checked for objects in their radius
 	
 	ObjectIDArray* cellHashTable;		// Table that contains an array for each cell on the screen, index is the location "hashed"

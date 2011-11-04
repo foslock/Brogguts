@@ -129,7 +129,7 @@
 	
 	// Rotate the OpenGL model view to the right 90 degrees so that everything is rendered in landscape
 	// mode
-	UIInterfaceOrientation orientation = [[UIDevice currentDevice] orientation];
+	UIInterfaceOrientation orientation = (UIInterfaceOrientation)[[UIDevice currentDevice] orientation];
 	if (orientation == UIInterfaceOrientationLandscapeRight) {
 		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
 		glRotatef(-90, 0, 0, 1);
