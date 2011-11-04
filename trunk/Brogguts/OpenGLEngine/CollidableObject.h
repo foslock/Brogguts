@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "QuadTree.h"
 
 #define BOUNDING_BOX_X_PADDING 10
 #define BOUNDING_BOX_Y_PADDING 10
@@ -43,6 +44,9 @@
 	
 	// Bounding Circle info
 	Circle boundingCircle;
+    
+    // Used for linking collisions
+    NodeObject* thisObjectNode;
 }
 
 @property (readonly) Image* objectImage;
@@ -67,6 +71,7 @@
 @property (nonatomic, assign) int objectAlliance;
 @property (nonatomic, assign) Circle boundingCircle;
 @property (nonatomic, assign) float boundingCircleRadius;
+@property (nonatomic, assign) NodeObject* thisObjectNode;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 

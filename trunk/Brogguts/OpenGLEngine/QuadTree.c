@@ -232,6 +232,7 @@ NodeObject* QuadTreeCreateNode() {
     newNode->objectRadius = 0;
     newNode->effectRadius = 0;
     newNode->arrayIndex = -1;
+    newNode->objectID = -1;
     return newNode;
 }
 

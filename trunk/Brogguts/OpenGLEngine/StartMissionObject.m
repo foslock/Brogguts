@@ -36,6 +36,7 @@
                                        START_MISSION_BUTTON_WIDTH,
                                        START_MISSION_BUTTON_HEIGHT);
         background = [[TiledButtonObject alloc] initWithRect:rect];
+        [background setColor:Color4fMake(0.8f, 0.8f, 0.8f, 1.0f)];
         [background setIsPushable:NO];
         menuButton = [[TiledButtonObject alloc] initWithRect:buttonRect];
         CGRect confirmRect = CGRectOffset(buttonRect, START_MISSION_BACKGROUND_WIDTH - START_MISSION_BUTTON_WIDTH - (START_MISSION_BUTTON_INSET * 2), 0);

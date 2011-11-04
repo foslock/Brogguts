@@ -24,7 +24,6 @@
 	BOOL isTouchable;
 	BOOL isCurrentlyTouched;
 	BOOL isCurrentlyHoveredOver; // Private, true if a touch has entered and NOT left its bounding circle yet
-	Circle touchableBounds;
 	
 	// Selection circle blinking vars
 	BOOL isBlinkingSelectionCircle;
@@ -62,13 +61,13 @@
 @property (nonatomic, assign) BOOL isTouchable;
 @property (nonatomic, assign) BOOL isTraveling;
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
-@property (nonatomic, assign) Circle touchableBounds;
 @property (nonatomic, assign) BOOL isCheckedForRadialEffect;
 @property (nonatomic, assign) BOOL isDrawingEffectRadius;
 @property (nonatomic, assign) CGPoint creationEndLocation;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 
+- (Circle)touchableBounds;
 - (Circle)effectRadiusCircle;
 - (void)objectEnteredEffectRadius:(TouchableObject*)other;
 

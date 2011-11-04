@@ -101,10 +101,8 @@
     sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
     
     mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
-    [window addSubview:mainMenuController.view];
-    
     SplashScreenViewController* splash = [[SplashScreenViewController alloc] initWithNibName:@"SplashScreenViewController" bundle:nil];
-    [mainMenuController presentModalViewController:splash animated:NO];
+    [window addSubview:splash.view];
     [splash release];
     return YES;
 }

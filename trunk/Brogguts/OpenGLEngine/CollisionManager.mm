@@ -46,10 +46,6 @@
     
     // Delete Quad Tree
     QuadTreeDestroy(collisionQuadTree);
-    
-    if (radialObjectsInTree) {
-        free(radialObjectsInTree);
-    }
 	
 	// Free path node array and such
 	if (pathNodeArray) {
@@ -96,8 +92,6 @@
 		objectTable = [[NSMutableDictionary alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		objectTableValues = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
 		bufferNearbyObjects = [[NSMutableArray alloc] initWithCapacity:INITIAL_TABLE_CAPACITY];
-        radialObjectsInTree = (NodeObject**)malloc(RADIAL_EFFECT_MAX_COUNT_QUADTREE * sizeof((*radialObjectsInTree)));
-        currentRadialObjectCount = 0;
         
         if (width > height) {
             int intValue = ceilf(log2f(COLLISION_CELL_WIDTH * width));
@@ -454,24 +448,29 @@
 #pragma mark Radial Affected Objects
 
 - (void)addRadialAffectedObject:(TouchableObject*)obj {
-	[radialAffectedObjects addObject:obj];
     if (collisionQuadTree) {
-        NodeObject* newNode = QuadTreeCreateNode();
-        newNode->arrayIndex = [radialAffectedObjects indexOfObject:obj];
-        newNode->xPos = obj.objectLocation.x;
-        newNode->yPos = obj.objectLocation.y;
-        newNode->objectRadius = [obj boundingCircle].radius;
-        newNode->effectRadius = [obj effectRadiusCircle].radius;
-        radialObjectsInTree[currentRadialObjectCount++] = newNode;
-        QuadTreeInsertObject(collisionQuadTree, newNode);
+        if (obj.thisObjectNode == NULL) {
+            [radialAffectedObjects addObject:obj];
+            NodeObject* newNode = QuadTreeCreateNode();
+            obj.thisObjectNode = newNode;
+            newNode->arrayIndex = [radialAffectedObjects indexOfObject:obj];
+            newNode->xPos = obj.objectLocation.x;
+            newNode->yPos = obj.objectLocation.y;
+            newNode->objectRadius = [obj boundingCircle].radius;
+            newNode->effectRadius = [obj effectRadiusCircle].radius;
+            newNode->objectID = [obj uniqueObjectID];
+            QuadTreeInsertObject(collisionQuadTree, newNode);
+        }
     }
 }
 
 - (void)removeRadialAffectedObject:(TouchableObject*)obj {
-	[radialAffectedObjects removeObject:obj];
     if (collisionQuadTree) {
-        NodeObject* node = radialObjectsInTree[--currentRadialObjectCount];
-        QuadTreeDeleteObject(collisionQuadTree, node);
+        if (obj.thisObjectNode) {
+            QuadTreeDeleteObject(collisionQuadTree, obj.thisObjectNode);
+            obj.thisObjectNode = NULL;
+            [radialAffectedObjects removeObject:obj];
+        }
     }
 }
 
@@ -479,18 +478,22 @@
     // Quad Tree collision
     if (collisionQuadTree) {
         static NodeObject* collisionArray[RADIAL_EFFECT_MAX_COUNT_QUADTREE];
+        int currentRadialObjectCount = [radialAffectedObjects count];
         
         for (int i = 0; i < currentRadialObjectCount; i++) { // Update all the stuff
-            NodeObject* obj = radialObjectsInTree[i];
-            TouchableObject* tobj = [radialAffectedObjects objectAtIndex:obj->arrayIndex];
+            TouchableObject* tobj = [radialAffectedObjects objectAtIndex:i];
+            NodeObject* obj = tobj.thisObjectNode;
+            obj->arrayIndex = i;
             obj->xPos = tobj.objectLocation.x;
             obj->yPos = tobj.objectLocation.y;
-            obj->objectRadius = tobj.effectRadiusCircle.radius;
+            obj->objectRadius = tobj.touchableBounds.radius;
+            obj->effectRadius = tobj.effectRadiusCircle.radius;
             QuadTreeUpdateObject(collisionQuadTree, obj);
         }
         
         for (int i = 0; i < currentRadialObjectCount; i++) { // Go through each element and check collisions (i is array index)
-            NodeObject* obj = radialObjectsInTree[i];
+            TouchableObject* tobj = [radialAffectedObjects objectAtIndex:i];
+            NodeObject* obj = tobj.thisObjectNode;
             int effectRadius = obj->effectRadius;
             QuadRect thisRect = QuadRectMake(obj->xPos - effectRadius, obj->yPos - effectRadius, effectRadius, effectRadius);
             int potentialCount = QuadTreeQuery(collisionQuadTree, collisionArray, RADIAL_EFFECT_MAX_COUNT_QUADTREE, thisRect);

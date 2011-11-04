@@ -69,7 +69,13 @@
 }
 
 - (IBAction)startTutorialLevels {
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:kTutorialSceneFileNames[9] sceneType:kSceneTypeTutorial withIndex:9 isNew:YES isLoading:NO];
+    int beginningTutoralIndex = 0;
+    [[GameController sharedGameController]
+     fadeOutToSceneWithFilename:kTutorialSceneFileNames[beginningTutoralIndex]
+     sceneType:kSceneTypeTutorial
+     withIndex:beginningTutoralIndex
+     isNew:YES
+     isLoading:NO];
 }
 
 - (IBAction)startCampaignLevels {
@@ -135,11 +141,14 @@
 }
 
 - (IBAction)loadSkirmishViewController {
-    MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
-    [mapchoice setOnlineMatch:YES];
-    mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentModalViewController:mapchoice animated:YES];
-    [mapchoice release];
+    // SKIRMISHES ARE COMING SOON!
+    /*
+     MapChoiceController* mapchoice = [[MapChoiceController alloc] init];
+     [mapchoice setOnlineMatch:YES];
+     mapchoice.modalPresentationStyle = UIModalPresentationFormSheet;
+     [self presentModalViewController:mapchoice animated:YES];
+     [mapchoice release];
+     */
 }
 
 - (IBAction)spaceYearButtonPressed {
