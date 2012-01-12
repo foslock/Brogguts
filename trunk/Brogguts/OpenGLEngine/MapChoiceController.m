@@ -244,7 +244,7 @@ enum SectionNames {
         }
             break;
         case kSectionExitButton: {
-            [self dismissModalViewControllerAnimated:YES];
+            [self.presentingViewController dismissModalViewControllerAnimated:YES];
         }
             break;
         default:

@@ -28,6 +28,7 @@
         [startObject setMissionTextThree:@"- Destroy all enemy craft in all four waves"];
         
         if (!loaded) {
+            
             SpawnerObject* spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:0];
             [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:2];
             [spawnerOne addObjectWithID:kObjectCraftAntID withCount:3];

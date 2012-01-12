@@ -35,6 +35,11 @@
     UILabel* broggutCount;
     UILabel* spaceYearCount;
     
+    BOOL hasStartedTutorial;
+    BOOL isShowingRecommendation;
+    UIView* fadeCoverView;
+    UIImageView* recommendationView;
+    
     UIImageView* backgroundOne;
     UIImageView* backgroundTwo;
     UIImageView* backgroundThree;
@@ -64,6 +69,7 @@
 @property (assign) IBOutlet UIButton* spaceYearButton;
 @property (assign) IBOutlet UILabel* broggutCount;
 @property (assign) IBOutlet UILabel* spaceYearCount;
+@property (assign) IBOutlet UIImageView* recommendationView;
 
 - (void)animateBackgrounds;
 - (void)animateLetters;

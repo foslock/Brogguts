@@ -26,6 +26,20 @@
         [startObject setMissionTextThree:[NSString stringWithFormat:@"- Survive the second wave at %i minutes",(int)CAMPAIGN_SEVEN_WAVE_TIME]];
         [startObject setMissionTextFour:@"- Destroy all enemy craft in the wave"];
         if (!loaded) {
+            DialogueObject* dia1 = [[DialogueObject alloc] init];
+            [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueText:@"The higher ups at the company have decided after so many successful defensive missions that you are the perfect man for this very special job. And old reclaimable colony is sitting in empty space, having completely mined all of its surrounding brogguts."];
+            [sceneDialogues addObject:dia1];
+            [dia1 release];
+            
+            DialogueObject* dia2 = [[DialogueObject alloc] init];
+            [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
+            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueText:@"There is a very important, and very valuable, piece of data aboard that base station. You may use all the remaining brogguts to build a defense to hold out against an incoming invasion."];
+            [sceneDialogues addObject:dia2];
+            [dia2 release];
+            
             SpawnerObject* spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, 0.0f) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
             [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:3];
             [spawnerOne pauseSpawnerForDuration:(CAMPAIGN_SEVEN_WAVE_TIME * 60.0f) + 1.0f];

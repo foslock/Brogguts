@@ -39,12 +39,24 @@
 @synthesize infoButton;
 @synthesize tutorialButton, broggutCountButton, spaceYearButton;
 @synthesize broggutCount, spaceYearCount;
+@synthesize recommendationView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        fadeCoverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kPadScreenLandscapeWidth, kPadScreenLandscapeHeight)];
+        [fadeCoverView setUserInteractionEnabled:YES];
+        [fadeCoverView setExclusiveTouch:YES];
+        [fadeCoverView setAlpha:0.0f];
+        [fadeCoverView setBackgroundColor:[UIColor blackColor]];
+        hasStartedTutorial = NO;
+        isShowingRecommendation = NO;
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults boolForKey:@"hasStartedTutorial"]) {
+            hasStartedTutorial = YES;
+        }
     }
     return self;
 }
@@ -53,6 +65,7 @@
 {
     [[SoundSingleton sharedSoundSingleton] removeSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
     [starsArray release];
+    [fadeCoverView release];
     [super dealloc];
 }
 
@@ -69,7 +82,13 @@
 }
 
 - (IBAction)startTutorialLevels {
-    int beginningTutoralIndex = 0;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:YES forKey:@"hasStartedTutorial"];
+    [defaults synchronize];
+    hasStartedTutorial = YES;
+    int beginningTutoralIndex = 7; // 0 is default
+    [recommendationView setAlpha:0.0f];
+    [fadeCoverView setAlpha:0.0f];
     [[GameController sharedGameController]
      fadeOutToSceneWithFilename:kTutorialSceneFileNames[beginningTutoralIndex]
      sceneType:kSceneTypeTutorial
@@ -79,16 +98,27 @@
 }
 
 - (IBAction)startCampaignLevels {
-    NSString* path = [[GameController sharedGameController] documentsPathWithFilename:kSavedCampaignFileName];
-    NSArray* savedArray = [NSArray arrayWithContentsOfFile:path];
-    int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
-    if ([savedArray count] != 0 || playerExperience != 0) {
-        SavedGameChoiceController* controller = [[SavedGameChoiceController alloc] init];
-        controller.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentModalViewController:controller animated:YES];
-        [controller release];
+    if (hasStartedTutorial) {
+        NSString* path = [[GameController sharedGameController] documentsPathWithFilename:kSavedCampaignFileName];
+        NSArray* savedArray = [NSArray arrayWithContentsOfFile:path];
+        int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
+        if ([savedArray count] != 0 || playerExperience != 0) {
+            SavedGameChoiceController* controller = [[SavedGameChoiceController alloc] init];
+            controller.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentModalViewController:controller animated:YES];
+            [controller release];
+        } else {
+            [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
+        }
     } else {
-        [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
+        // Hasn't started tutorial yet
+        if (!isShowingRecommendation) {
+            isShowingRecommendation = YES;
+            [UIView animateWithDuration:1.0f animations:^{
+                [recommendationView setAlpha:1.0f];
+                [fadeCoverView setAlpha:0.75f];
+            }];
+        }
     }
 }
 
@@ -203,12 +233,23 @@
     }];
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    if (isShowingRecommendation) {
+        isShowingRecommendation = NO;
+        [UIView animateWithDuration:1.0f animations:^{
+            [recommendationView setAlpha:0.0f];
+            [fadeCoverView setAlpha:0.0f];
+        }];
+    }
+}
+
 - (void)updateCountLabels {
     // Update the space year and broggut count labels
     int spaceYear = [[[GameController sharedGameController] currentProfile] playerSpaceYear];
     int brogguts = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
     [broggutCount setText:[NSString stringWithFormat:@"Collected Brogguts: %i", brogguts]];
-    [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i A.C.", spaceYear]];
+    [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i P.P.", spaceYear]];
     [self reportScore:brogguts forCategory:@"brogguts_leaderboard"];
     [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:brogguts];
 }
@@ -218,6 +259,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.view addSubview:fadeCoverView];
     starsArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < MAIN_MENU_STAR_COUNT; i++) {
         NSString* path = [[NSBundle mainBundle] pathForResource:@"defaultTexture" ofType:@"png"];
@@ -229,6 +271,7 @@
         [tempStar setTransform:CGAffineTransformMakeScale(randomScale, randomScale)];
         [tempStar setCenter:CGPointMake(randomX, randomY)];
         [self.view addSubview:tempStar];
+        [self.view sendSubviewToBack:tempStar];
         [starsArray addObject:tempStar];
         [image release];
         [tempStar release];
@@ -268,6 +311,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [self.view bringSubviewToFront:fadeCoverView];
+    [self.view bringSubviewToFront:recommendationView];
+    [self.view bringSubviewToFront:tutorialButton];
+    [recommendationView setAlpha:0.0f];
+    [fadeCoverView setAlpha:0.0f];
+    
     [[GameController sharedGameController] savePlayerProfile];
     
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
@@ -332,6 +382,12 @@
         //    [self animateLetters];
     }];
     [self updateCountLabels];
+    
+    // Play menu background music
+    if (![[GameController sharedGameController] currentScene]) {
+        [[SoundSingleton sharedSoundSingleton] stopMusic];
+        [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

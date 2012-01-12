@@ -372,7 +372,7 @@
 	int cellsWide, cellsHigh;
 	cellsWide = broggutArray->bWidth;
 	cellsHigh = broggutArray->bHeight;
-	enablePrimitiveDraw();
+	// enablePrimitiveDraw();
 	for (int j = 0; j < cellsHigh; j++) {
 		for (int i = 0; i < cellsWide; i++) {
 			int straightIndex = i + (j * cellsWide);
@@ -402,7 +402,7 @@
 			}
 		}
 	}
-	disablePrimitiveDraw();
+	// disablePrimitiveDraw();
 }
 
 - (void)drawValidityRectForLocation:(CGPoint)location forMining:(BOOL)forMining {
@@ -474,10 +474,8 @@
     }
 }
 
-- (void)processAllEffectRadii {
-    // Quad Tree collision
+- (void)updateAllEffectRadii {
     if (collisionQuadTree) {
-        static NodeObject* collisionArray[RADIAL_EFFECT_MAX_COUNT_QUADTREE];
         int currentRadialObjectCount = [radialAffectedObjects count];
         
         for (int i = 0; i < currentRadialObjectCount; i++) { // Update all the stuff
@@ -490,12 +488,20 @@
             obj->effectRadius = tobj.effectRadiusCircle.radius;
             QuadTreeUpdateObject(collisionQuadTree, obj);
         }
+    }
+}
+
+- (void)processAllEffectRadii {
+    // Quad Tree collision
+    if (collisionQuadTree) {
+        static NodeObject* collisionArray[RADIAL_EFFECT_MAX_COUNT_QUADTREE];
+        int currentRadialObjectCount = [radialAffectedObjects count];
         
         for (int i = 0; i < currentRadialObjectCount; i++) { // Go through each element and check collisions (i is array index)
             TouchableObject* tobj = [radialAffectedObjects objectAtIndex:i];
             NodeObject* obj = tobj.thisObjectNode;
             int effectRadius = obj->effectRadius;
-            QuadRect thisRect = QuadRectMake(obj->xPos - effectRadius, obj->yPos - effectRadius, effectRadius, effectRadius);
+            QuadRect thisRect = QuadRectMake(obj->xPos - effectRadius, obj->yPos - effectRadius, effectRadius * 2, effectRadius * 2);
             int potentialCount = QuadTreeQuery(collisionQuadTree, collisionArray, RADIAL_EFFECT_MAX_COUNT_QUADTREE, thisRect);
             Circle thisCircle;
             thisCircle.x = obj->xPos;
@@ -516,6 +522,24 @@
             }
         }
     }
+}
+
+- (NSArray*)getArrayOfRadiiObjectsInRect:(CGRect)rect {
+    if (collisionQuadTree) {
+        NSMutableArray* newArray = [[NSMutableArray alloc] initWithCapacity:10];
+        static NodeObject* collisionArray[RADIAL_EFFECT_MAX_COUNT_QUADTREE];
+        QuadRect thisRect = QuadRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+        int count = QuadTreeQuery(collisionQuadTree, collisionArray, RADIAL_EFFECT_MAX_COUNT_QUADTREE, thisRect);
+        for (int i = 0; i < count; i++) { // Go through and make sure it's actually in the rect
+            NodeObject* obj = collisionArray[i];
+            TouchableObject* tObj = [radialAffectedObjects objectAtIndex:obj->arrayIndex];
+            if (CGRectContainsPoint(rect, tObj.objectLocation)) {
+                [newArray addObject:tObj];
+            }
+        }
+        return [newArray autorelease];
+    }
+    return nil;
 }
 
 #pragma mark -

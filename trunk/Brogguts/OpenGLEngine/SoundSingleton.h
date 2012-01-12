@@ -13,17 +13,24 @@
 #define HEARABLE_RECT_WIDTH_PADDING 128.0f
 #define HEARABLE_RECT_HEIGHT_PADDING 128.0f
 #define TOTAL_SOUND_FILE_COUNT 7
+#define TOTAL_MUSIC_FILE_COUNT 2
 
 extern NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT];
+extern NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT];
 
 enum kSoundFileIndecies {
-    kSoundFileTestSound,
+    kSoundFileExplosionSound,
     kSoundFileLightSwitch,
     kSoundFileDoorShut,
     kSoundFileMenuButtonPress,
     kSoundFileMissionSuccessful,
     kSoundFileShipConfirm,
     kSoundFileShipDeny,
+};
+
+enum kMusicFileIndecies {
+    kMusicFileMenuLoop,
+    kMusicFileGameLoop,
 };
 
 #define kFadeInterval (1.0f/60.0f)  // Causes the music volume to be updated 60 times per second when music is fading

@@ -12,11 +12,11 @@
 
 #define DEFAULT_FADE_OUT_TIME 0.5f
 
-#define LOGO_WAIT_TIME 1.0f
-#define LOGO_MASK_WAIT_TIME 1.0f
-#define LOGO_FADE_IN_TIME 1.5f
-#define FINAL_LOGO_WAIT_TIME 1.5f
-#define FINAL_DARK_WAIT_TIME 2.0f
+#define LOGO_WAIT_TIME 0.75f
+#define LOGO_MASK_WAIT_TIME 0.75f
+#define LOGO_FADE_IN_TIME 1.0f
+#define FINAL_LOGO_WAIT_TIME 1.0f
+#define FINAL_DARK_WAIT_TIME 1.5f
 
 @implementation SplashScreenViewController
 

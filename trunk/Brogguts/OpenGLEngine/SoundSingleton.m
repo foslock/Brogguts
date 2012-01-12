@@ -21,6 +21,11 @@ NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
     @"shipdeny.wav",
 };
 
+NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT] = {
+    @"menuloop.mp3",
+    @"bgloop.mp3",
+};
+
 #pragma mark -
 #pragma mark Private interface
 
@@ -213,6 +218,11 @@ static SoundSingleton* sharedSoundSingleton = nil;
             [self loadSoundWithKey:fileName soundFile:fileName];
         }
         
+        for (int i = 0; i < TOTAL_MUSIC_FILE_COUNT; i++) {
+            NSString* fileName = [NSString stringWithFormat:@"%@",kMusicFileNames[i]];
+            [self loadMusicWithKey:fileName musicFile:fileName];
+        }
+        
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults boolForKey:@"setInitialSoundVolumes"]) {
             fxVolume = [defaults floatForKey:@"savedFXVolume"];
@@ -237,6 +247,11 @@ static SoundSingleton* sharedSoundSingleton = nil;
             for (int i = 0; i < TOTAL_SOUND_FILE_COUNT; i++) {
                 NSString* fileName = [NSString stringWithFormat:@"%@",kSoundFileNames[i]];
                 [self removeSoundWithKey:fileName];
+            }
+            
+            for (int i = 0; i < TOTAL_MUSIC_FILE_COUNT; i++) {
+                NSString* fileName = [NSString stringWithFormat:@"%@",kMusicFileNames[i]];
+                [self removeMusicWithKey:fileName];
             }
             NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
             [defaults setFloat:fxVolume forKey:@"savedFXVolume"];

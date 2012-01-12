@@ -20,8 +20,7 @@
 @implementation EndMissionObject
 @synthesize rect, wasSuccessfulMission;
 
-- (id)init
-{
+- (id)init {
     self = [super initWithImage:nil withLocation:[currentScene middleOfVisibleScreen] withObjectType:kObjectEndMissionObjectID];
     if (self) {
         isCheckedForCollisions = NO;

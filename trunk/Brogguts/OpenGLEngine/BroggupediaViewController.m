@@ -9,6 +9,8 @@
 #import "BroggupediaViewController.h"
 #import "BroggupediaDetailView.h"
 #import "GameController.h"
+#import "PlayerProfile.h"
+#import "BroggupediaButton.h"
 
 @implementation BroggupediaViewController
 
@@ -39,10 +41,16 @@
 
 - (IBAction)buttonPressed:(id)sender {
     int objectID = (int)[sender tag];
-    BroggupediaDetailView* controller = [[BroggupediaDetailView alloc] initWithObjectType:objectID];
-    [controller setModalPresentationStyle:UIModalPresentationFormSheet];
-    [self presentModalViewController:controller animated:YES];
-    [controller release];
+    if ([[[GameController sharedGameController] currentProfile] isObjectUnlockedWithID:objectID]) {
+        BroggupediaDetailView* controller = [[BroggupediaDetailView alloc] initWithObjectType:objectID];
+        [controller setModalPresentationStyle:UIModalPresentationFormSheet];
+        [self presentModalViewController:controller animated:YES];
+        [controller release];
+    } else {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Access Denied" message:@"You must complete more missions to unlock this ship or structure" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -51,6 +59,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    for (UIButton* button in [self.view subviews]) {
+        if ([button isKindOfClass:[BroggupediaButton class]]) {
+            [(BroggupediaButton*)button updateViews];
+        }
+    }
 }
 
 - (void)viewDidUnload

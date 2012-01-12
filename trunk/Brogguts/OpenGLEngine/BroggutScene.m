@@ -32,13 +32,13 @@
 #import "TextureSingleton.h"
 #import "ExplosionObject.h"
 #import "BuildingObject.h"
-#import "EndMissionObject.h"
 #import "NotificationObject.h"
 #import "AnimatedImage.h"
 #import "SpawnerObject.h"
 #import "DialogueObject.h"
 #import "UpgradeDialogueObject.h"
 #import "UpgradeManager.h"
+#import "EndMissionObject.h"
 
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -1053,10 +1053,16 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Just to be sure
     [sharedStarSingleton randomizeStars];
     [[GameController sharedGameController] setCurrentScene:self];
+    
+    // Start playing background music
+    [[SoundSingleton sharedSoundSingleton] stopMusic];
+    [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileGameLoop] timesToRepeat:-1];
 }
 
 - (void)sceneDidDisappear {
     [sharedGameCenterSingleton disconnectFromGame];
+    [[SoundSingleton sharedSoundSingleton] stopMusic];
+    [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
 }
 
 #pragma mark -
@@ -1498,6 +1504,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
     }
     
+    // Must update the quadtree to account for deletions
+    [collisionManager updateAllEffectRadii];
+    
     // Loop through all collidable objects and update them
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
@@ -1520,6 +1529,27 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
     }
     
+    // Gather all enemy ships (every 5 seconds or so) and send them to the base to attack if they aren't already attacking something
+    if (sceneType == kSceneTypeCampaign) {
+        if (frameCounter % (AI_SEND_TO_BASE_FREQ + 1) == 0) {
+            for (int i = 0; i < [touchableObjects count]; i++) {
+                TouchableObject* obj = [touchableObjects objectAtIndex:i];
+                if ([obj isKindOfClass:[CraftObject class]]) {
+                    CraftObject* craft = (CraftObject*)obj;
+                    if (craft.objectAlliance == kAllianceEnemy) {
+                        if (craft.movingAIState == kMovingAIStateStill || craft.attackingAIState == kAttackingAIStateNeutral) {
+                            int range = 256;
+                            int randX = CLAMP(homeBaseLocation.x - (arc4random() % range), range, (widthCells * COLLISION_CELL_WIDTH) - range);
+                            int randY = CLAMP(homeBaseLocation.y - (arc4random() % range), range, (heightCells * COLLISION_CELL_HEIGHT) - range);
+                            NSArray* attackPath = [collisionManager pathFrom:craft.objectLocation to:CGPointMake(randX, randY) allowPartial:YES isStraight:YES];
+                            [craft followPath:attackPath isLooped:NO];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     // Check for collisions
     if (frameCounter % (COLLISION_DETECTION_FREQ + 1) == kFrameOffsetCollisions) {
         [collisionManager processAllCollisionsWithScreenBounds:visibleScreenBounds];
@@ -1528,6 +1558,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     
     // Check for radial effects
+    [collisionManager updateAllEffectRadii];
     if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == kFrameOffsetRadialEffect) {
         [collisionManager processAllEffectRadii];
     }
@@ -1579,7 +1610,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
                 if (tempObj.objectType == kObjectStructureBlockID) {
                     // Do not decrease the supply
-                    [currentBlocks removeObject:tempObj];
+                    if (tempObj.objectAlliance == kAllianceFriendly) {
+                        [currentBlocks removeObject:tempObj];
+                    }
                 }
             } else if (tempObj.objectAlliance == kAllianceEnemy) {
                 numberOfEnemyStructures--;
@@ -1909,9 +1942,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 }
 
 - (void)addBlock:(BlockStructureObject*)block {
-    if (![currentBlocks containsObject:block]) {
-        numberOfBlocks++;
-        [currentBlocks addObject:block];
+    if ([block objectAlliance] == kAllianceFriendly) {
+        if (![currentBlocks containsObject:block]) {
+            numberOfBlocks++;
+            [currentBlocks addObject:block];
+        }
     }
 }
 
@@ -1920,8 +1955,8 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 }
 
 - (void)showBroggutValueAtLocation:(CGPoint)location {
-	MediumBroggut* broggut = [[self collisionManager] broggutCellForLocation:location];
-	if (isShowingValueText) {
+    MediumBroggut* broggut = [[self collisionManager] broggutCellForLocation:location];
+    if (isShowingValueText) {
         if (broggut->broggutValue != -1) {
             NSString* string = [NSString stringWithFormat:@"(%i)",broggut->broggutValue];
             [valueTextObject setObjectText:string];
@@ -1931,7 +1966,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         } else {
             [valueTextObject setIsTextHidden:YES];
         }
-	} else {
+    } else {
         [valueTextObject setIsTextHidden:YES];
     }
 }

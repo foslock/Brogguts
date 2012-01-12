@@ -10,36 +10,67 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "StartMissionObject.h"
+#import "SpawnerObject.h"
+#import "TextObject.h"
 
 #define CAMPAIGN_TWO_BROGGUT_GOAL 5000 // 2500
+#define CAMPAIGN_TWO_TIME_LIMIT 10.0f // 10 mins
 
 @implementation CampaignSceneTwo
 
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:1 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts", CAMPAIGN_TWO_BROGGUT_GOAL]];
-        if (!loaded) {
-            {
-                DialogueObject* dia = [[DialogueObject alloc] init];
-                [dia setDialogueActivateTime:2.0f];
-                [dia setDialogueImageIndex:0];
-                [dia setDialogueText:@"This is a whole long bunch of text... and some more right here or so... maybe a few more lines?"];
-                [sceneDialogues addObject:dia];
-                [dia release];
-            }
-            {
-                DialogueObject* dia = [[DialogueObject alloc] init];
-                [dia setDialogueActivateTime:2.5f];
-                [dia setDialogueImageIndex:0];
-                [dia setDialogueText:@"Here's a second message, just to make sure erry'things works!"];
-                [sceneDialogues addObject:dia];
-                [dia release];
-            }
-        }
+        [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts in %i minutes", CAMPAIGN_TWO_BROGGUT_GOAL, (int)CAMPAIGN_TWO_TIME_LIMIT]];
         
+        if (!loaded) {
+            DialogueObject* dia1 = [[DialogueObject alloc] init];
+            [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueText:@"We've put you on a new colony this time around, where we need you to collect a large number of brogguts in a limited amount of time. You are provided with enough blocks so you don't need to worry about the craft limit, so hurry and mine some brogguts!"];
+            [sceneDialogues addObject:dia1];
+            [dia1 release];
+            
+            DialogueObject* dia2 = [[DialogueObject alloc] init];
+            [dia2 setDialogueActivateTime:CAMPAIGN_TWO_TIME_LIMIT * 60.0f / 2];
+            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueText:@"You are halfway through your allotted time, hurry up and bring as many of those brogguts as you can back to base!"];
+            [sceneDialogues addObject:dia2];
+            [dia2 release];
+            
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:0];
+            [spawner pauseSpawnerForDuration:(CAMPAIGN_TWO_TIME_LIMIT * 60.0f) + 1.0f];
+            [spawner setSendingLocation:homeBaseLocation];
+            [spawner setSendingLocationVariance:100.0f];
+            [spawner setStartingLocationVariance:128.0f];
+            [self addSpawner:spawner];
+            [spawner release];
+        }
     }
     return self;  
+}
+
+- (void)updateSceneWithDelta:(float)aDelta {
+    [super updateSceneWithDelta:aDelta];
+    if (isStartingMission || isMissionPaused || isShowingDialogue) {
+        return;
+    }
+    int minutes = [[self spawnerWithID:0] pauseTimeLeft] / 60.0f;
+    int seconds = [[self spawnerWithID:0] pauseTimeLeft] - (60.0f * minutes);
+    NSString* countdown;
+    
+    if (seconds >= 10) {
+        countdown = [NSString stringWithFormat:@"Timer: %i:%i", minutes, seconds];
+    } else {
+        countdown = [NSString stringWithFormat:@"Timer: %i:0%i", minutes, seconds];
+    }
+    
+    if (minutes != 0 || seconds != 0) {
+        [countdownTimer setObjectText:countdown];
+    } else {
+        [countdownTimer setObjectText:@""];
+    }
+    [self updateSpawnersWithDelta:aDelta];
 }
 
 - (BOOL)checkObjective {
@@ -52,6 +83,9 @@
 
 - (BOOL)checkFailure {
     if ([self checkDefaultFailure]) {
+        return YES;
+    }
+    if ([[self spawnerWithID:0] isDoneSpawning]) {
         return YES;
     }
     return NO;

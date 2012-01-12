@@ -129,6 +129,8 @@ enum SceneTypes {
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
 @property (readonly) BOOL isFadingSceneIn;
 @property (readonly) BOOL isFadingSceneOut;
+@property (readonly) BOOL isReturningToMenu;
+@property (readonly) BOOL isAlreadyInScene;
 
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class

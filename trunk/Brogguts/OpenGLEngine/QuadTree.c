@@ -29,6 +29,12 @@ struct _TreeNode {
     NodeObject** objects;
 };
 
+// Just used when querying a rectangle in the tree
+struct HelperArray {
+    NodeObject** objects;
+    int count;
+    int capacity;
+};
 
 //  This is how the nodes' children are set up
 //  _________
@@ -48,7 +54,7 @@ enum QuadRectQuadrants {
 QuadRect QuadRectGetSubQuadrant(QuadRect originalRect, enum QuadRectQuadrants quadrant);
 enum QuadRectQuadrants QuadrantForPointInRect(QuadRect rect1, int x, int y);
 int QuadRectIntersectsRect(QuadRect rect1, QuadRect rect2);
-int QuadRectContainsPoints(QuadRect rect1, int x, int y);
+int QuadRectContainsPoint(QuadRect rect1, int x, int y);
 int QuadRectFullyContainsCircle(QuadRect rect1, int x, int y, int radius);
 
 TreeNode* QuadTreeCreateTreeNode();
@@ -57,6 +63,9 @@ void QuadTreeDeleteNode(TreeNode* root);
 void insertHelper(QuadTree* tree, TreeNode* node, int maxDepth, NodeObject* obj);
 void addObjectToTreeNode(TreeNode* node, NodeObject* obj);
 void checkAndExpandNodeObjects(TreeNode* node);
+
+void addObjectToArray(struct HelperArray* array, NodeObject* obj);
+void addObjectsOfNodeToArray(TreeNode* node, struct HelperArray* array, int maxCount, QuadRect rect);
 
 // Convienence functions
 QuadRect QuadRectMake(int origin_x, int origin_y, int width, int height) {
@@ -108,50 +117,44 @@ QuadRect QuadRectGetSubQuadrant(QuadRect originalRect, enum QuadRectQuadrants qu
 enum QuadRectQuadrants QuadrantForPointInRect(QuadRect rect1, int x, int y) {
     for (int i = 0; i < 4; i++) {
         QuadRect rect = QuadRectGetSubQuadrant(rect1, i);
-        if (QuadRectContainsPoints(rect, x, y)) {
+        if (QuadRectContainsPoint(rect, x, y)) {
             return i;
         }
     }
     return 0;
 }
 
+// Does include completely contained rects
 int QuadRectIntersectsRect(QuadRect rect1, QuadRect rect2) {
-    int returnBool = 1;
     if (rect1.x1 < rect2.x0 || rect1.x0 > rect2.x1) {
-        returnBool = 0;
-        return returnBool;
+        return 0;
     }
     if (rect1.y1 < rect2.y0 || rect1.y0 > rect2.y1) {
-        returnBool = 0;
-        return returnBool;
+        return 0;
     }
-    return returnBool;
+    return 1;
 }
 
-int QuadRectContainsPoints(QuadRect rect1, int x, int y) {
-    int returnBool = 1;
-    if (x <= rect1.x0 || x >= rect1.x1) {
-        returnBool = 0;
-        return returnBool;
+int QuadRectContainsPoint(QuadRect rect1, int x, int y) {
+    if (x < rect1.x0 || x > rect1.x1) {
+        return 0;
     }
-    if (y <= rect1.y0 || y >= rect1.y1) {
-        returnBool = 0;
-        return returnBool;
+    if (y < rect1.y0 || y > rect1.y1) {
+        return 0;
     }
-    return returnBool;
+    return 1;
 }
 
 int QuadRectFullyContainsCircle(QuadRect rect1, int x, int y, int radius) {
-    int returnBool = 0;
     QuadRect newRect;
     newRect.x0 = rect1.x0 + radius;
     newRect.x1 = rect1.x1 - radius;
     newRect.y0 = rect1.y0 + radius;
     newRect.y1 = rect1.y1 - radius;
-    if (QuadRectContainsPoints(newRect, x, y)) {
-        returnBool = 1;
+    if (QuadRectContainsPoint(newRect, x, y)) {
+        return 1;
     }
-    return returnBool;
+    return 0;
 }
 
 // Returns a newly made DEFAULT tree node
@@ -343,42 +346,34 @@ void QuadTreeUpdateObject(QuadTree* tree, NodeObject* obj) {
     
 }
 
+void addObjectToArray(struct HelperArray* array, NodeObject* obj) {
+    if (array->count < array->capacity) { // Don't add if full, just ignore
+        array->objects[array->count++] = obj;
+    }
+}
+
 // Recursively adds all of the objs contained within the "rect" (returns the count of objects)
-// FIX THIS FUNCTION
-int addObjectsOfNodeToArray(TreeNode* node, NodeObject** objs, int* currentCount, int maxCount, QuadRect rect) {
-    if (QuadRectIntersectsRect(node->nodeRect, rect)) { // If outside rect intersects node rect, do stuff, else none added
-        if ( (*currentCount) < maxCount) { // If the current count is less than the max, do stuff, else none added
-            int thisNodeCount = 0; // Count for this node and all its children
-            for (int i = 0; i < node->objectCount; i++) {
-                objs[(*currentCount)++] = node->objects[i];
-                thisNodeCount++;
-                if ( (*currentCount) == maxCount) { // Return if reached max 
-                    return thisNodeCount;
-                }
-            }
-            if (node->hasMadeChildrenNodes) { // All that was added were on this node
-                for (int i = 0; i < 4; i++) {
-                    thisNodeCount += addObjectsOfNodeToArray(node->childrenNodes[i],
-                                                             objs,
-                                                             currentCount,
-                                                             maxCount,
-                                                             rect);
-                }
-            }
-            return thisNodeCount;
-        } else {
-            return 0;
+void addObjectsOfNodeToArray(TreeNode* node, struct HelperArray* array, int maxCount, QuadRect rect) {
+    if (QuadRectIntersectsRect(node->nodeRect, rect) || QuadRectIntersectsRect(rect, node->nodeRect)) { // If outside rect intersects node rect, do stuff, else none added
+        for (int i = 0; i < node->objectCount; i++) { // Add all objects in this node
+            addObjectToArray(array, node->objects[i]);
         }
-    } else {
-        return 0;
+        if (node->hasMadeChildrenNodes) { // All that was added were on this node
+            for (int i = 0; i < 4; i++) {
+                addObjectsOfNodeToArray(node->childrenNodes[i], array, maxCount, rect);
+            }
+        }
     }
 }
 
 int QuadTreeQuery(QuadTree* tree, NodeObject** objs, unsigned int max, QuadRect rect) {
-    int countAdded = 0;
+    struct HelperArray array;
+    array.objects = objs;
+    array.count = 0;
+    array.capacity = max;
     if (objs) {
-        addObjectsOfNodeToArray(tree->treeRoot, objs, &countAdded, max, rect);
+        addObjectsOfNodeToArray(tree->treeRoot, &array, max, rect);
     }
-    return countAdded;
+    return array.count;
 }
 

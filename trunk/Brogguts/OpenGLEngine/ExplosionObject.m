@@ -12,6 +12,7 @@
 #import "ImageRenderSingleton.h"
 #import "ParticleSingleton.h"
 #import "BroggutScene.h"
+#import "SoundSingleton.h"
 
 #define EXPLOSION_RING_GROWTH_RATE 1.1f
 #define EXPLOSION_RING_FADE_RATE 0.1f
@@ -78,6 +79,7 @@
             [[self currentScene] startShakingScreenWithMagnitude:10.0f];
         }
         
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileExplosionSound] location:objectLocation];
     }
     return self;
 }
