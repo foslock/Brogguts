@@ -25,6 +25,7 @@
 @synthesize isDrawingEffectRadius;
 
 - (void)dealloc {
+    [upgradedPlus release];
 	[objectsTargetingSelf release];
 	[super dealloc];
 }
@@ -47,6 +48,9 @@
         blinkingCircleAlpha = 0;
         isShowingSelectionCircle = NO;
         showingSelectionCircleTimer = 0;
+        upgradedPlus = [[Image alloc] initWithImageNamed:@"plus.png" filter:GL_LINEAR];
+        [upgradedPlus setScale:Scale2fMake(0.3f, 0.3f)];
+        [upgradedPlus setRenderLayer:kLayerTopLayer];
 		[self setMovingAIState:kMovingAIStateStill];
 	}
 	return self;

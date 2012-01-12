@@ -13,6 +13,8 @@
 #import "PlayerProfile.h"
 #import "CampaignScene.h"
 
+#define OVERRIDE_PLAYER_EXPERIENCE_LIMIT 13
+
 enum SectionNames {
     kSectionSavedScenes,
     kSectionUnlockedMissions,
@@ -34,7 +36,8 @@ enum SectionNames {
         unlockedMissionNames = [[NSMutableArray alloc] init];
         // Add each name with index under the current player experience
         int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
-        playerExperience = 14;
+        // playerExperience = CLAMP(playerExperience, 0, OVERRIDE_PLAYER_EXPERIENCE_LIMIT);
+        playerExperience = CAMPAIGN_SCENES_COUNT; // CHEATING
         for (int i = 0 ; i <= playerExperience; i++) {
             NSString* mission = [NSString stringWithString:kCampaignSceneSaveTitles[i]];
             [unlockedMissionNames insertObject:mission atIndex:0];
@@ -267,7 +270,7 @@ enum SectionNames {
         }
             break;
         case kSectionExitButton: {
-            [self.parentViewController dismissModalViewControllerAnimated:YES];
+            [self.presentingViewController dismissModalViewControllerAnimated:YES];
         }
             break;
         default:

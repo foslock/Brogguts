@@ -16,6 +16,8 @@
 
 @property (assign) IBOutlet UIImageView* unitImageView;
 @property (assign) IBOutlet UILabel* unitLabel;
+@property (assign) IBOutlet UIImageView* broggutImage;
+@property (assign) IBOutlet UIImageView* metalImage;
 @property (assign) IBOutlet UILabel* unitBroggutsCostLabel;
 @property (assign) IBOutlet UILabel* unitMetalCostLabel;
 

@@ -20,7 +20,9 @@
     self = [super initWithImage:newImage withLocation:location withObjectType:kObjectBuildingObjectID];
     if (self) {
         isCheckedForCollisions = NO;
-        [objectImage setScale:[object objectImage].scale];
+        isCheckedForMultipleCollisions = NO;
+        Scale2f scale = [object objectImage].scale;
+        [objectImage setScale:scale];
         if ([object isKindOfClass:[CraftObject class]]) {
             [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];
         }
@@ -43,6 +45,7 @@
         destroyNow = YES;
     }
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentAlpha)];
+    [objectImage setScale:[creatingObject objectImage].scale];
 }
 
 @end

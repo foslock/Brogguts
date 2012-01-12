@@ -173,7 +173,51 @@ static void drawDashedLine(CGPoint loc1, CGPoint loc2, int segments, Vector2f sc
 	_dashedLineArray[(vertCount * 2) - 1] = CLAMP(_dashedLineArray[(vertCount * 2) - 1], loc2.y - scroll.y, loc2.y - scroll.y);
 	
 	// Set up the vertex pointer to the array of vertices we have created and
-	// then use GL_LINE_LOOP to render them
+	// then use GL_LINES to render them
+	glVertexPointer(2, GL_FLOAT, 0, _dashedLineArray);
+	glDrawArrays(GL_LINES, 0, vertCount);
+}
+
+static void drawOffsetDashedLine(CGPoint loc1, CGPoint loc2, int offset, float segLength, Vector2f scroll) {
+	float segmentLength = segLength;
+    offset = offset % (int)(segmentLength*2);
+    
+	// Setup the array used to store the vertices
+    static float* _dashedLineArray = NULL;
+    static int vertCount = 0;
+    int segments = GetDistanceBetweenPoints(loc1, loc2) / segmentLength;
+    
+    if ( (segments + 1) > vertCount ) {
+        if (_dashedLineArray) {
+            free(_dashedLineArray);
+        }
+        _dashedLineArray = (float*)malloc( ((segments + 1) * 2) * sizeof(*_dashedLineArray) );
+    }
+	vertCount = segments + 1;
+    
+	float baseX = loc1.x;
+	float baseY = loc1.y;
+    float angleRad = atan2f((loc2.y - loc1.y), (loc2.x - loc1.x));
+	
+	for (int i = 0; i < vertCount; i++) {
+		// Put in a single segment (two points)
+		int index = i * 2;
+        float offx = offset * cosf(angleRad);
+        float offy = offset * sinf(angleRad);
+        float distx = segmentLength * cosf(angleRad);
+        float disty = segmentLength * sinf(angleRad);
+        
+		_dashedLineArray[index]   = baseX + offx + (i * distx) - scroll.x; // X
+		_dashedLineArray[index+1] = baseY + offy + (i * disty) - scroll.y; // Y
+	}
+	
+	_dashedLineArray[0] = CLAMP(_dashedLineArray[0], loc1.x - scroll.x, loc1.x - scroll.x);
+	_dashedLineArray[1] = CLAMP(_dashedLineArray[1], loc1.y - scroll.y, loc1.y - scroll.y);
+	_dashedLineArray[(vertCount * 2) - 2] = CLAMP(_dashedLineArray[(vertCount * 2) - 2], loc2.x - scroll.x, loc2.x - scroll.x);
+	_dashedLineArray[(vertCount * 2) - 1] = CLAMP(_dashedLineArray[(vertCount * 2) - 1], loc2.y - scroll.y, loc2.y - scroll.y);
+	
+	// Set up the vertex pointer to the array of vertices we have created and
+	// then use GL_LINES to render them
 	glVertexPointer(2, GL_FLOAT, 0, _dashedLineArray);
 	glDrawArrays(GL_LINES, 0, vertCount);
 }

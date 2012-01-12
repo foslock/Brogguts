@@ -216,6 +216,7 @@
 		6F6A2D3A12FFB130002A4201 /* GameCenterSingleton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F6A2D3912FFB130002A4201 /* GameCenterSingleton.xib */; };
 		6F6A2F7013019BE8002A4201 /* StarSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2F6F13019BE8002A4201 /* StarSingleton.m */; };
 		6F797E301346613C00B168D1 /* doorclose.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F797E2E1346613C00B168D1 /* doorclose.wav */; };
+		6F7E137D14697BD800F3A1D9 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E137C14697BD800F3A1D9 /* BaseCamp.plist */; };
 		6F7F41E2135CDAB000619FFA /* AnimatedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F41E1135CDAB000619FFA /* AnimatedImage.m */; };
 		6F7F41E5135CDE2B00619FFA /* RefineryStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F41E4135CDE2B00619FFA /* RefineryStructureObject.m */; };
 		6F7F41EB135CDFF500619FFA /* structurerefinery[0].png in Resources */ = {isa = PBXBuildFile; fileRef = 6F7F41E7135CDFF500619FFA /* structurerefinery[0].png */; };
@@ -253,6 +254,7 @@
 		6F8E25D71330318400DCD662 /* spritetrigger.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F8E25D61330318400DCD662 /* spritetrigger.png */; };
 		6F9064A313E9D6100016C36C /* QuadTree.c in Sources */ = {isa = PBXBuildFile; fileRef = 6F9064A213E9D6100016C36C /* QuadTree.c */; };
 		6FA748C5146316BC00701F98 /* comingsoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748C4146316BC00701F98 /* comingsoon.png */; };
+		6FA748D51464683B00701F98 /* recommendation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748D41464683B00701F98 /* recommendation.png */; };
 		6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA299F13E61D57000D560A /* gamecenter-icon.png */; };
 		6FAA29A213E62478000D560A /* explosionring.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA29A113E62478000D560A /* explosionring.png */; };
 		6FAD51F51304579100E5E98F /* gothic.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 6FAD51F31304579100E5E98F /* gothic.fnt */; };
@@ -279,6 +281,11 @@
 		6FCACA2D12F8717400662BDA /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCACA2C12F8717400662BDA /* NSDataAdditions.m */; };
 		6FCACA3512F871D300662BDA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FCACA3412F871D300662BDA /* libz.dylib */; };
 		6FCACA5012F9DDCD00662BDA /* BroggutScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCACA4F12F9DDCD00662BDA /* BroggutScene.m */; };
+		6FCC0C1614BF40C3005278A2 /* locked.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1514BF40C3005278A2 /* locked.png */; };
+		6FCC0C1914BF5993005278A2 /* BroggupediaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1814BF5993005278A2 /* BroggupediaButton.m */; };
+		6FCC0C1C14BF749F005278A2 /* bgloop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1B14BF749F005278A2 /* bgloop.mp3 */; };
+		6FCC0C1E14BF7803005278A2 /* menuloop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1D14BF7803005278A2 /* menuloop.mp3 */; };
+		6FCC0C2014BF9574005278A2 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1F14BF9573005278A2 /* plus.png */; };
 		6FD74DCA1396AD760027E5C4 /* Campaign 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DC91396AD750027E5C4 /* Campaign 4.plist */; };
 		6FD74DCE1396B77F0027E5C4 /* spritesidebarback.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */; };
 		6FD74DD2139809180027E5C4 /* Campaign 11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCF139809150027E5C4 /* Campaign 11.plist */; };
@@ -612,6 +619,7 @@
 		6F6A2F6E13019BE8002A4201 /* StarSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarSingleton.h; sourceTree = "<group>"; };
 		6F6A2F6F13019BE8002A4201 /* StarSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarSingleton.m; sourceTree = "<group>"; };
 		6F797E2E1346613C00B168D1 /* doorclose.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = doorclose.wav; sourceTree = "<group>"; };
+		6F7E137C14697BD800F3A1D9 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F7F41E0135CDAB000619FFA /* AnimatedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedImage.h; sourceTree = "<group>"; };
 		6F7F41E1135CDAB000619FFA /* AnimatedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedImage.m; sourceTree = "<group>"; };
 		6F7F41E3135CDE2B00619FFA /* RefineryStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefineryStructureObject.h; sourceTree = "<group>"; };
@@ -666,8 +674,8 @@
 		6F8E25D61330318400DCD662 /* spritetrigger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritetrigger.png; sourceTree = "<group>"; };
 		6F9064A213E9D6100016C36C /* QuadTree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = QuadTree.c; sourceTree = "<group>"; };
 		6F9064A413E9D6180016C36C /* QuadTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadTree.h; sourceTree = "<group>"; };
-		6FA5114113F33F8D00B3DCD5 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6FA748C4146316BC00701F98 /* comingsoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comingsoon.png; sourceTree = "<group>"; };
+		6FA748D41464683B00701F98 /* recommendation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = recommendation.png; sourceTree = "<group>"; };
 		6FAA299F13E61D57000D560A /* gamecenter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter-icon.png"; sourceTree = "<group>"; };
 		6FAA29A113E62478000D560A /* explosionring.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explosionring.png; sourceTree = "<group>"; };
 		6FAD51F31304579100E5E98F /* gothic.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gothic.fnt; sourceTree = "<group>"; };
@@ -710,6 +718,12 @@
 		6FCACA3412F871D300662BDA /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		6FCACA4E12F9DDCD00662BDA /* BroggutScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BroggutScene.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		6FCACA4F12F9DDCD00662BDA /* BroggutScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BroggutScene.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		6FCC0C1514BF40C3005278A2 /* locked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locked.png; sourceTree = "<group>"; };
+		6FCC0C1714BF5993005278A2 /* BroggupediaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BroggupediaButton.h; sourceTree = "<group>"; };
+		6FCC0C1814BF5993005278A2 /* BroggupediaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BroggupediaButton.m; sourceTree = "<group>"; };
+		6FCC0C1B14BF749F005278A2 /* bgloop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgloop.mp3; sourceTree = "<group>"; };
+		6FCC0C1D14BF7803005278A2 /* menuloop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = menuloop.mp3; sourceTree = "<group>"; };
+		6FCC0C1F14BF9573005278A2 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		6FD74DC91396AD750027E5C4 /* Campaign 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 4.plist"; sourceTree = "<group>"; };
 		6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesidebarback.png; sourceTree = "<group>"; };
 		6FD74DCF139809150027E5C4 /* Campaign 11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 11.plist"; sourceTree = "<group>"; };
@@ -870,6 +884,7 @@
 			children = (
 				6FE6A5ED137C87B100A0E4D8 /* Fonts */,
 				6F797E2D134660B700B168D1 /* Sounds */,
+				6FCC0C1A14BF741D005278A2 /* Music */,
 				6F67CC18132D662E0061B1A9 /* Default Maps */,
 				6F3AF23013303825008CFB79 /* Tutorial Maps */,
 				6F8B878913078E34009CD1BF /* Images */,
@@ -1118,6 +1133,8 @@
 				6F61187D137332430039DB7C /* BroggupediaViewController.h */,
 				6F61187E137332430039DB7C /* BroggupediaViewController.m */,
 				6F61187F137332430039DB7C /* BroggupediaViewController.xib */,
+				6FCC0C1714BF5993005278A2 /* BroggupediaButton.h */,
+				6FCC0C1814BF5993005278A2 /* BroggupediaButton.m */,
 				6F6118881373527F0039DB7C /* BroggupediaDetailView.h */,
 				6F6118891373527F0039DB7C /* BroggupediaDetailView.m */,
 				6F61188A137352800039DB7C /* BroggupediaDetailView.xib */,
@@ -1183,7 +1200,7 @@
 				6F67CC10132D25BE0061B1A9 /* NewMapScenesList.plist */,
 				6F61187B1372F0970039DB7C /* Map 1.plist */,
 				6F894436137B290D00B3DD0F /* Map 2.plist */,
-				6FA5114113F33F8D00B3DCD5 /* BaseCamp.plist */,
+				6F7E137C14697BD800F3A1D9 /* BaseCamp.plist */,
 				6FE6A604137CC0EF00A0E4D8 /* BaseCampOriginal.plist */,
 				6F61181D1370F1600039DB7C /* Campaign Levels */,
 			);
@@ -1340,6 +1357,9 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6FCC0C1F14BF9573005278A2 /* plus.png */,
+				6FCC0C1514BF40C3005278A2 /* locked.png */,
+				6FA748D41464683B00701F98 /* recommendation.png */,
 				6FA748C4146316BC00701F98 /* comingsoon.png */,
 				6FAA299F13E61D57000D560A /* gamecenter-icon.png */,
 				6FE6A5F2137CBA5F00A0E4D8 /* backbutton.png */,
@@ -1610,6 +1630,15 @@
 				6FCACA1912F8710000662BDA /* TBXMLParticleAdditions.m */,
 			);
 			name = TBXML;
+			sourceTree = "<group>";
+		};
+		6FCC0C1A14BF741D005278A2 /* Music */ = {
+			isa = PBXGroup;
+			children = (
+				6FCC0C1B14BF749F005278A2 /* bgloop.mp3 */,
+				6FCC0C1D14BF7803005278A2 /* menuloop.mp3 */,
+			);
+			name = Music;
 			sourceTree = "<group>";
 		};
 		6FD777AF1343C8D800F734D5 /* Textures */ = {
@@ -1948,6 +1977,12 @@
 				6FE2F51113EE0BB100E640C7 /* spriteturretgun.png in Resources */,
 				6FE2F51313EE0D6E00E640C7 /* spriteradardish.png in Resources */,
 				6FA748C5146316BC00701F98 /* comingsoon.png in Resources */,
+				6FA748D51464683B00701F98 /* recommendation.png in Resources */,
+				6F7E137D14697BD800F3A1D9 /* BaseCamp.plist in Resources */,
+				6FCC0C1614BF40C3005278A2 /* locked.png in Resources */,
+				6FCC0C1C14BF749F005278A2 /* bgloop.mp3 in Resources */,
+				6FCC0C1E14BF7803005278A2 /* menuloop.mp3 in Resources */,
+				6FCC0C2014BF9574005278A2 /* plus.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2073,6 +2108,7 @@
 				6FE2F50913EDC2E900E640C7 /* CraftUpgradesSideBar.m in Sources */,
 				6FE2F50F13EDFEA200E640C7 /* StructureUpgradesSideBar.m in Sources */,
 				6F11207213F2BCB900B0C8D1 /* UpgradeManager.m in Sources */,
+				6FCC0C1914BF5993005278A2 /* BroggupediaButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2119,13 +2155,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: James Lockwood";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "66FEA139-21A0-4BF0-928C-CA808C90D683";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2154,14 +2190,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: James Lockwood (6P2GY3E2QW)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81C8502F-1BAF-4B32-9BCC-F45552B1A99D";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2173,13 +2209,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: James Lockwood (6P2GY3E2QW)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81C8502F-1BAF-4B32-9BCC-F45552B1A99D";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;

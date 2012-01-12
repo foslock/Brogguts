@@ -12,6 +12,7 @@
 #import "DialogueObject.h"
 
 #define CAMPAIGN_SCENES_COUNT 15
+#define CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE 2.0f
 
 @class StartMissionObject;
 @class SpawnerObject;

@@ -38,21 +38,16 @@
 - (IBAction)fxVolumeChanged:(id)sender {
     UISlider* slider = (UISlider*)sender;
     [[SoundSingleton sharedSoundSingleton] setFxVolume:[slider value]];
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileTestSound]];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileExplosionSound]];
 }
 
 - (IBAction)musicVolumeChanged:(id)sender {
     UISlider* slider = (UISlider*)sender;
     [[SoundSingleton sharedSoundSingleton] setMusicVolume:[slider value]];
-    
-    float tempVol = [[SoundSingleton sharedSoundSingleton] fxVolume];
-    [[SoundSingleton sharedSoundSingleton] setFxVolume:[slider value]];
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileTestSound]];
-    [[SoundSingleton sharedSoundSingleton] setFxVolume:tempVol];
 }
 
 - (IBAction)popOptionsController {
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+    [self.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)switchGrid:(id)sender {

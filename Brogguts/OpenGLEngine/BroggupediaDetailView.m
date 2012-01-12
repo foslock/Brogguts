@@ -14,6 +14,7 @@
 
 @implementation BroggupediaDetailView
 @synthesize unitImageView, unitBroggutsCostLabel, unitLabel, unitMetalCostLabel;
+@synthesize broggutImage, metalImage;
 
 - (id)initWithObjectType:(int)objectID
 {
@@ -240,29 +241,42 @@
         }
         case kObjectStructureTurretID: {
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureTurretSprite ofType:nil];
+            NSString* filename2 = [[NSBundle mainBundle] pathForResource:kObjectStructureTurretGunSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
+            UIImage* image2 = [[UIImage alloc] initWithContentsOfFile:filename2];
+            UIImageView* gunView = [[UIImageView alloc] initWithImage:image2];
             float width = [image size].width;
             float height = [image size].height;
             [unitImageView setImage:image];
             CGPoint center = [unitImageView center];
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
+            [self.view addSubview:gunView];
+            [gunView setCenter:center];
+            [gunView release];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureTurretCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureTurretCostMetal]];
             NSString* description = [NSString stringWithFormat:@"\t\tThe Turret is the basic defensive structure to defend a Base Station. It attacks quickly, and having a large array of these makes a Base Station almost impossible to destroy."];
             [unitLabel setText:description];
             [image release];
+            [image2 release];
             break;
         }
         case kObjectStructureRadarID: {
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureRadarSprite ofType:nil];
+            NSString* filename2 = [[NSBundle mainBundle] pathForResource:kObjectStructureRadarDishSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
+            UIImage* image2 = [[UIImage alloc] initWithContentsOfFile:filename2];
+            UIImageView* dishView = [[UIImageView alloc] initWithImage:image2];
             float width = [image size].width;
             float height = [image size].height;
             [unitImageView setImage:image];
             CGPoint center = [unitImageView center];
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
+            [self.view addSubview:dishView];
+            [dishView setCenter:center];
+            [dishView release];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kStructureRadarCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kStructureRadarCostMetal]];
             NSString* description = [NSString stringWithFormat:@"\t\tRadar is used purely to detect enemy units. It will alert the commander when an enemy ship enters its radar detection field. The Rat craft must be detected using this structure."];
@@ -287,6 +301,8 @@
             break;
         }
         case kObjectBroggutSmallID: {
+            [broggutImage setHidden:YES];
+            [metalImage setHidden:YES];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectBroggutSmallSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -304,6 +320,8 @@
             break;
         }
         case kObjectBroggutMediumYoungID: {
+            [broggutImage setHidden:YES];
+            [metalImage setHidden:YES];
             NSString* filename = [[NSBundle mainBundle] pathForResource:@"broggutmediumyoung.png" ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -321,6 +339,8 @@
             break;
         }
         case kObjectBroggutMediumOldID: {
+            [broggutImage setHidden:YES];
+            [metalImage setHidden:YES];
             NSString* filename = [[NSBundle mainBundle] pathForResource:@"broggutmediumold.png" ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -338,6 +358,8 @@
             break;
         }
         case kObjectBroggutMediumAncientID: {
+            [broggutImage setHidden:YES];
+            [metalImage setHidden:YES];
             NSString* filename = [[NSBundle mainBundle] pathForResource:@"broggutmediumancient.png" ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -371,7 +393,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+    [self.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 
 - (void)dealloc

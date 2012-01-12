@@ -25,6 +25,27 @@
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Survive the second wave at %i minutes",(int)CAMPAIGN_SIX_WAVE_TWO_TIME]];
         [startObject setMissionTextThree:@"- Destroy all enemy craft in both waves"];
         if (!loaded) {
+            DialogueObject* dia1 = [[DialogueObject alloc] init];
+            [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueText:@"You have become very skilled at defending brand new colonies from being overrun by pirates. You have been put in charge of a particularly difficult station to defend. Our long range sensors tell us that two large waves of enemy craft approach on either side of your base station."];
+            [sceneDialogues addObject:dia1];
+            [dia1 release];
+            
+            DialogueObject* dia2 = [[DialogueObject alloc] init];
+            [dia2 setDialogueActivateTime:(CAMPAIGN_SIX_WAVE_ONE_TIME/2)*60.0f];
+            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueText:@"It appears that the first wave is approaching the right side of your colony. It may be wise to mobilize a fleet in that area just in case any ships sneak past our sensors."];
+            [sceneDialogues addObject:dia2];
+            [dia2 release];
+            
+            DialogueObject* dia3 = [[DialogueObject alloc] init];
+            [dia3 setDialogueActivateTime:(CAMPAIGN_SIX_WAVE_ONE_TIME + (CAMPAIGN_SIX_WAVE_TWO_TIME-CAMPAIGN_SIX_WAVE_ONE_TIME)/2 )*60.0f];
+            [dia3 setDialogueImageIndex:0];
+            [dia3 setDialogueText:@"The last wave is approaching the left side of your base station. Move your forces in preparation."];
+            [sceneDialogues addObject:dia3];
+            [dia3 release];
+            
             SpawnerObject* spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:10];
             [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:2];
             [spawnerOne pauseSpawnerForDuration:(CAMPAIGN_SIX_WAVE_TWO_TIME * 60.0f) + 1.0f];

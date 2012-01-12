@@ -20,6 +20,9 @@
 #import "NotificationObject.h"
 #import "SoundSingleton.h"
 #import "BuildingObject.h"
+#import "UpgradeManager.h"
+
+#define CALL_OUT_RANGE 256
 
 @implementation CraftObject
 @synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, attributeHullCapacity, isUnderAura, craftDoesRotate;
@@ -410,13 +413,17 @@
             if ([enemy isKindOfClass:[CraftObject class]]) {
                 CraftObject* enemyCraft = (CraftObject*)enemy;
                 [enemyCraft calculateCraftAIInfo];
-                NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
+                // NSMutableArray* nearbyCraftArray = [[NSMutableArray alloc] init];
                 if (objectAlliance == kAllianceEnemy) {
                     // Debug!
                     int test = 0;
                     (void)test;
                 }
-                [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
+                // [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
+                CGRect shipRect = CGRectMake(self.objectLocation.x - CALL_OUT_RANGE, 
+                                             self.objectLocation.y - CALL_OUT_RANGE,
+                                             CALL_OUT_RANGE * 2, CALL_OUT_RANGE * 2);
+                NSArray* nearbyCraftArray = [[[self currentScene] collisionManager] getArrayOfRadiiObjectsInRect:shipRect];
                 float totalCraftPower = 0.0f;
                 for (int i = 0; i < [nearbyCraftArray count]; i++) {
                     CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
@@ -440,7 +447,7 @@
                         }
                     }
                 }
-                [nearbyCraftArray release];
+                // [nearbyCraftArray release];
             }
         }
         
@@ -812,6 +819,13 @@
         [craftSheild setColor:Color4fMake(1.0f, 1.0f, 1.0f, alpha)];
         [craftSheild renderCenteredAtPoint:objectLocation withScrollVector:scroll];
     }
+    
+    // If upgraded show the plus
+    if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
+                                                        objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
+                           withScrollVector:scroll];
+    }
 }
 
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
@@ -832,10 +846,17 @@
     // Draw dragging line
     enablePrimitiveDraw();
     if (isBeingDragged) {
-        glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
-        float distance = GetDistanceBetweenPoints(objectLocation, dragLocation);
-        int segments = distance / 50;
-        drawDashedLine(objectLocation, dragLocation, CLAMP(segments, 1, 10), scroll);
+        TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:dragLocation];
+        if (enemy) {
+            glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+        } else {
+            glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+        }
+        int offsetMax = attributeEngines * 10;
+        static int offset = 0;
+        offset += attributeEngines;
+        offset = offset % (offsetMax*2);
+        drawOffsetDashedLine(objectLocation, dragLocation, offset, offsetMax, scroll);
     }
 #ifdef DRAW_PATH
     if (isFollowingPath) {

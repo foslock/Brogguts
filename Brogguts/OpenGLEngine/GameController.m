@@ -50,7 +50,7 @@ static GameController* sharedGameController = nil;
 @synthesize gameScenes;
 @synthesize eaglView;
 @synthesize interfaceOrientation;
-@synthesize isFadingSceneIn, isFadingSceneOut;
+@synthesize isFadingSceneIn, isFadingSceneOut, isAlreadyInScene, isReturningToMenu;
 
 #pragma mark -
 #pragma mark Singleton implementation
@@ -814,7 +814,7 @@ static GameController* sharedGameController = nil;
     isSavingFadingScene = NO;
     isShowingBroggupediaInScene = NO;
     isUpdatingCurrentScene = NO;
-	
+    
 	[self loadPlayerProfile];
     [self placeInitialFilesInDocumentsFolder];
 	

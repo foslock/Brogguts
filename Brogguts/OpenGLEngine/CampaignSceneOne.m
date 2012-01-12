@@ -19,6 +19,15 @@
     self = [super initWithCampaignIndex:0 wasLoaded:loaded];
     if (self) {
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Collect %i Brogguts", CAMPAIGN_ONE_BROGGUT_GOAL]];
+        
+        if (!loaded) {
+            DialogueObject* dia = [[DialogueObject alloc] init];
+            [dia setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia setDialogueImageIndex:0];
+            [dia setDialogueText:@"Welcome to your first mining colony commander. It doesn't look like much, but we all started small at one time or another. Get yourself aquainted with the technology, and go bring back some brogguts."];
+            [sceneDialogues addObject:dia];
+            [dia release];
+        }
     }
     return self;  
 }

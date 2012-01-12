@@ -52,6 +52,8 @@
 	// Used so things are disabled when traveling
 	BOOL isTraveling;
 	CGPoint creationEndLocation;
+    
+    Image* upgradedPlus;
 }
 
 @property (readonly) int movingAIState;

@@ -93,7 +93,7 @@
     [spawnerArray addObject:idCountArray];
     [spawnerArray addObject:startingVarNumber];
     [spawnerArray addObject:arrivalVarNumber];
-
+    
     return [spawnerArray autorelease];
 }
 
@@ -189,27 +189,28 @@
 - (void)updateSpawnerWithDelta:(float)aDelta {
     if (currentTimer > 0.0f) {
         currentTimer -= aDelta * SPAWNER_TIMER_SPEED_FACTOR;
-    }
-    for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
-        if (currentTimer <= 0.0f && (idCount[index] > 0 || idCount[index] == -1)) {
-            hasTriggeredOnce = YES;
-            currentTimer = spawnerDuration;
-            CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
-                                           sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
-            
-            [self createObjectWithID:index withEndingLocation:newPoint];
-            if (idCount[index] > 0) {
-                idCount[index]--;
+    } else {
+        for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
+            if (idCount[index] > 0 || idCount[index] == -1) {
+                hasTriggeredOnce = YES;
+                currentTimer = spawnerDuration;
+                CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
+                                               sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
+                
+                [self createObjectWithID:index withEndingLocation:newPoint];
+                if (idCount[index] > 0) {
+                    idCount[index]--;
+                }
             }
         }
-    }
-    BOOL allDone = YES;
-    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
-        if (idCount[i] != 0) {
-            allDone = NO;
+        BOOL allDone = YES;
+        for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+            if (idCount[i] != 0) {
+                allDone = NO;
+            }
         }
+        isDoneSpawning = allDone;
     }
-    isDoneSpawning = allDone;
 }
 
 - (void)pauseSpawnerForDuration:(float)duration {

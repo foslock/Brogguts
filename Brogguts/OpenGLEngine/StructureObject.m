@@ -16,6 +16,7 @@
 #import "ImageRenderSingleton.h"
 #import "NotificationObject.h"
 #import "BuildingObject.h"
+#import "UpgradeManager.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent, attributeHullCapacity;
@@ -311,6 +312,12 @@
         enablePrimitiveDraw();
         [self drawHoverSelectionWithScroll:scroll];
         disablePrimitiveDraw();
+    }
+    
+    if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
+                                                        objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
+                           withScrollVector:scroll];
     }
 }
 
