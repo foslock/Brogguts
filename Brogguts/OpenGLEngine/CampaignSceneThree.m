@@ -25,14 +25,14 @@
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
-            [dia1 setDialogueImageIndex:0];
-            [dia1 setDialogueText:@"Congratulations, you've been promoted to a brand new colony! Again! Now if gathering brogguts was getting a little boring here is something more important for you to worry about. Our long range sensors are picking up a few pirates slowing approaching your base station. Defend it from them."];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia1 setDialogueText:@"Congratulations, you've been moved to a brand new colony! Again! Now, if gathering brogguts was getting a little boring here is something more important for you to worry about. Our long range sensors are picking up a few pirate craft slowing approaching your base station. Defend it from them."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_THREE_WAVE_TIME * 60.0f];
-            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
             [dia2 setDialogueText:@"Watch out, it appears the pirates have entered your local space. Defend the base station with everything you've got!"];
             [sceneDialogues addObject:dia2];
             [dia2 release];

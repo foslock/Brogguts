@@ -18,6 +18,10 @@ enum kDialogueDimensionValues {
 };
 
 // Portrait images should be 152 x 256
+enum kDialoguePortraitImages {
+    kDialoguePortraitBase,
+    kDialoguePortraitAnon,
+};
 
 @class TiledButtonObject;
 @class TextObject;
@@ -48,7 +52,6 @@ enum kDialogueDimensionValues {
 }
 
 @property (nonatomic, assign) float dialogueActivateTime;
-@property (nonatomic, assign) int dialogueImageIndex;
 @property (nonatomic, copy) NSString* dialogueText;
 @property (readonly) BOOL isWantingToBeDismissed;
 @property (nonatomic, assign) BOOL hasBeenDismissed;
@@ -59,6 +62,8 @@ enum kDialogueDimensionValues {
 - (void)updateDialogueObjectWithDelta:(float)aDelta;
 - (void)renderDialogueObjectWithFont:(BitmapFont*)font;
 - (void)presentDialogue;
+
+- (void)setDialogueImageIndex:(enum kDialoguePortraitImages)index;
 
 // Used for saving/loading
 - (id)initWithInfoArray:(NSArray*)infoArray;

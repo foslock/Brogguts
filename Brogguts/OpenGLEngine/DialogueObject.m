@@ -15,11 +15,22 @@
 #import "AnimatedImage.h"
 
 #define TILED_BACKGROUND_INSET_AMOUNT 12.0f
+#define DIALOUGE_PORTRAIT_COUNT 2
 
 NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
 
+NSString* const kDialougePortraitFilenames[DIALOUGE_PORTRAIT_COUNT] = {
+    @"defaultportrait.png",
+    @"anon.png",
+};
+
+int const kDialougePortraitImageCount[DIALOUGE_PORTRAIT_COUNT] = {
+    4,
+    5,
+};
+
 @implementation DialogueObject
-@synthesize dialogueActivateTime, dialogueImageIndex, dialogueText, hasBeenDismissed;
+@synthesize dialogueActivateTime, dialogueText, hasBeenDismissed;
 @synthesize isWantingToBeDismissed;
 
 - (void)dealloc {
@@ -50,7 +61,9 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
                                      kDialogueDimensionDialogueWidth, 
                                      kDialogueDimensionTotalHeight);
     
-    portraitImage = [[AnimatedImage alloc] initWithFileName:@"defaultportrait.png" withSubImageCount:4];
+    portraitImage = [[AnimatedImage alloc]
+                     initWithFileName:kDialougePortraitFilenames[kDialoguePortraitBase]
+                     withSubImageCount:kDialougePortraitImageCount[kDialoguePortraitBase]];
     [portraitImage setAnimationSpeed:0.05f];
     CGSize imageSize = [portraitImage imageSize];
     float desiredWidth = (float)kDialogueDimensionPortraitWidth - (2 * BUTTON_UNSCALED_SIZE);
@@ -92,6 +105,22 @@ NSString* const kDialogueDismissalString = @"(Hold to Dismiss)";
     [dialogueText autorelease];
     dialogueText = [newText copy];
     [dialogueTextObject setObjectText:dialogueText];
+}
+
+- (void)setDialogueImageIndex:(enum kDialoguePortraitImages)index {
+    NSString* filename = kDialougePortraitFilenames[index];
+    if (portraitImage) {
+        [portraitImage release];
+    }
+    portraitImage = [[AnimatedImage alloc] initWithFileName:filename
+                                          withSubImageCount:kDialougePortraitImageCount[index]];
+    [portraitImage setAnimationSpeed:0.05f];
+    CGSize imageSize = [portraitImage imageSize];
+    float desiredWidth = (float)kDialogueDimensionPortraitWidth - (2 * BUTTON_UNSCALED_SIZE);
+    float desiredHeight = (float)kDialogueDimensionTotalHeight - (2 * BUTTON_UNSCALED_SIZE);    
+    [portraitImage setScale:Scale2fMake((desiredWidth / imageSize.width),
+                                        (desiredHeight / imageSize.height))];
+    [portraitImage setRenderLayer:kLayerHUDTopLayer];
 }
 
 - (id)init {

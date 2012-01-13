@@ -86,7 +86,7 @@
     [defaults setBool:YES forKey:@"hasStartedTutorial"];
     [defaults synchronize];
     hasStartedTutorial = YES;
-    int beginningTutoralIndex = 7; // 0 is default
+    int beginningTutoralIndex = 0; // 0 is default
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
     [[GameController sharedGameController]
