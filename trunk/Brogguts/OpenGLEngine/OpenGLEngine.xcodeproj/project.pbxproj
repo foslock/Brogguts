@@ -286,6 +286,11 @@
 		6FCC0C1C14BF749F005278A2 /* bgloop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1B14BF749F005278A2 /* bgloop.mp3 */; };
 		6FCC0C1E14BF7803005278A2 /* menuloop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1D14BF7803005278A2 /* menuloop.mp3 */; };
 		6FCC0C2014BF9574005278A2 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C1F14BF9573005278A2 /* plus.png */; };
+		6FCC0C2614BFF1A6005278A2 /* anon[0].png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C2114BFF1A4005278A2 /* anon[0].png */; };
+		6FCC0C2714BFF1A6005278A2 /* anon[1].png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C2214BFF1A4005278A2 /* anon[1].png */; };
+		6FCC0C2814BFF1A6005278A2 /* anon[2].png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C2314BFF1A5005278A2 /* anon[2].png */; };
+		6FCC0C2914BFF1A6005278A2 /* anon[3].png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C2414BFF1A5005278A2 /* anon[3].png */; };
+		6FCC0C2A14BFF1A6005278A2 /* anon[4].png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCC0C2514BFF1A5005278A2 /* anon[4].png */; };
 		6FD74DCA1396AD760027E5C4 /* Campaign 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DC91396AD750027E5C4 /* Campaign 4.plist */; };
 		6FD74DCE1396B77F0027E5C4 /* spritesidebarback.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */; };
 		6FD74DD2139809180027E5C4 /* Campaign 11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FD74DCF139809150027E5C4 /* Campaign 11.plist */; };
@@ -724,6 +729,11 @@
 		6FCC0C1B14BF749F005278A2 /* bgloop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgloop.mp3; sourceTree = "<group>"; };
 		6FCC0C1D14BF7803005278A2 /* menuloop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = menuloop.mp3; sourceTree = "<group>"; };
 		6FCC0C1F14BF9573005278A2 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		6FCC0C2114BFF1A4005278A2 /* anon[0].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anon[0].png"; sourceTree = "<group>"; };
+		6FCC0C2214BFF1A4005278A2 /* anon[1].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anon[1].png"; sourceTree = "<group>"; };
+		6FCC0C2314BFF1A5005278A2 /* anon[2].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anon[2].png"; sourceTree = "<group>"; };
+		6FCC0C2414BFF1A5005278A2 /* anon[3].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anon[3].png"; sourceTree = "<group>"; };
+		6FCC0C2514BFF1A5005278A2 /* anon[4].png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anon[4].png"; sourceTree = "<group>"; };
 		6FD74DC91396AD750027E5C4 /* Campaign 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 4.plist"; sourceTree = "<group>"; };
 		6FD74DCD1396B77F0027E5C4 /* spritesidebarback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesidebarback.png; sourceTree = "<group>"; };
 		6FD74DCF139809150027E5C4 /* Campaign 11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 11.plist"; sourceTree = "<group>"; };
@@ -972,6 +982,11 @@
 		6F0A7A1C13E761CE001AD287 /* Portrait Images */ = {
 			isa = PBXGroup;
 			children = (
+				6FCC0C2114BFF1A4005278A2 /* anon[0].png */,
+				6FCC0C2214BFF1A4005278A2 /* anon[1].png */,
+				6FCC0C2314BFF1A5005278A2 /* anon[2].png */,
+				6FCC0C2414BFF1A5005278A2 /* anon[3].png */,
+				6FCC0C2514BFF1A5005278A2 /* anon[4].png */,
 				6F0A7A1E13E761F6001AD287 /* defaultportrait[0].png */,
 				6F0A7A1F13E761F6001AD287 /* defaultportrait[1].png */,
 				6F0A7A2013E761F6001AD287 /* defaultportrait[2].png */,
@@ -1983,6 +1998,11 @@
 				6FCC0C1C14BF749F005278A2 /* bgloop.mp3 in Resources */,
 				6FCC0C1E14BF7803005278A2 /* menuloop.mp3 in Resources */,
 				6FCC0C2014BF9574005278A2 /* plus.png in Resources */,
+				6FCC0C2614BFF1A6005278A2 /* anon[0].png in Resources */,
+				6FCC0C2714BFF1A6005278A2 /* anon[1].png in Resources */,
+				6FCC0C2814BFF1A6005278A2 /* anon[2].png in Resources */,
+				6FCC0C2914BFF1A6005278A2 /* anon[3].png in Resources */,
+				6FCC0C2A14BFF1A6005278A2 /* anon[4].png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

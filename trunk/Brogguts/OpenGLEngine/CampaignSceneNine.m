@@ -24,6 +24,20 @@
         [startObject setMissionTextTwo:@"- A massive wave has been detected"];
         [startObject setMissionTextThree:@"- Survive for as long as you can"];
         if (!loaded) {
+            DialogueObject* dia1 = [[DialogueObject alloc] init];
+            [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia1 setDialogueText:@""];
+            [sceneDialogues addObject:dia1];
+            [dia1 release];
+            
+            DialogueObject* dia2 = [[DialogueObject alloc] init];
+            [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia2 setDialogueText:@"T"];
+            [sceneDialogues addObject:dia2];
+            [dia2 release];
+            
             SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.05f withCount:10];
             [spawner addObjectWithID:kObjectCraftBeetleID withCount:10];
             [spawner addObjectWithID:kObjectCraftMothID withCount:10];

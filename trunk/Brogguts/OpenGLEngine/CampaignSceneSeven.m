@@ -28,15 +28,15 @@
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
-            [dia1 setDialogueImageIndex:0];
-            [dia1 setDialogueText:@"The higher ups at the company have decided after so many successful defensive missions that you are the perfect man for this very special job. And old reclaimable colony is sitting in empty space, having completely mined all of its surrounding brogguts."];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia1 setDialogueText:@"The higher ups at the company have decided after so many successful defensive missions that you are the perfect man for this very special job. And old abandoned base station is sitting in empty space, having completely mined all of its surrounding brogguts."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
-            [dia2 setDialogueImageIndex:0];
-            [dia2 setDialogueText:@"There is a very important, and very valuable, piece of data aboard that base station. You may use all the remaining brogguts to build a defense to hold out against an incoming invasion."];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia2 setDialogueText:@"There is technology aboard this station that we do not want falling into the pirates' hands. You may use all the remaining brogguts held in this station to build a defense to hold out against the incoming invasion."];
             [sceneDialogues addObject:dia2];
             [dia2 release];
             

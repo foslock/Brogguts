@@ -28,6 +28,19 @@
         [startObject setMissionTextThree:@"- Destroy all enemy craft in all four waves"];
         
         if (!loaded) {
+            DialogueObject* dia1 = [[DialogueObject alloc] init];
+            [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia1 setDialogueText:@"We need you on an emergency mission. An officer responsible for a base station out in dangerous space has just stepped down from his command and the station needs to be run with a keen eye."];
+            [sceneDialogues addObject:dia1];
+            [dia1 release];
+            
+            DialogueObject* dia2 = [[DialogueObject alloc] init];
+            [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia2 setDialogueText:@"There is a very important, and very valuable, piece of data aboard that base station. Be cautious, reports indicate that multiple pirate factions have allied against us on this one. Expect multiple waves from any direction."];
+            [sceneDialogues addObject:dia2];
+            [dia2 release];
             
             SpawnerObject* spawnerOne = [[SpawnerObject alloc] initWithLocation:CGPointMake(0.0f, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:0];
             [spawnerOne addObjectWithID:kObjectCraftBeetleID withCount:2];

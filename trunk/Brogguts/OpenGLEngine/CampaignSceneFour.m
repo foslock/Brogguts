@@ -26,14 +26,14 @@
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
-            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
             [dia1 setDialogueText:@"Well, it seems that you are climbing the commanding ladder faster than anyone could have imagined. You're already becoming an invaluable resource to our company. We've put you in charge of defending another colony that will be getting attacked. Watch out this time though, the pirates come in greater numbers and with stronger craft."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:(CAMPAIGN_FOUR_WAVE_TIME/2) * 60.0f];
-            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
             [dia2 setDialogueText:@"We've picked up strong signals reflecting those of enemy Beetle craft. The Beetle is slow, but can take a beating and delivers some serious firepower. Read about it in the Broggupedia for more information."];
             [sceneDialogues addObject:dia2];
             [dia2 release];

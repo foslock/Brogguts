@@ -25,15 +25,15 @@
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
-            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
             [dia1 setDialogueText:@"Commander, you have been put in charge of a base station farther from safe space, so pirates travel in larger fleets than you might be used to. Also, if it hasn't become clear, you should probably mine the brogguts that are closest to your base station first."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:(CAMPAIGN_FIVE_WAVE_TIME/2) * 60.0f];
-            [dia2 setDialogueImageIndex:0];
-            [dia2 setDialogueText:@"This mission just got a lot messier. It seems that the enemy ships are converging from the entire upper region of space towards your colony. Think about how this might affect your mining strategy."];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
+            [dia2 setDialogueText:@"This mission just got a lot messier. It seems that the enemy ships are converging from the entire upper region of space towards your colony. Think about how this might affect your current mining strategy."];
             [sceneDialogues addObject:dia2];
             [dia2 release];
             

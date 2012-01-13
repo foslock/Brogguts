@@ -360,7 +360,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             if (sceneTimer == 0.0f) { // Only add if the base camp hasn't started before
                 DialogueObject* dia = [[DialogueObject alloc] init];
                 [dia setDialogueActivateTime:0.0f];
-                [dia setDialogueImageIndex:0];
+                [dia setDialogueImageIndex:kDialoguePortraitBase];
                 [dia setDialogueText:kBaseCampIntroHelpText];
                 [sceneDialogues addObject:dia];
                 [dia release];

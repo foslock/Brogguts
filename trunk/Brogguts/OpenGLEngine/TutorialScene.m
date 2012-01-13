@@ -85,7 +85,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         /*
         DialogueObject* dia = [[DialogueObject alloc] init];
         [dia setDialogueActivateTime:0.0f];
-        [dia setDialogueImageIndex:0];
+        [dia setDialogueImageIndex:kDialoguePortraitBase];
         [dia setDialogueText:helpText.objectText];
         [sceneDialogues addObject:dia];
         [dia release];

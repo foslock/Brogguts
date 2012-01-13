@@ -14,7 +14,7 @@
 #import "TextObject.h"
 
 #define CAMPAIGN_TWO_BROGGUT_GOAL 5000 // 2500
-#define CAMPAIGN_TWO_TIME_LIMIT 10.0f // 10 mins
+#define CAMPAIGN_TWO_TIME_LIMIT 6.0f // 10 mins
 
 @implementation CampaignSceneTwo
 
@@ -26,14 +26,14 @@
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
-            [dia1 setDialogueImageIndex:0];
+            [dia1 setDialogueImageIndex:kDialoguePortraitBase];
             [dia1 setDialogueText:@"We've put you on a new colony this time around, where we need you to collect a large number of brogguts in a limited amount of time. You are provided with enough blocks so you don't need to worry about the craft limit, so hurry and mine some brogguts!"];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_TWO_TIME_LIMIT * 60.0f / 2];
-            [dia2 setDialogueImageIndex:0];
+            [dia2 setDialogueImageIndex:kDialoguePortraitBase];
             [dia2 setDialogueText:@"You are halfway through your allotted time, hurry up and bring as many of those brogguts as you can back to base!"];
             [sceneDialogues addObject:dia2];
             [dia2 release];
