@@ -36,12 +36,16 @@
 	// True if the structure should be checked for ships/structures in it's area
 	BOOL isCheckedForRadialEffect;
     BOOL isDrawingEffectRadius;
+    BOOL isOverviewDrawingEffectRadius;
 	float effectRadius;
 	
 	// AI states
 	int movingAIState;
 	int attackingAIState;
 	
+    // View distance of object (for fog)
+    int attributeViewDistance;
+    
 	// Closest enemy object, within range
 	TouchableObject* closestEnemyObject;
 	NSMutableSet* objectsTargetingSelf;
@@ -65,6 +69,8 @@
 @property (nonatomic, assign) BOOL isCurrentlyTouched;
 @property (nonatomic, assign) BOOL isCheckedForRadialEffect;
 @property (nonatomic, assign) BOOL isDrawingEffectRadius;
+@property (nonatomic, assign) BOOL isOverviewDrawingEffectRadius;
+@property (readonly) int attributeViewDistance;
 @property (nonatomic, assign) CGPoint creationEndLocation;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;

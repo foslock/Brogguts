@@ -9,9 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CraftObject.h"
 
-@interface MothCraftObject : CraftObject {
-
-}
+@interface MothCraftObject : CraftObject
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 

@@ -90,7 +90,7 @@
     ringImage.scale = Scale2fMake(ringImage.scale.x * EXPLOSION_RING_GROWTH_RATE,
                                   ringImage.scale.y * EXPLOSION_RING_GROWTH_RATE);
     ringImage.color = Color4fMake(1.0f, 1.0f, 0.4f,
-                                  CLAMP(ringImage.color.alpha-EXPLOSION_RING_FADE_RATE, 0, 1.0f));
+                                  CLAMP(ringImage.color.alpha-EXPLOSION_RING_FADE_RATE, 0, 0.75f));
     
     
     if ([animatedImage isAnimationComplete]) {

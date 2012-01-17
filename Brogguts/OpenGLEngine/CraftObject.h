@@ -92,6 +92,7 @@ typedef struct Point_Array {
 @property (readonly) int attributePlayerCurrentCargo;
 @property (readonly) int attributeHullCurrent;
 @property (readonly) int attributeHullCapacity;
+@property (readonly) int attributeAttackRange;
 @property (readonly) BOOL isUnderAura;
 @property (readonly) BOOL craftDoesRotate;
 
@@ -101,6 +102,9 @@ typedef struct Point_Array {
 
 - (void)addCargo:(int)cargo;
 - (CGPoint)miningLocation;
+
+// Limits a craft's speed
+- (void)setCraftSpeedLimit:(int)newEngines;
 
 - (void)calculateCraftAIInfo;
 

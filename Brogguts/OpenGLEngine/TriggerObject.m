@@ -11,6 +11,7 @@
 #import "Image.h"
 #import "Global.h"
 #import "BroggutScene.h"
+#import "CollisionManager.h"
 
 @implementation TriggerObject
 @synthesize isComplete;
@@ -38,6 +39,7 @@
         nearbyObjects = [[NSMutableArray alloc] init];
         isCheckedForRadialEffect = YES;
         isTouchable = NO;
+        attributeViewDistance = 512;
     }
     return self;
 }
@@ -46,36 +48,6 @@
     if (!isComplete) {
         isComplete = YES;
         [self setDestroyNow:YES];
-    }
-}
-
-- (void)objectEnteredEffectRadius:(TouchableObject *)other {
-    if (other.objectType == objectIDNeeded) {
-        if (![nearbyObjects containsObject:other]) {
-            [nearbyObjects addObject:other];
-        }
-        // If the other object is what you want, complete it!
-        if ([nearbyObjects count] >= numberOfObjectsNeeded) {
-            int count = 0;
-            for (int i = 0; i < [nearbyObjects count]; i++) {
-                CollidableObject* obj = [nearbyObjects objectAtIndex:i];
-                if (obj.objectType == objectIDNeeded) {
-                    if (GetDistanceBetweenPointsSquared(objectLocation, obj.objectLocation) <= POW2([self boundingCircle].radius)) {
-                        count++;
-                        /*
-                        if ([obj isKindOfClass:[CraftObject class]]) {
-                            CraftObject* craft = (CraftObject*)obj;
-                            [currentScene removeControlledCraft:craft];
-                        }
-                         */
-                    }
-                }
-            }
-            if (count >= numberOfObjectsNeeded) {
-                [self triggerIsComplete];
-                return;
-            }
-        }
     }
 }
 
@@ -99,6 +71,17 @@
     currentTriggerAlpha = CLAMP(currentTriggerAlpha, TRIGGER_MIN_ALPHA, TRIGGER_MAX_ALPHA);
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentTriggerAlpha)];
     effectRadius = ([objectImage imageSize].width / 2) * [objectImage scale].x;
+    
+    NSArray* queriedObjects = [[self.currentScene collisionManager] getArrayOfRadiiObjectsInCircle:[self boundingCircle]];
+    int count = 0;
+    for (TouchableObject* tobj in queriedObjects) {
+        if (tobj.objectType == objectIDNeeded) {
+            count++;
+        }
+    }
+    if (count >= numberOfObjectsNeeded) {
+        [self triggerIsComplete];
+    }
 }
 
 @end

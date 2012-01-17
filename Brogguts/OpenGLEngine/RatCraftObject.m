@@ -6,8 +6,11 @@
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
+#import "GameplayConstants.h"
 #import "RatCraftObject.h"
 #import "Image.h"
+#import "UpgradeManager.h"
+#import "BroggutScene.h"
 
 @implementation RatCraftObject
 @synthesize isCloaked, cloakAlpha;
@@ -27,6 +30,12 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
+    // Check for upgrade
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeViewDistance = kCraftRatViewDistanceUpgraded;
+    }
+    
     if (isCloaked && cloakAlpha > 0.0f) {
         cloakAlpha -= aDelta;
     }

@@ -17,6 +17,7 @@
 #import "NotificationObject.h"
 #import "BuildingObject.h"
 #import "UpgradeManager.h"
+#import "FogManager.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent, attributeHullCapacity;
@@ -29,6 +30,7 @@
 			attributeHullCapacity = kStructureBaseStationHull;
 			attributeHullCurrent = kStructureBaseStationHull;
 			attributeMovingTime = kStructureBaseStationMovingTime;
+            attributeViewDistance = kStructureBaseStationViewDistance;
 			break;
 		case kObjectStructureBlockID:
 			attributeBroggutCost = kStructureBlockCostBrogguts;
@@ -36,6 +38,7 @@
 			attributeHullCapacity = kStructureBlockHull;
 			attributeHullCurrent = kStructureBlockHull;
 			attributeMovingTime = kStructureBlockMovingTime;
+            attributeViewDistance = kStructureBlockViewDistance;
 			break;
 		case kObjectStructureRefineryID:
 			attributeBroggutCost = kStructureRefineryCostBrogguts;
@@ -43,6 +46,7 @@
 			attributeHullCapacity = kStructureRefineryHull;
 			attributeHullCurrent = kStructureRefineryHull;
 			attributeMovingTime = kStructureRefineryMovingTime;
+            attributeViewDistance = kStructureRefineryViewDistance;
 			break;
 		case kObjectStructureCraftUpgradesID:
 			attributeBroggutCost = kStructureCraftUpgradesCostBrogguts;
@@ -50,6 +54,7 @@
 			attributeHullCapacity = kStructureCraftUpgradesHull;
 			attributeHullCurrent = kStructureCraftUpgradesHull;
 			attributeMovingTime = kStructureCraftUpgradesMovingTime;
+            attributeViewDistance = kStructureCraftUpgradesViewDistance;
 			break;
 		case kObjectStructureStructureUpgradesID:
 			attributeBroggutCost = kStructureStructureUpgradesCostBrogguts;
@@ -57,6 +62,7 @@
 			attributeHullCapacity = kStructureStructureUpgradesHull;
 			attributeHullCurrent = kStructureStructureUpgradesHull;
 			attributeMovingTime = kStructureStructureUpgradesMovingTime;
+            attributeViewDistance = kStructureStructureUpgradesViewDistance;
 			break;
 		case kObjectStructureTurretID:
 			attributeBroggutCost = kStructureTurretCostBrogguts;
@@ -64,6 +70,7 @@
 			attributeHullCapacity = kStructureTurretHull;
 			attributeHullCurrent = kStructureTurretHull;
 			attributeMovingTime = kStructureTurretMovingTime;
+            attributeViewDistance = kStructureTurretViewDistance;
 			break;
 		case kObjectStructureRadarID:
 			attributeBroggutCost = kStructureRadarCostBrogguts;
@@ -71,6 +78,7 @@
 			attributeHullCapacity = kStructureRadarHull;
 			attributeHullCurrent = kStructureRadarHull;
 			attributeMovingTime = kStructureRadarMovingTime;
+            attributeViewDistance = kStructureRadarViewDistance;
 			break;
 		case kObjectStructureFixerID:
 			attributeBroggutCost = kStructureFixerCostBrogguts;
@@ -78,6 +86,7 @@
 			attributeHullCapacity = kStructureFixerHull;
 			attributeHullCurrent = kStructureFixerHull;
 			attributeMovingTime = kStructureFixerMovingTime;
+            attributeViewDistance = kStructureFixerViewDistance;
 			break;
 		default:
 			break;
@@ -218,6 +227,7 @@
             NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
             Color4f color = [objectImage color];
             Scale2f scale = [objectImage scale];
+            int layer = [objectImage renderLayer];
             [objectImage autorelease];
             NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
             Image* newImage = [[Image alloc] initWithImageNamed:newName filter:GL_LINEAR];
@@ -225,6 +235,7 @@
                 objectImage = newImage;
                 [objectImage setColor:color];
                 [objectImage setScale:scale];
+                [objectImage setRenderLayer:layer];
                 [objectImage setRotation:objectRotation];
             } else {
                 [objectImage retain];
@@ -314,10 +325,12 @@
         disablePrimitiveDraw();
     }
     
-    if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
-        [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
-                                                        objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
-                           withScrollVector:scroll];
+    if (objectAlliance == kAllianceFriendly) {
+        if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
+            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width / 2 * self.objectImage.scale.x),
+                                                            objectLocation.y + (self.objectImage.imageSize.height / 2 * self.objectImage.scale.y))
+                               withScrollVector:scroll];
+        }
     }
 }
 

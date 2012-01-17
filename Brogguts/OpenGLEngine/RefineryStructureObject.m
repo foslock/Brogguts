@@ -13,6 +13,7 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "TextObject.h"
+#import "UpgradeManager.h"
 
 @implementation RefineryStructureObject
 @synthesize isRefining;
@@ -30,6 +31,7 @@
 		isCheckedForRadialEffect = YES;
         hasBeenAdded = NO;
         isRefining = NO;
+        refiningTimeTotal = kStructureRefineryBroggutConvertTime;
         refiningTimer = 0;
 	}
 	return self;
@@ -37,6 +39,11 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        refiningTimeTotal = kStructureRefineryBroggutConvertTimeUpgrade;
+    }
+    
     [animatedImage updateAnimatedImageWithDelta:aDelta];
     if (!hasBeenAdded && !isTraveling) {
         hasBeenAdded = YES;
@@ -53,7 +60,7 @@
             } else {
                 metalCount = refiningCounter;
             }
-            refiningTimer = kStructureRefineryBroggutConvertTime;
+            refiningTimer = refiningTimeTotal;
             refiningCounter -= metalCount;
             [[[GameController sharedGameController] currentProfile] addMetal:metalCount];
             NSString* metalString = [NSString stringWithFormat:@"+%i Metal", metalCount];
@@ -84,7 +91,7 @@
 
 - (void)addRefiningCount:(int)counter {
     refiningCounter += counter;
-    refiningTimer = kStructureRefineryBroggutConvertTime;
+    refiningTimer = refiningTimeTotal;
     [self setIsRefining:YES];
 }
 

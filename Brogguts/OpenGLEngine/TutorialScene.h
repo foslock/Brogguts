@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BroggutScene.h"
 #import "NotificationObject.h"
+#import "FogManager.h"
 
 #define TUTORIAL_SCENES_COUNT 13
 #define TUTORIAL_HELP_FONT kFontBlairID

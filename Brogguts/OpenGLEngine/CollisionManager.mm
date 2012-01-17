@@ -476,12 +476,28 @@
 
 - (void)updateAllEffectRadii {
     if (collisionQuadTree) {
-        int currentRadialObjectCount = [radialAffectedObjects count];
+        NSMutableArray* removeObjs = [NSMutableArray array];
         
-        for (int i = 0; i < currentRadialObjectCount; i++) { // Update all the stuff
+        for (int i = 0; i < [radialAffectedObjects count]; i++) { // Find those that need deleting
+            TouchableObject* tobj = [radialAffectedObjects objectAtIndex:i];
+            if (tobj.destroyNow) { // Take care of destroy(ed) objects
+                [removeObjs addObject:tobj];
+            }
+        }
+        
+        for (int i = 0; i < [removeObjs count]; i++) { // Delete them...
+            TouchableObject* tobj = [removeObjs objectAtIndex:i];
+            [self removeRadialAffectedObject:tobj];
+        }
+        
+        for (int i = 0; i < [radialAffectedObjects count]; i++) { // Update all the rest of the stuff if it needs it
             TouchableObject* tobj = [radialAffectedObjects objectAtIndex:i];
             NodeObject* obj = tobj.thisObjectNode;
             obj->arrayIndex = i;
+            if (!tobj.hasMovedThisStep && !tobj.shouldUpdateThisStep) { // Don't update objects who haven't moved
+                continue;
+            }
+            tobj.shouldUpdateThisStep = NO;
             obj->xPos = tobj.objectLocation.x;
             obj->yPos = tobj.objectLocation.y;
             obj->objectRadius = tobj.touchableBounds.radius;
@@ -540,6 +556,24 @@
         return [newArray autorelease];
     }
     return nil;
+}
+
+- (NSArray*)getArrayOfRadiiObjectsInCircle:(Circle)circle {
+    NSArray* array = [self getArrayOfRadiiObjectsInRect:CGRectMake(circle.x - circle.radius,
+                                                                   circle.y - circle.radius,
+                                                                   circle.radius*2, circle.radius*2)];
+    NSMutableArray* newArray = [NSMutableArray array];
+    for (int i = 0; i < [array count]; i++) {
+        TouchableObject* tobj = [array objectAtIndex:i];
+        if (GetDistanceBetweenPointsSquared(tobj.objectLocation, CGPointMake(circle.x, circle.y)) <= POW2(circle.radius)) {
+            [newArray addObject:tobj];
+        }
+    }
+    if ([newArray count]) {
+        return newArray;
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark -

@@ -10,6 +10,9 @@
 #import "ParticleSingleton.h"
 #import "Image.h"
 #import "ImageRenderSingleton.h"
+#import "BroggutScene.h"
+#import "UpgradeManager.h"
+#import "SoundSingleton.h"
 
 @implementation TurretStructureObject
 
@@ -24,6 +27,7 @@
         [objectImage setScale:Scale2fMake(0.65f, 0.65f)];
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
+        isOverviewDrawingEffectRadius = YES;
 		effectRadius = kStructureTurretAttackRange;
 		attributeAttackCooldown = kStructureTurretAttackCooldown;
 		attributeWeaponsDamage = kStructureTurretWeapons;
@@ -44,7 +48,8 @@
 				CGPoint enemyPoint = closestEnemyObject.objectLocation;
 				attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
 														enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
-				[[ParticleSingleton sharedParticleSingleton] createParticles:10 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+				[[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+                [[SoundSingleton sharedSoundSingleton] playLaserSound];
                 float direction = GetAngleInDegreesFromPoints(objectLocation, attackLaserTargetPosition);
                 [turretGunImage setRotation:direction];
 				attackCooldownTimer = attributeAttackCooldown;
@@ -57,6 +62,11 @@
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeAttackCooldown = kStructureTurretAttackCooldownUpgrade;
+    }
+    
 	// Attack if able!
 	if (attackCooldownTimer > 0) {
 		attackCooldownTimer--;

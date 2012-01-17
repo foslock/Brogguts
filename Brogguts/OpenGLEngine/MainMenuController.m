@@ -22,7 +22,7 @@
 #import "GameCenterSingleton.h"
 
 @implementation MainMenuController
-@synthesize backgroundOne, backgroundTwo, backgroundThree;
+@synthesize backgroundImage;
 @synthesize letterB;
 @synthesize letterR;
 @synthesize letterO;
@@ -51,6 +51,8 @@
         [fadeCoverView setExclusiveTouch:YES];
         [fadeCoverView setAlpha:0.0f];
         [fadeCoverView setBackgroundColor:[UIColor blackColor]];
+        starsArray = [[NSMutableArray alloc] init];
+        lettersArray = [[NSMutableArray alloc] init];
         hasStartedTutorial = NO;
         isShowingRecommendation = NO;
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -65,6 +67,7 @@
 {
     [[SoundSingleton sharedSoundSingleton] removeSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
     [starsArray release];
+    [lettersArray release];
     [fadeCoverView release];
     [super dealloc];
 }
@@ -195,10 +198,6 @@
     [broggutController release];
 }
 
-- (void)animateBackgrounds {
-    // 
-}
-
 - (void)animateLetters {
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     float width = [letterB image].size.width;
@@ -259,26 +258,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [self.view addSubview:fadeCoverView];
-    starsArray = [[NSMutableArray alloc] init];
-    for (int i = 0; i < MAIN_MENU_STAR_COUNT; i++) {
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"defaultTexture" ofType:@"png"];
+    for (int i = 0; i < MAIN_MENU_ANIMATED_STAR_COUNT; i++) {
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"starTexture" ofType:@"png"];
         UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
         UIImageView* tempStar = [[UIImageView alloc] initWithImage:image];
         float randomX = RANDOM_0_TO_1() * kPadScreenLandscapeWidth;
         float randomY = RANDOM_0_TO_1() * kPadScreenLandscapeHeight;
+        float randomAlpha = (float)(arc4random() % 100) / 100.0f;
         float randomScale = 0.05f + (RANDOM_0_TO_1() * 0.15f);
         [tempStar setTransform:CGAffineTransformMakeScale(randomScale, randomScale)];
         [tempStar setCenter:CGPointMake(randomX, randomY)];
-        [self.view addSubview:tempStar];
-        [self.view sendSubviewToBack:tempStar];
+        [tempStar setAlpha:randomAlpha];
+        [tempStar setUserInteractionEnabled:NO];
+        [backgroundImage addSubview:tempStar];
         [starsArray addObject:tempStar];
         [image release];
         [tempStar release];
     }
-    [self animateBackgrounds];
     
-    lettersArray = [[NSMutableArray alloc] init];
     [lettersArray addObject:letterB];
     [lettersArray addObject:letterR];
     [lettersArray addObject:letterO];
@@ -308,9 +307,36 @@
     }];
 }
 
+- (UIImage*)imageWithRandomStars {
+    CGSize size = CGSizeMake(kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor blackColor] set];
+    CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
+    // Draw stars on image
+    
+    UIImage* starImage = [UIImage imageNamed:@"starTexture.png"];
+    
+    int starCount = MAIN_MENU_STATIC_STAR_COUNT;
+    for (int i = 0; i < starCount; i++) {
+        int rSize = (arc4random() % 8) + 1;
+        float rAlpha = (float)(arc4random() % 100) / 100.0f;
+        int rX = (arc4random() % (int)size.width) + 1;
+        int rY = (arc4random() % (int)size.height) + 1;
+        CGRect rect = CGRectMake(rX, rY, rSize, rSize);
+        CGContextSetAlpha(context, rAlpha);
+        CGContextDrawImage(context, rect, [starImage CGImage]);
+    }
+    
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [backgroundImage setImage:[self imageWithRandomStars]];
     
     [self.view bringSubviewToFront:fadeCoverView];
     [self.view bringSubviewToFront:recommendationView];
@@ -321,18 +347,6 @@
     [[GameController sharedGameController] savePlayerProfile];
     
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
-    
-    [backgroundOne setCenter:center];
-    [backgroundTwo setCenter:center];
-    [backgroundThree setCenter:center];
-    
-    [backgroundOne setAlpha:0.25f];
-    [backgroundTwo setAlpha:0.5f];
-    [backgroundThree setAlpha:1.0f];
-    
-    [backgroundOne setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
-    [backgroundTwo setTransform:CGAffineTransformMakeScale(1.2f, 1.2f)];
-    [backgroundThree setTransform:CGAffineTransformMakeScale(1.35f, 1.35f)];
     
     float distance = kPadScreenLandscapeWidth;
     float randDir = arc4random() % 360;

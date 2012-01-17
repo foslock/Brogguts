@@ -14,6 +14,7 @@
 #import "Image.h"
 #import "ImageRenderSingleton.h"
 #import "CollisionManager.h"
+#import "UpgradeManager.h"
 
 @implementation BaseStationStructureObject
 
@@ -71,6 +72,14 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeHullCapacity = kStructureBaseStationHullCapacityUpgrade;
+        if (!hasBeenUpgraded) {
+            attributeHullCurrent += (kStructureBaseStationHullCapacityUpgrade - kStructureBaseStationHull);
+            hasBeenUpgraded = YES;
+        }
+    }
     
     // There must only be one of each (friendly and enemy) base stations in any scene
     if (objectAlliance == kAllianceFriendly) {

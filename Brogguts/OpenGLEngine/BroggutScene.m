@@ -39,6 +39,8 @@
 #import "UpgradeDialogueObject.h"
 #import "UpgradeManager.h"
 #import "EndMissionObject.h"
+#import "FogManager.h"
+#import "SoundSingleton.h"
 
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -61,7 +63,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 @synthesize cameraContainRect, cameraLocation;
 @synthesize fullMapBounds, visibleScreenBounds;
 @synthesize isShowingOverview, isBuildingStructure;
-@synthesize commandingShip;
 @synthesize homeBaseLocation, enemyBaseLocation, sideBar;
 @synthesize fontArray, broggutCounter, metalCounter, supplyCounter;
 @synthesize touchableObjects;
@@ -72,6 +73,47 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
 @synthesize sceneSpawners, sceneDialogues, upgradeManager;
+
+- (void)dealloc {
+	if (cameraImage) {
+		[cameraImage release];
+	}
+    [fogManager release];
+    [upgradeManager release];
+    [sceneDialogues release];
+    [sceneSpawners release];
+    [broggutIconImage release];
+    [metalIconImage release];
+    [supplyIconImage release];
+    [countdownTimer release];
+    [notification release];
+    [helpMessageObject release];
+    [sceneFileName release];
+    [currentBlocks release];
+    [currentRefineries release];
+    [buildBroggutValue release];
+    [buildMetalValue release];
+    [endMissionObject release];
+    [enemyAIController release];
+	[broggutCounter release];
+	[metalCounter release];
+    [supplyCounter release];
+	[controlledShips release];
+	[selectionPointsOne release];
+	[selectionPointsTwo release];
+	[sideBar release];
+	[sceneName release];
+	[fontArray release];
+	[textObjectArray release];
+	[currentTouchesInSideBar release];
+	[currentObjectsTouching release];
+	[currentObjectsHovering release];
+	[renderableObjects release];
+	[renderableDestroyed release];
+	[touchableObjects release];
+	[collisionManager release];
+	[super dealloc];
+}
 
 - (void)initializeWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
     // Grab an instance of the render manager
@@ -157,10 +199,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     isShowingMessageTimer = NO;
     isScreenShaking = NO;
     screenShakingAmount = 0.0f;
-    /*
-     if (!isMultiplayerMatch)
-     enemyAIController = [[AIController alloc] initWithTouchableObjects:touchableObjects withPirate:isBaseCamp];
-     */
+    playingMiningSoundTimer = 0.0f;
+    
+    if (!isMultiplayerMatch) {
+        enemyAIController = [[AIController alloc] initWithScene:self withPirate:YES];
+    }
+    
+    fogManager = [[FogManager alloc] initWithWidthCells:widthCells withHeightCells:heightCells withResolution:1];
+    [fogManager resetAllFog];
     
     // Set up the sidebar
     sideBar = [[SideBarController alloc] initWithLocation:CGPointMake(-SIDEBAR_WIDTH, 0.0f) withWidth:SIDEBAR_WIDTH withHeight:screenBounds.size.height];
@@ -324,6 +370,16 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         // Initialize the entire scene, get it ready for adding objects
         [self initializeWithScreenBounds:visibleRect withFullMapBounds:fullMapRect withName:thisSceneName];
         
+        NSArray* fogDataArray = nil;
+        if ([AIArray count] != 0) {
+            if (kSceneAIControllerFogData < [AIArray count]) {
+                fogDataArray = [AIArray objectAtIndex:kSceneAIControllerFogData];
+                if (fogDataArray) {
+                    [fogManager resetFogWithFogArray:fogDataArray];
+                }
+            }
+        }
+        
         // If this is a campaign, recreate the spawners
         if ([AIArray count] != 0) {
             if (sceneType == kSceneTypeCampaign) {
@@ -470,6 +526,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                                 [self setIsFriendlyBaseStationAlive:YES];
                             } else if (objectAlliance == kAllianceEnemy) {
                                 [self setIsEnemyBaseStationAlive:YES];
+                                [enemyAIController setIsPirateScene:NO];
                             }
                             [self createLocalTouchableObject:newStructure withColliding:STRUCTURE_COLLISION_YESNO];
                             if (newStructure.objectAlliance == kAllianceFriendly) {
@@ -956,6 +1013,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     NSArray* purchasedUpgrades = [upgradeManager arrayFromPurchasedUpgrades];
     NSArray* completedUpgrades = [upgradeManager arrayFromCompletedUpgrades];
+    NSArray* fogDataArray = [fogManager arrayFromFogManager];
     
     // After the metal has been finalized, save the brogguts and metal in the plist
     NSMutableArray* tempArray = [[NSMutableArray alloc] init]; // AI Controller data array
@@ -966,6 +1024,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     [tempArray insertObject:completedUpgrades atIndex:kSceneAIControllerCompletedUpgrades];
     [tempArray insertObject:[NSNumber numberWithInt:currentBroggutCount] atIndex:kSceneAIControllerBrogguts];
     [tempArray insertObject:[NSNumber numberWithInt:currentMetalCount] atIndex:kSceneAIControllerMetal];
+    [tempArray insertObject:fogDataArray atIndex:kSceneAIControllerFogData];
     [plistArray insertObject:tempArray atIndex:kSceneStorageGlobalAIController];
     [tempArray release];
     
@@ -976,46 +1035,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     [finalObjectArray release];
     
     return [plistArray autorelease];
-}
-
-- (void)dealloc {
-	if (cameraImage) {
-		[cameraImage release];
-	}
-    [upgradeManager release];
-    [sceneDialogues release];
-    [sceneSpawners release];
-    [broggutIconImage release];
-    [metalIconImage release];
-    [supplyIconImage release];
-    [countdownTimer release];
-    [notification release];
-    [helpMessageObject release];
-    [sceneFileName release];
-    [currentBlocks release];
-    [currentRefineries release];
-    [buildBroggutValue release];
-    [buildMetalValue release];
-    [endMissionObject release];
-    [enemyAIController release];
-	[broggutCounter release];
-	[metalCounter release];
-    [supplyCounter release];
-	[controlledShips release];
-	[selectionPointsOne release];
-	[selectionPointsTwo release];
-	[sideBar release];
-	[sceneName release];
-	[fontArray release];
-	[textObjectArray release];
-	[currentTouchesInSideBar release];
-	[currentObjectsTouching release];
-	[currentObjectsHovering release];
-	[renderableObjects release];
-	[renderableDestroyed release];
-	[touchableObjects release];
-	[collisionManager release];
-	[super dealloc];
 }
 
 - (id)initWithScreenBounds:(CGRect)screenBounds withFullMapBounds:(CGRect)mapBounds withName:(NSString*)sName {
@@ -1065,6 +1084,15 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
 }
 
+- (void)playMiningSoundAtLocation:(CGPoint)location {
+    if (playingMiningSoundTimer <= 0.0f) {
+        if (CGRectContainsPoint([self visibleScreenBounds], location) && !isShowingOverview) {
+            playingMiningSoundTimer = SOUND_MINING_SOUND_LENGTH;
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMiningSound]];
+        }
+    }
+}
+
 #pragma mark -
 #pragma mark Brogguts
 
@@ -1109,7 +1137,8 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                                    bounds.origin.y + RANDOM_0_TO_1() * bounds.size.height);
         }
         
-        Image* rockImage = [[Image alloc] initWithImageNamed:kObjectBroggutSmallSprite filter:GL_LINEAR];
+        NSString* rockName = [NSString stringWithFormat:@"%@%d.png", kObjectBroggutSmallSprite, ((i % 6) + 1)];
+        Image* rockImage = [[Image alloc] initWithImageNamed:rockName filter:GL_LINEAR];
         float randomDarkness = CLAMP(RANDOM_0_TO_1() + 0.2f, 0.0f, 0.8f);
         [rockImage setColor:Color4fMake(randomDarkness, randomDarkness, randomDarkness, 1.0f)];
         BroggutObject* tempObj = [[BroggutObject alloc]
@@ -1352,6 +1381,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         return;
     }
     
+    // Update the mining sound timer
+    if (playingMiningSoundTimer > 0.0f) {
+        playingMiningSoundTimer -= aDelta;
+    }
+    
     // Update the current broggut count
     NSString* brogCount = [NSString stringWithFormat:@" %i",[sharedGameController currentProfile].broggutCount];
     [broggutCounter setFontColor:Color4fMake(1.0f, 1.0f, 0.75f, 1.0f)];
@@ -1504,13 +1538,21 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
     }
     
-    // Must update the quadtree to account for deletions
-    [collisionManager updateAllEffectRadii];
-    
     // Loop through all collidable objects and update them
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
+        int objRadius = [tempObj boundingCircle].radius;
         [tempObj updateObjectLogicWithDelta:aDelta];
+        if (frameCounter % (FOG_UPDATE_FREQUENCY + 1) == kFrameOffsetFogUpdate) {
+            if (tempObj.objectAlliance != kAllianceEnemy) {
+                if ([tempObj isKindOfClass:[TouchableObject class]]) {
+                    TouchableObject* tobj = (TouchableObject*)tempObj;
+                    if (tobj.attributeViewDistance > 0) {
+                        [fogManager removeFogAtPoint:tobj.objectLocation withRadius:(float)tobj.attributeViewDistance withIntensity:0.75f];
+                    }
+                }
+            }
+        }
         if (tempObj.objectType == kObjectBroggutSmallID) {
             if (tempObj.objectLocation.x < fullMapBounds.origin.x)
                 tempObj.objectLocation = CGPointMake(fullMapBounds.size.width, tempObj.objectLocation.y);
@@ -1523,30 +1565,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         } else {
             tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, 0.0f, fullMapBounds.size.width),
                                                  CLAMP(tempObj.objectLocation.y, 0.0f, fullMapBounds.size.height));
+            if ([tempObj isKindOfClass:[CraftObject class]]) {
+                // Limit crafts to their radii
+                tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, objRadius, fullMapBounds.size.width - objRadius),
+                                                     CLAMP(tempObj.objectLocation.y, objRadius, fullMapBounds.size.height - objRadius));
+            }
         }
         if (tempObj.destroyNow) {
             [renderableDestroyed addObject:tempObj];
-        }
-    }
-    
-    // Gather all enemy ships (every 5 seconds or so) and send them to the base to attack if they aren't already attacking something
-    if (sceneType == kSceneTypeCampaign) {
-        if (frameCounter % (AI_SEND_TO_BASE_FREQ + 1) == 0) {
-            for (int i = 0; i < [touchableObjects count]; i++) {
-                TouchableObject* obj = [touchableObjects objectAtIndex:i];
-                if ([obj isKindOfClass:[CraftObject class]]) {
-                    CraftObject* craft = (CraftObject*)obj;
-                    if (craft.objectAlliance == kAllianceEnemy) {
-                        if (craft.movingAIState == kMovingAIStateStill || craft.attackingAIState == kAttackingAIStateNeutral) {
-                            int range = 256;
-                            int randX = CLAMP(homeBaseLocation.x - (arc4random() % range), range, (widthCells * COLLISION_CELL_WIDTH) - range);
-                            int randY = CLAMP(homeBaseLocation.y - (arc4random() % range), range, (heightCells * COLLISION_CELL_HEIGHT) - range);
-                            NSArray* attackPath = [collisionManager pathFrom:craft.objectLocation to:CGPointMake(randX, randY) allowPartial:YES isStraight:YES];
-                            [craft followPath:attackPath isLooped:NO];
-                        }
-                    }
-                }
-            }
         }
     }
     
@@ -1557,15 +1583,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [collisionManager updateAllObjectsInTableInScreenBounds:visibleScreenBounds];
     }
     
-    // Check for radial effects
+    // Must update every step so queries are accurate
     [collisionManager updateAllEffectRadii];
+    
+    // Check for radial effects
     if (frameCounter % (RADIAL_EFFECT_CHECK_FREQ + 1) == kFrameOffsetRadialEffect) {
         [collisionManager processAllEffectRadii];
-    }
-    
-    // Update the AI controller
-    if (!isMultiplayerMatch) {
-        [enemyAIController updateAIController];
     }
     
     // Destroy all objects in the destory array, and remove them from other arrays
@@ -1604,6 +1627,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             if (tempObj.objectAlliance == kAllianceFriendly) {
                 numberOfCurrentStructures--;
                 didLoseAnyCraftOrStructure = YES;
+                if (tempObj.objectType == kObjectStructureBaseStationID) {
+                    isFriendlyBaseStationAlive = NO;
+                }
                 if (tempObj.objectType == kObjectStructureRefineryID) {
                     numberOfRefineries--;
                     [currentRefineries removeObject:tempObj];
@@ -1616,6 +1642,10 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 }
             } else if (tempObj.objectAlliance == kAllianceEnemy) {
                 numberOfEnemyStructures--;
+                if (tempObj.objectType == kObjectStructureBaseStationID) {
+                    isEnemyBaseStationAlive = NO;
+                    [enemyAIController setIsPirateScene:YES];
+                }
             }
         }
         
@@ -1637,6 +1667,13 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
     }
     [renderableDestroyed removeAllObjects];
+    
+    // Update the AI controller
+    if (!isMultiplayerMatch) {
+        if (sceneType == kSceneTypeCampaign) {
+            [enemyAIController updateAIController];
+        }
+    }
     
     if (isShowingNotification) {
         if (!notification || [notification destroyNow]) {
@@ -1684,10 +1721,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     // Get the scroll vector that most images will need to by translated with
     Vector2f scroll = [self scrollVectorFromScreenBounds];
-    
-    /*
-     [[fontArray objectAtIndex:kFontBlairID] renderStringAt:CGPointMake(400, 400) text:@"THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT! THIS IS A LOT OF TEXT!" onLayer:kLayerHUDTopLayer withWidthLimit:400.0f];
-     */
     
     // Rendering stars
     [sharedStarSingleton renderStars];
@@ -1786,6 +1819,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         glColor4f(0.1f, 1.0f, 0.1f, 0.75f);
         [self renderSelectionAreaWithPoints:selectionPointsOne andPoints:selectionPointsTwo];
     }
+    
+    // Draw fog
+    [fogManager renderFogInSceneRect:[self visibleScreenBounds] withScroll:scroll];
     
     // Render the map overview if present
     if (isShowingOverview) {
@@ -1935,9 +1971,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 }
 
 - (void)addRefinery:(RefineryStructureObject*)refinery {
-    if (![currentRefineries containsObject:refinery]) {
-        numberOfRefineries++;
-        [currentRefineries addObject:refinery];
+    if ([refinery objectAlliance] == kAllianceFriendly) {
+        if (![currentRefineries containsObject:refinery]) {
+            numberOfRefineries++;
+            [currentRefineries addObject:refinery];
+        }
     }
 }
 
@@ -1995,6 +2033,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             isShowingOverview = YES; // Start the fade in
             isFadingOverviewIn = YES;
             isFadingOverviewOut = NO;
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileOverviewFadeIn]];
         }
     }
 }
@@ -2005,6 +2044,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             isShowingOverview = YES; // Start the fade out 
             isFadingOverviewOut = YES;
             isFadingOverviewIn = NO;
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileOverviewFadeOut]];
         }
     }
 }
@@ -2053,12 +2093,15 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         if (!obj.isRenderedInOverview) {
             continue;
         }
+        if ([fogManager fogValueAtPoint:obj.objectLocation] > 0.5f) {
+            continue;
+        }
         objPoint[0] = xOffset + obj.objectLocation.x * xRatio;
         objPoint[1] = yOffset + obj.objectLocation.y * yRatio;
         glPointSize(1.0f);
         if ([obj isKindOfClass:[TouchableObject class]]) {
             TouchableObject* touchObj = (TouchableObject*)obj;
-            if ([touchObj isDrawingEffectRadius]) {
+            if ([touchObj isOverviewDrawingEffectRadius]) {
                 // If the object has an "effect circle" then draw it in faded gray
                 Circle newCircle;
                 newCircle.x = objPoint[0];
@@ -2099,6 +2142,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                                          yOffset + 1 + j * COLLISION_CELL_HEIGHT * yRatio,
                                          COLLISION_CELL_WIDTH * xRatio, 
                                          COLLISION_CELL_HEIGHT * yRatio);
+            if ([fogManager fogValueAtPoint:CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT)] > 0.5f) {
+                continue;
+            }
             if (broggut->broggutValue != -1) {
                 if (broggut->broggutEdge == kMediumBroggutEdgeNone) {
                     glColor4f(1.0f, 1.0f, 1.0f, CLAMP(alpha * 0.1f, 0.0f, 1.0f));
@@ -2109,6 +2155,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             }
         }
     }
+    
+    // Draw fog
+    [fogManager renderFogInOverviewAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withAlpha:alpha];
     
     CGRect viewportRect = CGRectMake(xOffset + visibleScreenBounds.origin.x * xRatio,
                                      yOffset + visibleScreenBounds.origin.y * yRatio,
@@ -2171,6 +2220,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     
     if ([tempShips count] > 0) {
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipSelection]];
         // Deselect all current ships
         for (CraftObject* craft in controlledShips) {
             [craft setIsBeingControlled:NO];
@@ -2206,6 +2256,8 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     
     if ([tempShips count] > 0) {
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipSelection]];
+        
         // Deselect all current ships
         for (CraftObject* craft in controlledShips) {
             [craft setIsBeingControlled:NO];
@@ -2259,6 +2311,8 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     
     if ([tempShips count] > 0) {
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipSelection]];
+        
         // Deselect all current ships
         for (CraftObject* craft in controlledShips) {
             [craft setIsBeingControlled:NO];
@@ -2347,13 +2401,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         if (([object isKindOfClass:[CraftObject class]] || [object isKindOfClass:[StructureObject class]])
             && !object.destroyNow) {
             // Object is a craft or structure
-            if (object.objectAlliance == kAllianceFriendly) {
-                continue;
-            }
-            if (CircleContainsPoint(object.touchableBounds, location)) {
-                // NSLog(@"Set enemy target to object (%i)", object.uniqueObjectID);
-                return object;
-                break;
+            if (object.objectAlliance == kAllianceEnemy) {
+                if (CircleContainsPoint(object.touchableBounds, location)) {
+                    // NSLog(@"Set enemy target to object (%i)", object.uniqueObjectID);
+                    return object;
+                    break;
+                }
             }
         }
     }
@@ -2431,12 +2484,15 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     switch (failtype) {
         case kProfileFailBroggutsAndMetal:
             [self showHelpMessageWithMessageID:kHelpMessageNeedBroggutsAndMetal];
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
             break;
         case kProfileFailBrogguts:
             [self showHelpMessageWithMessageID:kHelpMessageNeedBrogguts];
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
             break;
         case kProfileFailMetal:
             [self showHelpMessageWithMessageID:kHelpMessageNeedMetal];
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
             break;
         default:
             break;
@@ -2446,16 +2502,19 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 - (void)attemptToCreateCraftWithID:(int)craftID atLocation:(CGPoint)location isTraveling:(BOOL)traveling withAlliance:(int)alliance {
     if (numberOfCurrentShips >= TOTAL_CRAFT_LIMIT) {
         [self showHelpMessageWithMessageID:kHelpMessageNeedUnitLimit];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
     if (numberOfCurrentShips >= [self currentMaxShipSupply]) {
         [self showHelpMessageWithMessageID:kHelpMessageNeedMoreBlocks];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
     switch (craftID) {
         case kObjectCraftAntID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftAntCostBrogguts atLocation:location withAlliance:alliance];
                 AntCraftObject* newCraft = [[AntCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2474,6 +2533,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftMothID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftMothCostBrogguts metal:kCraftMothCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftMothCostBrogguts atLocation:location withAlliance:alliance];
                 MothCraftObject* newCraft = [[MothCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2492,6 +2552,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftBeetleID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftBeetleCostBrogguts metal:kCraftBeetleCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftBeetleCostBrogguts atLocation:location withAlliance:alliance];
                 BeetleCraftObject* newCraft = [[BeetleCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2510,6 +2571,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftMonarchID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftMonarchCostBrogguts metal:kCraftMonarchCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftMonarchCostBrogguts atLocation:location withAlliance:alliance];
                 MonarchCraftObject* newCraft = [[MonarchCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2528,6 +2590,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftCamelID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftCamelCostBrogguts metal:kCraftCamelCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftCamelCostBrogguts atLocation:location withAlliance:alliance];
                 CamelCraftObject* newCraft = [[CamelCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2547,6 +2610,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftRatID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftRatCostBrogguts metal:kCraftRatCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftRatCostBrogguts atLocation:location withAlliance:alliance];
                 RatCraftObject* newCraft = [[RatCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2566,6 +2630,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftSpiderID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftSpiderCostBrogguts metal:kCraftSpiderCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftSpiderCostBrogguts atLocation:location withAlliance:alliance];
                 SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:location isTraveling:YES];
                 [newCraft setCurrentScene:self];
@@ -2589,6 +2654,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectCraftEagleID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftEagleCostBrogguts metal:kCraftEagleCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kCraftEagleCostBrogguts atLocation:location withAlliance:alliance];
                 EagleCraftObject* newCraft = [[EagleCraftObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2617,10 +2683,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     if (numberOfCurrentStructures >= TOTAL_STRUCTURE_LIMIT) {
         [self showHelpMessageWithMessageID:kHelpMessageNeedStructureLimit];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
     if (![collisionManager isPathNodeOpenAtLocation:location]) {
         [self showHelpMessageWithMessageID:kHelpMessageNeedStructureBuilding];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
     switch (structureID) {
@@ -2631,6 +2699,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureBlockID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureBlockCostBrogguts metal:kStructureBlockCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureBlockCostBrogguts atLocation:location withAlliance:alliance];
                 BlockStructureObject* newStructure = [[BlockStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2649,6 +2718,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureTurretID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureTurretCostBrogguts metal:kStructureTurretCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureTurretCostBrogguts atLocation:location withAlliance:alliance];
                 TurretStructureObject* newStructure = [[TurretStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2667,6 +2737,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureRadarID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureRadarCostBrogguts metal:kStructureRadarCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureRadarCostBrogguts atLocation:location withAlliance:alliance];
                 RadarStructureObject* newStructure = [[RadarStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2685,6 +2756,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureFixerID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureFixerCostBrogguts metal:kStructureFixerCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureFixerCostBrogguts atLocation:location withAlliance:alliance];
                 FixerStructureObject* newStructure = [[FixerStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2703,6 +2775,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureRefineryID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureRefineryCostBrogguts metal:kStructureRefineryCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureRefineryCostBrogguts atLocation:location withAlliance:alliance];
                 RefineryStructureObject* newStructure = [[RefineryStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2721,6 +2794,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureCraftUpgradesID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureCraftUpgradesCostBrogguts metal:kStructureCraftUpgradesCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureCraftUpgradesCostBrogguts atLocation:location withAlliance:alliance];
                 CraftUpgradesStructureObject* newStructure = [[CraftUpgradesStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {
@@ -2739,6 +2813,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         case kObjectStructureStructureUpgradesID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kStructureStructureUpgradesCostBrogguts metal:kStructureStructureUpgradesCostMetal];
             if (failType == kProfileNoFail) {
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
                 [self addBroggutTextValue:-kStructureStructureUpgradesCostBrogguts atLocation:location withAlliance:alliance];
                 StructureUpgradesStructureObject* newStructure = [[StructureUpgradesStructureObject alloc] initWithLocation:location isTraveling:YES];
                 if (alliance == kAllianceFriendly) {

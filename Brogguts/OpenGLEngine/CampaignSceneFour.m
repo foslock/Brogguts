@@ -32,7 +32,7 @@
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
-            [dia2 setDialogueActivateTime:(CAMPAIGN_FOUR_WAVE_TIME/2) * 60.0f];
+            [dia2 setDialogueActivateTime:(CAMPAIGN_FOUR_WAVE_TIME / 2) * 60.0f];
             [dia2 setDialogueImageIndex:kDialoguePortraitBase];
             [dia2 setDialogueText:@"We've picked up strong signals reflecting those of enemy Beetle craft. The Beetle is slow, but can take a beating and delivers some serious firepower. Read about it in the Broggupedia for more information."];
             [sceneDialogues addObject:dia2];
@@ -75,7 +75,7 @@
         countdown = [NSString stringWithFormat:@"Wave: %i:0%i", minutes, seconds];
     }
     
-    if (minutes != 0 || seconds != 0) {
+    if (minutes > 0 || seconds > 0) {
         [countdownTimer setObjectText:countdown];
     } else {
         [countdownTimer setObjectText:@""];

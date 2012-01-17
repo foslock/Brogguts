@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "GameplayConstants.h"
 
+extern NSString* kObjectUnlockDetailText[TOTAL_OBJECT_TYPES_COUNT];
+
 @interface UpgradeManager : NSObject {
     // Upgrades for the current scene/match
     int currentPurchasedUpgrades[TOTAL_OBJECT_TYPES_COUNT]; // Array of int bools that represent whether that object's upgrade has been purchased

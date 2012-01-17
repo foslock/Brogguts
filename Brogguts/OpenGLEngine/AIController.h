@@ -43,7 +43,7 @@ typedef struct AI_State_Details {
 } AIStateDetails;
 
 #define AI_DETAILS_QUEUE_MAX_SIZE 100
-#define AI_STEP_TIMER_INTERVALS 50
+#define AI_STEP_TIMER_INTERVALS 60
 
 @interface AIController : NSObject {
     BroggutScene* myScene;          // The scene that is being controlled
@@ -53,6 +53,7 @@ typedef struct AI_State_Details {
     NSMutableArray* structureArray; // Array of all the structures on the map (not just enemy structures)
     
     NSMutableArray* selectedCraftArray; // Array of the currently selected craft
+    NSMutableArray* pirateCraft;    // Array of all the enemy craft on the map
     
     int globalAIState;                  // The general state of the AI machine
     AIStateDetails currentAIDetails;    // The current details of the AI machine
@@ -72,9 +73,10 @@ typedef struct AI_State_Details {
 
 @property (nonatomic, assign) int enemyBroggutCount;
 @property (nonatomic, assign) int enemyMetalCount;
+@property (nonatomic, assign) BOOL isPirateScene;
 
 // Init with an array of craft and structures
-- (id)initWithTouchableObjects:(NSArray*)objects withPirate:(BOOL)pirate;
+- (id)initWithScene:(BroggutScene*)scene withPirate:(BOOL)pirate;
 
 // Update the controller with the touchable objects from broggut scene 
 - (void)updateArraysWithTouchableObjects:(NSArray*)array;

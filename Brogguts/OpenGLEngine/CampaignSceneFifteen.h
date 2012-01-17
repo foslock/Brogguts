@@ -9,10 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "CampaignScene.h"
 
+@class AntCraftObject;
 @class SpawnerObject;
+@class BaseStationStructureObject;
 
 @interface CampaignSceneFifteen : CampaignScene {
-    SpawnerObject* spawner;
+    AntCraftObject* npcAnt;
+    AntCraftObject* closestAnt;
+    BaseStationStructureObject* enemyBase;
+    BOOL boomGoesTheDynamite;
 }
 
 @end

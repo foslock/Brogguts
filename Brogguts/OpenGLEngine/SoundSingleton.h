@@ -12,8 +12,10 @@
 
 #define HEARABLE_RECT_WIDTH_PADDING 128.0f
 #define HEARABLE_RECT_HEIGHT_PADDING 128.0f
-#define TOTAL_SOUND_FILE_COUNT 7
+#define TOTAL_SOUND_FILE_COUNT 17
 #define TOTAL_MUSIC_FILE_COUNT 2
+
+#define SOUND_MINING_SOUND_LENGTH 2.0f // seconds
 
 extern NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT];
 extern NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT];
@@ -26,6 +28,16 @@ enum kSoundFileIndecies {
     kSoundFileMissionSuccessful,
     kSoundFileShipConfirm,
     kSoundFileShipDeny,
+    kSoundFileButtonConfirm,
+    kSoundFileButtonCancel,
+    kSoundFileShipSelection,
+    kSoundFileLaserAttack1,
+    kSoundFileLaserAttack2,
+    kSoundFileLaserAttack3,
+    kSoundFileMissileFire,
+    kSoundFileOverviewFadeIn,
+    kSoundFileOverviewFadeOut,
+    kSoundFileMiningSound,
 };
 
 enum kMusicFileIndecies {
@@ -101,6 +113,9 @@ enum kMusicFileIndecies {
 // Convenience method used to play the supplied sound with default values for gain, pitch, location
 // and loop
 - (NSUInteger)playSoundWithKey:(NSString *)aSoundKey;
+
+// Laser sounds are randomized
+- (NSUInteger)playLaserSound;
 
 // Convenience method used to play the supplied sound with default valueds for gain, pitch and
 // loop

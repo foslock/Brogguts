@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "CampaignScene.h"
 
+@class AntCraftObject;
 @class SpawnerObject;
 
 @interface CampaignSceneFourteen : CampaignScene {
-    SpawnerObject* spawner;
+    AntCraftObject* npcAnt;
 }
 
 @end

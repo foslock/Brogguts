@@ -13,6 +13,7 @@
 #import "CraftObject.h"
 
 @implementation BuildingObject
+@synthesize creatingObject;
 
 - (id)initWithObject:(TouchableObject*)object withLocation:(CGPoint)location {
     NSString* filename = [[object objectImage] imageFileName];
@@ -26,13 +27,18 @@
         if ([object isKindOfClass:[CraftObject class]]) {
             [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];
         }
-        creatingObject = object;
+        self.creatingObject = object;
         creatingCraftID = object.uniqueObjectID;
         currentAlpha = BUILDING_OBJECT_MAX_ALPHA;
         [objectImage setRenderLayer:kLayerBottomLayer];
     }
     [newImage release];
     return self;
+}
+
+- (void)dealloc {
+    [creatingObject release];
+    [super dealloc];
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
@@ -42,6 +48,9 @@
         currentAlpha = CLAMP(distanceSquared / POW2(BUILDING_FADING_RADIUS), 0, BUILDING_OBJECT_MAX_ALPHA);
     }
     if (currentAlpha < 0.01f || distanceSquared < 4.0f) {
+        destroyNow = YES;
+    }
+    if ([creatingObject destroyNow]) {
         destroyNow = YES;
     }
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentAlpha)];

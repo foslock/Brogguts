@@ -7,6 +7,8 @@
 //
 
 #import "ES2Renderer.h"
+#import "GameController.h"
+#import "BroggutScene.h"
 
 // uniform index
 enum {
@@ -51,6 +53,15 @@ enum {
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+        
+		// Grab a reference to the game controller
+        sharedGameController = [GameController sharedGameController];
+		
+		// As we are initializing this view then the OpenGL elements have not been initialized
+		openGLInitialized = NO;
+		
+		// Observe orientation change notifications
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:@"UIDeviceOrientationDidChangeNotification" object:nil];
     }
 
     return self;
@@ -58,66 +69,11 @@ enum {
 
 - (void)render
 {
-    // Replace the implementation of this method to do your own custom drawing
-
-    static const GLfloat squareVertices[] = {
-        -0.5f, -0.33f,
-         0.5f, -0.33f,
-        -0.5f,  0.33f,
-         0.5f,  0.33f,
-    };
-
-    static const GLubyte squareColors[] = {
-        255, 255,   0, 255,
-        0,   255, 255, 255,
-        0,     0,   0,   0,
-        255,   0, 255, 255,
-    };
-
-    static float transY = 0.0f;
-
-    // This application only creates a single context which is already set current at this point.
-    // This call is redundant, but needed if dealing with multiple contexts.
-    [EAGLContext setCurrentContext:context];
-
-    // This application only creates a single default framebuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple framebuffers.
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-    glViewport(0, 0, backingWidth, backingHeight);
-
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Use shader program
-    glUseProgram(program);
-
-    // Update uniform value
-    glUniform1f(uniforms[UNIFORM_TRANSLATE], (GLfloat)transY);
-    transY += 0.075f;	
-
-    // Update attribute values
-    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, squareVertices);
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-    glVertexAttribPointer(ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, 1, 0, squareColors);
-    glEnableVertexAttribArray(ATTRIB_COLOR);
-
-    // Validate program before drawing. This is a good check, but only really necessary in a debug build.
-    // DEBUG macro must be defined in your debug configurations if that's not already the case.
-#if defined(DEBUG)
-    if (![self validateProgram:program])
-    {
-        NSLog(@"Failed to validate program: %d", program);
-        return;
-    }
-#endif
-
-    // Draw
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    // This application only creates a single color renderbuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple renderbuffers.
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context presentRenderbuffer:GL_RENDERBUFFER];
+    // Ask the game controller to render the current scene
+    [sharedGameController renderCurrentScene];
+    
+    // Ask the context to present the renderbuffer to the screen
+    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
@@ -288,6 +244,11 @@ enum {
         NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
         return NO;
     }
+    
+    if (!openGLInitialized) {
+		openGLInitialized = YES;
+		[self initOpenGL];
+	}
 
     return YES;
 }
@@ -322,5 +283,82 @@ enum {
 
     [super dealloc];
 }
+
+@end
+
+@implementation ES2Renderer (Private)
+
+- (void) initOpenGL {
+	NSLog(@"INFO - ES1Renderer: Initializing OpenGL");
+    
+	// Switch to GL_PROJECTION matrix mode and reset the current matrix with the identity matrix
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+	glOrthof(0, backingWidth, 0, backingHeight, -1, 1);
+	
+    // Set the viewport
+    glViewport(0, 0, backingWidth, backingHeight);
+    
+    NSLog(@"INFO - ES1Renderer: Setting glOrthof to width=%d and height=%d", backingWidth,backingHeight);
+    
+	// Switch to GL_MODELVIEW so we can now draw our objects
+	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+	
+	// Rotate the OpenGL model view to the right 90 degrees so that everything is rendered in landscape
+	// mode
+	UIInterfaceOrientation orientation = (UIInterfaceOrientation)[[UIDevice currentDevice] orientation];
+	if (orientation == UIInterfaceOrientationLandscapeRight) {
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(-90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	} else {
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	}
+	
+	// Setup the texture environment and blend functions.  
+	// This controls how a texture is blended with other textures
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+	// Set the colour to use when clearing the screen with glClear
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    
+	// We are not using the depth buffer in our 2D game so depth testing can be disabled.  If depth
+	// testing was required then a depth buffer would need to be created as well as enabling the depth
+	// test
+	glDisable(GL_DEPTH_TEST);
+    
+    // Enable the OpenGL states we are going to be using when rendering
+    glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+}
+
+- (void)orientationChanged:(NSNotification *)notification {
+	
+	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+	if (orientation == UIDeviceOrientationLandscapeRight) {
+        [sharedGameController setInterfaceOrientation:UIInterfaceOrientationLandscapeLeft];
+		glLoadIdentity();
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	}
+	
+	if (orientation == UIDeviceOrientationLandscapeLeft) {
+        [sharedGameController setInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
+		glLoadIdentity();
+		glTranslatef( kPadScreenLandscapeHeight / 2, kPadScreenLandscapeWidth / 2, 0);
+		glRotatef(-90, 0, 0, 1);
+		glTranslatef(- kPadScreenLandscapeWidth / 2, - kPadScreenLandscapeHeight / 2, 0);
+	}
+}
+
 
 @end

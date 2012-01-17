@@ -32,6 +32,7 @@
         [newAnt setObjectAlliance:kAllianceFriendly];
         [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];
         [self addTouchableObject:antTrigger withColliding:NO];
+        [newAnt release];
         
         FingerObject* fingerObj = [[FingerObject alloc] initWithStartLocation:antLoc withEndLocation:triggerLoc repeats:YES];
         finger = fingerObj;
@@ -41,6 +42,8 @@
         [fingerObj release];
         
         [helpText setObjectText:@"If you would ever like to move an individual craft: tap, drag, release and it will travel to that location."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

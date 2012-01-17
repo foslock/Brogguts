@@ -17,10 +17,11 @@
 #pragma mark -
 #pragma mark Objects filenames interface
 
-NSString* const kObjectBroggutSmallSprite = @"smallbroggut.png";
+NSString* const kObjectBroggutSmallSprite = @"smallbroggut"; // extension and number tagged on
 NSString* const kObjectBroggutMediumSprite = @"mediumbroggut.png";
 
 NSString* const kObjectTriggerSprite = @"spritetrigger.png";
+NSString* const kObjectMissileSprite = @"spritemissile.png";
 
 NSString* const kObjectCraftAntSprite = @"craftant.png";
 NSString* const kObjectCraftMothSprite = @"craftmoth.png";

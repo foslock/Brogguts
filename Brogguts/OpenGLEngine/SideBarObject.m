@@ -75,6 +75,7 @@
         CGRect scrolledFrame = CGRectOffset([button buttonRect], -vector.x, -vector.y);
         // Draw button text
         [[myController sideBarFont] setFontColor:[button textColor]];
+        [[myController sideBarFont] setFontScale:[button textScale]];
         if ([button isPressed]) {
             [[myController sideBarFont] setFontColor:Color4fMake(1.0f, 1.0f, 1.0f, 0.5f)];
         }

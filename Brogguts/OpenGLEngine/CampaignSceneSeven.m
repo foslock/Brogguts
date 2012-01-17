@@ -34,7 +34,7 @@
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
-            [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
+            [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.5f];
             [dia2 setDialogueImageIndex:kDialoguePortraitBase];
             [dia2 setDialogueText:@"There is technology aboard this station that we do not want falling into the pirates' hands. You may use all the remaining brogguts held in this station to build a defense to hold out against the incoming invasion."];
             [sceneDialogues addObject:dia2];
@@ -93,7 +93,7 @@
         countdown = [NSString stringWithFormat:@"Wave: %i:0%i", minutes, seconds];
     }
     
-    if (minutes != 0 || seconds != 0) {
+    if (minutes > 0 || seconds > 0) {
         [countdownTimer setObjectText:countdown];
     } else {
         [countdownTimer setObjectText:@""];

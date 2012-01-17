@@ -12,6 +12,7 @@ extern NSString* const kObjectBroggutSmallSprite;
 extern NSString* const kObjectBroggutMediumSprite;
 
 extern NSString* const kObjectTriggerSprite;
+extern NSString* const kObjectMissileSprite;
 
 extern NSString* const kObjectCraftAntSprite;
 extern NSString* const kObjectCraftMothSprite;

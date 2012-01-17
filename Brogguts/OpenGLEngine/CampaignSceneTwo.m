@@ -65,7 +65,7 @@
         countdown = [NSString stringWithFormat:@"Timer: %i:0%i", minutes, seconds];
     }
     
-    if (minutes != 0 || seconds != 0) {
+    if (minutes > 0 || seconds > 0) {
         [countdownTimer setObjectText:countdown];
     } else {
         [countdownTimer setObjectText:@""];

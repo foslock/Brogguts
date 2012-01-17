@@ -18,17 +18,6 @@
 #import "ImageRenderSingleton.h"
 #import "UpgradeManager.h"
 
-NSString* const kStructureUpgradeTexts[8] = {
-    @"Base Station Upgrade",
-    @"Block Upgrade",
-    @"Refinery Upgrade",
-    @"Craft Upgrades Upgrade",
-    @"Structure Upgrades Upgrade",
-    @"Turret Upgrade",
-    @"Fixer Upgrade",
-    @"Radar Upgrade",
-};
-
 @implementation StructureUpgradesStructureObject
 @synthesize isCurrentlyProcessingUpgrade, currentUpgradeProgress, currentUpgradeObjectID;
 
@@ -57,7 +46,11 @@ NSString* const kStructureUpgradeTexts[8] = {
     
     if (isCurrentlyProcessingUpgrade && !destroyNow) {
         if (currentUpgradeProgress < upgradeTotalGoal) {
-            currentUpgradeProgress += aDelta;
+            if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+                currentUpgradeProgress += aDelta / ((float)kStructureStructureUpgradesTimePercentageUpgrade / 100.0f);
+            } else {
+                currentUpgradeProgress += aDelta;
+            }
         } else { // Upgrade is done!
             // Set the upgrade to active in the profile
             UpgradeManager* upgradeManager = [[self currentScene] upgradeManager];
@@ -96,46 +89,47 @@ NSString* const kStructureUpgradeTexts[8] = {
     [dialogue release];
     
     int imageIndex = 0;
-    NSString* upgradeText = nil;
+    NSString* upgradeText = kObjectUnlockDetailText[objectID];
+    NSString* costAndTimeText = nil;
     switch (objectID) {
         case kObjectStructureBaseStationID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[0]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureBaseStationUpgradeCost, kStructureBaseStationUpgradeTime];
             break;
         case kObjectStructureBlockID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[1]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureBlockUpgradeCost, kStructureBlockUpgradeTime];
             break;
         case kObjectStructureRefineryID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[2]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureRefineryUpgradeCost, kStructureRefineryUpgradeTime];
             break;
         case kObjectStructureCraftUpgradesID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[3]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureCraftUpgradesUpgradeCost, kStructureCraftUpgradesUpgradeTime];
             break;
         case kObjectStructureStructureUpgradesID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[4]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureStructureUpgradesUpgradeCost, kStructureStructureUpgradesUpgradeTime];
             break;
         case kObjectStructureTurretID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[5]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureTurretUpgradeCost, kStructureTurretUpgradeTime];
             break;
         case kObjectStructureFixerID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[6]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureFixerUpgradeCost, kStructureFixerUpgradeTime];
             break;
         case kObjectStructureRadarID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kStructureUpgradeTexts[7]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kStructureRadarUpgradeCost, kStructureRadarUpgradeTime];
             break;
         default:
             break;
     }
     
     [dialogue setDialogueImageIndex:imageIndex];
-    [dialogue setDialogueText:upgradeText];
+    [dialogue setDialogueText:[upgradeText stringByAppendingFormat:@"\n\n%@", costAndTimeText]];
     [dialogue presentDialogue];
 }
 

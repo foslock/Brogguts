@@ -42,6 +42,7 @@
 					break;
                 case 3:
 					[button setButtonText:@"Broggupedia"];
+                    [button setTextScale:Scale2fMake(0.9f, 0.9f)];
 					break;
                 case 4:
                     if (currentSceneType == kSceneTypeCampaign) {
@@ -76,6 +77,15 @@
         SideBarButton* structures = [buttonArray objectAtIndex:2];
         if ([structures isDisabled])
             [structures setIsDisabled:NO];
+    }
+    
+    if (scene.sceneType == kSceneTypeCampaign) {
+        if (!scene.isFriendlyBaseStationAlive) {
+            SideBarButton* craft = [buttonArray objectAtIndex:1];
+            [craft setIsDisabled:YES];
+            SideBarButton* structures = [buttonArray objectAtIndex:2];
+            [structures setIsDisabled:YES];
+        }
     }
 }
 

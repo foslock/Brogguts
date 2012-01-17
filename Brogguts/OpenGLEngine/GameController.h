@@ -39,6 +39,7 @@ enum kSceneAIControllerIndexes {
     kSceneAIControllerCompletedUpgrades,
     kSceneAIControllerBrogguts,
     kSceneAIControllerMetal,
+    kSceneAIControllerFogData,
 };
 
 enum kSceneStorageIndexes {
@@ -59,7 +60,7 @@ enum kSceneStorageIndexes {
 };
 
 enum kSceneStorageOtherInfoIndexes {
-    kSceneStorageOtherInfoUpgradeInfo, // - Upgrade-in-progress info
+    kSceneStorageOtherInfoUpgradeInfo, // - Upgrade-in-progress info,
 };
 
 enum kSceneStorageOtherInfoUpgradeInfoIndexes {

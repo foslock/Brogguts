@@ -1193,7 +1193,7 @@
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">smallbroggut.png</string>
+							<string key="NSResourceName">smallbroggut1.png</string>
 						</object>
 					</object>
 					<object class="IBUIImageView" id="170611668">
@@ -2940,7 +2940,7 @@
 				<string>craftmoth.png</string>
 				<string>craftrat.png</string>
 				<string>craftspider.png</string>
-				<string>smallbroggut.png</string>
+				<string>smallbroggut1.png</string>
 				<string>spriteradardish.png</string>
 				<string>spriteturretgun.png</string>
 				<string>structurebasestation.png</string>
@@ -2969,10 +2969,10 @@
 				<string>{64, 64}</string>
 				<string>{96, 96}</string>
 				<string>{118, 70}</string>
-				<string>{900, 905}</string>
+				<string>{897, 898}</string>
 				<string>{128, 128}</string>
 				<string>{120, 131}</string>
-				<string>{234, 207}</string>
+				<string>{228, 203}</string>
 				<string>{256, 173}</string>
 				<string>{102, 112}</string>
 				<string>{140, 145}</string>

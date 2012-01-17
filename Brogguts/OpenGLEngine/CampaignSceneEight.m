@@ -31,7 +31,7 @@
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
             [dia1 setDialogueImageIndex:kDialoguePortraitBase];
-            [dia1 setDialogueText:@"We need you on an emergency mission. An officer responsible for a base station out in dangerous space has just stepped down from his command and the station needs to be run with a keen eye."];
+            [dia1 setDialogueText:@"We need you on this emergency mission! An officer responsible for a base station out in dangerous space has just stepped down from his command and the station needs to be run with a keen eye."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
@@ -123,7 +123,7 @@
         countdown = [NSString stringWithFormat:@"Wave: %i:0%i", minutes, seconds];
     }
     
-    if (minutes != 0 || seconds != 0) {
+    if (minutes > 0 || seconds > 0) {
         [countdownTimer setObjectText:countdown];
     } else {
         [countdownTimer setObjectText:@""];

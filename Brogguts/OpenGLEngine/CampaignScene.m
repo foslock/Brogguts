@@ -15,6 +15,7 @@
 #import "StartMissionObject.h"
 #import "GameCenterSingleton.h"
 #import "SpawnerObject.h"
+#import "SoundSingleton.h"
 
 NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Campaign 1",
@@ -131,9 +132,12 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
         if (!isObjectiveComplete) {
             isObjectiveComplete = YES;
             isMissionOver = YES;
+            
             if (!didLoseAnyCraftOrStructure) {
                 [sharedGameCenterSingleton reportAchievementIdentifier:(NSString*)kAchievementIDNoLossesMission percentComplete:100.0f];
             }
+            
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMissionSuccessful]];
             [endMissionObject setWasSuccessfulMission:YES];
             [endMissionObject setCurrentScene:self];
             int currentExperience = [[sharedGameController currentProfile] playerExperience];

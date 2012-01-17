@@ -11,6 +11,7 @@
 
 @interface BlockStructureObject : StructureObject {
     BOOL hasBeenAdded;
+    BOOL hasBeenUpgraded;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
