@@ -18,17 +18,6 @@
 #import "ImageRenderSingleton.h"
 #import "UpgradeManager.h"
 
-NSString* const kCraftUpgradeTexts[8] = {
-    @"Ant Upgrade",
-    @"Moth Upgrade",
-    @"Beetle Upgrade",
-    @"Monarch Upgrade",
-    @"Camel Upgrade",
-    @"Rat Upgrade",
-    @"Spider Upgrade",
-    @"Eagle Upgrade",
-};
-
 @implementation CraftUpgradesStructureObject
 @synthesize isCurrentlyProcessingUpgrade, currentUpgradeProgress, currentUpgradeObjectID;
 
@@ -49,6 +38,7 @@ NSString* const kCraftUpgradeTexts[8] = {
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
     if (isBeingPressed) {
         [objectImage setColor:Color4fMake(0.8f, 0.8f, 0.8f, 1.0f)];
     } else {
@@ -57,7 +47,11 @@ NSString* const kCraftUpgradeTexts[8] = {
     
     if (isCurrentlyProcessingUpgrade && !destroyNow) {
         if (currentUpgradeProgress < upgradeTotalGoal) {
-            currentUpgradeProgress += aDelta;
+            if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+                currentUpgradeProgress += aDelta / ((float)kStructureCraftUpgradesTimePercentageUpgrade / 100.0f);
+            } else {
+                currentUpgradeProgress += aDelta;
+            }
         } else { // Upgrade is done!
             // Set the upgrade to active in the profile
             UpgradeManager* upgradeManager = [[self currentScene] upgradeManager];
@@ -96,46 +90,47 @@ NSString* const kCraftUpgradeTexts[8] = {
     [dialogue release];
     
     int imageIndex = 0;
-    NSString* upgradeText = nil;
+    NSString* upgradeText = kObjectUnlockDetailText[objectID];
+    NSString* costAndTimeText = nil;
     switch (objectID) {
         case kObjectCraftAntID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[0]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftAntUpgradeCost, kCraftAntUpgradeTime];
             break;
         case kObjectCraftMothID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[1]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftMothUpgradeCost, kCraftMothUpgradeTime];
             break;
         case kObjectCraftBeetleID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[2]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftBeetleUpgradeCost, kCraftBeetleUpgradeTime];
             break;
         case kObjectCraftMonarchID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[3]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftMonarchUpgradeCost, kCraftMonarchUpgradeTime];
             break;
         case kObjectCraftCamelID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[4]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftCamelUpgradeCost, kCraftCamelUpgradeTime];
             break;
         case kObjectCraftRatID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[5]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftRatUpgradeCost, kCraftRatUpgradeTime];
             break;
         case kObjectCraftSpiderID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[6]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftSpiderUpgradeCost, kCraftSpiderUpgradeTime];
             break;
         case kObjectCraftEagleID:
             imageIndex = 0;
-            upgradeText = [NSString stringWithString:kCraftUpgradeTexts[7]];
+            costAndTimeText = [NSString stringWithFormat:@"Brogguts Cost: %d\nResearch Time: %d seconds", kCraftEagleUpgradeCost, kCraftEagleUpgradeTime];
             break;
         default:
             break;
     }
     
     [dialogue setDialogueImageIndex:imageIndex];
-    [dialogue setDialogueText:upgradeText];
+    [dialogue setDialogueText:[upgradeText stringByAppendingFormat:@"\n\n%@", costAndTimeText]];
     [dialogue presentDialogue];
 }
 

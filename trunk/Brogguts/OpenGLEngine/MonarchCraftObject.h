@@ -12,7 +12,10 @@
 
 @interface MonarchCraftObject : CraftObject {
     NSMutableArray* craftUnderAura;
+    int craftLimit;
 }
+
++ (int)protectionAmount;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 

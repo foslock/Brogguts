@@ -9,8 +9,20 @@
 #import "MonarchCraftObject.h"
 #import "Image.h"
 #import "BroggutScene.h"
+#import "UpgradeManager.h"
+#import "GameController.h"
+#import "CollisionManager.h"
 
 @implementation MonarchCraftObject
+
++ (int)protectionAmount {
+    BroggutScene* scene = [[GameController sharedGameController] currentScene];
+    if ([[scene upgradeManager] isUpgradeCompleteWithID:kObjectCraftMonarchID]) {
+        return kCraftMonarchAuraResistanceValueUpgraded;
+    } else {
+        return kCraftMonarchAuraResistanceValue;
+    }
+}
 
 - (void)dealloc {
     [craftUnderAura release];
@@ -22,17 +34,31 @@
 	if (self) {
 		isCheckedForRadialEffect = YES;
         effectRadius = kCraftMonarchAuraRangeLimit;
-        craftUnderAura = [[NSMutableArray alloc] initWithCapacity:kCraftMonarchAuraNumberLimit];
+        craftLimit = kCraftMonarchAuraNumberLimit;
+        craftUnderAura = [[NSMutableArray alloc] initWithCapacity:craftLimit];
 	}
 	return self;
 }
 
-- (void)objectEnteredEffectRadius:(TouchableObject *)other {
-    [super objectEnteredEffectRadius:other];
-    if ([other isKindOfClass:[CraftObject class]]) {
-        CraftObject* craft = (CraftObject*)other;
-        if (craft.objectType != kObjectCraftMonarchID && craft.objectAlliance == objectAlliance) {
-            if ([craftUnderAura count] < kCraftMonarchAuraNumberLimit) {
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+    [super updateObjectLogicWithDelta:aDelta];
+    
+    // Check for upgrade
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        craftLimit = kCraftMonarchAuraNumberLimitUpgraded;
+    }
+    
+    Circle circle;
+    circle.x = objectLocation.x;
+    circle.y = objectLocation.y;
+    circle.radius = kCraftMonarchAuraRangeLimit;
+    NSArray* nearArray = [[[self currentScene] collisionManager] getArrayOfRadiiObjectsInCircle:circle];
+    
+    for (CraftObject* craft in nearArray) {
+        if (craft.objectType != kObjectCraftMonarchID && 
+            craft.objectType != kObjectCraftSpiderDroneID &&
+            craft.objectAlliance == objectAlliance) {
+            if ([craftUnderAura count] < craftLimit) {
                 if (![craftUnderAura containsObject:craft] && ![craft isUnderAura]) {
                     [craft setIsUnderAura:YES];
                     [craftUnderAura addObject:craft];
@@ -40,13 +66,10 @@
             }
         }
     }
-}
-
-- (void)updateObjectLogicWithDelta:(float)aDelta {
-    [super updateObjectLogicWithDelta:aDelta];
+    
     for (int i = 0; i < [craftUnderAura count]; i++) {
         CraftObject* craft = [craftUnderAura objectAtIndex:i];
-        if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) > POW2(effectRadius)) {
+        if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) > POW2(kCraftMonarchAuraRangeLimit)) {
             [craftUnderAura removeObject:craft];
             [craft setIsUnderAura:NO];
         }

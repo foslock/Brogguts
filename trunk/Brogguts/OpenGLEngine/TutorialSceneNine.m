@@ -45,6 +45,8 @@
         [newAnt release];
         
         [helpText setObjectText:@"The Ant can mine brogguts if you command it on one. It will automatically return the brogguts to your base station and resume mining. Collect 200 Brogguts."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

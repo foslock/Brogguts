@@ -24,8 +24,8 @@ static int globalUniqueID = 0;
 @synthesize uniqueObjectID, boundingCircle, boundingCircleRadius;
 @synthesize isRenderedInOverview, hasBeenCheckedForCollisions;
 @synthesize objectAlliance, objectType;
-@synthesize staticObject, isRemoteObject;
-@synthesize thisObjectNode;
+@synthesize staticObject, isRemoteObject, hasMovedThisStep;
+@synthesize thisObjectNode, shouldUpdateThisStep;
 
 - (void)dealloc {
 	if (objectImage)
@@ -46,6 +46,8 @@ static int globalUniqueID = 0;
 		objectAlliance = kAllianceNeutral;
 		objectVelocity = Vector2fZero;
 		rotationSpeed = 0.0f;
+        hasMovedThisStep = NO;
+        shouldUpdateThisStep = YES;
         isRenderedInOverview = YES;
 		isHidden = NO;							// Defaults to being drawn
 		isCheckedForCollisions = NO;			// Defaults to NOT being in the spacial collision grid
@@ -104,9 +106,11 @@ static int globalUniqueID = 0;
                                        (remoteLocation.y - objectLocation.y) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget) );
     }
     
+    hasMovedThisStep = NO;
     if (objectVelocity.x != 0 || objectVelocity.y != 0) {
         objectLocation = CGPointMake(objectLocation.x + objectVelocity.x,
                                      objectLocation.y + objectVelocity.y);
+        hasMovedThisStep = YES;
     }
     
     // Update bounding circle

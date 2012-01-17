@@ -21,11 +21,12 @@
 #import "SoundSingleton.h"
 #import "BuildingObject.h"
 #import "UpgradeManager.h"
+#import "MonarchCraftObject.h"
 
 #define CALL_OUT_RANGE 256
 
 @implementation CraftObject
-@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, attributeHullCapacity, isUnderAura, craftDoesRotate;
+@synthesize isFollowingPath, craftAIInfo, attributePlayerCurrentCargo, attributePlayerCargoCapacity, attributeHullCurrent, attributeHullCapacity, attributeAttackRange, isUnderAura, craftDoesRotate;
 
 - (void)dealloc {
     if (turretPointsArray) {
@@ -60,6 +61,7 @@
 			attributeHullCapacity = kCraftAntHull;
 			attributeHullCurrent = kCraftAntHull;
 			attributeSpecialCooldown = kCraftAntSpecialCoolDown;
+            attributeViewDistance = kCraftAntViewDistance;
 			break;
 		case kObjectCraftMothID:
 			attributeBroggutCost = kCraftMothCostBrogguts;
@@ -71,6 +73,7 @@
 			attributeHullCapacity = kCraftMothHull;
 			attributeHullCurrent = kCraftMothHull;
 			attributeSpecialCooldown = kCraftMothSpecialCoolDown;
+            attributeViewDistance = kCraftMothViewDistance;
 			break;
 		case kObjectCraftBeetleID:
 			attributeBroggutCost = kCraftBeetleCostBrogguts;
@@ -82,6 +85,7 @@
 			attributeHullCapacity = kCraftBeetleHull;
 			attributeHullCurrent = kCraftBeetleHull;
 			attributeSpecialCooldown = kCraftBeetleSpecialCoolDown;
+            attributeViewDistance = kCraftBeetleViewDistance;
 			break;
 		case kObjectCraftMonarchID:
 			attributeBroggutCost = kCraftMonarchCostBrogguts;
@@ -93,6 +97,7 @@
 			attributeHullCapacity = kCraftMonarchHull;
 			attributeHullCurrent = kCraftMonarchHull;
 			attributeSpecialCooldown = kCraftMonarchSpecialCoolDown;
+            attributeViewDistance = kCraftMonarchViewDistance;
 			break;
 		case kObjectCraftCamelID:
 			attributeBroggutCost = kCraftCamelCostBrogguts;
@@ -104,6 +109,7 @@
 			attributeHullCapacity = kCraftCamelHull;
 			attributeHullCurrent = kCraftCamelHull;
 			attributeSpecialCooldown = kCraftCamelSpecialCoolDown;
+            attributeViewDistance = kCraftCamelViewDistance;
 			break;
 		case kObjectCraftRatID:
 			attributeBroggutCost = kCraftRatCostBrogguts;
@@ -115,6 +121,7 @@
 			attributeHullCapacity = kCraftRatHull;
 			attributeHullCurrent = kCraftRatHull;
 			attributeSpecialCooldown = kCraftRatSpecialCoolDown;
+            attributeViewDistance = kCraftRatViewDistance;
 			break;
 		case kObjectCraftSpiderID:
 			attributeBroggutCost = kCraftSpiderCostBrogguts;
@@ -126,6 +133,7 @@
 			attributeHullCapacity = kCraftSpiderHull;
 			attributeHullCurrent = kCraftSpiderHull;
 			attributeSpecialCooldown = kCraftSpiderSpecialCoolDown;
+            attributeViewDistance = kCraftSpiderViewDistance;
 			break;
 		case kObjectCraftSpiderDroneID:
 			attributeBroggutCost = kCraftSpiderDroneCostBrogguts;
@@ -137,6 +145,7 @@
 			attributeHullCapacity = kCraftSpiderDroneHull;
 			attributeHullCurrent = kCraftSpiderDroneHull;
 			attributeSpecialCooldown = kCraftSpiderDroneSpecialCoolDown;
+            attributeViewDistance = kCraftSpiderDroneViewDistance;
 			break;
 		case kObjectCraftEagleID:
 			attributeBroggutCost = kCraftEagleCostBrogguts;
@@ -148,6 +157,7 @@
 			attributeHullCapacity = kCraftEagleHull;
 			attributeHullCurrent = kCraftEagleHull;
 			attributeSpecialCooldown = kCraftEagleSpecialCoolDown;
+            attributeViewDistance = kCraftEagleViewDistance;
 			break;
 		default:
 			break;
@@ -325,6 +335,13 @@
     return CGPointZero;
 }
 
+- (void)setCraftSpeedLimit:(int)newEngines {
+    if (newEngines < attributeEngines) {
+        attributeEngines = newEngines;
+        maxVelocity = attributeEngines;
+    }
+}
+
 - (NSArray*)getSavablePath {
     if (isFollowingPath) {
         NSMutableArray* array = [[NSMutableArray alloc] init];
@@ -390,7 +407,7 @@
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
     [super attackedByEnemy:enemy withDamage:damage];
     if (isUnderAura) {
-        damage = CLAMP(damage - kCraftMonarchAuraResistanceValue, 1, INT_MAX);
+        damage = CLAMP(damage - [MonarchCraftObject protectionAmount], 1, INT_MAX);
         [self showCraftSheild];
     }
     attributeHullCurrent -= damage;
@@ -407,6 +424,7 @@
         destroyNow = YES;
         return YES;
     }
+    
     if (!isTraveling) {
         BOOL returnedAttack = NO;
         if (attackingAIState != kAttackingAIStateAttacking && !isBeingControlled && !isBeingDragged) {
@@ -500,6 +518,7 @@
                                             enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
     turretRotation = GetAngleInDegreesFromPoints(objectLocation, attackLaserTargetPosition);
     [[ParticleSingleton sharedParticleSingleton] createParticles:4 withType:kParticleTypeSpark atLocation:attackLaserTargetPosition];
+    [[SoundSingleton sharedSoundSingleton] playLaserSound];
     attackCooldownTimer = attributeAttackCooldown;
     if ([closestEnemyObject attackedByEnemy:self withDamage:attributeWeaponsDamage]) {
         [self setClosestEnemyObject:nil];
@@ -566,6 +585,10 @@
         return;
     }
     
+    // Update max speed and range
+    maxVelocity = attributeEngines;
+    effectRadius = attributeAttackRange;
+    
     if (objectAlliance == kAllianceFriendly) {
         [objectImage setColor:Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f)];
     } else if (objectAlliance == kAllianceEnemy) {
@@ -587,6 +610,7 @@
             NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
             Color4f color = [objectImage color];
             Scale2f scale = [objectImage scale];
+            int layer = [objectImage renderLayer];
             [objectImage autorelease];
             NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
             Image* newImage = [[Image alloc] initWithImageNamed:newName filter:GL_LINEAR];
@@ -594,6 +618,7 @@
                 objectImage = newImage;
                 [objectImage setColor:color];
                 [objectImage setScale:scale];
+                [objectImage setRenderLayer:layer];
                 [objectImage setRotation:objectRotation];
             } else {
                 [objectImage retain];
@@ -659,60 +684,62 @@
     // Update turret position
     [self updateCraftTurretLocations];
     
-    // Attack if able!
-    if (attackCooldownTimer > 0) {
-        attackCooldownTimer--;
-    } else {
-        if (attributeWeaponsDamage != 0 && attributeAttackCooldown != 0) {
-            if (closestEnemyObject && (movingAIState != kMovingAIStateMining) ) {
-                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange)) {
-                    if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
-                        if (closestEnemyObject.objectType == kObjectCraftRatID) {
-                            RatCraftObject* rat = (RatCraftObject*)closestEnemyObject;
-                            if (![rat isCloaked]) {
+    if (objectAlliance != kAllianceNeutral) {
+        // Attack if able!
+        if (attackCooldownTimer > 0) {
+            attackCooldownTimer--;
+        } else {
+            if (attributeWeaponsDamage != 0 && attributeAttackCooldown != 0) {
+                if (closestEnemyObject && (movingAIState != kMovingAIStateMining) ) {
+                    if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange)) {
+                        if (attackCooldownTimer == 0 && !closestEnemyObject.destroyNow && !isTraveling) {
+                            if (closestEnemyObject.objectType == kObjectCraftRatID) {
+                                RatCraftObject* rat = (RatCraftObject*)closestEnemyObject;
+                                if (![rat isCloaked]) {
+                                    [self attackTarget];
+                                }
+                            } else {
                                 [self attackTarget];
                             }
-                        } else {
-                            [self attackTarget];
                         }
                     }
                 }
             }
         }
-    }
-    
-    // If too far away to attack, and in ATTACKING state, move towards your target
-    if (attackingAIState == kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
-        if (!isFollowingPath && closestEnemyObject) {
-            if (attackMovingCooldownTimer <= 0) {
-                attackMovingCooldownTimer = CRAFT_ATTACK_MOVING_TIME;
-                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) >= POW2(attributeAttackRange)) {
-                    float distance = attributeAttackRange - maxVelocity;
-                    float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
-                                            objectLocation.x - closestEnemyObject.objectLocation.x);
-                    float xDist = distance * cosf(pointDir);
-                    float yDist = distance * sinf(pointDir);
-                    CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
-                                                      closestEnemyObject.objectLocation.y + yDist);
-                    NSArray* newPath = [[self.currentScene
-                                         collisionManager]
-                                        pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
-                    [self followPath:newPath isLooped:NO];
+        
+        // If too far away to attack, and in ATTACKING state, move towards your target
+        if (attackingAIState == kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
+            if (!isFollowingPath && closestEnemyObject) {
+                if (attackMovingCooldownTimer <= 0) {
+                    attackMovingCooldownTimer = CRAFT_ATTACK_MOVING_TIME;
+                    if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) >= POW2(attributeAttackRange)) {
+                        float distance = attributeAttackRange - maxVelocity;
+                        float pointDir = atan2f(objectLocation.y - closestEnemyObject.objectLocation.y,
+                                                objectLocation.x - closestEnemyObject.objectLocation.x);
+                        float xDist = distance * cosf(pointDir);
+                        float yDist = distance * sinf(pointDir);
+                        CGPoint followPoint = CGPointMake(closestEnemyObject.objectLocation.x + xDist,
+                                                          closestEnemyObject.objectLocation.y + yDist);
+                        NSArray* newPath = [[self.currentScene
+                                             collisionManager]
+                                            pathFrom:objectLocation to:followPoint allowPartial:NO isStraight:YES];
+                        [self followPath:newPath isLooped:NO];
+                    }
                 }
             }
         }
-    }
-    
-    // Reduce the timer to allow the craft to follow its target
-    if (attackMovingCooldownTimer > 0) {
-        attackMovingCooldownTimer--;
-    }
-    
-    // If the closest target is too far away, and not in ATTACKING state, set it to nil
-    if (attackingAIState != kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
-        if (closestEnemyObject) {
-            if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
-                [self setClosestEnemyObject:nil];
+        
+        // Reduce the timer to allow the craft to follow its target
+        if (attackMovingCooldownTimer > 0) {
+            attackMovingCooldownTimer--;
+        }
+        
+        // If the closest target is too far away, and not in ATTACKING state, set it to nil
+        if (attackingAIState != kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
+            if (closestEnemyObject) {
+                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
+                    [self setClosestEnemyObject:nil];
+                }
             }
         }
     }
@@ -730,8 +757,13 @@
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
-    } else {
+    } else if (objectAlliance == kAllianceEnemy) {
         Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, filledAlpha);
+        Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
+        drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
+                                attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
+    } else if (objectAlliance == kAllianceNeutral) {
+        Color4f filled = Color4fMake(0.5f, 0.5f, 0.0f, filledAlpha);
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
@@ -777,18 +809,21 @@
     
     // Draw the laser attack
     if (attributeWeaponsDamage != 0) {
-        if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange + maxVelocity)) {
-            float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
-            if (width != 0.0f) {
-                if (objectAlliance == kAllianceFriendly)
-                    glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
-                if (objectAlliance == kAllianceEnemy)
-                    glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
-                glLineWidth(width);
-                enablePrimitiveDraw();
-                drawLine(objectLocation, attackLaserTargetPosition, scroll);
-                disablePrimitiveDraw();
-                glLineWidth(1.0f);
+        if (objectType != kObjectCraftBeetleID ||
+            (objectType == kObjectCraftBeetleID && ![[[self currentScene] upgradeManager] isUpgradeCompleteWithID:kObjectCraftBeetleID])) {
+            if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange + maxVelocity)) {
+                float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
+                if (width != 0.0f) {
+                    if (objectAlliance == kAllianceFriendly)
+                        glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
+                    if (objectAlliance == kAllianceEnemy)
+                        glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
+                    glLineWidth(width);
+                    enablePrimitiveDraw();
+                    drawLine(objectLocation, attackLaserTargetPosition, scroll);
+                    disablePrimitiveDraw();
+                    glLineWidth(1.0f);
+                }
             }
         }
     }
@@ -800,14 +835,24 @@
             if (!rat.isCloaked) {
                 enablePrimitiveDraw();
                 Circle newCircle = [self touchableBounds];
-                glColor4f(0.0f, 0.5f, 1.0f, 0.4f);
+                if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:kObjectCraftMonarchID]) {
+                    glColor4f(0.0f, 1.0f, 0.3f, 0.75f);
+                } else {
+                    glColor4f(0.0f, 0.3f, 1.0f, 0.75f);
+                }
+                glLineWidth(2.0f);
                 drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
                 disablePrimitiveDraw();
             }
         } else {
             enablePrimitiveDraw();
             Circle newCircle = [self touchableBounds];
-            glColor4f(0.0f, 0.5f, 1.0f, 0.4f);
+            if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:kObjectCraftMonarchID]) {
+                glColor4f(0.0f, 1.0f, 0.3f, 0.75f);
+            } else {
+                glColor4f(0.0f, 0.3f, 1.0f, 0.75f);
+            }
+            glLineWidth(2.0f);
             drawCircle(newCircle, CIRCLE_SEGMENTS_COUNT * 2, scroll);
             disablePrimitiveDraw();
         }
@@ -816,15 +861,21 @@
     if (isShowingSheild) {
         [craftSheild setRotation:objectRotation];
         float alpha = CLAMP(sheildTimer - 0.6f, 0.0f, 0.4f);
-        [craftSheild setColor:Color4fMake(1.0f, 1.0f, 1.0f, alpha)];
+        if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:kObjectCraftMonarchID]) {
+            [craftSheild setColor:Color4fMake(0.5f, 1.0f, 0.5f, alpha)];
+        } else {
+            [craftSheild setColor:Color4fMake(0.5f, 0.5f, 1.0f, alpha)];
+        }
         [craftSheild renderCenteredAtPoint:objectLocation withScrollVector:scroll];
     }
     
     // If upgraded show the plus
-    if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
-        [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
-                                                        objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
-                           withScrollVector:scroll];
+    if (objectAlliance == kAllianceFriendly) {
+        if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
+            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
+                                                            objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
+                               withScrollVector:scroll];
+        }
     }
 }
 
@@ -919,9 +970,8 @@
                 TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:dragLocation];
                 if (enemy) {
                     [self setPriorityEnemyTarget:enemy];
-                } else {
-                    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipConfirm] location:objectLocation];
                 }
+                [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipConfirm]];
             }
         }
         isBeingDragged = NO;
@@ -930,7 +980,9 @@
 }
 
 - (void)touchesDoubleTappedAtLocation:(CGPoint)location {
-    [[self currentScene] attemptToSelectCraftInVisibleRectWithID:objectType];
+    if (objectAlliance == kAllianceFriendly) {
+        [[self currentScene] attemptToSelectCraftInVisibleRectWithID:objectType];
+    }
 }
 
 @end

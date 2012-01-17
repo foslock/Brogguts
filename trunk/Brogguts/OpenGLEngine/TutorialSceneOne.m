@@ -15,6 +15,7 @@
 #import "TextObject.h"
 #import "TiledButtonObject.h"
 #import "StarSingleton.h"
+#import "FogManager.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     @"Hundreds of years in the future, the human ",
@@ -67,6 +68,7 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
             [textObjects addObject:introText];
         }
         textTimer = TUTORIAL_INTRO_TEXT_TIME;
+        [fogManager clearAllFog];
     }
     return self;
 }

@@ -7,7 +7,10 @@
 //
 
 #import "BeetleCraftObject.h"
-
+#import "UpgradeManager.h"
+#import "BroggutScene.h"
+#import "MissileObject.h"
+#import "SoundSingleton.h"
 
 @implementation BeetleCraftObject
 
@@ -17,6 +20,26 @@
 		[self createTurretLocationsWithCount:1];
 	}
 	return self;
+}
+
+- (void)attackTarget {
+    if (![[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        [super attackTarget];
+    } else {
+        // Upgraded! Shoots missiles!
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMissileFire]];
+        MissileObject* missile = [[MissileObject alloc] initWithOwner:self withTarget:closestEnemyObject];
+        [[self currentScene] addCollidableObject:missile];
+        [missile release];
+        attackCooldownTimer = attributeAttackCooldown * 2;
+    }
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeAttackRange = kCraftBeetleMissileRange;
+    }
+    [super updateObjectLogicWithDelta:aDelta];
 }
 
 - (void)updateCraftTurretLocations {

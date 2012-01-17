@@ -14,6 +14,7 @@
 #import "StructureObject.h"
 #import "CraftAndStructures.h"
 #import "GameController.h"
+#import "SoundSingleton.h"
 
 @implementation UpgradeDialogueObject
 @synthesize upgradesStructure;
@@ -66,10 +67,13 @@
     
     if ([cancelButton wasJustReleased]) {
         isWantingToBeDismissed = YES;
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         // Just dismiss dialogue
     } else if ([confirmButton wasJustReleased]) {
         // MAKE SURE THE STRUCTURE IS STILL VALID!
         if (![upgradesStructure destroyNow]) {
+            
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
             
             // Start the upgrade
             if (upgradesStructure.objectType == kObjectStructureCraftUpgradesID) {

@@ -14,26 +14,30 @@
 #import "CollisionManager.h"
 #import "CraftAndStructures.h"
 #import "GameController.h"
+#import "Image.h"
+#import "CraftObject.h"
 
 @implementation AIController
-@synthesize enemyBroggutCount, enemyMetalCount;
+@synthesize enemyBroggutCount, enemyMetalCount, isPirateScene;
 
 - (void)dealloc {
     [craftArray release];
     [structureArray release];
+    [pirateCraft release];
     [super dealloc];
 }
 
-- (id)initWithTouchableObjects:(NSArray*)objects withPirate:(BOOL)pirate{
+- (id)initWithScene:(BroggutScene*)scene withPirate:(BOOL)pirate {
     self = [super init];
     if (self) {
-        myScene = [[GameController sharedGameController] currentScene];
+        myScene = scene;
         isPirateScene = pirate;
         craftArray = [[NSMutableArray alloc] init];
         structureArray = [[NSMutableArray alloc] init];
+        pirateCraft = [[NSMutableArray alloc] init];
         
-        for (int i = 0; i < [objects count]; i++) {
-            TouchableObject* obj = [objects objectAtIndex:i];
+        for (int i = 0; i < [scene.touchableObjects count]; i++) {
+            TouchableObject* obj = [scene.touchableObjects objectAtIndex:i];
             if ([obj isKindOfClass:[CraftObject class]]) {
                 [craftArray addObject:obj];
             }
@@ -251,61 +255,166 @@
     if (stepAITimer <= 0) {
         // NSLog(@"AI is updated");
         stepAITimer = AI_STEP_TIMER_INTERVALS;
-        // UPDATE THE AI
         
-        // Update current state details
-        [self computeCurrentAIDetails];
-        
-        // Check if current details meet the current goal
-        if (currentAIDetails.broggutIncomeRate >= currentAIGoal->broggutIncomeRate &&
-            currentAIDetails.totalAttackPower >= currentAIGoal->totalAttackPower &&
-            currentAIDetails.totalDefendPower >= currentAIGoal->totalDefendPower &&
-            currentAIDetails.totalNumberOfShips >= currentAIGoal->totalNumberOfShips &&
-            currentAIDetails.totalNumberOfStructures >= currentAIGoal->totalNumberOfStructures) {
-            [self popGoalOffQueue];
+        // Update pirate craft array
+        if (isPirateScene && myScene) {
+            [pirateCraft removeAllObjects];
+            for (int i = 0; i < [myScene.touchableObjects count]; i++) {
+                TouchableObject* obj = [myScene.touchableObjects objectAtIndex:i];
+                if ([obj isKindOfClass:[CraftObject class]]) {
+                    CraftObject* craft = (CraftObject*)obj;
+                    if ([craft isKindOfClass:[SpiderCraftObject class]]) {
+                        continue;
+                    }
+                    if (craft.objectAlliance == kAllianceEnemy) {
+                        if (craft.attackingAIState == kAttackingAIStateNeutral &&
+                            craft.movingAIState != kMovingAIStateMining) {
+                            [pirateCraft addObject:craft];
+                        }
+                    }
+                }
+            }
+            
+            if ([pirateCraft count] != 0) {
+                // Get the three bands of player's structure's
+                // Go through each band and attack the farthest structure
+                // Split into two groups on the outermost band
+                int bandCount = 4;
+                NSMutableArray* bands = [NSMutableArray arrayWithCapacity:bandCount];
+                for (int i = 0; i < bandCount; i++) {
+                    NSMutableArray* band = [NSMutableArray array];
+                    [bands addObject:band];
+                }
+                int bandWidthMax = MAX(myScene.fullMapBounds.size.width * (3.0f / 4.0f),
+                                       myScene.fullMapBounds.size.height * (3.0f / 4.0f));
+                int bandWidth = bandWidthMax / bandCount;
+                
+                // Make the bands
+                int totalStructureCount = 0;
+                for (int b = 0; b < bandCount; b++) { // start at inner/first band
+                    NSMutableArray* band = [bands objectAtIndex:b];
+                    for (int s = 0; s < [myScene.touchableObjects count]; s++) {
+                        TouchableObject* obj = [myScene.touchableObjects objectAtIndex:s];
+                        if ([obj isKindOfClass:[StructureObject class]]) {
+                            StructureObject* structure = (StructureObject*)obj;
+                            if (structure.objectAlliance == kAllianceFriendly) {
+                                int thisDist = GetDistanceBetweenPoints(structure.objectLocation, myScene.homeBaseLocation);
+                                if (b == thisDist / bandWidth) {
+                                    [band addObject:structure];
+                                    totalStructureCount++;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                NSMutableArray* structureTargets = [NSMutableArray arrayWithCapacity:bandCount];
+                if (totalStructureCount > 0) {
+                    // Contains structures that should be attacked
+                    int currentBandIndex = 0;
+                    for (int i = 0; i < bandCount; i++){
+                        int bandIndex = (bandCount - 1) - i;
+                        
+                        NSMutableArray* band = [bands objectAtIndex:bandIndex];
+                        int structureCount = [band count];
+                        if (structureCount != 0) {
+                            currentBandIndex = bandIndex;
+                            int numberToAdd = CLAMP(bandIndex + 1, 0, structureCount);
+                            for (int j = 0; j < numberToAdd; j++) {
+                                [structureTargets addObject:[band objectAtIndex:j]];
+                            }
+                            break; // Only attack this first structure
+                        }
+                    }
+                } else {
+                    // No structures in the current bands, so just attack a random building.
+                    for (int s = 0; s < [myScene.touchableObjects count]; s++) {
+                        TouchableObject* obj = [myScene.touchableObjects objectAtIndex:s];
+                        if ([obj isKindOfClass:[StructureObject class]]) {
+                            StructureObject* structure = (StructureObject*)obj;
+                            if (structure.objectAlliance == kAllianceFriendly && !structure.destroyNow) {
+                                [structureTargets addObject:structure];
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                if ([structureTargets count] > 0) {
+                    int bandCounter = 0;
+                    for (int i = 0; i < [pirateCraft count]; i++) {
+                        CraftObject* craft = [pirateCraft objectAtIndex:i];
+                        StructureObject* targetS = [structureTargets objectAtIndex:bandCounter];
+                        bandCounter++;
+                        if (bandCounter >= [structureTargets count]) {
+                            bandCounter = 0;
+                        }
+                        int structSize = CLAMP(targetS.objectImage.imageSize.width * (3.0f / 4.0f), 1, craft.attributeAttackRange);
+                        CGPoint targetPoint = CGPointMake(targetS.objectLocation.x - (structSize / 2) + (arc4random() % structSize),
+                                                          targetS.objectLocation.y - (structSize / 2) + (arc4random() % structSize));
+                        NSArray* path = [myScene.collisionManager pathFrom:craft.objectLocation to:targetPoint allowPartial:YES isStraight:YES];
+                        [craft followPath:path isLooped:NO];
+                    }
+                }
+            }
         }
         
-        if (globalAIState != kGlobalAIStateAttacking &&
-            globalAIState != kGlobalAIStateDefending) {
-            // Check the broggut rate
-            if (currentAIDetails.broggutIncomeRate < currentAIGoal->broggutIncomeRate) {
-                // Do something to raise the broggut income rate
-                
-                return;
-            }
-            
-            // Check the attack power
-            if (currentAIDetails.totalAttackPower < currentAIGoal->totalAttackPower) {
-                
-                return;
-            }
-            
-            // Check the defense power
-            if (currentAIDetails.totalDefendPower < currentAIGoal->totalDefendPower) {
-                
-                return;
-            }
-            
-            // Check the total number of ships
-            if (currentAIDetails.totalNumberOfShips < currentAIGoal->totalNumberOfShips) {
-                
-                return;
-            }
-            
-            // Check the total number of structures
-            if (currentAIDetails.totalNumberOfStructures < currentAIGoal->totalNumberOfStructures) {
-                
-                return;
-            }
-        } else {
-            if (globalAIState == kGlobalAIStateAttacking) {
-                // Command ships under an ATTACKING state
-                
-            } else if (globalAIState == kGlobalAIStateDefending) {
-                // Command ships under a DEFENDING state
-                
-            }
-        }
+        /*
+         // Update current state details
+         [self computeCurrentAIDetails];
+         
+         // Check if current details meet the current goal
+         if (currentAIDetails.broggutIncomeRate >= currentAIGoal->broggutIncomeRate &&
+         currentAIDetails.totalAttackPower >= currentAIGoal->totalAttackPower &&
+         currentAIDetails.totalDefendPower >= currentAIGoal->totalDefendPower &&
+         currentAIDetails.totalNumberOfShips >= currentAIGoal->totalNumberOfShips &&
+         currentAIDetails.totalNumberOfStructures >= currentAIGoal->totalNumberOfStructures) {
+         [self popGoalOffQueue];
+         }
+         
+         if (globalAIState != kGlobalAIStateAttacking &&
+         globalAIState != kGlobalAIStateDefending) {
+         // Check the broggut rate
+         if (currentAIDetails.broggutIncomeRate < currentAIGoal->broggutIncomeRate) {
+         // Do something to raise the broggut income rate
+         
+         return;
+         }
+         
+         // Check the attack power
+         if (currentAIDetails.totalAttackPower < currentAIGoal->totalAttackPower) {
+         
+         return;
+         }
+         
+         // Check the defense power
+         if (currentAIDetails.totalDefendPower < currentAIGoal->totalDefendPower) {
+         
+         return;
+         }
+         
+         // Check the total number of ships
+         if (currentAIDetails.totalNumberOfShips < currentAIGoal->totalNumberOfShips) {
+         
+         return;
+         }
+         
+         // Check the total number of structures
+         if (currentAIDetails.totalNumberOfStructures < currentAIGoal->totalNumberOfStructures) {
+         
+         return;
+         }
+         } else {
+         if (globalAIState == kGlobalAIStateAttacking) {
+         // Command ships under an ATTACKING state
+         
+         } else if (globalAIState == kGlobalAIStateDefending) {
+         // Command ships under a DEFENDING state
+         
+         }
+         }
+         */
+        
     } else {
         stepAITimer--;
     }

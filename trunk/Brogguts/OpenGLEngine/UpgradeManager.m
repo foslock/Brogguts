@@ -8,6 +8,28 @@
 
 #import "UpgradeManager.h"
 
+NSString* kObjectUnlockDetailText[TOTAL_OBJECT_TYPES_COUNT] = {
+    @"", @"", @"", @"", @"", @"", @"", // Nothing
+    @"If purchased, all Ants in your fleet will be upgraded with the newest mining technology allowing them to collect brogguts 50 percent faster.", // Ant (faster mining)
+    @"If purchased, all Moth craft will have in addition to their incredible speed, the chance to evade enemy attacks.", // Moth (Evades attack sometimes)
+    @"If purchased, all Beetle craft will have their lasers replaced with a powerful missile launcher that has a longer range than the basic laser.", // Beetle (fires missles instead of laser)
+    @"If purchased, all Monarch craft will have equipment installed to support the protection of more ships from more damage.", // Monarch (provides better protection, different color, to more ships)
+    @"If purchased, all Camel craft will have their insides gutted to hold a lot more brogguts when its mining.", // Camel (Increased cargo space)
+    @"If purchased, all Rat craft will have their view distance increased greatly to increase their scouting potential.", // Rat (Increased view distance)
+    @"If purchased, all Spider craft will replace their drones faster and require less brogguts to do so.", // Spider (Lower's cost and decrease production time of drones)
+    @"", // (drone)
+    @"If purchased, all Eagle craft will slowly repair themselves over time without the use of a Fixer structure. Take them away from a battle and let them repair for a second wind.", // Eagle (Repairs itself)
+    @"If purchased, your Base Station will have its armor increased to withstand more damage from enemy ships.", // Base Station (Increased armor)
+    @"If purchased, all Blocks will have their armor increased to withstand more damage from enemy ships.", // Block (Stronger)
+    @"If purchased, all Refineries will refine brogguts into metal at a faster rate than normal.", // Refinery (Better broggut/metal ratio)
+    @"If purchased, all Craft Upgrade structures will research upgrades at a faster rate.", // Craft upgrades (Faster upgrades)
+    @"If purchased, all Structure Upgrade structures will research upgrades at a faster rate.", // Structure upgrades (Faster upgrades)
+    @"If purchased, all Turrets will attack at a much faster rate than normal.", // Turret (Double attack speed)
+    @"If purchased, all Fixers will repair two nearby friendly craft at once instead of just one.", // Fixer (Fixes two craft instead of one)
+    @"If purchased, all Radar structures will have their range and view distance increased greatly.", // Radar (Expanded range/view distance)
+    @"", @"", // Nothing
+};
+
 enum kIntToBool {
     kIntToBoolFalse,
     kIntToBoolTrue,

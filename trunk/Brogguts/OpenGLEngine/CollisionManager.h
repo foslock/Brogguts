@@ -75,9 +75,9 @@ typedef struct Path_Node_Queue {
 #define INITIAL_TABLE_CAPACITY 100              // Initial capacity of the table holding all CollidableObjects
 #define COLLISION_DETECTION_FREQ 4              // How many frames to wait to check collisions (0 - every frame, 1 - every other, etc.)
 #define AI_SEND_TO_BASE_FREQ 300                // How many frames to wait to send all enemy ships against home base
-#define RADIAL_EFFECT_CHECK_FREQ 3              // " " to check radial effects
+#define RADIAL_EFFECT_CHECK_FREQ 4              // " " to check radial effects
 #define RADIAL_EFFECT_MAX_COUNT_QUADTREE 800    // Maximum number of objects to check for radial effects (in quadtree)
-#define MEDIUM_BROGGUT_IMAGE_COUNT 10           // Number of different textures to use for the medium brogguts
+#define MEDIUM_BROGGUT_IMAGE_COUNT 8            // Number of different textures to use for the medium brogguts
 
 @interface CollisionManager : NSObject {
     BroggutScene* currentScene;         // Reference to the current scene
@@ -106,9 +106,9 @@ typedef struct Path_Node_Queue {
 	
 	BroggutArray* broggutArray;			// A 1D array of brogguts mapped to 2D
 	BroggutGenerator* generator;		// The generator the makes the medium brogguts
-    NSMutableArray* mediumBroggutImageArrayYoung;   // Array of the images that will be used for the young medium brogguts
-    NSMutableArray* mediumBroggutImageArrayOld;   // Array of the images that will be used for the young medium brogguts
-    NSMutableArray* mediumBroggutImageArrayAncient;   // Array of the images that will be used for the young medium brogguts
+    NSMutableArray* mediumBroggutImageArrayYoung;       // Array of the images that will be used for the young medium brogguts
+    NSMutableArray* mediumBroggutImageArrayOld;         // Array of the images that will be used for the young medium brogguts
+    NSMutableArray* mediumBroggutImageArrayAncient;     // Array of the images that will be used for the young medium brogguts
 	
 	// Path finding array of nodes
 	PathNode* pathNodeArray;			// A 1D array of pathnodes mapped to 2D
@@ -148,6 +148,7 @@ typedef struct Path_Node_Queue {
 - (void)updateAllEffectRadii; // Should be called every step of loop
 - (void)processAllEffectRadii; // Can skip loop iterations, just make sure "update..." has been called first
 - (NSArray*)getArrayOfRadiiObjectsInRect:(CGRect)rect;
+- (NSArray*)getArrayOfRadiiObjectsInCircle:(Circle)circle;
 
 - (void)remakeGridVertexArrayWithScale:(Scale2f)scale;
 

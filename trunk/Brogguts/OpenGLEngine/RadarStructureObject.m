@@ -10,6 +10,8 @@
 #import "Image.h"
 #import "ImageRenderSingleton.h"
 #import "RatCraftObject.h"
+#import "BroggutScene.h"
+#import "UpgradeManager.h"
 
 @implementation RadarStructureObject
 
@@ -24,12 +26,22 @@
         [objectImage setScale:Scale2fMake(0.5f, 0.5f)];
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
+        isOverviewDrawingEffectRadius = YES;
         effectRadius = kStructureRadarRadius;
         radarDishImage = [[Image alloc] initWithImageNamed:kObjectStructureRadarDishSprite filter:GL_LINEAR];
         [radarDishImage setScale:[objectImage scale]];
         [radarDishImage setRenderLayer:kLayerMiddleLayer];
 	}
 	return self;
+}
+
+- (void)updateObjectLogicWithDelta:(float)aDelta {
+    [super updateObjectLogicWithDelta:aDelta];
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeViewDistance = kStructureRadarViewDistanceUpgrade;
+        effectRadius = kStructureRadarRadiusUpgrade;
+    }
 }
 
 - (void)objectEnteredEffectRadius:(TouchableObject *)other {

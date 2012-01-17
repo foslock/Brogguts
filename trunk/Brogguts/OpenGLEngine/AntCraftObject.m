@@ -15,6 +15,7 @@
 #import "ParticleSingleton.h"
 #import "Image.h"
 #import "SoundSingleton.h"
+#import "UpgradeManager.h"
 
 enum MiningStates {
 	kMiningStateMining,
@@ -163,6 +164,11 @@ enum MiningStates {
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
     
+    // Check for upgrade
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeMiningCooldown = kCraftAntMiningCooldownUpgrade;
+    }
+    
 	// Mine from broggut when close and in mining state
 	if (hasCurrentPathFinished && miningState == kMiningStateApproaching) {
 		// Just arrived at the broggut location
@@ -183,6 +189,7 @@ enum MiningStates {
                 attributePlayerCurrentCargo = CLAMP(attributePlayerCurrentCargo, 0, attributePlayerCargoCapacity);
                 int currentValue = broggut->broggutValue - broggutChangeAmount;
                 [[self.currentScene collisionManager] setBroggutValue:currentValue withID:broggut->broggutID isRemote:NO];
+                [self.currentScene playMiningSoundAtLocation:miningLocation];
             } else {
                 miningCooldownTimer--;
             }
@@ -231,6 +238,8 @@ enum MiningStates {
                 [[self currentScene] removeControlledCraft:self];
                 [self setIsBeingControlled:NO];
             }
+        } else {
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileShipDeny]];
         }
 	}
 	[super touchesEndedAtLocation:location];

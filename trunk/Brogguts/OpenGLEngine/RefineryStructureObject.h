@@ -15,6 +15,7 @@
     AnimatedImage* animatedImage;
     BOOL hasBeenAdded;
     BOOL isRefining;
+    int refiningTimeTotal;
     int refiningTimer;
     int refiningCounter;
 }

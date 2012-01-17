@@ -10,6 +10,8 @@
 #import "CraftAndStructures.h"
 #import "GameplayConstants.h"
 #import "Image.h"
+#import "UpgradeManager.h"
+#import "BroggutScene.h"
 
 @implementation FixerStructureObject
 
@@ -29,6 +31,7 @@
         }
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
+        isOverviewDrawingEffectRadius = YES;
 		isRepairingCraft = NO;
 		closeFriendlyCraft = [[NSMutableArray alloc] initWithCapacity:REPAIR_MAX_CRAFT_COUNT];
 		attributeRepairAmount = kStructureFixerRepairAmount;
@@ -57,6 +60,11 @@
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeRepairMaxCount = kStructureFixerFriendlyTargetLimitUpgrade;
+    }
+    
 	if (!isTraveling) {
         for (int i = 0; i < [closeFriendlyCraft count]; i++) {
             CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];

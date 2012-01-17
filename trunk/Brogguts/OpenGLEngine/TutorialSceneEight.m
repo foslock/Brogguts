@@ -53,6 +53,8 @@
         [newBeetle release];
         
         [helpText setObjectText:@"If there are enough enemy craft nearby, they will gang up on you and chase you instead. Attack these two enemy Beetles."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

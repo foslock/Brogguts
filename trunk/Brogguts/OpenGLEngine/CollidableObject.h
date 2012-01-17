@@ -33,6 +33,8 @@
 	BOOL destroyNow;
 	BOOL staticObject;
     BOOL isRemoteObject;
+    BOOL hasMovedThisStep;
+    BOOL shouldUpdateThisStep;
 	
     CGPoint remoteLocation;     // Used only for remote objects, this is the position received, and will be used in the object movement smoothing
     
@@ -63,6 +65,8 @@
 @property (nonatomic, assign) BOOL isTextObject;
 @property (nonatomic, assign) BOOL staticObject;
 @property (nonatomic, assign) BOOL isRemoteObject;
+@property (nonatomic, assign) BOOL hasMovedThisStep;
+@property (nonatomic, assign) BOOL shouldUpdateThisStep;
 @property (nonatomic, assign) CGPoint remoteLocation;
 @property (nonatomic, assign) CGPoint objectLocation;
 @property (nonatomic, assign) Vector2f objectVelocity;

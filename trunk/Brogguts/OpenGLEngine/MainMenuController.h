@@ -10,7 +10,8 @@
 #import <GameKit/GameKit.h>
 
 #define LETTER_MOVE_TIME 2.0f
-#define MAIN_MENU_STAR_COUNT 30
+#define MAIN_MENU_ANIMATED_STAR_COUNT 0
+#define MAIN_MENU_STATIC_STAR_COUNT 600
 #define LETTER_JITTER_DISTANCE 8.0f
 
 @interface MainMenuController : UIViewController <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate> {
@@ -40,16 +41,12 @@
     UIView* fadeCoverView;
     UIImageView* recommendationView;
     
-    UIImageView* backgroundOne;
-    UIImageView* backgroundTwo;
-    UIImageView* backgroundThree;
+    UIImageView* backgroundImage;
     
     NSMutableArray* starsArray;
 }
 
-@property (assign) IBOutlet UIImageView* backgroundOne;
-@property (assign) IBOutlet UIImageView* backgroundTwo;
-@property (assign) IBOutlet UIImageView* backgroundThree;
+@property (assign) IBOutlet UIImageView* backgroundImage;
 @property (assign) IBOutlet UIImageView* letterB;
 @property (assign) IBOutlet UIImageView* letterR;
 @property (assign) IBOutlet UIImageView* letterO;
@@ -71,7 +68,6 @@
 @property (assign) IBOutlet UILabel* spaceYearCount;
 @property (assign) IBOutlet UIImageView* recommendationView;
 
-- (void)animateBackgrounds;
 - (void)animateLetters;
 
 - (void)updateCountLabels;

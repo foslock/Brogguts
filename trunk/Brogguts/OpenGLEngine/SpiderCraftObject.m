@@ -11,6 +11,7 @@
 #import "Image.h"
 #import "GameController.h"
 #import "PlayerProfile.h"
+#import "UpgradeManager.h"
 
 @implementation SpiderCraftObject
 
@@ -25,8 +26,10 @@
         craftDoesRotate = NO;
 		droneArray = [[NSMutableArray alloc] initWithCapacity:SPIDER_NUMBER_OF_DRONES];
 		droneCount = 0;
+        droneBroggutCost = kCraftSpiderDroneCostBrogguts;
+        droneBuildTime = kCraftSpiderDroneRebuildTime;
 		droneCountLimit = SPIDER_NUMBER_OF_DRONES;
-        droneBuildTimer = kCraftSpiderBuildDroneTime;
+        droneBuildTimer = kCraftSpiderDroneRebuildTime;
         for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
             droneBayContainment[i] = NO;
         }
@@ -86,13 +89,21 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        droneBroggutCost = kCraftSpiderDroneCostBroggutsUpgraded;
+        droneBuildTime = kCraftSpiderDroneRebuildTimeUpgraded;
+    }
 	
     if (droneBuildTimer <= 0) {
-        droneBuildTimer = kCraftSpiderBuildDroneTime;
-        if (droneCount < droneCountLimit) {
-            [self addNewDroneToBay];
-            [[self currentScene] addBroggutTextValue:-kCraftSpiderDroneCostBrogguts atLocation:objectLocation withAlliance:kAllianceFriendly];
-            [[[GameController sharedGameController] currentProfile] addBrogguts:-kCraftSpiderDroneCostBrogguts];
+        droneBuildTimer = droneBuildTime;
+        if (objectAlliance == kAllianceFriendly) {
+            if (droneCount < droneCountLimit) {
+                if ([[[GameController sharedGameController] currentProfile] subtractBrogguts:droneBroggutCost metal:kCraftSpiderDroneCostMetal] == kProfileNoFail) {
+                    [self addNewDroneToBay];
+                    [[self currentScene] addBroggutTextValue:-droneBroggutCost atLocation:objectLocation withAlliance:kAllianceFriendly];
+                }
+            }
         }
 	} else if (!isTraveling) {
         droneBuildTimer -= 1;

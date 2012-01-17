@@ -55,7 +55,7 @@
 - (id)initWithFontImageNamed:(NSString*)aFileName controlFile:(NSString*)aControlFile scale:(Scale2f)aScale filter:(GLenum)aFilter {
 	self = [self init];
 	if (self != nil) {
-
+        
 		sharedGameController = [GameController sharedGameController];
 		
 		// Reference the font image which has been supplied and which contains the character bitmaps
@@ -65,10 +65,10 @@
         
 		// Set up the initial color
 		fontColor = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
-					 
+        
         // Initialize the array which is going to hold the bitmapfontchar structures
 		charsArray = calloc(kMaxCharsInFont, sizeof(BitmapFontChar));
-
+        
         // Parse the control file and populate charsArray which the character definitions
 		[self parseFont:aControlFile];
 	}
@@ -115,6 +115,7 @@
 	// Grab the scale that we will be using
 	float xScale = fontImage.scale.x;
 	float yScale = fontImage.scale.y;
+    CGPoint originalPoint = aPoint;
 	
 	// Loop through all the characters in the text to be rendered
 	for(int i = 0; i < [aText length]; i++) {
@@ -124,6 +125,12 @@
 		unichar charID = [aText characterAtIndex:i] - 32;
         charsArray[charID].image.scale = fontImage.scale;
         Image* charImage = charsArray[charID].image;
+        
+        if ([aText characterAtIndex:i] == '\n') {
+            aPoint.x = originalPoint.x;
+            aPoint.y -= (lineHeight * yScale);
+            continue;
+        }
 		
 		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.
 		// This will cause the characters to all sit on the line correctly with tails below the line.  The commonHeight which has
@@ -138,7 +145,7 @@
 		
 		// Render the current character at the renderPoint
 		[charImage renderAtPoint:renderPoint];
-	
+        
 		// Move x based on the amount to advance for the current char
 		aPoint.x += charsArray[charID].xAdvance * xScale;
 	}
@@ -161,6 +168,13 @@
 		unichar charID = [aText characterAtIndex:i] - 32;
         charsArray[charID].image.scale = fontImage.scale;
         Image* charImage = charsArray[charID].image;
+        
+        // If it is a new line, just skip down to next line
+        if ([aText characterAtIndex:i] == '\n') {
+            aPoint.x = oldPoint.x;
+            currentLine++;
+            continue;
+        }
 		
 		// Using the current x and y, calculate the correct position of the character using the x and y offsets for each character.
 		// This will cause the characters to all sit on the line correctly with tails below the line.  The commonHeight which has
@@ -169,7 +183,7 @@
         for (int j = i; j < textLength; j++) {
             char thisChar = [aText characterAtIndex:j];
             unichar charID = thisChar - 32;
-            if ( thisChar == ' ' ) {
+            if ( thisChar == ' ' || thisChar == '\n') {
                 break;
             }
             totalWordLength += charsArray[charID].xAdvance * xScale;
@@ -179,7 +193,7 @@
             aPoint.x = oldPoint.x;
             currentLine++;
         }
-            
+        
 		int y = aPoint.y - (currentLine * ((lineHeight * yScale) + 2.0f)) + (lineHeight * yScale) - (charsArray[charID].height + charsArray[charID].yOffset) * yScale;
 		int x = aPoint.x + charsArray[charID].xOffset;
 		CGPoint renderPoint = CGPointMake(x, y);
@@ -197,50 +211,50 @@
 }
 
 - (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer {
-	
 	CGPoint point = CGPointZero;
-
+    
 	// Calculate the width and height in pixels of the text
-	int textWidth = [self getWidthForString:aText];
-	int textHeight = [self getHeightForString:aText];
+	float textWidth = [self getWidthForString:aText];
+	float textHeight = [self getHeightForString:aText];
+    float scaledLineHeight = lineHeight * fontImage.scale.y;
 	
 	// Based on the justification enum calculate the position of the text
 	switch (aJustification) {
 		case BitmapFontJustification_TopLeft:
 			point.x = aRect.origin.x;
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (lineHeight - textHeight);
+			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_MiddleLeft:
 			point.x = aRect.origin.x;
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (lineHeight - textHeight);		
+			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);		
 			break;
 		case BitmapFontJustification_BottomLeft:
 			point.x = aRect.origin.x;
-			point.y = aRect.origin.y - (lineHeight - textHeight);
+			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_TopCentered:
 			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (lineHeight - textHeight);
+			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_MiddleCentered:
 			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (lineHeight - textHeight);
+			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_BottomCentered:
 			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y - (lineHeight - textHeight);
+			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_TopRight:
 			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (lineHeight - textHeight);
+			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_MiddleRight:
 			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (lineHeight - textHeight);
+			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
 			break;
 		case BitmapFontJustification_BottomRight:
 			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y - (lineHeight - textHeight);
+			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
 			break;
 			
 		default:
@@ -255,16 +269,23 @@
 - (int)getWidthForString:(NSString*)string {
 	// Set up stringWidth
 	int stringWidth = 0;
-	
+	int maxWidth = 0;
 	// Loop through the characters in the text and sum the xAdvance for each one
 	// xAdvance holds how far x should be advanced for each character so that the correct
 	// space is left after each character.
 	for(int index=0; index<[string length]; index++) {
 		unichar charID = [string characterAtIndex:index] - 32;
-
+        if ([string characterAtIndex:index] == '\n') {
+            if (stringWidth > maxWidth) {
+                maxWidth = stringWidth;
+                stringWidth = 0;
+            }
+        }
+        
 		// Add the xAdvance value of the current character to stringWidth scaling as necessary
 		stringWidth += charsArray[charID].xAdvance * fontImage.scale.x;
 	}	
+    
 	// Return the total width calculated
 	return stringWidth;
 }
@@ -273,7 +294,7 @@
 - (int)getHeightForString:(NSString*)string {
 	// Set up stringHeight	
 	int stringHeight = 0;
-
+    
 	// Loop through the characters in the text and sum the height.  The sum will take into
 	// account the offset of the character as some characters sit below the line etc
 	for(int i=0; i<[string length]; i++) {
@@ -282,6 +303,11 @@
 		// Don't bother checking if the character is a space as they have no height
 		if(charID == ' ')
 			continue;
+        
+        if ([string characterAtIndex:i] == '\n') {
+            stringHeight += lineHeight;
+            continue;
+        }
 		
 		// Check to see if the height of the current character is greater than the current max height
 		// If so then replace the current stringHeight with the height of the current character
@@ -312,7 +338,7 @@
     
 	// Create a holder for each line we are going to work with
 	NSString *line;
-		
+    
 	// Loop through all the lines in the lines array processing each one
 	while((line = [nse nextObject])) {
 		// Check to see if the start of the line is something we are interested in
@@ -333,7 +359,7 @@
 	int scaleW;
 	int scaleH;
 	int pages;
-
+    
 	// Grab information from the common line
 	sscanf([line UTF8String], "common lineHeight=%i base=%*i scaleW=%i scaleH=%i pages=%i", &lineHeight, &scaleW, &scaleH, &pages);
 	
@@ -352,7 +378,7 @@
 	
 	// Grab the character ID from line
 	sscanf([line UTF8String], "char id=%i", &charID);
-
+    
 	// Take 32 from the charID as we are not using the first 32 characters of the font
 	charID -= 32;
 	
@@ -364,10 +390,10 @@
     // Populate image with a new image instance defined as the sub image region for this
     // character.
     charsArray[charID].image = [[fontImage subImageInRect:CGRectMake(charsArray[charID].x, 
-																	charsArray[charID].y, 
-																	charsArray[charID].width, 
-																	charsArray[charID].height)] retain];
-	 
+                                                                     charsArray[charID].y, 
+                                                                     charsArray[charID].width, 
+                                                                     charsArray[charID].height)] retain];
+    
     // Set the scale of this characters image to match the scale of the texture atlas for this font
     charsArray[charID].image.scale = fontImage.scale;
 }

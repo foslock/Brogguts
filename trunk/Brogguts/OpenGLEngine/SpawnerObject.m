@@ -190,16 +190,20 @@
     if (currentTimer > 0.0f) {
         currentTimer -= aDelta * SPAWNER_TIMER_SPEED_FACTOR;
     } else {
-        for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
-            if (idCount[index] > 0 || idCount[index] == -1) {
-                hasTriggeredOnce = YES;
-                currentTimer = spawnerDuration;
-                CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
-                                               sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
-                
-                [self createObjectWithID:index withEndingLocation:newPoint];
-                if (idCount[index] > 0) {
-                    idCount[index]--;
+        // Only if under max count of craft
+        BroggutScene* scene = [[GameController sharedGameController] currentScene];
+        if (scene.numberOfEnemyShips < TOTAL_CRAFT_LIMIT / 2) {
+            for (int index = 0; index < TOTAL_OBJECT_TYPES_COUNT; index++) {
+                if (idCount[index] > 0 || idCount[index] == -1) {
+                    hasTriggeredOnce = YES;
+                    currentTimer = spawnerDuration;
+                    CGPoint newPoint = CGPointMake(sendingLocation.x + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance),
+                                                   sendingLocation.y + (RANDOM_MINUS_1_TO_1() * sendingLocationVariance));
+                    
+                    [self createObjectWithID:index withEndingLocation:newPoint];
+                    if (idCount[index] > 0) {
+                        idCount[index]--;
+                    }
                 }
             }
         }

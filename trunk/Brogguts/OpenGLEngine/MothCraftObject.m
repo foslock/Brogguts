@@ -7,17 +7,30 @@
 //
 
 #import "MothCraftObject.h"
-
+#import "BroggutScene.h"
+#import "UpgradeManager.h"
 
 @implementation MothCraftObject
-
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftMothID withLocation:location isTraveling:traveling];
 	if (self) {
-		
+		//
 	}
 	return self;
+}
+
+- (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        // Evade a percent of the time!
+        int rand = arc4random() % 100;
+        if (rand < kCraftMothEvadePercentage) {
+            return NO;
+        }
+        return [super attackedByEnemy:enemy withDamage:damage];
+    } else {
+        return [super attackedByEnemy:enemy withDamage:damage];
+    }
 }
 
 

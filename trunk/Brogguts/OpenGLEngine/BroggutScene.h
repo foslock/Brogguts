@@ -62,12 +62,13 @@ extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 @class CraftObject;
 @class ParticleSingleton;
 @class AIController;
-@class EndMissonObject;
+@class EndMissionObject;
 @class RefineryStructureObject;
 @class BlockStructureObject;
 @class NotificationObject;
 @class DialogueObject;
 @class UpgradeManager;
+@class FogManager;
 
 // This is an abstract class which contains the basis for any game scene which is going
 // to be used.  A game scene is a self contained class which is responsible for updating 
@@ -81,6 +82,7 @@ extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];
 enum kProcessFrameOffset {
     kFrameOffsetCollisions,
     kFrameOffsetRadialEffect,
+    kFrameOffsetFogUpdate,
 };
 
 @interface BroggutScene : NSObject {
@@ -117,7 +119,7 @@ enum kProcessFrameOffset {
     NSMutableArray* sceneDialogues;
     
     // The final box that pops up when the scene is done
-    EndMissonObject* endMissionObject;
+    EndMissionObject* endMissionObject;
     float fadeBackgroundAlpha;
     BOOL didAddBrogguts;
 	
@@ -140,8 +142,11 @@ enum kProcessFrameOffset {
     // AI Controller for this scene (controlling enemy)
 	AIController* enemyAIController;
     
-	// The ship (if any) that is currently being commanded
-	CraftObject* commandingShip;
+    // Fog controller
+    FogManager* fogManager;
+    
+    // Playing mining sound
+    float playingMiningSoundTimer;
 	
 	// Counters for craft and structures (friendly only)
 	int numberOfCurrentShips;
@@ -271,7 +276,6 @@ enum kProcessFrameOffset {
 @property (retain) NSString* sceneName;
 @property (retain) NSString* sceneFileName;
 @property (assign) int sceneType;
-@property (retain) CraftObject* commandingShip;
 @property (readonly) CollisionManager* collisionManager;
 @property (nonatomic, assign) CGPoint homeBaseLocation;
 @property (nonatomic, assign) CGPoint enemyBaseLocation;
@@ -325,6 +329,9 @@ enum kProcessFrameOffset {
 // Called when the scene was just revealed, not necessarily right after loaded
 - (void)sceneDidAppear;
 - (void)sceneDidDisappear;
+
+// Plays the mining sound (only one at a time)
+- (void)playMiningSoundAtLocation:(CGPoint)location;
 
 // Creates a broggut value text object showing where brogguts were gathered (and adds value to total brogguts)
 - (void)addBroggutTextValue:(int)value atLocation:(CGPoint)location withAlliance:(int)alliance;

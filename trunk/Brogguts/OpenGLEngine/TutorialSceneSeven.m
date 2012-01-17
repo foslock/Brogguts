@@ -41,6 +41,8 @@
         [newBeetle release];
         
         [helpText setObjectText:@"An enemy craft will try to escape if it is attacked. Kill the enemy Ant."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

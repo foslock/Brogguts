@@ -22,6 +22,8 @@
     float rotationCounter;
     float blinkCounter;
     float lightPositionCounter;
+    
+    BOOL hasBeenUpgraded;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

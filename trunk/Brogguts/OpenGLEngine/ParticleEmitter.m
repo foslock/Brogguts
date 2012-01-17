@@ -77,6 +77,11 @@
             case kParticleTypeSpark:
                 texture = nil;
                 blendAdditive = NO;
+                break;
+            case kParticleTypeSmoke:
+				texture = [[Image alloc] initWithImageNamed:@"particlesmoke.png" filter:GL_LINEAR];
+				// blendAdditive = YES;
+				break;
 			default:
 				texture = nil;
 				break;
@@ -152,7 +157,8 @@
 - (void)renderParticlesWithScroll:(Vector2f)scroll {
 	if (particleType == kParticleTypeBroggut ||
 		particleType == kParticleTypeShipParts ||
-		particleType == kParticleTypeShipThruster) {
+		particleType == kParticleTypeShipThruster || 
+        particleType == kParticleTypeSmoke) {
 		// Disable the texture coord array so that texture information is not copied over when rendering
 		// the point sprites.
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -297,6 +303,15 @@
 			particle->deltaColor = Color4fMake(-0.01f, -0.01f, 0.0f, 0.0f);
 			particle->particleSize = 16.0f;
 			particle->particleSizeDelta = -0.3f;
+			break;
+        case kParticleTypeSmoke:
+			particle->position = Vector2fMake(location.x, location.y);
+			particle->velocity = Vector2fZero;
+			particle->timeToLive = 250;
+			particle->color = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
+			particle->deltaColor = Color4fMake(0.0f, 0.0f, 0.0f, -0.01f);
+			particle->particleSize = (float)(arc4random() % 10) + 16.0f;
+			particle->particleSizeDelta = 0.01f;
 			break;
 		default:
 			return NO;

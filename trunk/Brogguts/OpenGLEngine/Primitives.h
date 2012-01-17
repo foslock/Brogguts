@@ -88,6 +88,49 @@ static inline void drawFilledRect(CGRect aRect, Vector2f scroll) {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
 }
 
+static inline void drawFilledRectWithColors(CGRect aRect, Vector2f scroll, float colors[]) {
+	// "colors" should have 24 elements, 4 color values (RGBA) for each point
+    
+	// Setup the array used to store the vertices for our rectangle
+	static float _rectPointsArray[12];
+	
+	// Using the CGRect that has been passed in, calculate the vertices we
+	// need to render the rectangle
+    
+    // Bottom Left
+	_rectPointsArray[0] = aRect.origin.x - scroll.x;
+	_rectPointsArray[1] = aRect.origin.y - scroll.y;
+	
+    // Top left
+	_rectPointsArray[2] = aRect.origin.x - scroll.x;
+	_rectPointsArray[3] = aRect.origin.y + aRect.size.height - scroll.y;
+	
+    // Bottom Right
+	_rectPointsArray[4] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[5] = aRect.origin.y - scroll.y;
+	
+    // Bottom Right
+	_rectPointsArray[6] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[7] = aRect.origin.y - scroll.y;
+	
+    // Top Left
+	_rectPointsArray[8] = aRect.origin.x - scroll.x;
+	_rectPointsArray[9] = aRect.origin.y + aRect.size.height - scroll.y;
+	
+    // Top Right
+	_rectPointsArray[10] = aRect.origin.x + aRect.size.width - scroll.x;
+	_rectPointsArray[11] = aRect.origin.y + aRect.size.height - scroll.y;
+	
+	// Set up the vertex pointer to the array of vertices we have created and
+	// then use GL_LINE_LOOP to render them
+    
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+	glVertexPointer(2, GL_FLOAT, 0, _rectPointsArray);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+    glDisableClientState(GL_COLOR_ARRAY);
+}
+
 static inline void drawLine(CGPoint loc1, CGPoint loc2, Vector2f scroll) {
 	
 	// Setup the array used to store the vertices

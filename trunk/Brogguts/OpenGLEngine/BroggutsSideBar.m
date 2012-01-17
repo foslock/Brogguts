@@ -12,6 +12,7 @@
 #import "GameController.h"
 #import "PlayerProfile.h"
 #import "TextObject.h"
+#import "SoundSingleton.h"
 
 @implementation BroggutsSideBar
 
@@ -35,22 +36,23 @@ enum BroggutConvertAmounts {
 		for (int i = 0; i < 4; i++) {
 			SideBarButton* button = [[SideBarButton alloc] initWithWidth:(SIDEBAR_WIDTH - 32.0f) withHeight:100 withCenter:CGPointMake(SIDEBAR_WIDTH / 2, 50)];
 			[buttonArray addObject:button];
+            [button setTextScale:Scale2fMake(0.8f, 0.8f)];
             NSString* buttonText;
 			switch (i) {
 				case kBroggutButtonConvert50:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert50 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert50];
+                    buttonText = [NSString stringWithFormat:@"%iBg to %iM", kBroggutAmountConvert50 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert50];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert100:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert100 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert100];
+                    buttonText = [NSString stringWithFormat:@"%iBg to %iM", kBroggutAmountConvert100 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert100];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert200:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert200 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert200];
+                    buttonText = [NSString stringWithFormat:@"%iBg to %iM", kBroggutAmountConvert200 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert200];
 					[button setButtonText:buttonText];
 					break;
 				case kBroggutButtonConvert500:
-                    buttonText = [NSString stringWithFormat:@"%iBg -> %iM", kBroggutAmountConvert500 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert500];
+                    buttonText = [NSString stringWithFormat:@"%iBg to %iM", kBroggutAmountConvert500 * BROGGUTS_NEEDED_FOR_ONE_METAL, kBroggutAmountConvert500];
 					[button setButtonText:buttonText];
 				default:
 					break;
@@ -96,12 +98,12 @@ enum BroggutConvertAmounts {
         SideBarButton* button = [buttonArray objectAtIndex:kBroggutButtonConvert500];
         [button setIsDisabled:NO];
     }
-    
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
     SideBarButton* button = [buttonArray objectAtIndex:buttonID];
     if ([button isPressed]) {
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonConfirm]];
         BroggutScene* scene = [[GameController sharedGameController] currentScene];
         switch (buttonID) {
             case kBroggutButtonConvert50:

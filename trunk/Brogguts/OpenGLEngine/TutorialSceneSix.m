@@ -12,6 +12,7 @@
 #import "TriggerObject.h"
 #import "CraftAndStructures.h"
 #import "TextObject.h"
+#import "UpgradeManager.h"
 
 @implementation TutorialSceneSix
 
@@ -41,6 +42,8 @@
         [newBeetle release];
         
         [helpText setObjectText:@"A ship will automatically attack enemies within its range. Select this Beetle craft and attack the enemy structure."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

@@ -6,6 +6,7 @@
 //  Copyright 2011 Games in Dorms. All rights reserved.
 //
 
+#import "GameplayConstants.h"
 #import "SpiderDroneObject.h"
 #import "SpiderCraftObject.h"
 #import "ImageRenderSingleton.h"
@@ -55,6 +56,7 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
+
 	
 	if (droneAIState == kDroneAIStateHidden) {
 		objectLocation = CGPointMake(mySpiderCraft.objectLocation.x + droneBayLocation.x,

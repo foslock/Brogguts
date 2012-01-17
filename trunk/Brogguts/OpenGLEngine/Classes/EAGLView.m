@@ -60,6 +60,7 @@
 
         if (!renderer)
         {*/
+        
             renderer = [[ES1Renderer alloc] init];
 
             if (!renderer)
@@ -67,6 +68,7 @@
                 [self release];
                 return nil;
             }
+        
         /*}*/
 
         animating = FALSE;

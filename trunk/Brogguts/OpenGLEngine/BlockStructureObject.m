@@ -10,6 +10,7 @@
 #import "Image.h"
 #import "Global.h"
 #import "BroggutScene.h"
+#import "UpgradeManager.h"
 
 @implementation BlockStructureObject
 
@@ -17,6 +18,7 @@
 	self = [super initWithTypeID:kObjectStructureBlockID withLocation:location isTraveling:traveling];
 	if (self) {
         hasBeenAdded = NO;
+        hasBeenUpgraded = NO;
         objectImage.scale = Scale2fMake(1.0f, 1.0f);
 	}
 	return self;
@@ -24,6 +26,15 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+        attributeHullCapacity = kStructureBlockHullIncreaseUpgrade;
+        if (!hasBeenUpgraded) {
+            attributeHullCurrent += (kStructureBlockHullIncreaseUpgrade - kStructureBlockHull);
+            hasBeenUpgraded = YES;
+        }
+    }
+    
     if (!hasBeenAdded && !isTraveling) {
         hasBeenAdded = YES;
         [[self currentScene] addBlock:self];

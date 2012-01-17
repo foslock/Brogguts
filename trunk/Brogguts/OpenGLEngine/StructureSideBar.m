@@ -28,8 +28,8 @@ enum StructureButtonIDs {
 NSString* const kStructureButtonText[7] = {
     @"Block",
     @"Refinery",
-    @"Craft Ups",
-    @"Structure Ups",
+    @"  Craft\nUpgrades",
+    @"Structure\nUpgrades",
     @"Turret",
     @"Radar",
     @"Fixer",
@@ -177,7 +177,7 @@ NSString* const kStructureButtonLockedText = @"LOCKED";
         enablePrimitiveDraw();
         Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
         glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-        drawDashedLine([[buttonArray objectAtIndex:currentDragButtonID] buttonCenter], currentDragButtonLocation, STRUCTURE_BUTTON_DRAG_SEGMENTS, Vector2fZero);
+        drawOffsetDashedLine([[buttonArray objectAtIndex:currentDragButtonID] buttonCenter], currentDragButtonLocation, 0, 16.0f, vector);
         disablePrimitiveDraw();
         CGPoint flooredLocation = CGPointMake(currentDragButtonLocation.x + scroll.x,
                                               currentDragButtonLocation.y + scroll.y);

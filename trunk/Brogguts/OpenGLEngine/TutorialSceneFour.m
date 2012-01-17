@@ -64,6 +64,8 @@
         [self addCollidableObject:fingerThree];
         
         [helpText setObjectText:@"The screen will only scroll for selected ships. Select this one using two fingers and move it towards the right."];
+        
+        [fogManager clearAllFog];
     }
     return self;
 }

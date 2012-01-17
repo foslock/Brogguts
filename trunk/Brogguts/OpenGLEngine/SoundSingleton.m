@@ -12,13 +12,23 @@
 #import "BroggutScene.h"
 
 NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
-    @"testsound.wav",
-    @"lightsound.wav",
-    @"doorclose.wav",
-    @"menubuttonpressed.wav",
-    @"missionsuccessful.wav",
-    @"shipconfirm.wav",
-    @"shipdeny.wav",
+    @"testsound.wav", // Explosion
+    @"lightsound.wav", // Light switch
+    @"doorclose.wav", // Door close
+    @"menubuttonpressed.wav", // Menu pressed
+    @"missionsuccessful.wav", // Mission Successful
+    @"shipconfirm.wav", // Ship confirm
+    @"shipdeny.wav", // Ship deny
+    @"buttonconfirm.wav", // Button confirm
+    @"error.wav", // Button cancel
+    @"shipselection.wav", // Ship selection
+    @"laser1.wav", // Laser Attack 1
+    @"laser2.wav", // Laser Attack 2
+    @"laser3.wav", // Laser Attack 3
+    @"", // Missile fire
+    @"overviewfadein.wav", // OverviewFadeIn
+    @"overviewfadeout.wav", // OverviewFadeOut
+    @"", // Mining sound
 };
 
 NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT] = {
@@ -504,6 +514,16 @@ static SoundSingleton* sharedSoundSingleton = nil;
 
 - (NSUInteger)playSoundWithKey:(NSString*)aSoundKey {
 	return [self playSoundWithKey:aSoundKey gain:1.0f pitch:1.0f location:CGPointZero shouldLoop:NO];
+}
+
+- (NSUInteger)playLaserSound {
+    int random = arc4random() % 3;
+    int laserSoundID = kSoundFileLaserAttack1 + random;
+    return [self playSoundWithKey:kSoundFileNames[laserSoundID]];
+}
+
+- (NSUInteger)playMiningSound {
+    return [self playSoundWithKey:kSoundFileNames[kSoundFileMiningSound]];
 }
 
 - (NSUInteger)playSoundWithKey:(NSString *)aSoundKey location:(CGPoint)aLocation {

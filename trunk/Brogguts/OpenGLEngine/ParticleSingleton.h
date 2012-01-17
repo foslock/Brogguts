@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #define PARTICLE_EMITTER_COUNT 5
-#define PARTICLE_TYPE_COUNT 5
+#define PARTICLE_TYPE_COUNT 6
 
 enum ParticleTypes {
 	kParticleTypeBroggut,
@@ -17,6 +17,7 @@ enum ParticleTypes {
 	kParticleTypeShipParts,
 	kParticleTypeShipThruster,
 	kParticleTypeBuildLocation,
+	kParticleTypeSmoke,
 };
 
 enum ParticleLayers {

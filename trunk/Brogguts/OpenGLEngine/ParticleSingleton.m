@@ -15,6 +15,7 @@ const int kLayerForParticleType[PARTICLE_TYPE_COUNT] = {
     kParticleLayerMiddle,
     kParticleLayerBottom,
     kParticleLayerMiddle,
+    kParticleLayerMiddle,
 };
 
 static ParticleSingleton* sharedPartSingletonInstance = nil;

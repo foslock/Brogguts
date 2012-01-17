@@ -22,7 +22,8 @@
 @synthesize closestEnemyObject;
 @synthesize movingAIState, attackingAIState;
 @synthesize creationEndLocation;
-@synthesize isDrawingEffectRadius;
+@synthesize isDrawingEffectRadius, isOverviewDrawingEffectRadius;
+@synthesize attributeViewDistance;
 
 - (void)dealloc {
     [upgradedPlus release];
@@ -38,7 +39,9 @@
 		isCurrentlyHoveredOver = NO;
 		isCheckedForRadialEffect = NO;
         isDrawingEffectRadius = NO;
+        isOverviewDrawingEffectRadius = NO;
 		isPartOfASquad = NO;
+        hasMovedThisStep = NO;
 		effectRadius = (objectImage.imageSize.width * objectImage.scale.x) / 2;
 		closestEnemyObject = nil;
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
@@ -48,6 +51,7 @@
         blinkingCircleAlpha = 0;
         isShowingSelectionCircle = NO;
         showingSelectionCircleTimer = 0;
+        attributeViewDistance = 0;
         upgradedPlus = [[Image alloc] initWithImageNamed:@"plus.png" filter:GL_LINEAR];
         [upgradedPlus setScale:Scale2fMake(0.3f, 0.3f)];
         [upgradedPlus setRenderLayer:kLayerTopLayer];
@@ -130,7 +134,7 @@
         disablePrimitiveDraw();
 	}
     
-    if (!isTraveling && isDrawingEffectRadius) {
+    if (!isTraveling && isDrawingEffectRadius && isCurrentlyHoveredOver) {
         enablePrimitiveDraw();
         if (objectAlliance == kAllianceFriendly) {
             if (!isCurrentlyHoveredOver) {
@@ -143,6 +147,12 @@
                 glColor4f(1.0f, 0.5f, 0.5f, 0.25f);
             } else {
                 glColor4f(1.0f, 0.5f, 0.5f, 0.6f);
+            }
+        } else if (objectAlliance == kAllianceNeutral) {
+            if (!isCurrentlyHoveredOver) {
+                glColor4f(0.5f, 1.0f, 0.5f, 0.25f);
+            } else {
+                glColor4f(0.5f, 1.0f, 0.5f, 0.6f);
             }
         }
         glLineWidth(2.0f);
@@ -217,18 +227,22 @@
 			if (closestEnemyObject && !closestEnemyObject.destroyNow) {
 				if (GetDistanceBetweenPointsSquared(objectLocation, other.objectLocation) < 
 					GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation)) {
-					if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
+					if (objectAlliance == kAllianceFriendly &&
+                        other.objectAlliance == kAllianceEnemy) {
 						[self setClosestEnemyObject:other];
 					}
-					if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
+					if (objectAlliance == kAllianceEnemy &&
+                        other.objectAlliance != kAllianceEnemy) {
 						[self setClosestEnemyObject:other];
 					}
 				}
 			} else {
-				if (objectAlliance == kAllianceFriendly && other.objectAlliance == kAllianceEnemy) {
+				if (objectAlliance == kAllianceFriendly &&
+                    other.objectAlliance == kAllianceEnemy) {
 					[self setClosestEnemyObject:other];
 				}
-				if (objectAlliance == kAllianceEnemy && other.objectAlliance == kAllianceFriendly) {
+				if (objectAlliance == kAllianceEnemy &&
+                    other.objectAlliance != kAllianceEnemy) {
 					[self setClosestEnemyObject:other];
 				}
 			}

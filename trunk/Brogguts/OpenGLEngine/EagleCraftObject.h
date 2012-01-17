@@ -10,7 +10,8 @@
 #import "CraftObject.h"
 
 @interface EagleCraftObject : CraftObject {
-
+    int healTimer;
+    BOOL isHealingSelf;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

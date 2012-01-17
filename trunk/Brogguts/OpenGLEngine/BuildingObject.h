@@ -20,6 +20,8 @@
     float currentAlpha;
 }
 
+@property (retain) TouchableObject* creatingObject;
+
 - (id)initWithObject:(TouchableObject*)object withLocation:(CGPoint)location;
 
 @end
