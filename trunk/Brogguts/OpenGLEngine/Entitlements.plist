@@ -5,6 +5,6 @@
 	<key>application-identifier</key>
 	<string>GTWNV43Z6P.com.gamesindorms.brogguts</string>
 	<key>get-task-allow</key>
-	<false/>
+	<true/>
 </dict>
 </plist>

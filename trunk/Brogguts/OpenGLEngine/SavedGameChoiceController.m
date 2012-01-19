@@ -13,7 +13,8 @@
 #import "PlayerProfile.h"
 #import "CampaignScene.h"
 
-#define OVERRIDE_PLAYER_EXPERIENCE_LIMIT 13
+#define OVERRIDE_PLAYER_EXPERIENCE_LIMIT 15
+#define TABLEVIEW_CELL_BACKGROUND_COUNT 3
 
 enum SectionNames {
     kSectionSavedScenes,
@@ -36,8 +37,8 @@ enum SectionNames {
         unlockedMissionNames = [[NSMutableArray alloc] init];
         // Add each name with index under the current player experience
         int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
-        // playerExperience = CLAMP(playerExperience, 0, OVERRIDE_PLAYER_EXPERIENCE_LIMIT);
-        playerExperience = CAMPAIGN_SCENES_COUNT; // CHEATING
+        playerExperience = OVERRIDE_PLAYER_EXPERIENCE_LIMIT; // CHEATING
+        playerExperience = CLAMP(playerExperience, 0, CAMPAIGN_SCENES_COUNT - 1);
         for (int i = 0 ; i <= playerExperience; i++) {
             NSString* mission = [NSString stringWithString:kCampaignSceneSaveTitles[i]];
             [unlockedMissionNames insertObject:mission atIndex:0];
@@ -68,10 +69,16 @@ enum SectionNames {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
+    
+    NSString* bgPath = [[NSBundle mainBundle] pathForResource:@"starbackground" ofType:@"png"];
+    UIImage* starBGImage = [[UIImage alloc] initWithContentsOfFile:bgPath];
+    UIImageView* starBGView = [[UIImageView alloc] initWithImage:starBGImage];
+    [self.tableView setBackgroundView:starBGView];    
+    [starBGImage release];
+    [starBGView release];
+    
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -155,7 +162,7 @@ enum SectionNames {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"broggutCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -166,71 +173,69 @@ enum SectionNames {
         case kSectionSavedScenes:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.textLabel.text = [savedGamesNames objectAtIndex:indexPath.row];
-            cell.backgroundColor = [UIColor grayColor];
-            if (indexPath.row == 0) {
-                cell.backgroundColor = [UIColor whiteColor];
-            }
+            cell.backgroundColor = [UIColor clearColor];
             break;
         case kSectionUnlockedMissions:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.textLabel.text = [unlockedMissionNames objectAtIndex:indexPath.row];
-            cell.backgroundColor = [UIColor grayColor];
-            if (indexPath.row == 0) {
-                cell.backgroundColor = [UIColor whiteColor];
-            }
+            cell.backgroundColor = [UIColor clearColor];
             break;
         case kSectionExitButton:
             cell.textLabel.textAlignment = UITextAlignmentCenter;
-            cell.backgroundColor = [UIColor redColor];
+            cell.backgroundColor = [UIColor clearColor];
             cell.textLabel.text = @"Cancel";
             break;
         default:
             return 0;
             break;
-    }    
+    }
+    
+    [cell.textLabel setFont:[UIFont fontWithName:@"Helvetica" size:20.0f]];
+    [cell.textLabel setTextColor:[UIColor whiteColor]];
+    [cell.textLabel setShadowColor:[UIColor blackColor]];
+    [cell.textLabel setShadowOffset:CGSizeMake(2.0f, 2.0f)];
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Table view delegate
+
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString* text;
+    switch (section) {
+        case kSectionSavedScenes:
+            text = @"Load a Saved Mission";
+            break;
+        case kSectionUnlockedMissions:
+            text = @"Start a New Mission";
+            break;
+        default:
+            text = @"";
+            break;
+    }
+    
+    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 478, 96)];
+    [label setText:text];
+    [label setFont:[UIFont fontWithName:@"Helvetica" size:18.0f]];
+    [label setShadowColor:[UIColor blackColor]];
+    [label setShadowOffset:CGSizeMake(2.0f, 2.0f)];
+    [label setTextAlignment:UITextAlignmentCenter];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setBackgroundColor:[UIColor clearColor]];
+    
+    return label;
+}
+
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Change appearance of cells here
+    int imageIndex = indexPath.row % TABLEVIEW_CELL_BACKGROUND_COUNT;
+    NSString* bgPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"cellbackground%d", imageIndex] ofType:@"png"];
+    UIImage* trashImage = [[UIImage alloc] initWithContentsOfFile:bgPath];
+    UIImageView* bgView = [[UIImageView alloc] initWithImage:trashImage];
+    [cell setBackgroundView:bgView];
+    [trashImage release];
+    [bgView release];
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

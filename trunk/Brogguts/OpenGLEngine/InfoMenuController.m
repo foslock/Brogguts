@@ -8,6 +8,7 @@
 
 #import "InfoMenuController.h"
 #import "GameCenterSingleton.h"
+#import "SoundSingleton.h"
 
 
 @implementation InfoMenuController
@@ -36,6 +37,7 @@
 
 - (IBAction)tapBradsName {
     [[GameCenterSingleton sharedGCSingleton] reportAchievementIdentifier:(NSString*)kAchievementIDFindBrad percentComplete:100.0f];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileExplosionSound]];
 }
 
 - (IBAction)popInfoController {

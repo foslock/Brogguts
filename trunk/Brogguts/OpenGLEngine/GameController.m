@@ -588,6 +588,11 @@ static GameController* sharedGameController = nil;
             campaignScene = newCamp;
         }
             break;
+        case 15: {
+            CampaignSceneSixteen* newCamp = [[CampaignSceneSixteen alloc] initWithLoaded:loaded];
+            campaignScene = newCamp;
+        }
+            break;
         default: {
             NSLog(@"Invalid Campaign Index");
             campaignScene = nil;

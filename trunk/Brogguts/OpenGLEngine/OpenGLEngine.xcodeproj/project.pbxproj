@@ -97,6 +97,11 @@
 		6F11207213F2BCB900B0C8D1 /* UpgradeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
 		6F18720E14C79FA2008A7C23 /* miningsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F18720D14C79FA2008A7C23 /* miningsound.wav */; };
+		6F18721514C86E39008A7C23 /* cellbackground0.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F18721214C86E39008A7C23 /* cellbackground0.png */; };
+		6F18721614C86E39008A7C23 /* cellbackground1.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F18721314C86E39008A7C23 /* cellbackground1.png */; };
+		6F18721714C86E39008A7C23 /* cellbackground2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F18721414C86E39008A7C23 /* cellbackground2.png */; };
+		6F18721A14C870C0008A7C23 /* CampaignSceneSixteen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F18721914C870C0008A7C23 /* CampaignSceneSixteen.m */; };
+		6F18721C14C8743D008A7C23 /* You Win!.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F18721B14C8743D008A7C23 /* You Win!.plist */; };
 		6F1DE63814C6381200CD2DA4 /* buttonconfirm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63114C6381200CD2DA4 /* buttonconfirm.wav */; };
 		6F1DE63914C6381200CD2DA4 /* buttoncancel.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63214C6381200CD2DA4 /* buttoncancel.wav */; };
 		6F1DE63A14C6381200CD2DA4 /* laser1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63314C6381200CD2DA4 /* laser1.wav */; };
@@ -473,6 +478,12 @@
 		6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpgradeManager.m; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
 		6F18720D14C79FA2008A7C23 /* miningsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = miningsound.wav; sourceTree = "<group>"; };
+		6F18721214C86E39008A7C23 /* cellbackground0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cellbackground0.png; sourceTree = "<group>"; };
+		6F18721314C86E39008A7C23 /* cellbackground1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cellbackground1.png; sourceTree = "<group>"; };
+		6F18721414C86E39008A7C23 /* cellbackground2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cellbackground2.png; sourceTree = "<group>"; };
+		6F18721814C870C0008A7C23 /* CampaignSceneSixteen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneSixteen.h; sourceTree = "<group>"; };
+		6F18721914C870C0008A7C23 /* CampaignSceneSixteen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneSixteen.m; sourceTree = "<group>"; };
+		6F18721B14C8743D008A7C23 /* You Win!.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "You Win!.plist"; sourceTree = "<group>"; };
 		6F1BB1D313E5BBCD00C96C29 /* AchievementIdentifiers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementIdentifiers.h; sourceTree = "<group>"; };
 		6F1DE63114C6381200CD2DA4 /* buttonconfirm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buttonconfirm.wav; sourceTree = "<group>"; };
 		6F1DE63214C6381200CD2DA4 /* buttoncancel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buttoncancel.wav; sourceTree = "<group>"; };
@@ -1232,6 +1243,7 @@
 				6FD74DD1139809170027E5C4 /* Campaign 13.plist */,
 				6F3E7A4914C268DB005E6B66 /* Campaign 14.plist */,
 				6F3E7A4D14C29310005E6B66 /* Campaign 15.plist */,
+				6F18721B14C8743D008A7C23 /* You Win!.plist */,
 			);
 			name = "Campaign Levels";
 			sourceTree = "<group>";
@@ -1389,6 +1401,8 @@
 				6F61184B1370F3B70039DB7C /* CampaignSceneFourteen.m */,
 				6F61184D1370F3DF0039DB7C /* CampaignSceneFifteen.h */,
 				6F61184E1370F3E10039DB7C /* CampaignSceneFifteen.m */,
+				6F18721814C870C0008A7C23 /* CampaignSceneSixteen.h */,
+				6F18721914C870C0008A7C23 /* CampaignSceneSixteen.m */,
 			);
 			name = "Campaign Scenes";
 			sourceTree = "<group>";
@@ -1442,6 +1456,9 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6F18721214C86E39008A7C23 /* cellbackground0.png */,
+				6F18721314C86E39008A7C23 /* cellbackground1.png */,
+				6F18721414C86E39008A7C23 /* cellbackground2.png */,
 				6FF0037F14C3ACFE003F7207 /* spritemissile.png */,
 				6FCC0C1F14BF9573005278A2 /* plus.png */,
 				6FCC0C1514BF40C3005278A2 /* locked.png */,
@@ -2111,6 +2128,10 @@
 				6F1DE63E14C6381200CD2DA4 /* laser3.wav in Resources */,
 				6F1DE64014C63C4400CD2DA4 /* shipselection.wav in Resources */,
 				6F18720E14C79FA2008A7C23 /* miningsound.wav in Resources */,
+				6F18721514C86E39008A7C23 /* cellbackground0.png in Resources */,
+				6F18721614C86E39008A7C23 /* cellbackground1.png in Resources */,
+				6F18721714C86E39008A7C23 /* cellbackground2.png in Resources */,
+				6F18721C14C8743D008A7C23 /* You Win!.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2239,6 +2260,7 @@
 				6FCC0C1914BF5993005278A2 /* BroggupediaButton.m in Sources */,
 				6FF0037914C33E5C003F7207 /* FogManager.m in Sources */,
 				6FF0037C14C39D08003F7207 /* MissileObject.m in Sources */,
+				6F18721A14C870C0008A7C23 /* CampaignSceneSixteen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

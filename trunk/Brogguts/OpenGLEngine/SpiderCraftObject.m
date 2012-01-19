@@ -70,18 +70,6 @@
 	}
 }
 
-- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
-	if ([super performSpecialAbilityAtLocation:location]) {
-		TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:location];
-		if (enemy) {
-			[self setPriorityEnemyTarget:enemy];
-			[self stopFollowingCurrentPath];
-		}
-		return YES;
-	}
-	return NO;
-}
-
 - (void)setObjectRotation:(float)rot {
 	[super setObjectRotation:rot];
 	objectImage.rotation = 0;

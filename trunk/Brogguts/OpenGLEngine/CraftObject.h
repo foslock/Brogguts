@@ -40,11 +40,6 @@ typedef struct Point_Array {
 	CGPoint attackLaserTargetPosition;
     int attackMovingCooldownTimer;
 	
-	// Special Ability vars
-	BOOL isSpecialAbilityCooling;
-	BOOL isSpecialAbilityActive;
-	int specialAbilityCooldownTimer;
-	
 	// If there is a monarch nearby that is making them resistent
     BOOL isUnderAura;
     Image* craftSheild;
@@ -122,8 +117,6 @@ typedef struct Point_Array {
 - (void)setIsUnderAura:(BOOL)yesno;
 
 - (void)setPriorityEnemyTarget:(TouchableObject*)target;
-
-- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location; // Returns YES if the ability was performed
 
 - (void)cashInBrogguts;
 
