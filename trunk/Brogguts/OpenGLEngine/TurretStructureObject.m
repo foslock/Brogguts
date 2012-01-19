@@ -13,6 +13,7 @@
 #import "BroggutScene.h"
 #import "UpgradeManager.h"
 #import "SoundSingleton.h"
+#import "GameController.h"
 
 @implementation TurretStructureObject
 
@@ -91,9 +92,9 @@
 		float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
 		if (width != 0.0f) {
 			if (objectAlliance == kAllianceFriendly)
-				glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
+                [GameController setGlColorFriendly:0.8f];
 			if (objectAlliance == kAllianceEnemy)
-				glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
+                [GameController setGlColorEnemy:0.8f];
 			glLineWidth(width);
 			drawLine(objectLocation, attackLaserTargetPosition, scroll);
 			glLineWidth(1.0f);

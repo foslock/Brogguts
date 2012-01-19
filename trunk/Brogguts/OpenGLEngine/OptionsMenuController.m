@@ -11,7 +11,7 @@
 #import "SoundSingleton.h"
 
 @implementation OptionsMenuController
-@synthesize fxVolumeSlider, musicVolumeSlider, gridSwitch, sideBarControl;
+@synthesize fxVolumeSlider, musicVolumeSlider, gridSwitch, colorBlindSwitch, sideBarControl;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -55,6 +55,11 @@
     doesSceneShowGrid = [gSwitch isOn];
 }
 
+- (IBAction)switchColorBlind:(id)sender {
+    UISwitch* cSwitch = (UISwitch*)sender;
+    isColorBlindFriendlyOn = [cSwitch isOn];
+}
+
 - (IBAction)setSideBarButtonLocation:(id)sender {
     UISegmentedControl* segControl = (UISegmentedControl*)sender;
     sideBarButtonLocation = [segControl selectedSegmentIndex]; // 0 - Top, 1 - Bottom
@@ -73,6 +78,7 @@
     [fxVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] fxVolume]];
     [musicVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] musicVolume]];
     [gridSwitch setOn:doesSceneShowGrid];
+    [colorBlindSwitch setOn:isColorBlindFriendlyOn];
     [sideBarControl setSelectedSegmentIndex:sideBarButtonLocation];
 }
 
