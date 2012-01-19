@@ -191,7 +191,7 @@
         // Go through and draw the fog, connecting rects that are all the same alpha
         for (int row = 0; row < cellsHigh; row++) {
             BOOL addingToRect = YES;
-            CGRect currentRect = CGRectZero;
+            CGRect currentRect = CGRectMake(bottomLeft.x, bottomLeft.y, 0, 0);
             for (int col = 0; col < cellsWide; col++) {
                 int index = [self indexForXindex:col forYindex:row];
                 float thisAlpha = gridData[index];

@@ -17,7 +17,7 @@
 #import "SpawnerObject.h"
 #import "SoundSingleton.h"
 
-NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
+NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT] = {
     @"Campaign 1",
     @"Campaign 2",
     @"Campaign 3",
@@ -33,10 +33,10 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Campaign 13",
     @"Campaign 14",
     @"Campaign 15",
-    @"Credits",
+    @"You Win!",
 };
 
-NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
+NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT] = {
     @"Mission 1 - Another Man's Trash",
     @"Mission 2 - Garbage Collector",
     @"Mission 3 - The Tides",
@@ -52,7 +52,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1] = {
     @"Mission 13 - Stand Your Ground",
     @"Mission 14 - Professional Escort",
     @"Mission 15 - An Important Delivery",
-    @"Credits",
+    @"You Win!",
 };
 
 @implementation CampaignScene

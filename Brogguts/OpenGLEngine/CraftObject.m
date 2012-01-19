@@ -60,7 +60,6 @@
 			attributeAttackCooldown = kCraftAntAttackCooldown;
 			attributeHullCapacity = kCraftAntHull;
 			attributeHullCurrent = kCraftAntHull;
-			attributeSpecialCooldown = kCraftAntSpecialCoolDown;
             attributeViewDistance = kCraftAntViewDistance;
 			break;
 		case kObjectCraftMothID:
@@ -72,7 +71,6 @@
 			attributeAttackCooldown = kCraftMothAttackCooldown;
 			attributeHullCapacity = kCraftMothHull;
 			attributeHullCurrent = kCraftMothHull;
-			attributeSpecialCooldown = kCraftMothSpecialCoolDown;
             attributeViewDistance = kCraftMothViewDistance;
 			break;
 		case kObjectCraftBeetleID:
@@ -84,7 +82,6 @@
 			attributeAttackCooldown = kCraftBeetleAttackCooldown;
 			attributeHullCapacity = kCraftBeetleHull;
 			attributeHullCurrent = kCraftBeetleHull;
-			attributeSpecialCooldown = kCraftBeetleSpecialCoolDown;
             attributeViewDistance = kCraftBeetleViewDistance;
 			break;
 		case kObjectCraftMonarchID:
@@ -96,7 +93,6 @@
 			attributeAttackCooldown = kCraftMonarchAttackCooldown;
 			attributeHullCapacity = kCraftMonarchHull;
 			attributeHullCurrent = kCraftMonarchHull;
-			attributeSpecialCooldown = kCraftMonarchSpecialCoolDown;
             attributeViewDistance = kCraftMonarchViewDistance;
 			break;
 		case kObjectCraftCamelID:
@@ -108,7 +104,6 @@
 			attributeAttackCooldown = kCraftCamelAttackCooldown;
 			attributeHullCapacity = kCraftCamelHull;
 			attributeHullCurrent = kCraftCamelHull;
-			attributeSpecialCooldown = kCraftCamelSpecialCoolDown;
             attributeViewDistance = kCraftCamelViewDistance;
 			break;
 		case kObjectCraftRatID:
@@ -120,7 +115,6 @@
 			attributeAttackCooldown = kCraftRatAttackCooldown;
 			attributeHullCapacity = kCraftRatHull;
 			attributeHullCurrent = kCraftRatHull;
-			attributeSpecialCooldown = kCraftRatSpecialCoolDown;
             attributeViewDistance = kCraftRatViewDistance;
 			break;
 		case kObjectCraftSpiderID:
@@ -132,7 +126,6 @@
 			attributeAttackCooldown = kCraftSpiderAttackCooldown;
 			attributeHullCapacity = kCraftSpiderHull;
 			attributeHullCurrent = kCraftSpiderHull;
-			attributeSpecialCooldown = kCraftSpiderSpecialCoolDown;
             attributeViewDistance = kCraftSpiderViewDistance;
 			break;
 		case kObjectCraftSpiderDroneID:
@@ -144,7 +137,6 @@
 			attributeAttackCooldown = kCraftSpiderDroneAttackCooldown;
 			attributeHullCapacity = kCraftSpiderDroneHull;
 			attributeHullCurrent = kCraftSpiderDroneHull;
-			attributeSpecialCooldown = kCraftSpiderDroneSpecialCoolDown;
             attributeViewDistance = kCraftSpiderDroneViewDistance;
 			break;
 		case kObjectCraftEagleID:
@@ -156,7 +148,6 @@
 			attributeAttackCooldown = kCraftEagleAttackCooldown;
 			attributeHullCapacity = kCraftEagleHull;
 			attributeHullCurrent = kCraftEagleHull;
-			attributeSpecialCooldown = kCraftEagleSpecialCoolDown;
             attributeViewDistance = kCraftEagleViewDistance;
 			break;
 		default:
@@ -246,9 +237,6 @@
         isUnderAura = NO;
 		effectRadius = attributeAttackRange;
 		attackCooldownTimer = 0;
-		isSpecialAbilityCooling = NO;
-		isSpecialAbilityActive = NO;
-		specialAbilityCooldownTimer = 0;
 		creationEndLocation = location;
 		if (traveling) {
             BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:self withLocation:location];
@@ -499,19 +487,6 @@
     sheildTimer = 1.0f;
 }
 
-- (BOOL)performSpecialAbilityAtLocation:(CGPoint)location {
-    // Override in each ship with special ability, CALL THIS FIRST
-    if (isSpecialAbilityActive || isSpecialAbilityCooling || specialAbilityCooldownTimer > 0 ||
-        attributeSpecialCooldown == 0) { // If the ability is passive, don't do anything
-        return NO;
-    }
-    specialAbilityCooldownTimer = attributeSpecialCooldown;
-    isSpecialAbilityCooling = YES;
-    isSpecialAbilityActive = YES;
-    return YES;
-    // NSLog(@"Special performed");
-}
-
 - (void)attackTarget {
     CGPoint enemyPoint = closestEnemyObject.objectLocation;
     attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
@@ -625,16 +600,7 @@
             }
         }
     }
-    
-    if (specialAbilityCooldownTimer > 0) { // Reduce the special counter timer by one each frame
-        isSpecialAbilityCooling = YES;
-        specialAbilityCooldownTimer--;
-        if (specialAbilityCooldownTimer <= 0) {
-            isSpecialAbilityCooling = NO;
-            isSpecialAbilityActive = NO;
-            specialAbilityCooldownTimer = 0;
-        }
-    }
+
     if (!isRemoteObject) {
         // Get the current point we should be following
         if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {

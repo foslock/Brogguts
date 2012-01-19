@@ -11,14 +11,14 @@
 #import "NotificationObject.h"
 #import "DialogueObject.h"
 
-#define CAMPAIGN_SCENES_COUNT 15
+#define CAMPAIGN_SCENES_COUNT 16
 #define CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE 2.0f
 
 @class StartMissionObject;
 @class SpawnerObject;
 
-extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT + 1];
-extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT + 1];
+extern NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT];
+extern NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT];
 
 @interface CampaignScene : BroggutScene {
     int campaignIndex; 

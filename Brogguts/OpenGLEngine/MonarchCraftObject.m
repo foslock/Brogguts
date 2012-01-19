@@ -53,15 +53,18 @@
     circle.y = objectLocation.y;
     circle.radius = kCraftMonarchAuraRangeLimit;
     NSArray* nearArray = [[[self currentScene] collisionManager] getArrayOfRadiiObjectsInCircle:circle];
-    
-    for (CraftObject* craft in nearArray) {
-        if (craft.objectType != kObjectCraftMonarchID && 
-            craft.objectType != kObjectCraftSpiderDroneID &&
-            craft.objectAlliance == objectAlliance) {
-            if ([craftUnderAura count] < craftLimit) {
-                if (![craftUnderAura containsObject:craft] && ![craft isUnderAura]) {
-                    [craft setIsUnderAura:YES];
-                    [craftUnderAura addObject:craft];
+    for (int i = 0; i < [nearArray count]; i++) {
+        TouchableObject* tobj = [nearArray objectAtIndex:i];
+        if ([tobj isKindOfClass:[CraftObject class]]) {
+            CraftObject* craft = (CraftObject*)tobj;
+            if (craft.objectType != kObjectCraftMonarchID && 
+                craft.objectType != kObjectCraftSpiderDroneID &&
+                craft.objectAlliance == objectAlliance) {
+                if ([craftUnderAura count] < craftLimit) {
+                    if (![craftUnderAura containsObject:craft] && ![craft isUnderAura]) {
+                        [craft setIsUnderAura:YES];
+                        [craftUnderAura addObject:craft];
+                    }
                 }
             }
         }
