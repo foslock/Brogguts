@@ -75,6 +75,7 @@ extern NSString* kNewMapScenesFileName;
 
 // Options menu booleans
 extern BOOL doesSceneShowGrid;
+extern int sideBarButtonLocation;
 
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f

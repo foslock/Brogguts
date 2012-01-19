@@ -16,10 +16,13 @@
 
 @property (assign) IBOutlet UISlider* fxVolumeSlider;
 @property (assign) IBOutlet UISlider* musicVolumeSlider;
+@property (assign) IBOutlet UISwitch* gridSwitch;
+@property (assign) IBOutlet UISegmentedControl* sideBarControl;
 
 - (IBAction)popOptionsController;
 - (IBAction)fxVolumeChanged:(id)sender;
 - (IBAction)musicVolumeChanged:(id)sender;
 - (IBAction)switchGrid:(id)sender;
+- (IBAction)setSideBarButtonLocation:(id)sender;
 
 @end

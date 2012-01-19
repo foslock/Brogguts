@@ -14,6 +14,8 @@
 #define MAIN_MENU_STATIC_STAR_COUNT 600
 #define LETTER_JITTER_DISTANCE 8.0f
 
+extern NSString* const kTutorialExperienceKey;
+
 @interface MainMenuController : UIViewController <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate> {
     NSMutableArray* lettersArray;
     UIImageView* letterB;
@@ -38,6 +40,7 @@
     
     BOOL hasStartedTutorial;
     BOOL isShowingRecommendation;
+    int tutorialExperience;
     UIView* fadeCoverView;
     UIImageView* recommendationView;
     

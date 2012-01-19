@@ -102,7 +102,7 @@
         [tempFingerThree setDoesScrollWithScreen:NO];
         [tempFingerThree release];
         
-        [helpText setObjectText:@"The map overview shows all the units currently in the game. Drag the white box around and release it on your units to view them. Bring all 16 Moths to the center."];
+        [helpText setObjectText:@"The map overview shows all the units currently in the game. Drag the white box around and release it on units to view them. Bring all 16 Moths to the center."];
     }
     return self;
 }

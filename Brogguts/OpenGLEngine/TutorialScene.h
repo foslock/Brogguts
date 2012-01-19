@@ -14,6 +14,7 @@
 #define TUTORIAL_SCENES_COUNT 13
 #define TUTORIAL_HELP_FONT kFontBlairID
 #define TUTORIAL_HELP_TEXT_SCROLL_SPEED 1.5f
+#define TUTORIAL_HELP_TEXT_ACCELERATION 0.1f
 
 extern NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT];
 
@@ -26,8 +27,10 @@ extern NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT];
     BOOL isObjectiveComplete;
     BOOL hasAddedTutorialDialogue;
     TextObject* helpText;
+    float scrolledTextAmount;
+    BOOL isTouchMovingText;
     Image* blackBar;
-    CGRect helpTextRect;
+    CGPoint helpTextPoint;
 }
 
 - (id)initWithTutorialIndex:(int)tutIndex;

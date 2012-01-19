@@ -57,7 +57,7 @@
         [self setCameraLocation:GetMidpointFromPoints(antOneLoc, antTwoLoc)];
         [self setMiddleOfVisibleScreenToCamera];
         
-        [helpText setObjectText:@"Selecting multiple ships is just like selecting one, use two fingers, tap, and make a shape containing both ships, or you can double tap either ship."];
+        [helpText setObjectText:@"Selecting multiple ships is very similar. Using two fingers, tap, and make a shape containing both craft."];
         
         [fogManager clearAllFog];
     }

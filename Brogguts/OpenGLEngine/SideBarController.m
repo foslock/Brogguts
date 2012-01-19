@@ -14,6 +14,7 @@
 #import "ImageRenderSingleton.h"
 #import "CraftUpgradesSideBar.h"
 #import "StructureUpgradesSideBar.h"
+#import "GameController.h"
 
 @implementation SideBarController
 
@@ -65,10 +66,18 @@
 }
 
 - (CGRect)buttonRect {
-	return CGRectMake(sideBarLocation.x + sideBarWidth,
-					  sideBarLocation.y + sideBarHeight - SIDEBAR_BUTTON_HEIGHT,
-					  SIDEBAR_BUTTON_WIDTH,
-					  SIDEBAR_BUTTON_HEIGHT); // Width and height of the button are hardcoded
+    if (sideBarButtonLocation == 0) { // top
+        return CGRectMake(sideBarLocation.x + sideBarWidth,
+                          sideBarLocation.y + sideBarHeight - SIDEBAR_BUTTON_HEIGHT,
+                          SIDEBAR_BUTTON_WIDTH,
+                          SIDEBAR_BUTTON_HEIGHT); // Width and height of the button are hardcoded
+    } else {
+        return CGRectMake(sideBarLocation.x + sideBarWidth,
+                          sideBarLocation.y,
+                          SIDEBAR_BUTTON_WIDTH,
+                          SIDEBAR_BUTTON_HEIGHT); // Width and height of the button are hardcoded
+    }
+	
 }
 
 - (void)moveSideBarIn {

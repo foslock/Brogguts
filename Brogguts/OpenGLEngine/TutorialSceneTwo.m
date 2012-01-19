@@ -41,7 +41,7 @@
         [self addCollidableObject:fingerObj];
         [fingerObj release];
         
-        [helpText setObjectText:@"If you would ever like to move an individual craft: tap, drag, release and it will travel to that location."];
+        [helpText setObjectText:@"To command an individual craft: tap, drag, release and it will travel to that location."];
         
         [fogManager clearAllFog];
     }

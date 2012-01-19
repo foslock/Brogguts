@@ -31,7 +31,7 @@
 		fontColor = Color4fMake(1.0f, 1.0f, 1.0f, 1.0f);
 		destroyNow = NO;
 		timeLeft = duration;
-		fadeTime = duration / 3; // By default 2/3 through the duration
+		fadeTime = duration / 3.0f; // By default 2/3 through the duration
 		isCheckedForCollisions = NO;
 		fontScale = Scale2fMake(1.0f, 1.0f);
 		self.objectText = string;
