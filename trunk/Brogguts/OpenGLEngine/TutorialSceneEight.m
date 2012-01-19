@@ -52,7 +52,7 @@
         [self addTouchableObject:newBeetle withColliding:CRAFT_COLLISION_YESNO];
         [newBeetle release];
         
-        [helpText setObjectText:@"If there are enough enemy craft nearby, they will gang up on you and chase you instead. Attack these two enemy Beetles."];
+        [helpText setObjectText:@"Stronger and more numerous groups of craft will chase those that are weaker. Let the two enemy Beetles destroy the single Beetle."];
         
         [fogManager clearAllFog];
     }

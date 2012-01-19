@@ -55,7 +55,7 @@
         [self addCollidableObject:tempFingerThree];
         [tempFingerThree release];
         
-        [helpText setObjectText:@"If you want to select a ship (or more) tap with two fingers and make any shape containing those ships. Selected ships will move towards a held touch."];
+        [helpText setObjectText:@"To select a craft, tap with two fingers and enclose it. Selected craft will move towards a held touch."];
         
         [fogManager clearAllFog];
     }

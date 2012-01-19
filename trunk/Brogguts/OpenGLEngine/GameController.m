@@ -31,6 +31,7 @@ NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
 
 BOOL doesSceneShowGrid = YES;
+int sideBarButtonLocation = 0; // 0 - Top, 1 - Bottom
 
 #pragma mark -
 #pragma mark Private interface

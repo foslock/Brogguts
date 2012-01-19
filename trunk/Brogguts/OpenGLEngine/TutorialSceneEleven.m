@@ -26,7 +26,7 @@
         isAllowingCraft = YES;
         isAllowingStructures = NO;
         
-        [helpText setObjectText:@"Tap the button in the top left to open the auxilury menu, select craft, and drag the craft you want onto the screen, then it will travel to that location. Create three new Ants. Make sure you have enough brogguts!"];
+        [helpText setObjectText:@"Tap the button in the top left to open the auxilury menu, select 'Craft', and drag the craft you want onto the screen, then it will travel to that location. Create three new Ants."];
     }
     return self;
 }

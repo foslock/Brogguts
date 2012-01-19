@@ -15,6 +15,7 @@
 #import "BitmapFont.h"
 #import "ImageRenderSingleton.h"
 #import "TiledButtonObject.h"
+#import "SoundSingleton.h"
 
 @implementation SideBarObject
 @synthesize myController, scrollTouchTimer;
@@ -87,6 +88,7 @@
 	// OVERRIDE
 	SideBarButton* button = [buttonArray objectAtIndex:buttonID];
 	[button setIsPressed:YES];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {

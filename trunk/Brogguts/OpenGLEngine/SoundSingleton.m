@@ -20,7 +20,7 @@ NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
     @"shipconfirm.wav", // Ship confirm
     @"shipdeny.wav", // Ship deny
     @"buttonconfirm.wav", // Button confirm
-    @"error.wav", // Button cancel
+    @"buttoncancel.wav", // Button cancel
     @"shipselection.wav", // Ship selection
     @"laser1.wav", // Laser Attack 1
     @"laser2.wav", // Laser Attack 2
@@ -28,7 +28,7 @@ NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
     @"", // Missile fire
     @"overviewfadein.wav", // OverviewFadeIn
     @"overviewfadeout.wav", // OverviewFadeOut
-    @"", // Mining sound
+    @"miningsound.wav", // Mining sound
 };
 
 NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT] = {

@@ -21,6 +21,8 @@
 #import "SoundSingleton.h"
 #import "GameCenterSingleton.h"
 
+NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
+
 @implementation MainMenuController
 @synthesize backgroundImage;
 @synthesize letterB;
@@ -59,6 +61,7 @@
         if ([defaults boolForKey:@"hasStartedTutorial"]) {
             hasStartedTutorial = YES;
         }
+        tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
     }
     return self;
 }
@@ -89,7 +92,8 @@
     [defaults setBool:YES forKey:@"hasStartedTutorial"];
     [defaults synchronize];
     hasStartedTutorial = YES;
-    int beginningTutoralIndex = 0; // 0 is default
+    tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
+    int beginningTutoralIndex = tutorialExperience; // 0 is default
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
     [[GameController sharedGameController]
@@ -117,6 +121,8 @@
         // Hasn't started tutorial yet
         if (!isShowingRecommendation) {
             isShowingRecommendation = YES;
+            [recommendationView setAlpha:0.0f];
+            [fadeCoverView setAlpha:0.0f];
             [UIView animateWithDuration:1.0f animations:^{
                 [recommendationView setAlpha:1.0f];
                 [fadeCoverView setAlpha:0.75f];

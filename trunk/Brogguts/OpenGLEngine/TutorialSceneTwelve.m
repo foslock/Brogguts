@@ -26,7 +26,7 @@
         isAllowingCraft = YES;
         isAllowingStructures = YES;
         
-        [helpText setObjectText:@"Structures are built the same way, except you can only build one at a time. Be careful how far you build it from your base station, or you will have to wait a long time! Build three new Blocks near your base station."];
+        [helpText setObjectText:@"Structures are built the same way, although only one can be travelling at a time. The farther from your Base Station, the longer the wait. Build three new Blocks. Check the Broggupedia for a detailed description."];
     }
     return self;
 }

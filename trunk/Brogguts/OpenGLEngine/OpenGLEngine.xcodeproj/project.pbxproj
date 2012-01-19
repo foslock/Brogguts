@@ -96,8 +96,9 @@
 		6F0E32B8133270900037C789 /* spritetouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F0E32B7133270900037C789 /* spritetouch.png */; };
 		6F11207213F2BCB900B0C8D1 /* UpgradeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */; };
 		6F120008130633D6003CDDD6 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F120007130633D6003CDDD6 /* BaseCamp.plist */; };
+		6F18720E14C79FA2008A7C23 /* miningsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F18720D14C79FA2008A7C23 /* miningsound.wav */; };
 		6F1DE63814C6381200CD2DA4 /* buttonconfirm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63114C6381200CD2DA4 /* buttonconfirm.wav */; };
-		6F1DE63914C6381200CD2DA4 /* errorsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63214C6381200CD2DA4 /* errorsound.wav */; };
+		6F1DE63914C6381200CD2DA4 /* buttoncancel.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63214C6381200CD2DA4 /* buttoncancel.wav */; };
 		6F1DE63A14C6381200CD2DA4 /* laser1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63314C6381200CD2DA4 /* laser1.wav */; };
 		6F1DE63B14C6381200CD2DA4 /* laser2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63414C6381200CD2DA4 /* laser2.wav */; };
 		6F1DE63C14C6381200CD2DA4 /* overviewfadeout.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63514C6381200CD2DA4 /* overviewfadeout.wav */; };
@@ -471,9 +472,10 @@
 		6F11207013F2BCB900B0C8D1 /* UpgradeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpgradeManager.h; sourceTree = "<group>"; };
 		6F11207113F2BCB900B0C8D1 /* UpgradeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpgradeManager.m; sourceTree = "<group>"; };
 		6F120007130633D6003CDDD6 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
+		6F18720D14C79FA2008A7C23 /* miningsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = miningsound.wav; sourceTree = "<group>"; };
 		6F1BB1D313E5BBCD00C96C29 /* AchievementIdentifiers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementIdentifiers.h; sourceTree = "<group>"; };
 		6F1DE63114C6381200CD2DA4 /* buttonconfirm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buttonconfirm.wav; sourceTree = "<group>"; };
-		6F1DE63214C6381200CD2DA4 /* errorsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = errorsound.wav; sourceTree = "<group>"; };
+		6F1DE63214C6381200CD2DA4 /* buttoncancel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buttoncancel.wav; sourceTree = "<group>"; };
 		6F1DE63314C6381200CD2DA4 /* laser1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = laser1.wav; sourceTree = "<group>"; };
 		6F1DE63414C6381200CD2DA4 /* laser2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = laser2.wav; sourceTree = "<group>"; };
 		6F1DE63514C6381200CD2DA4 /* overviewfadeout.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = overviewfadeout.wav; sourceTree = "<group>"; };
@@ -1305,13 +1307,14 @@
 				6F4EA03413917D810068DBCB /* shipconfirm.wav */,
 				6F4EA038139180BF0068DBCB /* shipdeny.wav */,
 				6F1DE63114C6381200CD2DA4 /* buttonconfirm.wav */,
-				6F1DE63214C6381200CD2DA4 /* errorsound.wav */,
+				6F1DE63214C6381200CD2DA4 /* buttoncancel.wav */,
 				6F1DE63F14C63C4400CD2DA4 /* shipselection.wav */,
 				6F1DE63314C6381200CD2DA4 /* laser1.wav */,
 				6F1DE63414C6381200CD2DA4 /* laser2.wav */,
 				6F1DE63714C6381200CD2DA4 /* laser3.wav */,
 				6F1DE63514C6381200CD2DA4 /* overviewfadeout.wav */,
 				6F1DE63614C6381200CD2DA4 /* overviewfadein.wav */,
+				6F18720D14C79FA2008A7C23 /* miningsound.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -2100,13 +2103,14 @@
 				6FF0038014C3ACFE003F7207 /* spritemissile.png in Resources */,
 				6FF0038514C4A60F003F7207 /* BaseCamp.plist in Resources */,
 				6F1DE63814C6381200CD2DA4 /* buttonconfirm.wav in Resources */,
-				6F1DE63914C6381200CD2DA4 /* errorsound.wav in Resources */,
+				6F1DE63914C6381200CD2DA4 /* buttoncancel.wav in Resources */,
 				6F1DE63A14C6381200CD2DA4 /* laser1.wav in Resources */,
 				6F1DE63B14C6381200CD2DA4 /* laser2.wav in Resources */,
 				6F1DE63C14C6381200CD2DA4 /* overviewfadeout.wav in Resources */,
 				6F1DE63D14C6381200CD2DA4 /* overviewfadein.wav in Resources */,
 				6F1DE63E14C6381200CD2DA4 /* laser3.wav in Resources */,
 				6F1DE64014C63C4400CD2DA4 /* shipselection.wav in Resources */,
+				6F18720E14C79FA2008A7C23 /* miningsound.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2335,13 +2339,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: James Lockwood (6P2GY3E2QW)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: James Lockwood";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81C8502F-1BAF-4B32-9BCC-F45552B1A99D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "0554B24F-C6A6-4263-80CE-0EDE86EB2832";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
 				TARGETED_DEVICE_FAMILY = 2;
