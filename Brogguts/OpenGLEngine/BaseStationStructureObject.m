@@ -114,9 +114,9 @@
     [super renderOverObjectWithScroll:scroll];
     if (blinkCounter > 0.0f) {
         if (objectAlliance == kAllianceFriendly) {
-            [blinkingStructureLightImage setColor:Color4fMake(0.0f, 0.75f, 0.1f, blinkCounter / BASE_STATION_LIGHT_BLINK)]; 
+            [blinkingStructureLightImage setColor:[GameController getColorFriendly:(blinkCounter / BASE_STATION_LIGHT_BLINK)]]; 
         } else if (objectAlliance == kAllianceEnemy) {
-            [blinkingStructureLightImage setColor:Color4fMake(1.0f, 0.0f, 0.0f, blinkCounter / BASE_STATION_LIGHT_BLINK)];
+            [blinkingStructureLightImage setColor:[GameController getColorEnemy:(blinkCounter / BASE_STATION_LIGHT_BLINK)]];
         }        
         
         float xPos1 = objectLocation.x + (BASE_STATION_LIGHT_OUTER_DISTANCE * cosf(DEGREES_TO_RADIANS(lightPositionCounter)));

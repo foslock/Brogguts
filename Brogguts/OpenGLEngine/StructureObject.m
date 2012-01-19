@@ -18,6 +18,7 @@
 #import "BuildingObject.h"
 #import "UpgradeManager.h"
 #import "FogManager.h"
+#import "GameController.h"
 
 @implementation StructureObject
 @synthesize attributeHullCurrent, attributeHullCapacity;
@@ -178,12 +179,12 @@
 	// Draw "selection circle"
     glLineWidth(2.0f);
     if (objectAlliance == kAllianceFriendly) {
-        Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, 1.0f);
+        Color4f filled = [GameController getColorFriendly:1.0f];
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / STRUCTURE_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / STRUCTURE_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     } else {
-        Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, 1.0f);
+        Color4f filled = [GameController getColorEnemy:1.0f];
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, 0.6f);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / STRUCTURE_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / STRUCTURE_HEALTH_PER_NOTCH, filled, unfilled, scroll);
@@ -216,9 +217,11 @@
 	}
     
     if (objectAlliance == kAllianceFriendly) {
-        [objectImage setColor:Color4fMake(1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f)];
+        [objectImage setColor:[GameController getShadeColorFriendly:1.0f]];
     } else if (objectAlliance == kAllianceEnemy) {
-        [objectImage setColor:Color4fMake(1.0f, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f - STRUCTURE_ALLIANCE_TINT_AMOUNT, 1.0f)];
+        [objectImage setColor:[GameController getShadeColorEnemy:1.0f]];
+    } else if (objectAlliance == kAllianceNeutral) {
+        [objectImage setColor:[GameController getShadeColorNeutral:1.0f]];
     }
     
     if (attributeHullCurrent <= (attributeHullCapacity / 2)) {
@@ -307,11 +310,11 @@
                                        objectLocation.y - ([objectImage imageSize].height / 2) + STRUCTURE_LIGHT_INSET);
         if (self.objectAlliance == kAllianceFriendly) {
             if (!isTraveling)
-                blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+                blinkingLightImage.color = [GameController getColorFriendly:lightBlinkAlpha];
             else
-                blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
+                blinkingLightImage.color = [GameController getColorNeutral:lightBlinkAlpha];
         } else {
-            blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
+            blinkingLightImage.color = [GameController getColorEnemy:lightBlinkAlpha];
         }
         [blinkingLightImage renderCenteredAtPoint:topLeft withScrollVector:scroll];
         [blinkingLightImage renderCenteredAtPoint:topRight withScrollVector:scroll];

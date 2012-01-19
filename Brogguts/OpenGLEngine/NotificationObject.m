@@ -11,6 +11,7 @@
 #import "CraftAndStructures.h"
 #import "Image.h"
 #import "Global.h"
+#import "ImageRenderSingleton.h"
 
 @implementation NotificationObject
 @synthesize notificationLocation;
@@ -28,6 +29,7 @@
         notificationTimer = duration;
         objectAttachedTo = nil;
         objectImage.color = Color4fMake(1.0f, 1.0f, 1.0f, 0.75f);
+        [objectImage setRenderLayer:kLayerHUDBottomLayer];
     }
     return self;
 }

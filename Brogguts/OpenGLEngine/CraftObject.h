@@ -12,7 +12,6 @@
 
 #define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
 #define CRAFT_HEALTH_PER_NOTCH 4
-#define CRAFT_ALLIANCE_TINT_AMOUNT 0.15f
 
 @class MonarchCraftObject;
 @class Image;

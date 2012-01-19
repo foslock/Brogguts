@@ -565,9 +565,11 @@
     effectRadius = attributeAttackRange;
     
     if (objectAlliance == kAllianceFriendly) {
-        [objectImage setColor:Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f)];
+        [objectImage setColor:[GameController getShadeColorFriendly:1.0f]];
     } else if (objectAlliance == kAllianceEnemy) {
-        [objectImage setColor:Color4fMake(1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f)];
+        [objectImage setColor:[GameController getShadeColorEnemy:1.0f]];
+    } else if (objectAlliance == kAllianceNeutral) {
+        [objectImage setColor:[GameController getShadeColorNeutral:1.0f]];
     }
     
     if (isShowingSheild) {
@@ -719,17 +721,17 @@
     float filledAlpha = CLAMP(alpha, 0.0f, 1.0f);
     float unfilledAlpha = CLAMP(alpha, 0.0f, 0.6f);
     if (objectAlliance == kAllianceFriendly) {
-        Color4f filled = Color4fMake(0.0f, 1.0f, 0.0f, filledAlpha);
+        Color4f filled = [GameController getColorFriendly:filledAlpha];
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     } else if (objectAlliance == kAllianceEnemy) {
-        Color4f filled = Color4fMake(1.0f, 0.0f, 0.0f, filledAlpha);
+        Color4f filled = [GameController getColorEnemy:filledAlpha];
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
     } else if (objectAlliance == kAllianceNeutral) {
-        Color4f filled = Color4fMake(0.5f, 0.5f, 0.0f, filledAlpha);
+        Color4f filled = [GameController getColorNeutral:filledAlpha];
         Color4f unfilled = Color4fMake(0.5f, 0.5f, 0.5f, unfilledAlpha);
         drawPartialDashedCircle(self.boundingCircle, attributeHullCurrent / CRAFT_HEALTH_PER_NOTCH,
                                 attributeHullCapacity / CRAFT_HEALTH_PER_NOTCH, filled, unfilled, scroll);
@@ -747,11 +749,11 @@
             PointLocation curPoint = lightPointsArray->locations[i];
             if (self.objectAlliance == kAllianceFriendly) {
                 if (!isTraveling)
-                    blinkingLightImage.color = Color4fMake(0.0f, 1.0f, 0.0f, lightBlinkAlpha);
+                    blinkingLightImage.color = [GameController getColorFriendly:lightBlinkAlpha];
                 else
-                    blinkingLightImage.color = Color4fMake(1.0f, 1.0f, 0.0f, lightBlinkAlpha);
+                    blinkingLightImage.color = [GameController getColorNeutral:lightBlinkAlpha];
             } else {
-                blinkingLightImage.color = Color4fMake(1.0f, 0.0f, 0.0f, lightBlinkAlpha);
+                blinkingLightImage.color = [GameController getColorEnemy:lightBlinkAlpha];
             }
             [blinkingLightImage renderCenteredAtPoint:CGPointMake(curPoint.x, curPoint.y) withScrollVector:scroll];
         }
@@ -781,9 +783,9 @@
                 float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
                 if (width != 0.0f) {
                     if (objectAlliance == kAllianceFriendly)
-                        glColor4f(0.2f, 1.0f, 0.2f, 0.8f);
+                        [GameController setGlColorFriendly:0.8f];
                     if (objectAlliance == kAllianceEnemy)
-                        glColor4f(1.0f, 0.2f, 0.2f, 0.8f);
+                         [GameController setGlColorEnemy:0.8f];
                     glLineWidth(width);
                     enablePrimitiveDraw();
                     drawLine(objectLocation, attackLaserTargetPosition, scroll);
@@ -865,9 +867,9 @@
     if (isBeingDragged) {
         TouchableObject* enemy = [self.currentScene attemptToGetEnemyAtLocation:dragLocation];
         if (enemy) {
-            glColor4f(1.0f, 0.0f, 0.0f, 0.8f);
+            [GameController setGlColorEnemy:0.8f];
         } else {
-            glColor4f(0.0f, 1.0f, 0.0f, 0.8f);
+            [GameController setGlColorFriendly:0.8f];
         }
         int offsetMax = attributeEngines * 10;
         static int offset = 0;

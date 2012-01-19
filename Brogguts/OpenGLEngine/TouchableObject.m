@@ -138,21 +138,21 @@
         enablePrimitiveDraw();
         if (objectAlliance == kAllianceFriendly) {
             if (!isCurrentlyHoveredOver) {
-                glColor4f(0.5f, 1.0f, 0.5f, 0.25f);
+                [GameController setGlColorFriendly:0.25f];
             } else {
-                glColor4f(0.5f, 1.0f, 0.5f, 0.6f);
+                [GameController setGlColorFriendly:0.6f];
             }
         } else if (objectAlliance == kAllianceEnemy) {
             if (!isCurrentlyHoveredOver) {
-                glColor4f(1.0f, 0.5f, 0.5f, 0.25f);
+                [GameController setGlColorEnemy:0.25f];
             } else {
-                glColor4f(1.0f, 0.5f, 0.5f, 0.6f);
+                [GameController setGlColorEnemy:0.6f];
             }
         } else if (objectAlliance == kAllianceNeutral) {
             if (!isCurrentlyHoveredOver) {
-                glColor4f(0.5f, 1.0f, 0.5f, 0.25f);
+                [GameController setGlColorNeutral:0.25f];
             } else {
-                glColor4f(0.5f, 1.0f, 0.5f, 0.6f);
+                [GameController setGlColorNeutral:0.6f];
             }
         }
         glLineWidth(2.0f);

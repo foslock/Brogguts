@@ -73,15 +73,16 @@ extern NSString* kSavedCampaignFileName;
 extern NSString* kSavedSkirmishFileName;
 extern NSString* kNewMapScenesFileName;
 
-// Options menu booleans
 extern BOOL doesSceneShowGrid;
 extern int sideBarButtonLocation;
+extern BOOL isColorBlindFriendlyOn;
 
 #define COLLISION_CELL_WIDTH 128.0f
 #define COLLISION_CELL_HEIGHT 128.0f
 #define FADING_RECT_ALPHA_RATE 0.015f
 #define CRAFT_COLLISION_YESNO YES
 #define STRUCTURE_COLLISION_YESNO NO
+#define CRAFT_ALLIANCE_TINT_AMOUNT 0.25f
 
 enum SceneTypes {
     kSceneTypeBaseCamp,
@@ -137,6 +138,16 @@ enum SceneTypes {
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class
 + (GameController*)sharedGameController;
+
++ (void)setGlColorFriendly:(float)alpha;
++ (void)setGlColorEnemy:(float)alpha;
++ (void)setGlColorNeutral:(float)alpha;
++ (Color4f)getColorFriendly:(float)alpha;
++ (Color4f)getColorEnemy:(float)alpha;
++ (Color4f)getColorNeutral:(float)alpha;
++ (Color4f)getShadeColorFriendly:(float)alpha;
++ (Color4f)getShadeColorEnemy:(float)alpha;
++ (Color4f)getShadeColorNeutral:(float)alpha;
 
 - (void)presentBroggupedia;
 - (void)dismissBroggupedia;

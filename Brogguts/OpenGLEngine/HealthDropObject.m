@@ -10,6 +10,7 @@
 #import "TouchableObject.h"
 #import "CraftObject.h"
 #import "StructureObject.h"
+#import "GameController.h"
 
 @implementation HealthDropObject
 @synthesize followingObject;
@@ -63,9 +64,9 @@
     float alpha = CLAMP(expandTimer * 2.0f, 0.0f, 1.0f);
     if (![followingObject destroyNow]) {
         if (objectAlliance == kAllianceFriendly) {
-            drawDashedCircleWithColoredSegment(newCircle, filledSegments, unfilledSegments, Color4fMake(0.0f, 1.0f, 0.0f, alpha), Color4fMake(0.1f, 0.1f, 0.1f, 0.0f), scroll);
+            drawDashedCircleWithColoredSegment(newCircle, filledSegments, unfilledSegments, [GameController getColorFriendly:alpha], Color4fMake(0.1f, 0.1f, 0.1f, 0.0f), scroll);
         } else if (objectAlliance == kAllianceEnemy) {
-            drawDashedCircleWithColoredSegment(newCircle, filledSegments, unfilledSegments, Color4fMake(1.0f, 0.0f, 0.0f, alpha), Color4fMake(0.1f, 0.1f, 0.1f, 0.0f), scroll);
+            drawDashedCircleWithColoredSegment(newCircle, filledSegments, unfilledSegments, [GameController getColorEnemy:alpha], Color4fMake(0.1f, 0.1f, 0.1f, 0.0f), scroll);
         }
     }
     glLineWidth(1.0f);

@@ -53,7 +53,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         tutorialIndex = tutIndex;
         isObjectiveComplete = NO;
         helpTextPoint = CGPointMake(visibleScreenBounds.size.width,
-                                    (COLLISION_CELL_HEIGHT / 2));
+                                    TUTORIAL_HELP_TEXT_Y_POS);
         helpText = [[TextObject alloc] initWithFontID:TUTORIAL_HELP_FONT
                                                  Text:@""
                                          withLocation:helpTextPoint
@@ -143,7 +143,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
     UITouch* touch = [touches anyObject];
     CGPoint originalTouchLocation = [touch locationInView:aView];
     CGPoint touchLocation = [sharedGameController adjustTouchOrientationForTouch:originalTouchLocation inScreenBounds:CGRectZero];
-    if (touchLocation.y <= [helpText objectLocation].y + [self getHeightForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]] + 2.0f) {
+    if (touchLocation.y <= [helpText objectLocation].y + [self getHeightForFontID:TUTORIAL_HELP_FONT withString:[helpText objectText]]) {
         isTouchMovingText = YES;
         scrolledTextAmount = 0.0f;
     } else {
@@ -186,7 +186,7 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
 }
 
 - (void)renderScene {
-    [blackBar renderAtPoint:CGPointMake(0.0f, [helpText objectLocation].y - 3.0f)];
+    [blackBar renderAtPoint:CGPointMake(0.0f, [helpText objectLocation].y)];
     [super renderScene];
 }
 

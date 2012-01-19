@@ -12,6 +12,7 @@
 #import "Image.h"
 #import "UpgradeManager.h"
 #import "BroggutScene.h"
+#import "GameController.h"
 
 @implementation FixerStructureObject
 
@@ -109,7 +110,7 @@
     enablePrimitiveDraw();
     for (int i = 0; i < currentRepairCount; i++)  {
         CraftObject* craft = [closeFriendlyCraft objectAtIndex:i];
-        glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
+        [GameController setGlColorFriendly:0.8f];
         int remainder = laserCountdownTimer[i] % 20;
         float width = REPAIR_LASER_WIDTH * (float)remainder / 20.0f; 
         if (width > 0.0f) {

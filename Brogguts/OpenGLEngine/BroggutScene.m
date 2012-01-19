@@ -1816,7 +1816,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     // Draw the selection area
     if (isSelectingShips) {
-        glColor4f(0.1f, 1.0f, 0.1f, 0.75f);
+        [GameController setGlColorFriendly:0.75f];
         [self renderSelectionAreaWithPoints:selectionPointsOne andPoints:selectionPointsTwo];
     }
     
@@ -2112,11 +2112,11 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             }
         }
         if (obj.objectAlliance == kAllianceNeutral) {
-            glColor4f(1.0f, 1.0f, 0.0f, alpha);
+            [GameController setGlColorNeutral:alpha];
         } else if (obj.objectAlliance == kAllianceFriendly) {
-            glColor4f(0.0f, 1.0f, 0.0f, alpha);
+            [GameController setGlColorFriendly:alpha];
         } else if (obj.objectAlliance == kAllianceEnemy) {
-            glColor4f(1.0f, 0.0f, 0.0f, alpha);
+            [GameController setGlColorEnemy:alpha];
         }
         if ([obj isKindOfClass:[CraftObject class]]) {
             glPointSize(4.0f);

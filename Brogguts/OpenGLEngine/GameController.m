@@ -30,8 +30,10 @@ NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
 NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
 
+// Options menu booleans
 BOOL doesSceneShowGrid = YES;
-int sideBarButtonLocation = 0; // 0 - Top, 1 - Bottom
+int sideBarButtonLocation = 0;
+BOOL isColorBlindFriendlyOn = NO;
 
 #pragma mark -
 #pragma mark Private interface
@@ -107,6 +109,97 @@ static GameController* sharedGameController = nil;
 
 #pragma mark -
 #pragma mark Public implementation
+
+// Use these so color blind friendly can be checked
++ (void)setGlColorFriendly:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Cyan
+        glColor4f(0.0f, 1.0f, 1.0f, alpha);
+    } else {
+        // Green
+        glColor4f(0.0f, 1.0f, 0.0f, alpha);
+    }
+}
+
++ (void)setGlColorEnemy:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Yellow
+        glColor4f(1.0f, 1.0f, 0.0f, alpha);
+    } else {
+        // Red
+        glColor4f(1.0f, 0.0f, 0.0f, alpha);
+    }
+}
+
++ (void)setGlColorNeutral:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Green
+        glColor4f(0.0f, 1.0f, 0.0f, alpha);
+    } else {
+        // Yellow
+        glColor4f(1.0f, 1.0f, 0.0f, alpha);
+    }
+}
+
++ (Color4f)getColorFriendly:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Cyan
+        return Color4fMake(0.0f, 1.0f, 1.0f, alpha);
+    } else {
+        // Green
+        return Color4fMake(0.0f, 1.0f, 0.0f, alpha);
+    }
+}
+
++ (Color4f)getColorEnemy:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Yellow
+        return Color4fMake(1.0f, 1.0f, 0.0f, alpha);
+    } else {
+        // Red
+        return Color4fMake(1.0f, 0.0f, 0.0f, alpha);
+    }
+}
+
++ (Color4f)getColorNeutral:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Green
+        return Color4fMake(0.0f, 1.0f, 0.0f, alpha);
+    } else {
+        // Yellow
+        return Color4fMake(1.0f, 1.0f, 0.0f, alpha);
+    }
+}
+
++ (Color4f)getShadeColorFriendly:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Cyan
+        return Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f, alpha);
+    } else {
+        // Green
+        return Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, alpha);
+    }
+}
+
++ (Color4f)getShadeColorEnemy:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Yellow
+        return Color4fMake(1.0f, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, alpha);
+    } else {
+        // Red
+        return Color4fMake(1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, alpha);
+    }
+}
+
++ (Color4f)getShadeColorNeutral:(float)alpha {
+    if (isColorBlindFriendlyOn) {
+        // Green
+        return Color4fMake(1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, alpha);
+    } else {
+        // Yellow
+        return Color4fMake(1.0f, 1.0f, 1.0f - CRAFT_ALLIANCE_TINT_AMOUNT, alpha);
+    }
+}
 
 - (void)dealloc {
 	[[SoundSingleton sharedSoundSingleton] shutdownSoundManager];

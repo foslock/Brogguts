@@ -415,11 +415,11 @@
 				Vector2f scroll = [[[GameController sharedGameController] currentScene] scrollVectorFromScreenBounds];
 				if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
 					// If over a broggut that is minable, draw a faded green box
-					glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
+                    [GameController setGlColorFriendly:0.25f];
 					drawFilledRect(brogRect, scroll);
 				} else {
 					// If over a broggut that is not minable, draw a faded red box
-					glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
+                    [GameController setGlColorEnemy:0.25f];
 					drawFilledRect(brogRect, scroll);
 				}
 				disablePrimitiveDraw();
@@ -432,11 +432,11 @@
             BOOL isOpen = [self isPathNodeOpenAtLocation:location];
 			if (broggut->broggutValue == -1 && isOpen) {
 				// If empty, draw a faded green box
-				glColor4f(0.0f, 1.0f, 0.0f, 0.25f);
+                [GameController setGlColorFriendly:0.25f];
 				drawFilledRect(brogRect, scroll);
 			} else {
 				// If already contains something, draw a faded red box
-				glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
+                [GameController setGlColorEnemy:0.25f];
 				drawFilledRect(brogRect, scroll);
 			}
 			disablePrimitiveDraw();
