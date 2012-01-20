@@ -123,9 +123,9 @@ enum ObjectIDs { // How objects are indentified
 
 enum MaxmimumAttributeValues {
     kMaximumEnginesValue = 6,
-    kMaximumWeaponsValue = 6,
+    kMaximumDamagePerSecondValue = 8,
     kMaximumAttackRangeValue = 512,
-    kMaximumAttackCooldownValue = 100,
+    kMaximumHullValue = 750,
 };
 
 // 
@@ -177,7 +177,7 @@ enum TheBeetleValues {
 	kCraftBeetleUpgradeTime = 45, // seconds
 	kCraftBeetleCostBrogguts = 200,
 	kCraftBeetleCostMetal = 20,
-	kCraftBeetleEngines = 2,
+	kCraftBeetleEngines = 1,
 	kCraftBeetleWeapons = 15,
 	kCraftBeetleAttackRange = 200, // pixels
 	kCraftBeetleAttackCooldown = 120, // frames for weapon to recharge
@@ -272,9 +272,9 @@ enum TheSpiderDroneValues {
 	kCraftSpiderDroneCostBrogguts = 50,
 	kCraftSpiderDroneCostMetal = 0,
 	kCraftSpiderDroneEngines = 6,
-	kCraftSpiderDroneWeapons = 4,
+	kCraftSpiderDroneWeapons = 6,
 	kCraftSpiderDroneAttackRange = 32, // pixels
-	kCraftSpiderDroneAttackCooldown = 30, // frames for weapon to recharge
+	kCraftSpiderDroneAttackCooldown = 60, // frames for weapon to recharge
 	kCraftSpiderDroneHull = 40,
     kCraftSpiderDroneViewDistance = 0, // Can't remove fog
 	// Special Values
@@ -426,8 +426,8 @@ enum TheFixerValues {
 	kStructureFixerRepairRange = 400,
     kStructureFixerRepairAmount = 2,
 	kStructureFixerRepairCooldown = 125, // HP per 100 frames
-	kStructureFixerFriendlyTargetLimit = 1,
-	kStructureFixerFriendlyTargetLimitUpgrade = 2,
+	kStructureFixerFriendlyTargetLimit = 2,
+	kStructureFixerFriendlyTargetLimitUpgrade = 3,
 };
 
 //

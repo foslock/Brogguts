@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class UnitPowerView;
+
 @interface BroggupediaDetailView : UIViewController {
     int currentObjectID;
     float currentRotation;
@@ -20,6 +22,7 @@
 @property (assign) IBOutlet UIImageView* metalImage;
 @property (assign) IBOutlet UILabel* unitBroggutsCostLabel;
 @property (assign) IBOutlet UILabel* unitMetalCostLabel;
+@property (assign) IBOutlet UnitPowerView* unitPowerView;
 
 - (id)initWithObjectType:(int)objectID;
 - (void)setLabelsWithObjectID:(int)objectID;

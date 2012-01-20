@@ -13,7 +13,7 @@
 #import "TextObject.h"
 #import "StartMissionObject.h"
 
-#define CAMPAIGN_FOUR_WAVE_TIME 10.0f
+#define CAMPAIGN_FOUR_WAVE_TIME 8.0f
 
 @implementation CampaignSceneFour
 

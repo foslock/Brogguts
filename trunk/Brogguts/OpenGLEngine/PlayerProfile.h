@@ -13,7 +13,7 @@
 #define PROFILE_SPACE_YEAR_MAX 100
 
 // The percent of the brogguts earned in a skirmish are added to the total count
-#define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.1f
+#define PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH 0.5f
 
 #define PROFILE_BROGGUT_START_COUNT 0
 #define PROFILE_METAL_START_COUNT 0

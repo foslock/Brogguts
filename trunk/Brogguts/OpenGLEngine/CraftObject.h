@@ -12,6 +12,7 @@
 
 #define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
 #define CRAFT_HEALTH_PER_NOTCH 4
+#define CRAFT_MAX_LASER_WIDTH 6.0f
 
 @class MonarchCraftObject;
 @class Image;

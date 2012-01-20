@@ -89,7 +89,7 @@
 	
 	// Draw the laser attack
 	if (GetDistanceBetweenPoints(objectLocation, closestEnemyObject.objectLocation) <= effectRadius) {
-		float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
+        float width = CLAMP(TURRET_MAX_LASER_WIDTH - (attributeAttackCooldown - attackCooldownTimer) / 2, 0.0f, TURRET_MAX_LASER_WIDTH);
 		if (width != 0.0f) {
 			if (objectAlliance == kAllianceFriendly)
                 [GameController setGlColorFriendly:0.8f];

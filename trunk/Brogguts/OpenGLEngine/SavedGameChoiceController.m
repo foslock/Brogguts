@@ -121,18 +121,8 @@ enum SectionNames {
 
 #pragma mark - Table view data source
 
-- (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case kSectionSavedScenes:
-            return @"Load a Saved Mission (Current Mission In White)";
-            break;
-        case kSectionUnlockedMissions:
-            return @"Start a New Mission (Most Recent In White)";
-            break;
-        default:
-            return @"";
-            break;
-    }
+- (float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 64.0f;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -190,7 +180,7 @@ enum SectionNames {
             break;
     }
     
-    [cell.textLabel setFont:[UIFont fontWithName:@"Helvetica" size:20.0f]];
+    [cell.textLabel setFont:[UIFont systemFontOfSize:20.0f]];
     [cell.textLabel setTextColor:[UIColor whiteColor]];
     [cell.textLabel setShadowColor:[UIColor blackColor]];
     [cell.textLabel setShadowOffset:CGSizeMake(2.0f, 2.0f)];
@@ -215,13 +205,12 @@ enum SectionNames {
     
     UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 478, 96)];
     [label setText:text];
-    [label setFont:[UIFont fontWithName:@"Helvetica" size:18.0f]];
+    [label setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [label setShadowColor:[UIColor blackColor]];
     [label setShadowOffset:CGSizeMake(2.0f, 2.0f)];
     [label setTextAlignment:UITextAlignmentCenter];
     [label setTextColor:[UIColor whiteColor]];
     [label setBackgroundColor:[UIColor clearColor]];
-    
     return label;
 }
 
