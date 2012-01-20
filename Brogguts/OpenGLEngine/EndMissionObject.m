@@ -100,8 +100,8 @@
     if (!didAppear) {
         didAppear = YES;
         broggutsLeft = [[[GameController sharedGameController] currentProfile] broggutCount];
-        broggutsEarned = [[[GameController sharedGameController] currentProfile] broggutCount] / 10;
-        NSString* broggutsLeftText = [NSString stringWithFormat:@"%i x 10%%",broggutsLeft];
+        broggutsEarned = [[[GameController sharedGameController] currentProfile] broggutCount] * PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH;
+        NSString* broggutsLeftText = [NSString stringWithFormat:@"%i x %d%%", broggutsLeft, (int)(PERCENT_BROGGUTS_CREDITED_FOR_SKIRMISH*100.0f)];
         NSString* broggutsEarnedText = [NSString stringWithFormat:@"+%i",broggutsEarned];
         [broggutsLeftNumber setObjectText:broggutsLeftText];
         [broggutsEarnedNumber setObjectText:broggutsEarnedText];

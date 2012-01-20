@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "StructureObject.h"
 
+#define TURRET_MAX_LASER_WIDTH 6.0f
+
 @interface TurretStructureObject : StructureObject {
 	// Attacking vars
     Image* turretGunImage;

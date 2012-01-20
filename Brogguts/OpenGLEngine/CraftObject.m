@@ -280,12 +280,10 @@
     
     float attackValue = (attributeEngines / (float)kMaximumEnginesValue) +
     (attributeAttackRange / (float)kMaximumAttackRangeValue) +
-    (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
-    (attributeAttackCooldown / (float)kMaximumAttackCooldownValue);
+    (attributeWeaponsDamage / (float)attributeAttackCooldown) * 60.0f / (float)kMaximumDamagePerSecondValue;
     
     float defenseValue = (attributeAttackRange / (float)kMaximumAttackRangeValue) +
-    (attributeWeaponsDamage / (float)kMaximumWeaponsValue) -
-    (attributeAttackCooldown / (float)kMaximumAttackCooldownValue) +
+    ((attributeWeaponsDamage / (float)attributeAttackCooldown) * 60.0f / (float)kMaximumDamagePerSecondValue) +
     (attributeHullCurrent / (float)attributeHullCapacity);
     
     craftAIInfo.computedAttackValue = attackValue / 4.0f;
@@ -769,7 +767,7 @@
         }
     }
     
-    if ( (isCurrentlyHoveredOver || isBeingControlled) && !isBlinkingSelectionCircle) {
+    if ((isCurrentlyHoveredOver || isBeingControlled) && !isBlinkingSelectionCircle) {
         enablePrimitiveDraw();
         [self drawHoverSelectionWithScroll:scroll withAlpha:0.8f];
         disablePrimitiveDraw();
@@ -780,7 +778,7 @@
         if (objectType != kObjectCraftBeetleID ||
             (objectType == kObjectCraftBeetleID && ![[[self currentScene] upgradeManager] isUpgradeCompleteWithID:kObjectCraftBeetleID])) {
             if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) <= POW2(attributeAttackRange + maxVelocity)) {
-                float width = CLAMP((10.0f * (float)(attackCooldownTimer - (attributeAttackCooldown / 2)) / (float)attributeAttackCooldown), 0.0f, 10.0f);
+                float width = CLAMP(CRAFT_MAX_LASER_WIDTH - (attributeAttackCooldown - attackCooldownTimer) / 2, 0.0f, CRAFT_MAX_LASER_WIDTH);
                 if (width != 0.0f) {
                     if (objectAlliance == kAllianceFriendly)
                         [GameController setGlColorFriendly:0.8f];

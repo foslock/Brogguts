@@ -12,12 +12,13 @@
 #import "SoundSingleton.h"
 #import "PlayerProfile.h"
 #import "UpgradeManager.h"
+#import "UnitPowerView.h"
 
 const NSString* upgradeDefaultInfo = @"Locked";
 
 @implementation BroggupediaDetailView
 @synthesize unitImageView, unitBroggutsCostLabel, unitMetalCostLabel;
-@synthesize broggutImage, metalImage, unitTextView;
+@synthesize broggutImage, metalImage, unitTextView, unitPowerView;
 
 - (id)initWithObjectType:(int)objectID
 {
@@ -37,6 +38,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
     switch (objectID) {
             // CRAFT
         case kObjectCraftAntID: {
+            [self.unitPowerView setWeaponPower:(kCraftAntWeapons / (float)kCraftAntAttackCooldown)
+                                   enginePower:kCraftAntEngines
+                                     hullPower:kCraftAntHull
+                                    radarPower:kCraftAntAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftAntSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -57,6 +62,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftMothID: {
+            [self.unitPowerView setWeaponPower:(kCraftMothWeapons / (float)kCraftMothAttackCooldown)
+                                   enginePower:kCraftMothEngines
+                                     hullPower:kCraftMothHull
+                                    radarPower:kCraftMothAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftMothSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -77,6 +86,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftBeetleID: {
+            [self.unitPowerView setWeaponPower:(kCraftBeetleWeapons / (float)kCraftBeetleAttackCooldown)
+                                   enginePower:kCraftBeetleEngines
+                                     hullPower:kCraftBeetleHull
+                                    radarPower:kCraftBeetleAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftBeetleSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -97,6 +110,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftMonarchID: {
+            [self.unitPowerView setWeaponPower:(kCraftMonarchWeapons / (float)kCraftMonarchAttackCooldown)
+                                   enginePower:kCraftMonarchEngines
+                                     hullPower:kCraftMonarchHull
+                                    radarPower:kCraftMonarchAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftMonarchSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -117,6 +134,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftCamelID: {
+            [self.unitPowerView setWeaponPower:(kCraftCamelWeapons / (float)kCraftCamelAttackCooldown)
+                                   enginePower:kCraftCamelEngines
+                                     hullPower:kCraftCamelHull
+                                    radarPower:kCraftCamelAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftCamelSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -137,6 +158,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftRatID: {
+            [self.unitPowerView setWeaponPower:(kCraftRatWeapons / (float)kCraftRatAttackCooldown)
+                                   enginePower:kCraftRatEngines
+                                     hullPower:kCraftRatHull
+                                    radarPower:kCraftRatAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftRatSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -157,6 +182,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftSpiderID: {
+            [self.unitPowerView setWeaponPower:(kCraftSpiderDroneWeapons * 8.0f / (float)kCraftSpiderDroneAttackCooldown)
+                                   enginePower:kCraftSpiderEngines
+                                     hullPower:kCraftSpiderHull
+                                    radarPower:kCraftSpiderAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftSpiderSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -177,6 +206,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectCraftEagleID: {
+            [self.unitPowerView setWeaponPower:(kCraftEagleWeapons / (float)kCraftEagleAttackCooldown)
+                                   enginePower:kCraftEagleEngines
+                                     hullPower:kCraftEagleHull
+                                    radarPower:kCraftEagleAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectCraftEagleSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -199,6 +232,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             
             // Structures
         case kObjectStructureBaseStationID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureBaseStationHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureBaseStationSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -219,6 +256,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureBlockID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureBlockHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureBlockSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -239,6 +280,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureRefineryID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureRefineryHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureRefinerySprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -259,6 +304,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureCraftUpgradesID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureRefineryHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureCraftUpgradesSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -279,6 +328,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureStructureUpgradesID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureStructureUpgradesHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureStructureUpgradesSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -299,6 +352,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureTurretID: {
+            [self.unitPowerView setWeaponPower:(kStructureTurretWeapons / (float)kStructureTurretAttackCooldown)
+                                   enginePower:0.0f
+                                     hullPower:kStructureTurretHull
+                                    radarPower:kStructureTurretAttackRange];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureTurretSprite ofType:nil];
             NSString* filename2 = [[NSBundle mainBundle] pathForResource:kObjectStructureTurretGunSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
@@ -326,6 +383,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureRadarID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureRadarHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureRadarSprite ofType:nil];
             NSString* filename2 = [[NSBundle mainBundle] pathForResource:kObjectStructureRadarDishSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
@@ -352,6 +413,10 @@ const NSString* upgradeDefaultInfo = @"Locked";
             break;
         }
         case kObjectStructureFixerID: {
+            [self.unitPowerView setWeaponPower:0.0f
+                                   enginePower:0.0f
+                                     hullPower:kStructureFixerHull
+                                    radarPower:0.0f];
             NSString* filename = [[NSBundle mainBundle] pathForResource:kObjectStructureFixerSprite ofType:nil];
             UIImage* image = [[UIImage alloc] initWithContentsOfFile:filename];
             float width = [image size].width;
@@ -384,7 +449,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Collectable Brogguts Range: %i to %i",kBroggutYoungSmallMinValue, kBroggutYoungSmallMaxValue]];
-            [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
+            [unitBroggutsCostLabel setCenter:CGPointMake(self.view.frame.size.width / 2, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
             NSString* description = [NSString stringWithFormat:@"\tThis is a common piece of space trash that one might find floating around in space. Once a clean and empty void, space is now full of these."];
             NSString* upgradeInfo = (NSString*)upgradeDefaultInfo;
@@ -407,7 +472,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutYoungMediumMinValue, kBroggutYoungMediumMaxValue]];
-            [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
+            [unitBroggutsCostLabel setCenter:CGPointMake(self.view.frame.size.width / 2, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
             NSString* description = [NSString stringWithFormat:@"\tA relatively young collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
             NSString* upgradeInfo = (NSString*)upgradeDefaultInfo;
@@ -430,7 +495,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutOldMediumMinValue, kBroggutOldMediumMaxValue]];
-            [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
+            [unitBroggutsCostLabel setCenter:CGPointMake(self.view.frame.size.width / 2, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
             NSString* description = [NSString stringWithFormat:@"\tAn older collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
             NSString* upgradeInfo = (NSString*)upgradeDefaultInfo;
@@ -453,7 +518,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
             [unitImageView setFrame:CGRectMake(unitImageView.frame.origin.x, unitImageView.frame.origin.y, width, height)];
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Minable Brogguts Range: %i to %i",kBroggutAncientMediumMinValue, kBroggutAncientMediumMaxValue]];
-            [unitBroggutsCostLabel setCenter:CGPointMake([unitImageView center].x, [unitBroggutsCostLabel center].y)];
+            [unitBroggutsCostLabel setCenter:CGPointMake(self.view.frame.size.width / 2, [unitBroggutsCostLabel center].y)];
             [unitMetalCostLabel setText:@""];
             NSString* description = [NSString stringWithFormat:@"\tAn ancient collection of space trash either placed here by mankind, or just accumulated over time. These can be mined by either of the mining ships."];
             NSString* upgradeInfo = (NSString*)upgradeDefaultInfo;
@@ -511,6 +576,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
     [super viewDidAppear:animated];
     timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f) target:self selector:@selector(rotateObject:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode: NSDefaultRunLoopMode];
+    [self.unitPowerView animateBarsToPowers];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {

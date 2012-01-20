@@ -13,8 +13,8 @@
 #import "SpawnerObject.h"
 #import "TextObject.h"
 
-#define CAMPAIGN_TWO_BROGGUT_GOAL 5000 // 2500
-#define CAMPAIGN_TWO_TIME_LIMIT 6.0f // 10 mins
+#define CAMPAIGN_TWO_BROGGUT_GOAL 2500
+#define CAMPAIGN_TWO_TIME_LIMIT 4.0f
 
 @implementation CampaignSceneTwo
 
