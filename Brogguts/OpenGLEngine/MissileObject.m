@@ -20,7 +20,8 @@
     Image* image = [[Image alloc] initWithImageNamed:kObjectMissileSprite filter:GL_LINEAR];
     self = [super initWithImage:image withLocation:owner.objectLocation withObjectType:kObjectMissileObjectID];
     if (self) {
-        [self setRenderLayer:kLayerBottomLayer];
+        [self setRenderLayer:kLayerMiddleLayer];
+        isCheckedForCollisions = NO;
         ownerObject = owner;
         targetObject = target;
         detonationLocation = target.objectLocation;
