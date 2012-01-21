@@ -124,8 +124,7 @@
                 int botLeft = [self indexForXindex:x-1 forYindex:y-1];
                 int bot = [self indexForXindex:x forYindex:y-1];
                 int left = [self indexForXindex:x-1 forYindex:y];
-                float thisAlpha = MAX(gridData[botLeft], (gridData[bot] + gridData[left]) / 2.0f);
-                newAlpha = (thisAlpha + newAlpha) / 2.0f;
+                newAlpha = (gridData[bot] + gridData[botLeft] + gridData[left] + newAlpha) / 4.0f;
             }
         }
         if (vert == 1 || vert == 4) { // Top Left
@@ -133,8 +132,7 @@
                 int topLeft = [self indexForXindex:x-1 forYindex:y+1];
                 int top = [self indexForXindex:x forYindex:y+1];
                 int left = [self indexForXindex:x-1 forYindex:y];
-                float thisAlpha = MAX(gridData[topLeft], (gridData[top] + gridData[left]) / 2.0f);
-                newAlpha = (thisAlpha + newAlpha) / 2.0f;
+                newAlpha = (gridData[top] + gridData[topLeft] + gridData[left] + newAlpha) / 4.0f;
             }
         }
         if (vert == 2 || vert == 3) { // Bottom right
@@ -142,8 +140,7 @@
                 int botRight = [self indexForXindex:x+1 forYindex:y-1];
                 int bot = [self indexForXindex:x forYindex:y-1];
                 int right = [self indexForXindex:x+1 forYindex:y];
-                float thisAlpha = MAX(gridData[botRight], (gridData[bot] + gridData[right]) / 2.0f);
-                newAlpha = (thisAlpha + newAlpha) / 2.0f;
+                newAlpha = (gridData[bot] + gridData[botRight] + gridData[right] + newAlpha) / 4.0f;
             }
         }
         if (vert == 5) { // Top right
@@ -151,8 +148,7 @@
                 int topRight = [self indexForXindex:x+1 forYindex:y+1];
                 int top = [self indexForXindex:x forYindex:y+1];
                 int right = [self indexForXindex:x+1 forYindex:y];
-                float thisAlpha = MAX(gridData[topRight], (gridData[top] + gridData[right]) / 2.0f);
-                newAlpha = (thisAlpha + newAlpha) / 2.0f;
+                newAlpha = (gridData[top] + gridData[topRight] + gridData[right] + newAlpha) / 4.0f;
             }
         }
         colors[colorIndex++] = newAlpha;

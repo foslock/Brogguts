@@ -367,6 +367,8 @@
 		6FF0038514C4A60F003F7207 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FF0038414C4A60F003F7207 /* BaseCamp.plist */; };
 		6FF6642E1305AF4500EB76A8 /* TextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF6642D1305AF4500EB76A8 /* TextObject.m */; };
 		6FF666921305FBAC00EB76A8 /* ControllableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF666911305FBAC00EB76A8 /* ControllableObject.m */; };
+		6FFFEE2814C9BFE300BF404B /* leaderboardicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */; };
+		6FFFEE2914C9BFE300BF404B /* throphyicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FFFEE2714C9BFE300BF404B /* throphyicon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -860,6 +862,8 @@
 		6FF665031305D11900EB76A8 /* Primitives.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Primitives.h; sourceTree = "<group>"; };
 		6FF666901305FBAC00EB76A8 /* ControllableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllableObject.h; sourceTree = "<group>"; };
 		6FF666911305FBAC00EB76A8 /* ControllableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllableObject.m; sourceTree = "<group>"; };
+		6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leaderboardicon.png; sourceTree = "<group>"; };
+		6FFFEE2714C9BFE300BF404B /* throphyicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = throphyicon.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* OpenGLEngine-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OpenGLEngine-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1469,6 +1473,8 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */,
+				6FFFEE2714C9BFE300BF404B /* throphyicon.png */,
 				6F18722214C921DA008A7C23 /* enginesicon.png */,
 				6F18722314C921DA008A7C23 /* hullicon.png */,
 				6F18722414C921DA008A7C23 /* radaricon.png */,
@@ -2153,6 +2159,8 @@
 				6F18722714C921DB008A7C23 /* hullicon.png in Resources */,
 				6F18722814C921DB008A7C23 /* radaricon.png in Resources */,
 				6F18722914C921DB008A7C23 /* weaponsicon.png in Resources */,
+				6FFFEE2814C9BFE300BF404B /* leaderboardicon.png in Resources */,
+				6FFFEE2914C9BFE300BF404B /* throphyicon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
