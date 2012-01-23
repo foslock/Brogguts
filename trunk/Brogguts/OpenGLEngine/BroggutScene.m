@@ -2084,7 +2084,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     CGPoint relativeMiddle = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     glLineWidth(1.0f);
-    [collisionManager drawCellGridAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withScroll:Vector2fZero withAlpha:CLAMP(alpha - 0.5f, 0.0f, 0.1f)];
+    if (doesSceneShowGrid) {
+        [collisionManager drawCellGridAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withScroll:Vector2fZero withAlpha:CLAMP(alpha - 0.5f, 0.0f, 0.1f)];
+    }
     
     // Render each object as a point (sprite?) on the overview map
     GLfloat objPoint[2];

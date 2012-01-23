@@ -213,57 +213,81 @@
 - (void)renderStringJustifiedInFrame:(CGRect)aRect justification:(int)aJustification text:(NSString*)aText onLayer:(GLuint)layer {
 	CGPoint point = CGPointZero;
     
-	// Calculate the width and height in pixels of the text
-	float textWidth = [self getWidthForString:aText];
-	float textHeight = [self getHeightForString:aText];
-    float scaledLineHeight = lineHeight * fontImage.scale.y;
-	
-	// Based on the justification enum calculate the position of the text
-	switch (aJustification) {
-		case BitmapFontJustification_TopLeft:
-			point.x = aRect.origin.x;
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_MiddleLeft:
-			point.x = aRect.origin.x;
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);		
-			break;
-		case BitmapFontJustification_BottomLeft:
-			point.x = aRect.origin.x;
-			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_TopCentered:
-			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_MiddleCentered:
-			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_BottomCentered:
-			point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
-			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_TopRight:
-			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_MiddleRight:
-			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
-			break;
-		case BitmapFontJustification_BottomRight:
-			point.x = aRect.origin.x + (aRect.size.width - textWidth);
-			point.y = aRect.origin.y - (scaledLineHeight - textHeight);
-			break;
-			
-		default:
-			break;
-	}
-	
-	// Now we have calcualted the point to render the text, use the standard render method to actually render the text
-	// at the point calculated
-	[self renderStringAt:point text:aText onLayer:layer];
+    int charCount = [aText length];
+    float totalLineCount = 0.0f;
+    for (int i = 0; i < charCount; i++) {
+        char thisChar = [aText characterAtIndex:i];
+        if (thisChar == '\n') {
+            totalLineCount++;
+        }
+    }
+    NSString* currentText = @"";
+    float lineCount = 1.0f;
+    for (int i = 0; i < charCount; i++) {
+        char thisChar = [aText characterAtIndex:i];
+        if (thisChar == '\n' || i == charCount - 1) {
+            // write out current string
+            if (thisChar != '\n') {
+                currentText = [currentText stringByAppendingFormat:@"%c", thisChar];
+            }
+            // Calculate the width and height in pixels of the text
+            float textWidth = [self getWidthForString:currentText];
+            float textHeight = [self getHeightForString:currentText];
+            float scaledLineHeight = (lineHeight * fontImage.scale.y) * (lineCount - (totalLineCount / 2));
+            
+            // Based on the justification enum calculate the position of the text
+            switch (aJustification) {
+                case BitmapFontJustification_TopLeft:
+                    point.x = aRect.origin.x;
+                    point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_MiddleLeft:
+                    point.x = aRect.origin.x;
+                    point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);		
+                    break;
+                case BitmapFontJustification_BottomLeft:
+                    point.x = aRect.origin.x;
+                    point.y = aRect.origin.y - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_TopCentered:
+                    point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
+                    point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_MiddleCentered:
+                    point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
+                    point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_BottomCentered:
+                    point.x = aRect.origin.x + ((aRect.size.width - textWidth) / 2);
+                    point.y = aRect.origin.y - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_TopRight:
+                    point.x = aRect.origin.x + (aRect.size.width - textWidth);
+                    point.y = aRect.origin.y + (aRect.size.height - textHeight) - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_MiddleRight:
+                    point.x = aRect.origin.x + (aRect.size.width - textWidth);
+                    point.y = aRect.origin.y + ((aRect.size.height - textHeight) / 2) - (scaledLineHeight - textHeight);
+                    break;
+                case BitmapFontJustification_BottomRight:
+                    point.x = aRect.origin.x + (aRect.size.width - textWidth);
+                    point.y = aRect.origin.y - (scaledLineHeight - textHeight);
+                    break;
+                default:
+                    break;
+            }
+            
+            // Now we have calcualted the point to render the text, use the standard render method to actually render the text
+            // at the point calculated
+            [self renderStringAt:point text:currentText onLayer:layer];
+            currentText = @"";
+            if (thisChar == '\n') {
+                lineCount += 1.0f;
+            }
+        } else {
+            currentText = [currentText stringByAppendingFormat:@"%c", thisChar];
+        }
+    }
 }
 
 - (int)getWidthForString:(NSString*)string {

@@ -53,6 +53,10 @@
         }
     }
     
+    if (objectAttachedTo.destroyNow) {
+        objectAttachedTo = nil;
+    }
+    
     if (objectAttachedTo) {
         notificationLocation = objectAttachedTo.objectLocation;
     }

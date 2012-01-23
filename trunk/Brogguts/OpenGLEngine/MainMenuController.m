@@ -53,6 +53,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
         [fadeCoverView setExclusiveTouch:YES];
         [fadeCoverView setAlpha:0.0f];
         [fadeCoverView setBackgroundColor:[UIColor blackColor]];
+        spinnerView = nil;
         starsArray = [[NSMutableArray alloc] init];
         lettersArray = [[NSMutableArray alloc] init];
         hasStartedTutorial = NO;
@@ -96,6 +97,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     int beginningTutoralIndex = tutorialExperience; // 0 is default
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
+    [self makeSpinnerAppear];
     [[GameController sharedGameController]
      fadeOutToSceneWithFilename:kTutorialSceneFileNames[beginningTutoralIndex]
      sceneType:kSceneTypeTutorial
@@ -115,6 +117,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
             [self presentModalViewController:controller animated:YES];
             [controller release];
         } else {
+            [self makeSpinnerAppear];
             [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[0] sceneType:kSceneTypeCampaign withIndex:0 isNew:YES isLoading:NO];
         }
     } else {
@@ -176,6 +179,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
 
 - (IBAction)loadProfileViewController {
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
+    [self makeSpinnerAppear];
     [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
 }
 
@@ -259,6 +263,16 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:brogguts];
 }
 
+- (void)makeSpinnerAppear {
+    /*
+    if (spinnerView) {
+        [self.view bringSubviewToFront:spinnerView];
+        [fadeCoverView setAlpha:0.5f];
+        [spinnerView setAlpha:1.0f];
+    }
+     */
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -292,6 +306,10 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [lettersArray addObject:letterU];
     [lettersArray addObject:letterT];
     [lettersArray addObject:letterS];
+    
+    spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [spinnerView setAlpha:0.0f];
+    [self.view addSubview:spinnerView];
 }
 
 - (void)viewDidUnload
@@ -299,6 +317,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [spinnerView release];
 }
 
 - (void)reportScore:(int64_t)score forCategory:(NSString*)category {
@@ -349,6 +368,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [self.view bringSubviewToFront:tutorialButton];
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
+    [spinnerView setAlpha:0.0f];
     
     [[GameController sharedGameController] savePlayerProfile];
     

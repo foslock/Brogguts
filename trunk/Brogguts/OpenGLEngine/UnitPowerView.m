@@ -11,6 +11,7 @@
 #define POWER_BAR_HEIGHT 20.0f
 #define POWER_BAR_BRIGHTNESS 0.8f
 #define POWER_BAR_ALPHA 0.7f
+#define POWER_BAR_SCALE_LINES_COUNT 5
 
 @implementation UnitPowerView
 
@@ -29,6 +30,15 @@
     enginePower = 0.0f;
     hullPower = 0.0f;
     radarPower = 0.0f;
+    
+    for (int i = 0; i <= POWER_BAR_SCALE_LINES_COUNT; i++) {
+        UIView* lineView = [[UIView alloc] initWithFrame:CGRectMake(i * (powerBarMaxWidth / POWER_BAR_SCALE_LINES_COUNT), 0.0f, 2.0f, self.frame.size.height)];
+        [lineView setBackgroundColor:[UIColor whiteColor]];
+        [lineView setAlpha:0.5f];
+        [self addSubview:lineView];
+        [lineView release];
+    }
+    
     weaponView = [[UIView alloc] initWithFrame:CGRectMake(0, 16.0f - (POWER_BAR_HEIGHT/2), 0, POWER_BAR_HEIGHT)];
     engineView = [[UIView alloc] initWithFrame:CGRectMake(0, 49.0f - (POWER_BAR_HEIGHT/2), 0, POWER_BAR_HEIGHT)];
     hullView = [[UIView alloc] initWithFrame:CGRectMake(0, 82.0f - (POWER_BAR_HEIGHT/2), 0, POWER_BAR_HEIGHT)];
@@ -65,7 +75,7 @@
     UIColor* hullColor = [UIColor colorWithRed:POWER_BAR_BRIGHTNESS-hullPower green:hullPower blue:0.0f alpha:POWER_BAR_ALPHA];
     UIColor* radarColor = [UIColor colorWithRed:POWER_BAR_BRIGHTNESS-radarPower green:radarPower blue:0.0f alpha:POWER_BAR_ALPHA];
     
-    [UIView animateWithDuration:1.0 delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:0.75f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
         // Animate!
         [weaponView setFrame:CGRectMake(weaponView.frame.origin.x, weaponView.frame.origin.y, weaponPower * powerBarMaxWidth, POWER_BAR_HEIGHT)];
         [engineView setFrame:CGRectMake(engineView.frame.origin.x, engineView.frame.origin.y, enginePower * powerBarMaxWidth, POWER_BAR_HEIGHT)];
@@ -79,13 +89,5 @@
         // Nothing
     }];
 }
-
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-
 
 @end
