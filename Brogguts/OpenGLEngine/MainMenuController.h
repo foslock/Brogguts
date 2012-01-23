@@ -44,6 +44,8 @@ extern NSString* const kTutorialExperienceKey;
     UIView* fadeCoverView;
     UIImageView* recommendationView;
     
+    UIActivityIndicatorView* spinnerView;
+    
     UIImageView* backgroundImage;
     
     NSMutableArray* starsArray;
@@ -89,5 +91,7 @@ extern NSString* const kTutorialExperienceKey;
 - (IBAction)loadSkirmishViewController;
 - (IBAction)spaceYearButtonPressed;
 - (IBAction)broggutCountButtonPressed;
+
+- (void)makeSpinnerAppear;
 
 @end

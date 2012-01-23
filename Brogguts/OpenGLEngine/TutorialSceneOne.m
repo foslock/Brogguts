@@ -18,26 +18,25 @@
 #import "FogManager.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
-    @"Hundreds of years in the future, the human ",
-    @" population grows beyond the planet's capacity.",
-    @"Landfills were overflowing with our trash, ",
-    @" eventually forcing the colonization of other planets.",
+    @"Long ago, when humans only lived on one planet.",
+    @"the population started to grow beyond the Earth's capacity.",
+    @"Landfills were overflowing with trash,",
+    @"which eventually forced the colonization of other planets.",
     @"Inevitably the same happened, and as a result we ",
-    @" took to jettisoning all our trash into space.",
-    @"Thousands of years past that, the trash had accumulated ",
-    @" and started forming large masses in space.",
-    @"One day a single invention changed the galaxy: ",
-    @" A process that could convert any of this trash back into energy.",
-    @"Instantly, the trash became a valuable commodity, ",
-    @" and received the nickname 'Brogguts'.",
-    @"Companies were formed solely around mining ",
-    @" and selling millions of these Brogguts.",
-    @"Pirating and rogue missions soon found their way into the picture.",
-    @"Brogguts have become what all desire. ",
-    @" Struggles, and even war have erupted over just a few mining operations.",
-    @"You are an overseer of one of these large companies smaller base stations.",
+    @"took to jettisoning all our trash into the empty void of space.",
+    @"Hundreds of years past that, the trash had accumulated ",
+    @"and started forming large masses in space.",
+    @"One day a single invention changed the galaxy:",
+    @"A process that could convert any of this trash back into energy.",
+    @"Instantly, the trash became a valuable commodity,",
+    @"and someone coined the pseudonym 'Brogguts'.",
+    @"Companies were formed solely around mining",
+    @"and selling millions of these Brogguts.",
+    @"Pirating and rogue colonies soon found their way into the picture.",
+    @"Power struggles between the corporations and pirating factions have",
+    @"recently divided the universe into two distinct sides.",
     @"Collect as many Brogguts as you can...",
-    @"...and maybe you will be the next to make a difference in this world.",
+    @"...and maybe you will be the next to make a real difference.",
 };
 
 @implementation TutorialSceneOne
@@ -57,6 +56,7 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
         textObjects = [[NSMutableArray alloc] init];
         totalTextHeight = 32.0f + (TUTORIAL_INTRO_SPACE_BETWEEN_LINES * TUTORIAL_INTRO_LINE_COUNT);
         scrollTextAmount = 0.0f;
+        
         for (int i = 0; i < TUTORIAL_INTRO_LINE_COUNT; i++) {
             float xLoc = (kPadScreenLandscapeWidth - [self getWidthForFontID:kFontBlairID withString:kIntroSceneText[i]]) / 2;
             TextObject* introText = [[TextObject alloc] initWithFontID:kFontBlairID
@@ -89,7 +89,7 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
         [introText setObjectLocation:CGPointMake(introText.objectLocation.x, -32 - (TUTORIAL_INTRO_SPACE_BETWEEN_LINES * i) + scrollTextAmount)];
         CGPoint afterPoint = introText.objectLocation;
         diff = afterPoint.y - point.y;
-
+        
     }
     [sharedStarSingleton scrollStarsWithVector:Vector2fMake(0.0f, diff)];
     

@@ -14,7 +14,8 @@
 #import <Foundation/Foundation.h>
 
 #define FOG_UPDATE_FREQUENCY 4
-#define FOG_SHADE_OF_GRAY 0.0f
+#define FOG_SHADE_OF_GRAY_SCENE 0.0f
+#define FOG_SHADE_OF_GRAY_OVERVIEW 0.2f
 
 @interface FogManager : NSObject {
     int gridResolution; // How many units wide a grid cell will be

@@ -29,7 +29,7 @@
 			[buttonArray addObject:button];
 			switch (i) {
 				case 0:
-					[button setButtonText:@"Metal"];
+					[button setButtonText:@"Refine\nMetal"];
                     [button setIsDisabled:YES];
 					break;
 				case 1:

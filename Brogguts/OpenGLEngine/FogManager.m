@@ -13,6 +13,8 @@
 #import "Structures.h"
 #import "GameController.h"
 
+static float reusedGridColorData[24];
+
 @implementation FogManager
 @synthesize isDrawingFogOnScene, isDrawingFogOnOverview;
 
@@ -108,14 +110,20 @@
     }
 }
 
-- (float*)colorArrayForFogBlockWithXIndex:(int)x withYIndex:(int)y {
-    float* colors = malloc(24 * sizeof(float));
+- (float*)colorArrayForFogBlockWithXIndex:(int)x withYIndex:(int)y isInScene:(BOOL)inScene withMaxAlpha:(float)maxAlpha {
+    float* colors = reusedGridColorData;
     int currentIndex = [self indexForXindex:x forYindex:y];
     int colorIndex = 0;
     for (int vert = 0; vert < 6; vert++) {
-        colors[colorIndex++] = FOG_SHADE_OF_GRAY;
-        colors[colorIndex++] = FOG_SHADE_OF_GRAY;
-        colors[colorIndex++] = FOG_SHADE_OF_GRAY;
+        if (inScene) {
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_SCENE;
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_SCENE;
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_SCENE; 
+        } else {
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_OVERVIEW;
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_OVERVIEW;
+            colors[colorIndex++] = FOG_SHADE_OF_GRAY_OVERVIEW; 
+        }
         
         float newAlpha = gridData[currentIndex];
         // The alpha value is the important one
@@ -151,7 +159,7 @@
                 newAlpha = (gridData[top] + gridData[topRight] + gridData[right] + newAlpha) / 4.0f;
             }
         }
-        colors[colorIndex++] = newAlpha;
+        colors[colorIndex++] = CLAMP(newAlpha - (1.0f - maxAlpha), 0.0f, maxAlpha);
     }
     return colors;
 }
@@ -169,13 +177,35 @@
             if (CGRectIntersectsRect(rect, thisRect) || CGRectContainsRect(rect, thisRect)) {
                 // glColor4f(0.0f, 0.0f, 0.0f, gridData[i]);
                 // drawFilledRect(thisRect, scroll);
-                float* colors = [self colorArrayForFogBlockWithXIndex:xIndex withYIndex:yIndex];
+                float* colors = [self colorArrayForFogBlockWithXIndex:xIndex withYIndex:yIndex isInScene:YES withMaxAlpha:1.0f];
                 drawFilledRectWithColors(thisRect, scroll, colors);
-                free(colors);
             }
         }
         disablePrimitiveDraw();
     }
+}
+
+- (BOOL)isGridUnitSurroundedWithCompleteFogWithIndex:(int)index  {
+    CGPoint point = [self pointForIndex:index];
+    int x = (int)point.x;
+    int y = (int)point.y;
+    
+    for (int i = -1; i < 2; i++) {
+        for (int j = -1; j < 2; j++) {
+            int newX = x + i;
+            int newY = y + j;
+            if (newX < 0 || newX >= cellsWide ||
+                newY < 0 || newY >= cellsHigh) {
+                continue;
+            }
+            int index = [self indexForXindex:newX forYindex:newY];
+            float alpha = gridData[index];
+            if (alpha < 1.0f) {
+                return NO;
+            }
+        }
+    }
+    return YES;
 }
 
 - (void)renderFogInOverviewAtPoint:(CGPoint)point withScale:(Scale2f)scale withAlpha:(float)alpha {
@@ -195,7 +225,9 @@
                                              bottomLeft.y + (row * COLLISION_CELL_HEIGHT * scale.y),
                                              COLLISION_CELL_WIDTH * scale.x, COLLISION_CELL_HEIGHT * scale.y);
                 
-                if (thisAlpha == 1.0f && addingToRect) {
+                
+                if (thisAlpha == 1.0f && addingToRect && 
+                    [self isGridUnitSurroundedWithCompleteFogWithIndex:index]) {
                     currentRect = CGRectMake(currentRect.origin.x,
                                              bottomLeft.y + (row * COLLISION_CELL_HEIGHT * scale.y),
                                              currentRect.size.width + (COLLISION_CELL_WIDTH * scale.x),
@@ -203,7 +235,7 @@
                 } else {
                     // Draw the current rect
                     if (currentRect.size.width > 0.0f) {
-                        glColor4f(0.1f, 0.1f, 0.1f, alpha);
+                        glColor4f(FOG_SHADE_OF_GRAY_OVERVIEW, FOG_SHADE_OF_GRAY_OVERVIEW, FOG_SHADE_OF_GRAY_OVERVIEW, alpha);
                         drawFilledRect(currentRect, Vector2fZero);
                     }
                     currentRect = CGRectZero;
@@ -211,16 +243,18 @@
                     
                     if (thisAlpha != 0.0f) {
                         // Draw this rect
-                        float thisAlpha = CLAMP(gridData[index], 0, alpha);
-                        glColor4f(0.1f, 0.1f, 0.1f, thisAlpha);
-                        drawFilledRect(thisRect, Vector2fZero);
+                        // float thisAlpha = CLAMP(gridData[index], 0, alpha);
+                        // glColor4f(0.1f, 0.1f, 0.1f, thisAlpha);
+                        // drawFilledRect(thisRect, Vector2fZero);
+                        float* colors = [self colorArrayForFogBlockWithXIndex:col withYIndex:row isInScene:NO withMaxAlpha:alpha];
+                        drawFilledRectWithColors(thisRect, Vector2fZero, colors);
                     }
                 }
             }
             // Draw the long rect!
             
             if (currentRect.size.width > 0.0f) {
-                glColor4f(0.1f, 0.1f, 0.1f, alpha);
+                glColor4f(FOG_SHADE_OF_GRAY_OVERVIEW, FOG_SHADE_OF_GRAY_OVERVIEW, FOG_SHADE_OF_GRAY_OVERVIEW, alpha);
                 drawFilledRect(currentRect, Vector2fZero);
                 currentRect = CGRectZero;
             }

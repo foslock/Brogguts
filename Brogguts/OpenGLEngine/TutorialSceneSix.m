@@ -41,7 +41,7 @@
         [self addTouchableObject:newBeetle withColliding:CRAFT_COLLISION_YESNO];
         [newBeetle release];
         
-        [helpText setObjectText:@"All craft will automatically attack enemies within range. Select this Beetle craft and attack the enemy structure."];
+        [helpText setObjectText:@"All craft will automatically attack enemies within range. Select this new Beetle craft (details are given in the Broggupedia) and attack the enemy structure."];
         
         [fogManager clearAllFog];
     }

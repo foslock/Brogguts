@@ -28,7 +28,7 @@ enum StructureButtonIDs {
 NSString* const kStructureButtonText[7] = {
     @"Block",
     @"Refinery",
-    @"  Craft\nUpgrades",
+    @"Craft\nUpgrades",
     @"Structure\nUpgrades",
     @"Turret",
     @"Radar",

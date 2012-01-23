@@ -28,7 +28,7 @@
         isAllowingCraft = YES;
         isAllowingStructures = YES;
         
-        [helpText setObjectText:@"Metal is needed to build more advanced craft and structures. A refinery must be built to access the 'Metal' menu. Build one and refine 200 brogguts into 20 Metal."];
+        [helpText setObjectText:@"Metal is needed to build more advanced craft and structures. A refinery must be built to access the 'Refine Metal' menu. Build one and refine 200 brogguts into 20 Metal."];
     }
     return self;
 }
