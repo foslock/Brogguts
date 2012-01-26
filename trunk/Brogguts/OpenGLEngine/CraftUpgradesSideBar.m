@@ -17,14 +17,14 @@
 #import "UpgradeManager.h"
 
 NSString* const kCraftUpgradeButtonText[8] = {
-    @"Ant",
-    @"Moth",
-    @"Beetle",
-    @"Monarch",
-    @"Camel",
-    @"Rat",
-    @"Spider",
-    @"Eagle",
+    @"Ant\nUpgrade",
+    @"Moth\nUpgrade",
+    @"Beetle\nUpgrade",
+    @"Monarch\nUpgrade",
+    @"Camel\nUpgrade",
+    @"Rat\nUpgrade",
+    @"Spider\nUpgrade",
+    @"Eagle\nUpgrade",
 };
 
 @implementation CraftUpgradesSideBar

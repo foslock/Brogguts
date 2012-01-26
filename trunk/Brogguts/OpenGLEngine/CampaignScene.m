@@ -37,8 +37,8 @@ NSString* kCampaignSceneFileNames[CAMPAIGN_SCENES_COUNT] = {
 };
 
 NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT] = {
-    @"Mission 1 - Another Man's Trash",
-    @"Mission 2 - Garbage Collector",
+    @"Mission 1 - Garbage Collector",
+    @"Mission 2 - Another Man's Trash",
     @"Mission 3 - The Tides",
     @"Mission 4 - Twice the Terror",
     @"Mission 5 - Promoted",
@@ -88,7 +88,7 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT] = {
         isAllowingOverview = YES;
         
         startObject = [[StartMissionObject alloc] init];
-        [startObject setMissionHeader:@"Mission Objectives"];
+        [startObject setMissionHeader:[NSString stringWithFormat:@"%@ - Objectives", sceneName]];
         
         [self setCameraLocation:homeBaseLocation];
         [self setMiddleOfVisibleScreenToCamera];
@@ -140,11 +140,13 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT] = {
             [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMissionSuccessful]];
             [endMissionObject setWasSuccessfulMission:YES];
             [endMissionObject setCurrentScene:self];
+            /*
             int currentExperience = [[sharedGameController currentProfile] playerExperience];
             if (campaignIndex + 1 >= currentExperience) {
                 [[sharedGameController currentProfile] setPlayerExperience:campaignIndex + 1];
                 [[sharedGameController currentProfile] updateSpaceYearUnlocks];
             }
+             */
         }
     }
     if ([self checkFailure]) {

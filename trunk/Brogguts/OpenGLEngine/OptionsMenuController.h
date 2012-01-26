@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface OptionsMenuController : UIViewController {
+@interface OptionsMenuController : UIViewController <UIAlertViewDelegate> {
     UISlider* fxVolumeSlider;
     UISlider* musicVolumeSlider;
 }
@@ -26,5 +26,6 @@
 - (IBAction)switchGrid:(id)sender;
 - (IBAction)switchColorBlind:(id)sender;
 - (IBAction)setSideBarButtonLocation:(id)sender;
+- (IBAction)resetProgress:(id)sender;
 
 @end

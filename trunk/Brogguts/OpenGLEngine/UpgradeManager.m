@@ -37,6 +37,68 @@ enum kIntToBool {
 
 @implementation UpgradeManager
 
++ (NSString*)formalNameForObjectWithID:(int)objectID {
+    NSString* filename = nil;
+    switch (objectID) {
+            // CRAFT
+        case kObjectCraftAntID:
+            filename = @"The Ant";
+            break;            
+        case kObjectCraftMothID:
+            filename = @"The Moth";
+            break;            
+        case kObjectCraftBeetleID:
+            filename = @"The Beetle";
+            break;            
+        case kObjectCraftMonarchID:
+            filename = @"The Monarch";
+            break;            
+        case kObjectCraftCamelID:
+            filename = @"The Camel";
+            break;            
+        case kObjectCraftRatID:
+            filename = @"The Rat";
+            break;            
+        case kObjectCraftSpiderID:
+            filename = @"The Spider";
+            break;
+        case kObjectCraftSpiderDroneID:
+            filename = @"The Spider Drone";
+            break;            
+        case kObjectCraftEagleID:
+            filename = @"The Eagle";
+            break;
+            // STRUCTURES
+        case kObjectStructureBaseStationID:
+            filename = @"Base Station";
+            break;
+        case kObjectStructureBlockID:
+            filename = @"Block";
+            break;
+        case kObjectStructureRefineryID:
+            filename = @"Refinery";
+            break;
+        case kObjectStructureCraftUpgradesID:
+            filename = @"Craft Upgrades";
+            break;
+        case kObjectStructureStructureUpgradesID:
+            filename = @"Structure Upgrades";
+            break;
+        case kObjectStructureTurretID:
+            filename = @"Turret";
+            break;
+        case kObjectStructureRadarID:
+            filename = @"Radar";
+            break;
+        case kObjectStructureFixerID:
+            filename = @"Fixer";
+            break;
+        default:
+            break;
+    }
+    return filename;
+}
+
 - (id)init
 {
     self = [super init];

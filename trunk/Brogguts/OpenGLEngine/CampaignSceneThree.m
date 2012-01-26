@@ -21,7 +21,7 @@
     self = [super initWithCampaignIndex:2 wasLoaded:loaded];
     if (self) {
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- Survive the wave approaching in %i minutes",(int)CAMPAIGN_THREE_WAVE_TIME]];
-        [startObject setMissionTextThree:@"- Destroy all 6 enemy Ants in the wave"];
+        [startObject setMissionTextThree:@"- Destroy all 8 enemy Ants in the wave"];
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
@@ -37,7 +37,7 @@
             [sceneDialogues addObject:dia2];
             [dia2 release];
             
-            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:6];
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.1f withCount:8];
             [spawner pauseSpawnerForDuration:(CAMPAIGN_THREE_WAVE_TIME * 60.0f) + 1.0f];
             [spawner setSendingLocation:homeBaseLocation];
             [spawner setSendingLocationVariance:100.0f];

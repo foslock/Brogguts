@@ -17,6 +17,8 @@ extern NSString* kObjectUnlockDetailText[TOTAL_OBJECT_TYPES_COUNT];
     int currentCompletedUpgrades[TOTAL_OBJECT_TYPES_COUNT]; // Array of int bools that represent whether that object's upgrade has been completed
 }
 
++ (NSString*)formalNameForObjectWithID:(int)objectID;
+
 // Upgrades
 - (BOOL)isUpgradePurchasedWithID:(int)objectID;
 - (BOOL)isUpgradeCompleteWithID:(int)objectID;

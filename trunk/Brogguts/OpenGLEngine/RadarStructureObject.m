@@ -23,7 +23,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureRadarID withLocation:location isTraveling:traveling];
 	if (self) {
-        [objectImage setScale:Scale2fMake(0.5f, 0.5f)];
+        self.objectScale = Scale2fMake(0.5f, 0.5f);
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
         isOverviewDrawingEffectRadius = YES;
@@ -48,7 +48,7 @@
     if (other.objectType == kObjectCraftRatID) {
         RatCraftObject* rat = (RatCraftObject*)other;
         if (rat.objectAlliance != objectAlliance) {
-            [rat setIsCloaked:NO];
+            [rat setIsCloaked:NO withRadar:self];
         }
     }
 }

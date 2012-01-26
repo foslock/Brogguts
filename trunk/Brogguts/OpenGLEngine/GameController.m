@@ -24,6 +24,8 @@
 #import "BroggupediaViewController.h"
 #import "SpawnerObject.h"
 #import "DialogueObject.h"
+#import "MainMenuController.h"
+#import "UnlockPresentView.h"
 
 NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
@@ -51,9 +53,9 @@ static GameController* sharedGameController = nil;
 @synthesize currentProfile;
 @synthesize currentScene, justMadeScene, transitionName;
 @synthesize gameScenes;
-@synthesize eaglView;
+@synthesize containerView, eaglView;
 @synthesize interfaceOrientation;
-@synthesize isFadingSceneIn, isFadingSceneOut, isAlreadyInScene, isReturningToMenu;
+@synthesize isFadingSceneIn, isFadingSceneOut, isAlreadyInScene, isReturningToMenu, isShowingUnlockView;
 
 #pragma mark -
 #pragma mark Singleton implementation
@@ -264,8 +266,8 @@ static GameController* sharedGameController = nil;
 - (void)loadPlayerProfile {
 	NSLog(@"INFO - GameController: Loading previous player profile.");
 	NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
-	NSDictionary* rootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:path];    
-	[self setCurrentProfile:[rootObject valueForKey:@"Profile"]];
+    NSDictionary* rootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:path];    
+    [self setCurrentProfile:[rootObject valueForKey:@"Profile"]];
 	if (!currentProfile) {
 		NSLog(@"INFO - GameController: No previous player profile, creating a brand new profile.");
 		currentProfile = [[PlayerProfile alloc] init];
@@ -298,6 +300,35 @@ static GameController* sharedGameController = nil;
 	} else {
         return NO;
     }
+}
+
+- (void)resetAllProgress {
+    // Delete all saved games
+    NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
+    NSArray* emptyArray = [NSArray array];
+    if (![emptyArray writeToFile:savedScenePath atomically:YES]) {
+        NSLog(@"INFO - GameController: Problem erasing the saved scenes");
+    }
+    
+    // Reset profile
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:NO forKey:@"hasStoredUnlockTable"];
+    
+    NSString* path = [self documentsPathWithFilename:@"playerprofile.data"];
+    NSError* error;
+    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    self.currentProfile = nil;
+    [self loadPlayerProfile];
+    [self savePlayerProfile];
+    
+    // Copy in new basecamp and other files
+    [self createInitialBaseCampLevel];
+    
+    // Has played tutorial should be reset
+    [defaults setBool:NO forKey:@"hasStartedTutorial"];
+    [defaults setInteger:0 forKey:kTutorialExperienceKey];
+    
+    [defaults synchronize];
 }
 
 - (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index {
@@ -428,7 +459,8 @@ static GameController* sharedGameController = nil;
     // Places the original file in the folder
     NSString* campNamePath = [[NSBundle mainBundle] pathForResource:kBaseCampFileName ofType:@""];
     NSArray* campArray = [NSArray arrayWithContentsOfFile:campNamePath];
-    [campArray writeToFile:[self documentsPathWithFilename:kBaseCampFileName] atomically:YES];}
+    [campArray writeToFile:[self documentsPathWithFilename:kBaseCampFileName] atomically:YES];
+}
 
 - (NSArray*)convertSavedPath:(NSArray*)savedPath {
     NSMutableArray* array = [[NSMutableArray alloc] init];
@@ -787,6 +819,32 @@ static GameController* sharedGameController = nil;
     }
 }
 
+- (void)pushUnlockViewIn {
+    if (!isShowingUnlockView) {
+        isShowingUnlockView = YES;
+        OpenGLEngineAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        [[delegate window] addSubview:unlockView];
+        [UIView animateWithDuration:0.5f animations:^{
+            [unlockView setAlpha:1.0f];
+        }];
+    }
+}
+
+- (void)pushUnlockViewOut {
+    if (isShowingUnlockView) {
+        [UIView animateWithDuration:0.5f animations:^{
+            [unlockView setAlpha:0.0f];
+        } completion:^(BOOL finished) {
+            if (finished) {
+                isShowingUnlockView = NO;
+                [unlockView removeFromSuperview];
+                unlockView = nil;
+                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:currentSceneIndex isNew:isNewSceneNew isLoading:isLoadingSavedScene];
+            }
+        }];
+    }
+}
+
 #pragma mark -
 #pragma mark Update & Render
 
@@ -812,7 +870,18 @@ static GameController* sharedGameController = nil;
             NSString* name = [currentScene sceneFileName];
             [gameScenes removeObjectForKey:name];
             if (!isReturningToMenu) {
-                [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:currentSceneIndex isNew:isNewSceneNew isLoading:isLoadingSavedScene];
+                // Present the unlock view if necessary
+                if (currentSceneType == kSceneTypeCampaign && !isLoadingSavedScene) {
+                    UnlockPresentView* unlock = [[UnlockPresentView alloc] initWithFrame:CGRectZero];
+                    [unlock setAlpha:0.0f];
+                    if ([unlock setUnlocksForNextSceneIndex:currentSceneIndex]) {
+                        unlockView = unlock;
+                        [self pushUnlockViewIn];
+                    }
+                }
+                if (!isShowingUnlockView) {
+                    [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:currentSceneIndex isNew:isNewSceneNew isLoading:isLoadingSavedScene];
+                }
             } else {
                 [currentScene sceneDidDisappear];
                 if (isSavingFadingScene) {
@@ -835,7 +904,7 @@ static GameController* sharedGameController = nil;
     if (!isShowingBroggupediaInScene)
         [currentScene renderScene];
     
-	if (isFadingSceneIn || isFadingSceneOut) {
+	if (isFadingSceneIn || isFadingSceneOut || isShowingUnlockView) {
 		enablePrimitiveDraw();
 		glColor4f(0.0f, 0.0f, 0.0f, fadingRectAlpha);
 		CGRect bounds = [currentScene visibleScreenBounds];
@@ -913,6 +982,8 @@ static GameController* sharedGameController = nil;
     isSavingFadingScene = NO;
     isShowingBroggupediaInScene = NO;
     isUpdatingCurrentScene = NO;
+    unlockView = nil;
+    isShowingUnlockView = NO;
     
 	[self loadPlayerProfile];
     [self placeInitialFilesInDocumentsFolder];

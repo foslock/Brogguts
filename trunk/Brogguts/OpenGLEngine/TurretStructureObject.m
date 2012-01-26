@@ -25,7 +25,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureTurretID withLocation:location isTraveling:traveling];
 	if (self) {
-        [objectImage setScale:Scale2fMake(0.65f, 0.65f)];
+        self.objectScale = Scale2fMake(0.65f, 0.65f);
 		isCheckedForRadialEffect = YES;
         isDrawingEffectRadius = YES;
         isOverviewDrawingEffectRadius = YES;
@@ -35,7 +35,7 @@
 		attributeAttackRange = kStructureTurretAttackRange;
 		attackCooldownTimer = 0;
         turretGunImage = [[Image alloc] initWithImageNamed:kObjectStructureTurretGunSprite filter:GL_LINEAR];
-        [turretGunImage setScale:[objectImage scale]];
+        [turretGunImage setScale:self.objectScale];
         [turretGunImage setRenderLayer:kLayerMiddleLayer];
         [turretGunImage setRotation:45.0f];
 	}

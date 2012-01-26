@@ -28,14 +28,14 @@ enum StructureUpgradeButtonIDs {
 };
 
 NSString* const kStructureUpgradeButtonText[8] = {
-    @"Base Station",
-    @"Block",
-    @"Refinery",
-    @"Craft Ups",
-    @"Structure Ups",
-    @"Turret",
-    @"Fixer",
-    @"Radar",
+    @"Base Station\nUpgrade",
+    @"Block\nUpgrade",
+    @"Refinery\nUpgrade",
+    @"Craft Ups\nUpgrade",
+    @"Structure Ups\nUpgrade",
+    @"Turret\nUpgrade",
+    @"Fixer\nUpgrade",
+    @"Radar\nUpgrade",
 };
 
 @implementation StructureUpgradesSideBar

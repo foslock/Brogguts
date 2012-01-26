@@ -24,7 +24,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectStructureFixerID withLocation:location isTraveling:traveling];
 	if (self) {
-        [objectImage setScale:Scale2fMake(0.65f, 0.65f)];
+        self.objectScale = Scale2fMake(0.65f, 0.65f);
 		repairCountdownTimer = 0;
         currentRepairCount = 0;
         for (int i = 0; i < REPAIR_MAX_CRAFT_COUNT; i++) {

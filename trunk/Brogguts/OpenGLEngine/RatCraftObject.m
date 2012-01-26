@@ -11,25 +11,40 @@
 #import "Image.h"
 #import "UpgradeManager.h"
 #import "BroggutScene.h"
+#import "RadarStructureObject.h"
 
 @implementation RatCraftObject
-@synthesize isCloaked, cloakAlpha;
+@synthesize isCloaked, cloakAlpha, nearbyEnemyRadar;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftRatID withLocation:location isTraveling:traveling];
 	if (self) {
 		isCloaked = YES;
         cloakAlpha = 0.0f;
+        nearbyEnemyRadar = nil;
 	}
 	return self;
 }
 
-- (void)setIsCloaked:(BOOL)cloaked {
+- (void)setIsCloaked:(BOOL)cloaked withRadar:(RadarStructureObject *)radar {
     isCloaked = cloaked;
+    nearbyEnemyRadar = radar;
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
+    
+    if (nearbyEnemyRadar || nearbyEnemyRadar.destroyNow) {
+        if (GetDistanceBetweenPointsSquared(nearbyEnemyRadar.objectLocation, objectLocation) > POW2([nearbyEnemyRadar effectRadiusCircle].radius)) {
+            nearbyEnemyRadar = nil;
+            isCloaked = YES;
+        } else {
+            isCloaked = NO;
+        }
+    } else {
+        nearbyEnemyRadar = nil;
+        isCloaked = YES;
+    }
     
     // Check for upgrade
     if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {

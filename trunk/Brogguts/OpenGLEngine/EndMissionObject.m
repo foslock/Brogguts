@@ -161,6 +161,16 @@
             [[GameController sharedGameController] createInitialBaseCampLevel];
         }
     } else if ([menuButton wasJustReleased]) {
+        // Do update stuff with out the prompt
+        if ([[self currentScene] isKindOfClass:[CampaignScene class]]) {
+            CampaignScene* campaignScene = (CampaignScene*)[self currentScene];
+            int currentExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
+            if (campaignScene.campaignIndex + 1 >= currentExperience) {
+                [[[GameController sharedGameController] currentProfile] setPlayerExperience:campaignScene.campaignIndex + 1];
+                [[[GameController sharedGameController] currentProfile] updateSpaceYearUnlocks];
+            }
+        }
+        
         [[GameController sharedGameController] returnToMainMenuWithSave:NO];
     }
     for (TiledButtonObject* object in buttonArray) {

@@ -42,6 +42,9 @@
 #import "FogManager.h"
 #import "SoundSingleton.h"
 
+#define TOUCH_SCROLLING_INSET 128.0f
+#define TOUCH_SCROLLING_SPEED 5.0f
+
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
     @"You must refine more Metal",
@@ -50,7 +53,8 @@ NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You've reached the maximum number of structures",
     @"You've reached the maximum number of craft",
     @"You must only mine brogguts on edges",
-    @"Build more Blocks to allow more ships",
+    @"Build more Blocks to allow more craft",
+    @"You must explore that area first",
 };
 
 NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located in a persistent space that only pauses when inactive. It will resume just as it was left when you return to it. Your goal is to eliminate all enemies on the map and collect all the brogguts you can. Feel free to build up your base and spend your brogguts earned on other missions.";
@@ -2512,6 +2516,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
+    if ([fogManager fogValueAtPoint:location] != 0.0f) {
+        // Need to explore first
+        [self showHelpMessageWithMessageID:kHelpMessageMustExplore];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
+        return;
+    }
     switch (craftID) {
         case kObjectCraftAntID: {
             int failType = [[sharedGameController currentProfile] subtractBrogguts:kCraftAntCostBrogguts metal:kCraftAntCostMetal];
@@ -2690,6 +2700,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     }
     if (![collisionManager isPathNodeOpenAtLocation:location]) {
         [self showHelpMessageWithMessageID:kHelpMessageNeedStructureBuilding];
+        [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
+        return;
+    }
+    if ([fogManager fogValueAtPoint:location] != 0.0f) {
+        // Need to explore first
+        [self showHelpMessageWithMessageID:kHelpMessageMustExplore];
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
@@ -3021,6 +3037,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
         
         BOOL noObjectTouched = YES;
+        BOOL noObjectDoubleTapped = YES;
         // Check all touchable objects and call their methods
         for (int i = 0; i < [touchableObjects count]; i++) {
             TouchableObject* obj = [touchableObjects objectAtIndex:i];
@@ -3029,6 +3046,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                     if (!obj.isCurrentlyTouched && !obj.isPartOfASquad) {
                         if (touch.tapCount == 2) {
                             [obj touchesDoubleTappedAtLocation:touchLocation];
+                            noObjectDoubleTapped = NO;
                         } else {
                             obj.isCurrentlyTouched = YES;
                             [obj touchesHoveredOver];
@@ -3044,6 +3062,36 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             }
         }
         
+        // Deselect craft on double tap (nothing under)
+        if (noObjectTouched && noObjectDoubleTapped && 
+            !isShowingOverview && !isSelectingShips) {
+            if (touch.tapCount == 2) {
+                // Deselect all current ships
+                for (CraftObject* craft in controlledShips) {
+                    [craft setIsBeingControlled:NO];
+                }
+                [controlledShips removeAllObjects];
+            }
+        }
+        
+        /* ATTEMPT TO SCROLL SCREEN JUST ON TOUCH
+        if (!isSelectingShips && [controlledShips count] == 0) {
+            CGRect nonScrollingRect = CGRectInset([self visibleScreenBounds], TOUCH_SCROLLING_INSET, TOUCH_SCROLLING_INSET);
+            if (touchLocation.x < nonScrollingRect.origin.x) {
+                [self scrollScreenWithVector:Vector2fMake(-TOUCH_SCROLLING_SPEED, 0.0f)];
+            }
+            if (touchLocation.x > nonScrollingRect.origin.x + nonScrollingRect.size.width) {
+                [self scrollScreenWithVector:Vector2fMake(TOUCH_SCROLLING_SPEED, 0.0f)];
+            }
+            if (touchLocation.y < nonScrollingRect.origin.y) {
+                [self scrollScreenWithVector:Vector2fMake(0.0, -TOUCH_SCROLLING_SPEED)];
+            }
+            if (touchLocation.y > nonScrollingRect.origin.y + nonScrollingRect.size.height) {
+                [self scrollScreenWithVector:Vector2fMake(0.0, TOUCH_SCROLLING_SPEED)];
+            }
+        }
+        */
+         
         if (!isSelectingShips && noObjectTouched) { // If touch used for scrolling, stop the current path
             for (CraftObject* craft in controlledShips) {
                 [craft stopFollowingCurrentPath];

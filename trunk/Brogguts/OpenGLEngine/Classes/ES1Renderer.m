@@ -162,7 +162,6 @@
 }
 
 - (void)orientationChanged:(NSNotification *)notification {
-	
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (orientation == UIDeviceOrientationLandscapeRight) {
         [sharedGameController setInterfaceOrientation:UIInterfaceOrientationLandscapeLeft];

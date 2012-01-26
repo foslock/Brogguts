@@ -51,7 +51,7 @@
     Circle tempBoundingCircle;
 	tempBoundingCircle.x = objectLocation.x;
 	tempBoundingCircle.y = objectLocation.y;
-	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x) / 8; // Smaller than normal so it doesn't crowd erra'thing
+	tempBoundingCircle.radius = (objectImage.imageSize.width * self.objectScale.x) / 8; // Smaller than normal so it doesn't crowd erra'thing
 	return tempBoundingCircle;
 }
 

@@ -182,8 +182,19 @@
 	CGRect buttonRect = [self buttonRect];
     
     [sideBarButtonImage renderAtPoint:buttonRect.origin];
-	
+	static float colors[24] = {
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
+    };
+    
     if (isSideBarShowing) {
+        enablePrimitiveDraw();
+        drawFilledRectWithColors([self sideBarRect], Vector2fZero, colors);
+        disablePrimitiveDraw();
         SideBarObject* topObject = [sideBarStack objectAtIndex:([sideBarStack count] - 1)];
         [topObject renderWithOffset:Vector2fMake(-sideBarObjectLocation.x, -sideBarObjectLocation.y)];
     }

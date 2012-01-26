@@ -26,6 +26,7 @@ static int globalUniqueID = 0;
 @synthesize objectAlliance, objectType;
 @synthesize staticObject, isRemoteObject, hasMovedThisStep;
 @synthesize thisObjectNode, shouldUpdateThisStep;
+@synthesize objectScale;
 
 - (void)dealloc {
 	if (objectImage)
@@ -39,8 +40,7 @@ static int globalUniqueID = 0;
         currentScene = nil;
 		uniqueObjectID = globalUniqueID++; // Must use this method to ensure no overlapping in UIDs
 		objectImage = [image retain];
-        objectImage.scale = Scale2fMake(OBJECT_GLOBAL_SCALE_FACTOR, OBJECT_GLOBAL_SCALE_FACTOR);
-		self.renderLayer = kLayerBottomLayer;
+        self.renderLayer = kLayerBottomLayer;
 		objectLocation = location;
 		objectType = objecttype;
 		objectAlliance = kAllianceNeutral;
@@ -59,6 +59,7 @@ static int globalUniqueID = 0;
         isRemoteObject = NO;
         remoteLocation = CGPointZero;
         thisObjectNode = NULL;
+        [self setObjectScale:Scale2fMake(OBJECT_GLOBAL_SCALE_FACTOR, OBJECT_GLOBAL_SCALE_FACTOR)];
 		
 		// Set bounding information
 		boundingCircle.x = location.x;
@@ -89,6 +90,13 @@ static int globalUniqueID = 0;
     return currentScene;
 }
 
+- (void)setObjectScale:(Scale2f)scale {
+    objectScale = scale;
+    if (objectImage) {
+        [objectImage setScale:scale];
+    }
+}
+
 - (void)setObjectRotation:(float)rot {
 	objectRotation = rot;
 	if (objectRotation > 360.0f) objectRotation -= 360.0f;
@@ -103,7 +111,7 @@ static int globalUniqueID = 0;
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     if (isRemoteObject) {
         objectVelocity = Vector2fMake( (remoteLocation.x - objectLocation.x) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget)  ,
-                                       (remoteLocation.y - objectLocation.y) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget) );
+                                      (remoteLocation.y - objectLocation.y) * (GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE / kFrameRateTarget) );
     }
     
     hasMovedThisStep = NO;
@@ -117,9 +125,9 @@ static int globalUniqueID = 0;
     boundingCircle.x = objectLocation.x;
 	boundingCircle.y = objectLocation.y;
     if (isPaddedForCollisions) {
-        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
+        boundingCircle.radius = ((objectImage.imageSize.width * objectScale.x) / 2) - BOUNDING_BOX_X_PADDING; // Half the width for now
     } else {
-        boundingCircle.radius = ((objectImage.imageSize.width * objectImage.scale.x) / 2);
+        boundingCircle.radius = ((objectImage.imageSize.width * objectScale.x) / 2);
     }
     
     if (rotationSpeed != 0) {
@@ -152,7 +160,10 @@ static int globalUniqueID = 0;
 
 - (BOOL)isOnScreen {
     CGRect bounds = [[self currentScene] visibleScreenBounds];
-    return CGRectContainsPoint(CGRectInset(bounds, -objectImage.imageSize.width / 2, -objectImage.imageSize.height / 2), objectLocation);
+    return CGRectContainsPoint(CGRectInset(bounds,
+                                           -(objectImage.imageSize.width * objectScale.x) / 2,
+                                           -(objectImage.imageSize.height * objectScale.y) / 2),
+                               objectLocation);
 }
 
 - (void)normalizePosition {

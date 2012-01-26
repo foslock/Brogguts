@@ -184,7 +184,6 @@ static NSString* kSavedUnlockedFileName = @"savedUnlocksFile.plist";
 - (void)addBrogguts:(int)brogs {
     if (brogs > 0) {
         totalBroggutCount += brogs;
-        // [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:totalBroggutCount];
     }
     if (!isInSkirmish) {
         broggutCount += brogs;
