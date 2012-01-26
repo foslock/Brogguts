@@ -9,8 +9,8 @@
 #import "UnitPowerView.h"
 
 #define POWER_BAR_HEIGHT 20.0f
-#define POWER_BAR_BRIGHTNESS 0.8f
-#define POWER_BAR_ALPHA 0.7f
+#define POWER_BAR_BRIGHTNESS 0.9f
+#define POWER_BAR_ALPHA 0.8f
 #define POWER_BAR_SCALE_LINES_COUNT 5
 
 @implementation UnitPowerView

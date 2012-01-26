@@ -16,7 +16,7 @@
 
 extern NSString* const kTutorialExperienceKey;
 
-@interface MainMenuController : UIViewController <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate> {
+@interface MainMenuController : UIViewController <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate, UIAlertViewDelegate> {
     NSMutableArray* lettersArray;
     UIImageView* letterB;
     UIImageView* letterR;

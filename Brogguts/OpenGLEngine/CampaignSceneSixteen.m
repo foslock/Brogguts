@@ -16,6 +16,7 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:15 wasLoaded:loaded];
     if (self) {
+        [startObject setMissionHeader:@""];
         [startObject setMissionTextTwo:@"Congrats, you have beaten the Campaign!"];
         // Congrats WINNING LEVEL!
     }

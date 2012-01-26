@@ -19,7 +19,6 @@
 	if (self) {
         hasBeenAdded = NO;
         hasBeenUpgraded = NO;
-        objectImage.scale = Scale2fMake(1.0f, 1.0f);
 	}
 	return self;
 }

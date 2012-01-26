@@ -44,6 +44,9 @@
     
     // If the dirty image is being shown
     BOOL isDirtyImage;
+    
+    // Callout timer for friendly craft
+    float calloutTimer;
 }
 
 @property (readonly) int attributeHullCurrent;

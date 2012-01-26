@@ -16,6 +16,7 @@
 @class EAGLView;
 @class PlayerProfile;
 @class TextObject;
+@class UnlockPresentView;
 
 #pragma mark -
 #pragma mark Scene storage 
@@ -92,16 +93,20 @@ enum SceneTypes {
 };
 
 @interface GameController : NSObject {
-	
 	// Player profile
 	PlayerProfile* currentProfile;
 	
 	// Views and orientation
+    UIView* containerView;
 	EAGLView *eaglView;								// Reference to the EAGLView
 	UIInterfaceOrientation interfaceOrientation;	// Devices interface orientation
 	BroggutScene* currentScene;
     BroggutScene* justMadeScene;
     BOOL isUpdatingCurrentScene;
+    
+    // Unlock presentation view
+    BOOL isShowingUnlockView;
+    UnlockPresentView* unlockView;
 	
 	// Scene transition vars
 	NSString* transitionName;
@@ -127,6 +132,7 @@ enum SceneTypes {
 @property (retain) PlayerProfile* currentProfile;
 @property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) BroggutScene *justMadeScene;
+@property (nonatomic, retain) UIView* containerView;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSMutableDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
@@ -134,6 +140,7 @@ enum SceneTypes {
 @property (readonly) BOOL isFadingSceneOut;
 @property (readonly) BOOL isReturningToMenu;
 @property (readonly) BOOL isAlreadyInScene;
+@property (readonly) BOOL isShowingUnlockView;
 
 // Class method to return an instance of GameController.  This is needed as this
 // class is a singleton class
@@ -149,6 +156,9 @@ enum SceneTypes {
 + (Color4f)getShadeColorEnemy:(float)alpha;
 + (Color4f)getShadeColorNeutral:(float)alpha;
 
+- (void)pushUnlockViewIn;
+- (void)pushUnlockViewOut;
+
 - (void)presentBroggupedia;
 - (void)dismissBroggupedia;
 
@@ -158,6 +168,8 @@ enum SceneTypes {
 
 - (NSString*)documentsPathWithFilename:(NSString*)filename;
 - (BOOL)doesFilenameExistInDocuments:(NSString*)filename;
+
+- (void)resetAllProgress;
 
 - (void)insertCGPoint:(CGPoint)point intoArray:(NSMutableArray*)array atIndex:(int)index;
 - (CGPoint)getCGPointFromArray:(NSArray*)array atIndex:(int)index;

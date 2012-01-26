@@ -22,8 +22,7 @@
     if (self) {
         isCheckedForCollisions = NO;
         isCheckedForMultipleCollisions = NO;
-        Scale2f scale = [object objectImage].scale;
-        [objectImage setScale:scale];
+        self.objectScale = object.objectScale;
         if ([object isKindOfClass:[CraftObject class]]) {
             [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];
         }
@@ -54,7 +53,7 @@
         destroyNow = YES;
     }
     [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, currentAlpha)];
-    [objectImage setScale:[creatingObject objectImage].scale];
+    self.objectScale = creatingObject.objectScale;
 }
 
 @end

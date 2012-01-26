@@ -35,7 +35,7 @@
         }
         
         self.followingObject = object;
-        circleRadius = [object touchableBounds].radius;
+        circleRadius = [object boundingCircle].radius + 4.0f;
         
         expandTimer = HEALTH_DROP_TOTAL_TIME;
         self.objectAlliance = followingObject.objectAlliance;

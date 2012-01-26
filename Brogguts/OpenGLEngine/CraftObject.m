@@ -424,9 +424,9 @@
                     (void)test;
                 }
                 // [[[self currentScene] collisionManager] putNearbyObjectsToLocation:objectLocation intoArray:nearbyCraftArray];
-                CGRect shipRect = CGRectMake(self.objectLocation.x - CALL_OUT_RANGE, 
-                                             self.objectLocation.y - CALL_OUT_RANGE,
-                                             CALL_OUT_RANGE * 2, CALL_OUT_RANGE * 2);
+                CGRect shipRect = CGRectMake(self.objectLocation.x - attributeViewDistance, 
+                                             self.objectLocation.y - attributeViewDistance,
+                                             attributeViewDistance * 2, attributeViewDistance * 2);
                 NSArray* nearbyCraftArray = [[[self currentScene] collisionManager] getArrayOfRadiiObjectsInRect:shipRect];
                 float totalCraftPower = 0.0f;
                 for (int i = 0; i < [nearbyCraftArray count]; i++) {
@@ -451,10 +451,10 @@
                         }
                     }
                 }
-                // [nearbyCraftArray release];
             }
         }
         
+        // Run away if not attacking back
         if (!returnedAttack && movingAIState == kMovingAIStateStill && attackingAIState == kAttackingAIStateNeutral
             && !isBeingControlled && !isBeingDragged) {
             // Move away from the attacker
@@ -584,7 +584,7 @@
             isDirtyImage = YES;
             NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
             Color4f color = [objectImage color];
-            Scale2f scale = [objectImage scale];
+            Scale2f scale = self.objectScale;
             int layer = [objectImage renderLayer];
             [objectImage autorelease];
             NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
@@ -600,7 +600,7 @@
             }
         }
     }
-
+    
     if (!isRemoteObject) {
         // Get the current point we should be following
         if (isFollowingPath && pathPointArray && !hasCurrentPathFinished) {
@@ -700,10 +700,10 @@
             attackMovingCooldownTimer--;
         }
         
-        // If the closest target is too far away, and not in ATTACKING state, set it to nil
-        if (attackingAIState != kAttackingAIStateAttacking && objectType != kObjectCraftSpiderDroneID) {
+        // If the closest target is too far away, set it to nil
+        if (objectType != kObjectCraftSpiderDroneID) {
             if (closestEnemyObject) {
-                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeAttackRange)) {
+                if (GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation) > POW2(attributeViewDistance)) {
                     [self setClosestEnemyObject:nil];
                 }
             }
@@ -783,7 +783,7 @@
                     if (objectAlliance == kAllianceFriendly)
                         [GameController setGlColorFriendly:0.8f];
                     if (objectAlliance == kAllianceEnemy)
-                         [GameController setGlColorEnemy:0.8f];
+                        [GameController setGlColorEnemy:0.8f];
                     glLineWidth(width);
                     enablePrimitiveDraw();
                     drawLine(objectLocation, attackLaserTargetPosition, scroll);
@@ -838,8 +838,8 @@
     // If upgraded show the plus
     if (objectAlliance == kAllianceFriendly) {
         if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
-            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectImage.scale.x) - 32,
-                                                            objectLocation.y + (self.objectImage.imageSize.height * self.objectImage.scale.y) - 32)
+            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width * self.objectScale.x) - 32,
+                                                            objectLocation.y + (self.objectImage.imageSize.height * self.objectScale.y) - 32)
                                withScrollVector:scroll];
         }
     }

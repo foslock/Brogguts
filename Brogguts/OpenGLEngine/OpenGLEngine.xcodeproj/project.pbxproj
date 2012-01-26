@@ -116,8 +116,10 @@
 		6F1DE63D14C6381200CD2DA4 /* overviewfadein.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63614C6381200CD2DA4 /* overviewfadein.wav */; };
 		6F1DE63E14C6381200CD2DA4 /* laser3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63714C6381200CD2DA4 /* laser3.wav */; };
 		6F1DE64014C63C4400CD2DA4 /* shipselection.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F1DE63F14C63C4400CD2DA4 /* shipselection.wav */; };
-		6F1F03DB136669F100B6DBD0 /* Campaign 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */; };
 		6F27EE0A1324118B00579EE5 /* AIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F27EE091324118B00579EE5 /* AIController.m */; };
+		6F28A5AF14D0EDF2004E7CEA /* Campaign 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F28A5AE14D0EDF2004E7CEA /* Campaign 2.plist */; };
+		6F28A5B214D0FF85004E7CEA /* UnlockPresentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F28A5B114D0FF85004E7CEA /* UnlockPresentView.m */; };
+		6F28A5B414D101E9004E7CEA /* UnlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F28A5B314D101E9004E7CEA /* UnlockView.xib */; };
 		6F2CAD3C13171501001A10E3 /* BaseStationStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */; };
 		6F2CAD7213171B58001A10E3 /* TurretStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7113171B58001A10E3 /* TurretStructureObject.m */; };
 		6F2CAD7513171B7E001A10E3 /* BlockStructureObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CAD7413171B7E001A10E3 /* BlockStructureObject.m */; };
@@ -185,7 +187,7 @@
 		6F609F6C134D0B7F006C1E0C /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F609F6B134D0B7F006C1E0C /* Entitlements.plist */; };
 		6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181313707E250039DB7C /* craftbuilddrone.png */; };
 		6F61181A1370DE430039DB7C /* SpawnerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118191370DE430039DB7C /* SpawnerObject.m */; };
-		6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181B1370EAB30039DB7C /* Campaign 2.plist */; };
+		6F61181C1370EAB40039DB7C /* Campaign 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181B1370EAB30039DB7C /* Campaign 1.plist */; };
 		6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F61181F1370F1720039DB7C /* Campaign 5.plist */; };
 		6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118201370F1720039DB7C /* Campaign 6.plist */; };
 		6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118211370F1720039DB7C /* Campaign 7.plist */; };
@@ -328,7 +330,6 @@
 		6FD777BE1345568E00F734D5 /* SplashScreenViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777BC1345568E00F734D5 /* SplashScreenViewController.xib */; };
 		6FD777C21345573A00F734D5 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777C01345573A00F734D5 /* splash.png */; };
 		6FD777C31345573A00F734D5 /* splashmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FD777C11345573A00F734D5 /* splashmask.png */; };
-		6FE19D7B138DA257008B2AFD /* Campaign 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7A138DA257008B2AFD /* Campaign 3.plist */; };
 		6FE19D7F138DF5D4008B2AFD /* SkirmishMatchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */; };
 		6FE19D80138DF5D4008B2AFD /* SkirmishMatchController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */; };
 		6FE2F50313ED947600E640C7 /* UpgradeDialogueObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2F50213ED947600E640C7 /* UpgradeDialogueObject.m */; };
@@ -365,6 +366,8 @@
 		6FF0037E14C3A982003F7207 /* particlesmoke.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FF0037D14C3A982003F7207 /* particlesmoke.png */; };
 		6FF0038014C3ACFE003F7207 /* spritemissile.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FF0037F14C3ACFE003F7207 /* spritemissile.png */; };
 		6FF0038514C4A60F003F7207 /* BaseCamp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FF0038414C4A60F003F7207 /* BaseCamp.plist */; };
+		6FF4FA4714D1371200D8FD2E /* Campaign 3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6FF4FA4614D1371200D8FD2E /* Campaign 3.plist */; };
+		6FF4FA4914D1375E00D8FD2E /* spinningsun.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FF4FA4814D1375E00D8FD2E /* spinningsun.png */; };
 		6FF6642E1305AF4500EB76A8 /* TextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF6642D1305AF4500EB76A8 /* TextObject.m */; };
 		6FF666921305FBAC00EB76A8 /* ControllableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF666911305FBAC00EB76A8 /* ControllableObject.m */; };
 		6FFFEE2814C9BFE300BF404B /* leaderboardicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */; };
@@ -507,9 +510,12 @@
 		6F1DE63614C6381200CD2DA4 /* overviewfadein.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = overviewfadein.wav; sourceTree = "<group>"; };
 		6F1DE63714C6381200CD2DA4 /* laser3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = laser3.wav; sourceTree = "<group>"; };
 		6F1DE63F14C63C4400CD2DA4 /* shipselection.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shipselection.wav; sourceTree = "<group>"; };
-		6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 1.plist"; sourceTree = "<group>"; };
 		6F27EE081324118B00579EE5 /* AIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIController.h; sourceTree = "<group>"; };
 		6F27EE091324118B00579EE5 /* AIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIController.m; sourceTree = "<group>"; };
+		6F28A5AE14D0EDF2004E7CEA /* Campaign 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 2.plist"; sourceTree = "<group>"; };
+		6F28A5B014D0FF84004E7CEA /* UnlockPresentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnlockPresentView.h; sourceTree = "<group>"; };
+		6F28A5B114D0FF85004E7CEA /* UnlockPresentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnlockPresentView.m; sourceTree = "<group>"; };
+		6F28A5B314D101E9004E7CEA /* UnlockView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UnlockView.xib; sourceTree = "<group>"; };
 		6F2CAD3A13171501001A10E3 /* BaseStationStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseStationStructureObject.h; sourceTree = "<group>"; };
 		6F2CAD3B13171501001A10E3 /* BaseStationStructureObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseStationStructureObject.m; sourceTree = "<group>"; };
 		6F2CAD7013171B58001A10E3 /* TurretStructureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TurretStructureObject.h; sourceTree = "<group>"; };
@@ -605,7 +611,7 @@
 		6F61181313707E250039DB7C /* craftbuilddrone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = craftbuilddrone.png; sourceTree = "<group>"; };
 		6F6118181370DE430039DB7C /* SpawnerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpawnerObject.h; sourceTree = "<group>"; };
 		6F6118191370DE430039DB7C /* SpawnerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpawnerObject.m; sourceTree = "<group>"; };
-		6F61181B1370EAB30039DB7C /* Campaign 2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 2.plist"; sourceTree = "<group>"; };
+		6F61181B1370EAB30039DB7C /* Campaign 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 1.plist"; sourceTree = "<group>"; };
 		6F61181F1370F1720039DB7C /* Campaign 5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 5.plist"; sourceTree = "<group>"; };
 		6F6118201370F1720039DB7C /* Campaign 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 6.plist"; sourceTree = "<group>"; };
 		6F6118211370F1720039DB7C /* Campaign 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 7.plist"; sourceTree = "<group>"; };
@@ -807,7 +813,6 @@
 		6FD777BC1345568E00F734D5 /* SplashScreenViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SplashScreenViewController.xib; sourceTree = "<group>"; };
 		6FD777C01345573A00F734D5 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		6FD777C11345573A00F734D5 /* splashmask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splashmask.png; sourceTree = "<group>"; };
-		6FE19D7A138DA257008B2AFD /* Campaign 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 3.plist"; sourceTree = "<group>"; };
 		6FE19D7C138DF5D4008B2AFD /* SkirmishMatchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkirmishMatchController.h; sourceTree = "<group>"; };
 		6FE19D7D138DF5D4008B2AFD /* SkirmishMatchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkirmishMatchController.m; sourceTree = "<group>"; };
 		6FE19D7E138DF5D4008B2AFD /* SkirmishMatchController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkirmishMatchController.xib; sourceTree = "<group>"; };
@@ -857,6 +862,8 @@
 		6FF0037D14C3A982003F7207 /* particlesmoke.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particlesmoke.png; sourceTree = "<group>"; };
 		6FF0037F14C3ACFE003F7207 /* spritemissile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritemissile.png; sourceTree = "<group>"; };
 		6FF0038414C4A60F003F7207 /* BaseCamp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BaseCamp.plist; sourceTree = "<group>"; };
+		6FF4FA4614D1371200D8FD2E /* Campaign 3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 3.plist"; sourceTree = "<group>"; };
+		6FF4FA4814D1375E00D8FD2E /* spinningsun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spinningsun.png; sourceTree = "<group>"; };
 		6FF6642C1305AF4500EB76A8 /* TextObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextObject.h; sourceTree = "<group>"; };
 		6FF6642D1305AF4500EB76A8 /* TextObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextObject.m; sourceTree = "<group>"; };
 		6FF665031305D11900EB76A8 /* Primitives.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Primitives.h; sourceTree = "<group>"; };
@@ -1245,9 +1252,9 @@
 		6F61181D1370F1600039DB7C /* Campaign Levels */ = {
 			isa = PBXGroup;
 			children = (
-				6F1F03D8136669F100B6DBD0 /* Campaign 1.plist */,
-				6F61181B1370EAB30039DB7C /* Campaign 2.plist */,
-				6FE19D7A138DA257008B2AFD /* Campaign 3.plist */,
+				6F61181B1370EAB30039DB7C /* Campaign 1.plist */,
+				6F28A5AE14D0EDF2004E7CEA /* Campaign 2.plist */,
+				6FF4FA4614D1371200D8FD2E /* Campaign 3.plist */,
 				6F18721D14C90942008A7C23 /* Campaign 4.plist */,
 				6F61181F1370F1720039DB7C /* Campaign 5.plist */,
 				6F6118201370F1720039DB7C /* Campaign 6.plist */,
@@ -1473,6 +1480,7 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6FF4FA4814D1375E00D8FD2E /* spinningsun.png */,
 				6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */,
 				6FFFEE2714C9BFE300BF404B /* throphyicon.png */,
 				6F18722214C921DA008A7C23 /* enginesicon.png */,
@@ -1714,6 +1722,9 @@
 				6FCAC7DE12F863A200662BDA /* GameController.m */,
 				6F8B869B13076AE0009CD1BF /* PlayerProfile.h */,
 				6F8B869C13076AE0009CD1BF /* PlayerProfile.m */,
+				6F28A5B014D0FF84004E7CEA /* UnlockPresentView.h */,
+				6F28A5B114D0FF85004E7CEA /* UnlockPresentView.m */,
+				6F28A5B314D101E9004E7CEA /* UnlockView.xib */,
 				1D3623240D0F684500981E51 /* OpenGLEngineAppDelegate.h */,
 				1D3623250D0F684500981E51 /* OpenGLEngineAppDelegate.m */,
 			);
@@ -1982,7 +1993,6 @@
 				6F7F41EE135CDFF500619FFA /* structurerefinery[3].png in Resources */,
 				6F8421B11365BA7C008CAFE2 /* spritetrashancient.png in Resources */,
 				6F8421B21365BA7C008CAFE2 /* spritetrashold.png in Resources */,
-				6F1F03DB136669F100B6DBD0 /* Campaign 1.plist in Resources */,
 				6F4EE674136E0140003B0038 /* explosionlarge[0].png in Resources */,
 				6F4EE675136E0140003B0038 /* explosionlarge[1].png in Resources */,
 				6F4EE676136E0140003B0038 /* explosionlarge[2].png in Resources */,
@@ -2002,7 +2012,7 @@
 				6F4EE68F136E0F05003B0038 /* spritesmallturret.png in Resources */,
 				6F4EE691136E1B1F003B0038 /* smallbroggut6.png in Resources */,
 				6F61181413707E250039DB7C /* craftbuilddrone.png in Resources */,
-				6F61181C1370EAB40039DB7C /* Campaign 2.plist in Resources */,
+				6F61181C1370EAB40039DB7C /* Campaign 1.plist in Resources */,
 				6F6118261370F1720039DB7C /* Campaign 5.plist in Resources */,
 				6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */,
 				6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */,
@@ -2092,7 +2102,6 @@
 				6FE6A60A137DB83A00A0E4D8 /* icon.png in Resources */,
 				6FAE1C65137DDB2300DCF28F /* Default-Landscape.png in Resources */,
 				6FAE1C66137DDB2300DCF28F /* Default-Landscape~ipad.png in Resources */,
-				6FE19D7B138DA257008B2AFD /* Campaign 3.plist in Resources */,
 				6FE19D80138DF5D4008B2AFD /* SkirmishMatchController.xib in Resources */,
 				6F4EA033139169620068DBCB /* menubuttonpressed.wav in Resources */,
 				6F4EA03513917D810068DBCB /* shipconfirm.wav in Resources */,
@@ -2161,6 +2170,10 @@
 				6F18722914C921DB008A7C23 /* weaponsicon.png in Resources */,
 				6FFFEE2814C9BFE300BF404B /* leaderboardicon.png in Resources */,
 				6FFFEE2914C9BFE300BF404B /* throphyicon.png in Resources */,
+				6F28A5AF14D0EDF2004E7CEA /* Campaign 2.plist in Resources */,
+				6F28A5B414D101E9004E7CEA /* UnlockView.xib in Resources */,
+				6FF4FA4714D1371200D8FD2E /* Campaign 3.plist in Resources */,
+				6FF4FA4914D1375E00D8FD2E /* spinningsun.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2291,6 +2304,7 @@
 				6FF0037C14C39D08003F7207 /* MissileObject.m in Sources */,
 				6F18721A14C870C0008A7C23 /* CampaignSceneSixteen.m in Sources */,
 				6F18722114C90EF4008A7C23 /* UnitPowerView.m in Sources */,
+				6F28A5B214D0FF85004E7CEA /* UnlockPresentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

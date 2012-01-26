@@ -10,8 +10,8 @@
 #import "ControllableObject.h"
 #import "AIController.h"
 
-#define CRAFT_ATTACK_MOVING_TIME 50  // Frames between a craft moving to attack its target
-#define CRAFT_HEALTH_PER_NOTCH 4
+#define CRAFT_ATTACK_MOVING_TIME 40  // Frames between a craft moving to attack its target
+#define CRAFT_HEALTH_PER_NOTCH 5
 #define CRAFT_MAX_LASER_WIDTH 6.0f
 
 @class MonarchCraftObject;

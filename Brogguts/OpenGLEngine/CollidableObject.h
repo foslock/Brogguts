@@ -76,6 +76,7 @@
 @property (nonatomic, assign) Circle boundingCircle;
 @property (nonatomic, assign) float boundingCircleRadius;
 @property (nonatomic, assign) NodeObject* thisObjectNode;
+@property (nonatomic, assign) Scale2f objectScale;
 
 - (id)initWithImage:(Image*)image withLocation:(CGPoint)location withObjectType:(int)objecttype;
 

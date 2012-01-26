@@ -21,6 +21,7 @@
 	NSMutableArray* buttonArray;
     int currentPressedButtonID;
 	float currentYOffset;
+    float scrollVertVelocity;
 	float totalSideBarHeight;
 	
 	BOOL isTouchMovingScroll;

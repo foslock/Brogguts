@@ -29,7 +29,7 @@
 #define TOTAL_CRAFT_LIMIT 200
 #define TOTAL_STRUCTURE_LIMIT 200
 
-#define HELP_MESSAGE_COUNT 8
+#define HELP_MESSAGE_COUNT 9
 
 enum kHelpMessageIDs {
     kHelpMessageNeedBrogguts,
@@ -40,6 +40,7 @@ enum kHelpMessageIDs {
     kHelpMessageNeedUnitLimit,
     kHelpMessageMiningEdges,
     kHelpMessageNeedMoreBlocks,
+    kHelpMessageMustExplore,
 };
 
 extern NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT];

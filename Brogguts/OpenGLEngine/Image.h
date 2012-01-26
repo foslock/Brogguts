@@ -128,6 +128,9 @@ extern NSString* const kObjectExplosionRingSprite;
 @property (nonatomic, assign) CGRect subImageRectangle;
 @property (nonatomic, assign) BOOL alwaysRender;
 
+// Works for craft and structures at least
++ (NSString*)fileNameForObjectWithID:(int)objectID;
+
 // Designated initializer that is used to create a new Image instance.  It takes the
 // name of the image file to be used as the texture within the image and also details
 // about scale and imageFilter.

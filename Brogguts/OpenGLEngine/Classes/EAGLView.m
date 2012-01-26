@@ -217,6 +217,11 @@
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
 	// Pass touch events onto the current scene
+    if (sharedGameController.isShowingUnlockView) {
+        // UITouch* touch = [touches anyObject];
+        // CGPoint location = [touch locationInView:self];
+        [sharedGameController pushUnlockViewOut];
+    }
 	if (!sharedGameController.isFadingSceneIn && !sharedGameController.isFadingSceneOut)
 		[[sharedGameController currentScene] touchesBegan:touches withEvent:event view:self];
 }

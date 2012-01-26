@@ -94,6 +94,68 @@ NSString* const kObjectExplosionRingSprite = @"explosionring.png";
 @synthesize subImageRectangle;
 @synthesize alwaysRender;
 
++ (NSString*)fileNameForObjectWithID:(int)objectID {
+    NSString* filename = nil;
+    switch (objectID) {
+            // CRAFT
+        case kObjectCraftAntID:
+            filename = kObjectCraftAntSprite;
+            break;            
+        case kObjectCraftMothID:
+            filename = kObjectCraftMothSprite;
+            break;            
+        case kObjectCraftBeetleID:
+            filename = kObjectCraftBeetleSprite;
+            break;            
+        case kObjectCraftMonarchID:
+            filename = kObjectCraftMonarchSprite;
+            break;            
+        case kObjectCraftCamelID:
+            filename = kObjectCraftCamelSprite;
+            break;            
+        case kObjectCraftRatID:
+            filename = kObjectCraftRatSprite;
+            break;            
+        case kObjectCraftSpiderID:
+            filename = kObjectCraftSpiderSprite;
+            break;
+        case kObjectCraftSpiderDroneID:
+            filename = kObjectCraftSpiderDroneSprite;
+            break;            
+        case kObjectCraftEagleID:
+            filename = kObjectCraftEagleSprite;
+            break;
+            // STRUCTURES
+        case kObjectStructureBaseStationID:
+            filename = kObjectStructureBaseStationSprite;
+            break;
+        case kObjectStructureBlockID:
+            filename = kObjectStructureBlockSprite;
+            break;
+        case kObjectStructureRefineryID:
+            filename = kObjectStructureRefinerySprite;
+            break;
+        case kObjectStructureCraftUpgradesID:
+            filename = kObjectStructureCraftUpgradesSprite;
+            break;
+        case kObjectStructureStructureUpgradesID:
+            filename = kObjectStructureStructureUpgradesSprite;
+            break;
+        case kObjectStructureTurretID:
+            filename = kObjectStructureTurretSprite;
+            break;
+        case kObjectStructureRadarID:
+            filename = kObjectStructureRadarSprite;
+            break;
+        case kObjectStructureFixerID:
+            filename = kObjectStructureFixerSprite;
+            break;
+        default:
+            break;
+    }
+    return filename;
+}
+
 #pragma mark -
 #pragma mark Deallocation
 

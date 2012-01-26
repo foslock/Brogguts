@@ -65,6 +65,32 @@
     sideBarButtonLocation = [segControl selectedSegmentIndex]; // 0 - Top, 1 - Bottom
 }
 
+- (IBAction)resetProgress:(id)sender {
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Reset All Progress"
+                                                    message:@"Are you sure you want to reset ALL of your progress in Brogguts?"
+                                                   delegate:self
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"Nevermind", @"I am sure", nil];
+    [alert show];
+    [alert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        // do nothing!
+    } else if (buttonIndex == 1) {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Progress Reset"
+                                                        message:@"All of your progress in Brogguts has been reset."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        // Reset stuff!
+        [[GameController sharedGameController] resetAllProgress];
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad

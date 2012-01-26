@@ -38,7 +38,7 @@
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
             [dia2 setDialogueImageIndex:kDialoguePortraitBase];
-            [dia2 setDialogueText:@"There is a very important, and very valuable, piece of data aboard that base station. Be cautious, reports indicate that multiple pirate factions have allied against us on this one. Expect multiple waves from any direction."];
+            [dia2 setDialogueText:@"There is a very important, and valuable, piece of data aboard that base station. Be cautious; reports indicate that multiple pirate factions have allied against us on this one. Expect multiple waves from any direction."];
             [sceneDialogues addObject:dia2];
             [dia2 release];
             

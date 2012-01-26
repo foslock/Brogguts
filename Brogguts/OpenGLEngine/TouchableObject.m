@@ -42,7 +42,7 @@
         isOverviewDrawingEffectRadius = NO;
 		isPartOfASquad = NO;
         hasMovedThisStep = NO;
-		effectRadius = (objectImage.imageSize.width * objectImage.scale.x) / 2;
+		effectRadius = (objectImage.imageSize.width * self.objectScale.x) / 2;
 		closestEnemyObject = nil;
 		objectsTargetingSelf = [[NSMutableSet alloc] init];
 		isBlinkingSelectionCircle = NO;
@@ -64,7 +64,7 @@
 	Circle tempBoundingCircle;
 	tempBoundingCircle.x = objectLocation.x;
 	tempBoundingCircle.y = objectLocation.y;
-	tempBoundingCircle.radius = (objectImage.imageSize.width * objectImage.scale.x) / 2; // Same as the bounding circle for now
+	tempBoundingCircle.radius = (objectImage.imageSize.width * self.objectScale.x) / 2; // Same as the bounding circle for now
 	return tempBoundingCircle;
 }
 
@@ -224,6 +224,12 @@
 	// NSLog(@"Object (%i) entered object (%i) effect radius", other.uniqueObjectID, uniqueObjectID);
 	if (!other.isHidden && !isTraveling) {
 		if (attackingAIState != kAttackingAIStateAttacking) {
+            if ([other isKindOfClass:[RatCraftObject class]]) {
+                RatCraftObject* rat = (RatCraftObject*)other;
+                if (rat.isCloaked) {
+                    return;
+                }
+            }
 			if (closestEnemyObject && !closestEnemyObject.destroyNow) {
 				if (GetDistanceBetweenPointsSquared(objectLocation, other.objectLocation) < 
 					GetDistanceBetweenPointsSquared(objectLocation, closestEnemyObject.objectLocation)) {

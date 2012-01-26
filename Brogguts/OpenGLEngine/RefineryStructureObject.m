@@ -105,7 +105,7 @@
 - (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
     // [self renderCenteredAtPoint:aPoint withScrollVector:vector];
     [animatedImage renderCurrentSubImageAtPoint:CGPointMake(objectLocation.x - vector.x, objectLocation.y - vector.y)
-                                      withScale:objectImage.scale
+                                      withScale:self.objectScale
                                    withRotation:objectRotation];
 }
 

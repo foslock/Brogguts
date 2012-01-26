@@ -17,6 +17,8 @@
 #import "TiledButtonObject.h"
 #import "SoundSingleton.h"
 
+#define SCROLL_BAR_DECCELERATION 0.01f
+
 @implementation SideBarObject
 @synthesize myController, scrollTouchTimer;
 
@@ -34,6 +36,7 @@
 		isTouchMovingScroll = NO;
 		isTouchDraggingButton = NO;
 		scrollTouchTimer = -1;
+        scrollVertVelocity = 0.0f;
 	}
 	return self;
 }
@@ -48,15 +51,25 @@
 	
 	// Update the scroll
 	if (!isTouchMovingScroll) {
+        if (scrollVertVelocity > 0.0f) {
+            scrollVertVelocity -= SCROLL_BAR_DECCELERATION;
+        } else if (scrollTouchTimer < 0.0f) {
+            scrollVertVelocity += SCROLL_BAR_DECCELERATION;
+        }
+        
+        currentYOffset += scrollVertVelocity;
+        
 		if (currentYOffset > SIDE_BAR_BOTTOM_VALUE) {
-			currentYOffset /= 1.2;
+            scrollVertVelocity = 0.0f;
+			currentYOffset /= 1.2f;
             if (currentYOffset < SIDE_BAR_BOTTOM_VALUE) {
                 currentYOffset = SIDE_BAR_BOTTOM_VALUE;
             }
 		}
 		float diff = (kPadScreenLandscapeHeight) - totalSideBarHeight;
 		if (currentYOffset < diff) {
-			currentYOffset = (diff) + (currentYOffset - diff) / 1.2;
+            scrollVertVelocity = 0.0f;
+			currentYOffset = (diff) + (currentYOffset - diff) / 1.2f;
 		}
 	}
 }
@@ -153,7 +166,14 @@
 		}
 	}
 	if (isTouchMovingScroll) {
-		currentYOffset += fromLocation.y - toLocation.y;
+		scrollVertVelocity = fromLocation.y - toLocation.y;
+        
+        if ((currentYOffset + scrollVertVelocity) > SIDE_BAR_BOTTOM_VALUE ||
+            (currentYOffset + scrollVertVelocity) < (kPadScreenLandscapeHeight - totalSideBarHeight)) {
+            scrollVertVelocity /= 4.0f;
+		}
+        
+        currentYOffset += scrollVertVelocity;
 	}
 }
 

@@ -88,12 +88,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
 }
 
-- (IBAction)startTutorialLevels {
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:YES forKey:@"hasStartedTutorial"];
-    [defaults synchronize];
-    hasStartedTutorial = YES;
-    tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
+- (void)presentTutorialScene {
     int beginningTutoralIndex = tutorialExperience; // 0 is default
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
@@ -104,6 +99,38 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
      withIndex:beginningTutoralIndex
      isNew:YES
      isLoading:NO];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if (buttonIndex == 0) { // Restart
+        tutorialExperience = 0;
+        [defaults setInteger:tutorialExperience forKey:kTutorialExperienceKey];
+        [defaults synchronize];
+        [self presentTutorialScene];
+    } else if (buttonIndex == 1) { // Resume
+        tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
+        [self presentTutorialScene];
+    }
+}
+
+- (IBAction)startTutorialLevels {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:YES forKey:@"hasStartedTutorial"];
+    [defaults synchronize];
+    tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
+    hasStartedTutorial = YES;
+    if (tutorialExperience > 0) {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Tutorial"
+                                                        message:@"Would you like to restart the tutorial or resume where you left off?"
+                                                       delegate:self 
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"Restart", @"Resume", nil];
+        [alert show];
+        [alert release];
+    } else {
+        [self presentTutorialScene];
+    }
 }
 
 - (IBAction)startCampaignLevels {
@@ -265,11 +292,11 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
 
 - (void)makeSpinnerAppear {
     /*
-    if (spinnerView) {
-        [self.view bringSubviewToFront:spinnerView];
-        [fadeCoverView setAlpha:0.5f];
-        [spinnerView setAlpha:1.0f];
-    }
+     if (spinnerView) {
+     [self.view bringSubviewToFront:spinnerView];
+     [fadeCoverView setAlpha:0.5f];
+     [spinnerView setAlpha:1.0f];
+     }
      */
 }
 
@@ -366,11 +393,16 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [self.view bringSubviewToFront:fadeCoverView];
     [self.view bringSubviewToFront:recommendationView];
     [self.view bringSubviewToFront:tutorialButton];
+    isShowingRecommendation = NO;
     [recommendationView setAlpha:0.0f];
     [fadeCoverView setAlpha:0.0f];
     [spinnerView setAlpha:0.0f];
     
     [[GameController sharedGameController] savePlayerProfile];
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    hasStartedTutorial = [defaults boolForKey:@"hasStartedTutorial"];
+    tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
     
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     

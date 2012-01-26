@@ -42,7 +42,7 @@ enum MiningStates {
         miningCooldownTimer = 0;
 		miningState = kMiningStateNone;
         miningAIValue = 0.0f;
-        [objectImage setScale:Scale2fMake(0.75f, 0.75f)];
+        self.objectScale = Scale2fMake(0.75f, 0.75f);
 	}
 	return self;
 }
@@ -199,7 +199,7 @@ enum MiningStates {
 			// The broggut is dead and should be destroyed...
 			[[self.currentScene collisionManager] removeMediumBroggutWithID:broggut->broggutID];
 			// Return home
-			[self returnBroggutsHome];
+			[self tryMiningBroggutsWithCenter:miningLocation wasCommanded:NO];
 		}
 		// Check if cargo has full brogguts
 		if (attributePlayerCurrentCargo == attributePlayerCargoCapacity) {

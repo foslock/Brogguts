@@ -14,16 +14,16 @@
 #import "TextObject.h"
 
 #define CAMPAIGN_SEVEN_START_BROGGUTS 10000
-#define CAMPAIGN_SEVEN_WAVE_TIME 10.0f
+#define CAMPAIGN_SEVEN_WAVE_TIME 7.0f
 
 @implementation CampaignSceneSeven
 
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:6 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextOne:@"- There are no minable brogguts nearby"];
+        [startObject setMissionTextOne:@"- There are no mineable brogguts nearby"];
         [startObject setMissionTextTwo:[NSString stringWithFormat:@"- You are provided with %i Brogguts",CAMPAIGN_SEVEN_START_BROGGUTS]];
-        [startObject setMissionTextThree:[NSString stringWithFormat:@"- Survive the second wave at %i minutes",(int)CAMPAIGN_SEVEN_WAVE_TIME]];
+        [startObject setMissionTextThree:[NSString stringWithFormat:@"- Survive the wave coming in %i minutes",(int)CAMPAIGN_SEVEN_WAVE_TIME]];
         [startObject setMissionTextFour:@"- Destroy all enemy craft in the wave"];
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];

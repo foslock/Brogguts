@@ -122,10 +122,10 @@ enum ObjectIDs { // How objects are indentified
 // Max values
 
 enum MaxmimumAttributeValues {
-    kMaximumEnginesValue = 6,
-    kMaximumDamagePerSecondValue = 8,
-    kMaximumAttackRangeValue = 512,
-    kMaximumHullValue = 750,
+    kMaximumEnginesValue = 8,
+    kMaximumDamagePerSecondValue = 25,
+    kMaximumAttackRangeValue = 768,
+    kMaximumHullValue = 500,
 };
 
 // 
@@ -158,7 +158,7 @@ enum TheMothValues {
 	kCraftMothUpgradeUnlockYears = 6,
 	kCraftMothUpgradeCost = 250, // brogguts
 	kCraftMothUpgradeTime = 30, // seconds
-	kCraftMothCostBrogguts = 200,
+	kCraftMothCostBrogguts = 150,
 	kCraftMothCostMetal = 0,
 	kCraftMothEngines = 5,
 	kCraftMothWeapons = 3,
@@ -175,16 +175,16 @@ enum TheBeetleValues {
 	kCraftBeetleUpgradeUnlockYears = 7,
 	kCraftBeetleUpgradeCost = 500, // brogguts
 	kCraftBeetleUpgradeTime = 45, // seconds
-	kCraftBeetleCostBrogguts = 200,
-	kCraftBeetleCostMetal = 20,
-	kCraftBeetleEngines = 1,
+	kCraftBeetleCostBrogguts = 300,
+	kCraftBeetleCostMetal = 15,
+	kCraftBeetleEngines = 2,
 	kCraftBeetleWeapons = 15,
 	kCraftBeetleAttackRange = 200, // pixels
-	kCraftBeetleAttackCooldown = 120, // frames for weapon to recharge
+	kCraftBeetleAttackCooldown = 100, // frames for weapon to recharge
 	kCraftBeetleHull = 200,
     kCraftBeetleViewDistance = 512,
 	// Special Values
-    kCraftBeetleMissileDamage = 35,
+    kCraftBeetleMissileDamage = 45,
     kCraftBeetleMissileRange = 400,
 };
 
@@ -193,8 +193,8 @@ enum TheMonarchValues {
 	kCraftMonarchUpgradeUnlockYears = 8,
 	kCraftMonarchUpgradeCost = 500, // brogguts
 	kCraftMonarchUpgradeTime = 50, // seconds
-	kCraftMonarchCostBrogguts = 300,
-	kCraftMonarchCostMetal = 30,
+	kCraftMonarchCostBrogguts = 400,
+	kCraftMonarchCostMetal = 20,
 	kCraftMonarchEngines = 3,
 	kCraftMonarchWeapons = 0,
 	kCraftMonarchAttackRange = 0, // pixels
@@ -218,10 +218,10 @@ enum TheCamelValues {
 	kCraftCamelUpgradeCost = 400, // brogguts
 	kCraftCamelUpgradeTime = 60, // seconds
 	kCraftCamelCostBrogguts = 400,
-	kCraftCamelCostMetal = 40,
+	kCraftCamelCostMetal = 10,
 	kCraftCamelEngines = 3,
 	kCraftCamelWeapons = 8,
-	kCraftCamelAttackRange = 512, // pixels
+	kCraftCamelAttackRange = 256, // pixels
 	kCraftCamelAttackCooldown = 100, // frames for weapon to recharge
 	kCraftCamelHull = 250,
     kCraftCamelViewDistance = 512,
@@ -237,7 +237,7 @@ enum TheRatValues {
 	kCraftRatUpgradeCost = 250, // brogguts
 	kCraftRatUpgradeTime = 30, // seconds
 	kCraftRatCostBrogguts = 500,
-	kCraftRatCostMetal = 50,
+	kCraftRatCostMetal = 25,
 	kCraftRatEngines = 5,
 	kCraftRatWeapons = 10,
 	kCraftRatAttackRange = 100, // pixels
@@ -289,12 +289,12 @@ enum TheEagleValues {
 	kCraftEagleUpgradeCost = 800, // brogguts
 	kCraftEagleUpgradeTime = 80, // seconds
 	kCraftEagleCostBrogguts = 600,
-	kCraftEagleCostMetal = 60,
+	kCraftEagleCostMetal = 80,
 	kCraftEagleEngines = 6,
 	kCraftEagleWeapons = 20,
 	kCraftEagleAttackRange = 360, // pixels
 	kCraftEagleAttackCooldown = 60, // frames for weapon to recharge
-	kCraftEagleHull = 200,
+	kCraftEagleHull = 300,
     kCraftEagleViewDistance = 512,
 	// Special Values
     kCraftEagleSelfRepairAmountPerSecond = 5, // HP / seconds

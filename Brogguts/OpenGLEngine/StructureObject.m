@@ -20,6 +20,8 @@
 #import "FogManager.h"
 #import "GameController.h"
 
+#define STRUCTURE_OBJECT_CALLOUT_TIME 60.0f
+
 @implementation StructureObject
 @synthesize attributeHullCurrent, attributeHullCapacity;
 
@@ -138,6 +140,7 @@
         isDirtyImage = NO;
 		hasCurrentPathFinished = YES;
 		creationEndLocation = location;
+        calloutTimer = 0.0f;
         
         lightBlinkTimer = (arc4random() % LIGHT_BLINK_FREQUENCY) + 1;
 		lightBlinkAlpha = 0.0f;
@@ -203,6 +206,30 @@
 	attributeHullCurrent -= damage;
     [self showSelectionCircle];
     
+    // Call out to nearby ships
+    if (calloutTimer <= 0) {
+        calloutTimer = STRUCTURE_OBJECT_CALLOUT_TIME;
+        Circle circle;
+        circle.x = objectLocation.x;
+        circle.y = objectLocation.y;
+        circle.radius = attributeViewDistance * (2.0f / 3.0f);
+        NSArray* nearbyObjects = [[[self currentScene] collisionManager] getArrayOfRadiiObjectsInCircle:circle];
+        for (int i = 0; i < [nearbyObjects count]; i++) {
+            TouchableObject* tobj = [nearbyObjects objectAtIndex:i];
+            if ([tobj isKindOfClass:[CraftObject class]]) {
+                CraftObject* craft = (CraftObject*)tobj;
+                if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) < POW2(circle.radius)) {
+                    if (craft.objectAlliance == objectAlliance) {
+                        if (craft.movingAIState != kMovingAIStateMining && !craft.isTraveling &&
+                            !craft.isBeingControlled && craft.attackingAIState == kAttackingAIStateNeutral) {
+                            [craft setPriorityEnemyTarget:enemy];
+                        }
+                    }
+                }
+            }
+        }
+    }   
+    
 	if (attributeHullCurrent <= 0) {
 		destroyNow = YES;
 		return YES;
@@ -224,12 +251,16 @@
         [objectImage setColor:[GameController getShadeColorNeutral:1.0f]];
     }
     
+    if (calloutTimer > 0.0f) {
+        calloutTimer -= aDelta;
+    }
+    
     if (attributeHullCurrent <= (attributeHullCapacity / 2)) {
         if (!isDirtyImage) {
             isDirtyImage = YES;
             NSString* fileName = [[objectImage imageFileName] stringByDeletingPathExtension];
             Color4f color = [objectImage color];
-            Scale2f scale = [objectImage scale];
+            Scale2f scale = self.objectScale;
             int layer = [objectImage renderLayer];
             [objectImage autorelease];
             NSString* newName = [NSString stringWithFormat:@"%@dirty.png",fileName];
@@ -300,14 +331,14 @@
     
     if (objectType != kObjectStructureBaseStationID) {
         disablePrimitiveDraw();
-        CGPoint topLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width / 2) + STRUCTURE_LIGHT_INSET,
-                                      objectLocation.y + ([objectImage imageSize].height / 2) - STRUCTURE_LIGHT_INSET);
-        CGPoint topRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width / 2) - STRUCTURE_LIGHT_INSET,
-                                       objectLocation.y + ([objectImage imageSize].height / 2) - STRUCTURE_LIGHT_INSET);
-        CGPoint botLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width / 2) + STRUCTURE_LIGHT_INSET,
-                                      objectLocation.y - ([objectImage imageSize].height / 2) + STRUCTURE_LIGHT_INSET);
-        CGPoint botRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width / 2) - STRUCTURE_LIGHT_INSET,
-                                       objectLocation.y - ([objectImage imageSize].height / 2) + STRUCTURE_LIGHT_INSET);
+        CGPoint topLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width * self.objectScale.x / 2) + STRUCTURE_LIGHT_INSET,
+                                      objectLocation.y + ([objectImage imageSize].height * self.objectScale.y / 2) - STRUCTURE_LIGHT_INSET);
+        CGPoint topRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width * self.objectScale.x / 2) - STRUCTURE_LIGHT_INSET,
+                                       objectLocation.y + ([objectImage imageSize].height * self.objectScale.y / 2) - STRUCTURE_LIGHT_INSET);
+        CGPoint botLeft = CGPointMake(objectLocation.x - ([objectImage imageSize].width * self.objectScale.x / 2) + STRUCTURE_LIGHT_INSET,
+                                      objectLocation.y - ([objectImage imageSize].height * self.objectScale.y / 2) + STRUCTURE_LIGHT_INSET);
+        CGPoint botRight = CGPointMake(objectLocation.x + ([objectImage imageSize].width * self.objectScale.x / 2) - STRUCTURE_LIGHT_INSET,
+                                       objectLocation.y - ([objectImage imageSize].height * self.objectScale.y / 2) + STRUCTURE_LIGHT_INSET);
         if (self.objectAlliance == kAllianceFriendly) {
             if (!isTraveling)
                 blinkingLightImage.color = [GameController getColorFriendly:lightBlinkAlpha];
@@ -330,8 +361,8 @@
     
     if (objectAlliance == kAllianceFriendly) {
         if ([[self.currentScene upgradeManager] isUpgradeCompleteWithID:objectType]) {
-            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width / 2 * self.objectImage.scale.x),
-                                                            objectLocation.y + (self.objectImage.imageSize.height / 2 * self.objectImage.scale.y))
+            [upgradedPlus renderCenteredAtPoint:CGPointMake(objectLocation.x + (self.objectImage.imageSize.width / 2 * self.objectScale.x),
+                                                            objectLocation.y + (self.objectImage.imageSize.height / 2 * self.objectScale.y))
                                withScrollVector:scroll];
         }
     }
@@ -353,14 +384,14 @@
 - (void)renderUnderObjectWithScroll:(Vector2f)scroll {
     [super renderUnderObjectWithScroll:scroll];
     if (isTraveling) {
-        CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width / 2),
-                                 objectLocation.y - (objectImage.imageSize.height / 2),
-                                 objectImage.imageSize.width,
-                                 objectImage.imageSize.height);
+        CGRect rect = CGRectMake(objectLocation.x - (objectImage.imageSize.width * self.objectScale.x / 2),
+                                 objectLocation.y - (objectImage.imageSize.height * self.objectScale.y / 2),
+                                 objectImage.imageSize.width * self.objectScale.x,
+                                 objectImage.imageSize.height * self.objectScale.y);
         CGPoint point1 = CGPointMake(rect.origin.x, rect.origin.y);
-        CGPoint point2 = CGPointMake(rect.origin.x + objectImage.imageSize.width, rect.origin.y);
-        CGPoint point3 = CGPointMake(rect.origin.x, rect.origin.y + objectImage.imageSize.height);
-        CGPoint point4 = CGPointMake(rect.origin.x + objectImage.imageSize.width, rect.origin.y + objectImage.imageSize.height);
+        CGPoint point2 = CGPointMake(rect.origin.x + rect.size.width, rect.origin.y);
+        CGPoint point3 = CGPointMake(rect.origin.x, rect.origin.y + rect.size.height);
+        CGPoint point4 = CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
         
         [buildingDroneImage setRotation:movingDirection];
         [buildingDroneImage renderCenteredAtPoint:point1 withScrollVector:scroll];
