@@ -11,6 +11,7 @@
 #import "PlayerProfile.h"
 #import "Image.h"
 #import "UpgradeManager.h"
+#import "Global.h"
 
 @implementation UnlockPresentView
 @synthesize view, craftOneView, craftTwoView, craftOneLabel, craftTwoLabel;
@@ -87,8 +88,7 @@
     [self.view addSubview:sunView];
     [self.view sendSubviewToBack:sunView];
     [sunView setCenter:iView.center];
-    float random = RANDOM_0_TO_1();
-    [UIView animateWithDuration:(random + 1.5f) delay:0.0f options:(UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveLinear) animations:^{
+    [UIView animateWithDuration:(RANDOM_0_TO_1() + 1.5f) delay:0.0f options:(UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveLinear) animations:^{
         [sunView setTransform:CGAffineTransformRotate(sunView.transform, DEGREES_TO_RADIANS(180))];
     } completion:^(BOOL finished) {
         //
@@ -109,7 +109,7 @@
     for (int i = kObjectCraftAntID; i <= kObjectCraftEagleID; i++) {
         int unlockTime = [profile levelObjectUnlockedWithID:i];
         if (unlockTime == nextIndex
-            /*&& ![profile isObjectUnlockedWithID:i]*/) {
+            && ![profile isObjectUnlockedWithID:i]) {
             if (count == 0) {
                 isAnyNewUnlocks = YES;
                 UIImage* image = [UIImage imageNamed:[Image fileNameForObjectWithID:i]];
