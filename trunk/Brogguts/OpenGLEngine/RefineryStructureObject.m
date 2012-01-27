@@ -14,6 +14,12 @@
 #import "PlayerProfile.h"
 #import "TextObject.h"
 #import "UpgradeManager.h"
+#import "RefinerySmokeObject.h"
+#import "ImageRenderSingleton.h"
+
+#define REFINERY_SMOKE_FREQUENCY 10
+#define REFINERY_SMOKE_X_OFFSET 26.0f
+#define REFINERY_SMOKE_Y_OFFSET 40.0f
 
 @implementation RefineryStructureObject
 @synthesize isRefining;
@@ -37,6 +43,15 @@
 	return self;
 }
 
+- (void)createRefinerySmoke {
+    if (!isTraveling && !destroyNow) {
+        RefinerySmokeObject* smoke = [[RefinerySmokeObject alloc] initWithLocation:CGPointMake(objectLocation.x + (REFINERY_SMOKE_X_OFFSET * [self objectScale].x),
+                                                                                               objectLocation.y + (REFINERY_SMOKE_Y_OFFSET * [self objectScale].y))];
+        [[self currentScene] addCollidableObject:smoke];
+        [smoke release];
+    }
+}
+
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
     
@@ -53,6 +68,9 @@
     if (refiningCounter > 0) {
         if (refiningTimer > 0) {
             refiningTimer--;
+            if (refiningTimer % REFINERY_SMOKE_FREQUENCY == 0) {
+                [self createRefinerySmoke];
+            }
         } else {
             int metalCount = 0;
             if (refiningCounter > kStructureRefineryBroggutConversionRate) {
@@ -71,7 +89,9 @@
                                                           withDuration:2.0f];
             [metalText setObjectVelocity:Vector2fMake(0.0f, 0.3f)];
             [metalText setFontColor:Color4fMake(0.4f, 0.5f, 1.0f, 1.0f)];
+            [metalText setRenderLayer:kLayerTopLayer];
             [[self currentScene] addTextObject:metalText];
+            [self createRefinerySmoke];
             [metalText release];
         }
     } else {

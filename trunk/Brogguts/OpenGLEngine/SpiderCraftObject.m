@@ -83,18 +83,20 @@
         droneBuildTime = kCraftSpiderDroneRebuildTimeUpgraded;
     }
 	
-    if (droneBuildTimer <= 0) {
-        droneBuildTimer = droneBuildTime;
-        if (objectAlliance == kAllianceFriendly) {
-            if (droneCount < droneCountLimit) {
-                if ([[[GameController sharedGameController] currentProfile] subtractBrogguts:droneBroggutCost metal:kCraftSpiderDroneCostMetal] == kProfileNoFail) {
-                    [self addNewDroneToBay];
-                    [[self currentScene] addBroggutTextValue:-droneBroggutCost atLocation:objectLocation withAlliance:kAllianceFriendly];
+    if (!isTraveling) {
+        if (droneBuildTimer <= 0) {
+            droneBuildTimer = droneBuildTime;
+            if (objectAlliance == kAllianceFriendly) {
+                if (droneCount < droneCountLimit) {
+                    if ([[[GameController sharedGameController] currentProfile] subtractBrogguts:droneBroggutCost metal:kCraftSpiderDroneCostMetal] == kProfileNoFail) {
+                        [self addNewDroneToBay];
+                        [[self currentScene] addBroggutTextValue:-droneBroggutCost atLocation:objectLocation withAlliance:kAllianceFriendly];
+                    }
                 }
             }
+        } else {
+            droneBuildTimer -= aDelta;
         }
-	} else if (!isTraveling) {
-        droneBuildTimer -= 1;
     }
     
 	// This ship does not rotate

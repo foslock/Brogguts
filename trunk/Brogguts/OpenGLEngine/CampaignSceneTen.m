@@ -22,8 +22,8 @@
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:9 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@"- Something"];
-        [startObject setMissionTextThree:@"- Something else"];
+        [startObject setMissionTextTwo:@"- Command the pirate fleet"];
+        [startObject setMissionTextThree:@"- Destroy all enemy craft"];
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
@@ -50,14 +50,14 @@
 }
 
 - (BOOL)checkObjective {
-    if (numberOfEnemyShips <= 0) {
+    if (numberOfEnemyShips <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;
 }
 
 - (BOOL)checkFailure {
-    if (numberOfCurrentShips <= 0) {
+    if (numberOfCurrentShips <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

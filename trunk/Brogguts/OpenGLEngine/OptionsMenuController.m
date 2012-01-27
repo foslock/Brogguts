@@ -38,7 +38,7 @@
 - (IBAction)fxVolumeChanged:(id)sender {
     UISlider* slider = (UISlider*)sender;
     [[SoundSingleton sharedSoundSingleton] setFxVolume:[slider value]];
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileExplosionSound]];
+    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileLaserAttack1]];
 }
 
 - (IBAction)musicVolumeChanged:(id)sender {

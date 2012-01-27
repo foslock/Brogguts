@@ -136,7 +136,7 @@
     int enemyShipCount = [self numberOfEnemyShips];
     if ([[self spawnerWithID:0] isDoneSpawning] && [[self spawnerWithID:1] isDoneSpawning] && 
         [[self spawnerWithID:2] isDoneSpawning] && [[self spawnerWithID:3] isDoneSpawning] &&
-        enemyShipCount == 0) {
+        enemyShipCount == 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;
@@ -146,7 +146,7 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

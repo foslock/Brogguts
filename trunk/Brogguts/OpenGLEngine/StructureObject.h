@@ -47,6 +47,8 @@
     
     // Callout timer for friendly craft
     float calloutTimer;
+    
+    float randomAlphaValue;
 }
 
 @property (readonly) int attributeHullCurrent;

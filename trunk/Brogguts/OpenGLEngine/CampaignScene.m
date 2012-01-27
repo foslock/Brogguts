@@ -181,10 +181,10 @@ NSString* kCampaignSceneSaveTitles[CAMPAIGN_SCENES_COUNT] = {
 
 - (BOOL)checkDefaultFailure {
     int brogCount = [[[GameController sharedGameController] currentProfile] broggutCount];
-    if (brogCount < kCraftAntCostBrogguts && numberOfCurrentShips == 0) {
+    if (brogCount < kCraftAntCostBrogguts && numberOfCurrentShips == 0 && !doesExplosionExist) {
         return YES;
     }
-    if (!isFriendlyBaseStationAlive) {
+    if (!isFriendlyBaseStationAlive && !doesExplosionExist) {
         return YES;
     }
     return NO;

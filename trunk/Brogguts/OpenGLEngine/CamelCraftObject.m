@@ -17,15 +17,8 @@
 #import "SoundSingleton.h"
 #import "UpgradeManager.h"
 
-enum MiningStates {
-	kMiningStateMining,
-	kMiningStateApproaching,
-	kMiningStateReturning,
-	kMiningStateNone,
-};
-
 @implementation CamelCraftObject
-@synthesize miningAIValue;
+@synthesize miningLocation, miningState, miningAIValue;
 
 - (void)dealloc {
 	[super dealloc];
@@ -34,7 +27,6 @@ enum MiningStates {
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftCamelID withLocation:location isTraveling:traveling];
 	if (self) {
-        [self createLightLocationsWithCount:1];
         [self createTurretLocationsWithCount:1];
 		attributePlayerCargoCapacity = kCraftCamelCargoSpace;
 		attributePlayerCurrentCargo = 0;
@@ -42,6 +34,8 @@ enum MiningStates {
         miningCooldownTimer = 0;
 		miningState = kMiningStateNone;
         miningAIValue = 0.0f;
+        randomMiningValueX = 0.0f;
+        randomMiningValueY = 0.0f;
         self.objectScale = Scale2fMake(0.75f, 0.75f);
 	}
 	return self;
@@ -94,7 +88,7 @@ enum MiningStates {
 
 - (BOOL)startMiningBroggutWithLocation:(CGPoint)location wasCommanded:(BOOL)commanded {
 	MediumBroggut* broggut = [[self.currentScene collisionManager] broggutCellForLocation:location];
-    if (broggut && broggut->broggutValue != -1) {
+    if (broggut && broggut->broggutValue > 0) {
         if (broggut->broggutEdge != kMediumBroggutEdgeNone) {
             // NSLog(@"Started object (%i) mining broggut (%i) with value (%i)", uniqueObjectID, broggut->broggutID, broggut->broggutValue);
             CGPoint broggutLoc = [[self.currentScene collisionManager] getBroggutLocationForID:broggut->broggutID];
@@ -164,6 +158,9 @@ enum MiningStates {
 - (void)updateObjectLogicWithDelta:(float)aDelta {
 	[super updateObjectLogicWithDelta:aDelta];
     
+    randomMiningValueX = RANDOM_MINUS_1_TO_1();
+    randomMiningValueY = RANDOM_MINUS_1_TO_1();
+    
     // Check for upgrade
     if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
         attributePlayerCargoCapacity = kCraftCamelCargoSpaceUpgraded;
@@ -216,8 +213,8 @@ enum MiningStates {
 	if (miningState == kMiningStateMining) {
         if (![currentScene isMissionOver]) {
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            float randX = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_WIDTH) / 4);
-            float randY = RANDOM_MINUS_1_TO_1() * ( (COLLISION_CELL_HEIGHT) / 4);
+            float randX = randomMiningValueX * ( (COLLISION_CELL_WIDTH) / 4);
+            float randY = randomMiningValueY * ( (COLLISION_CELL_HEIGHT) / 4);
             glLineWidth(3.0f);
             drawLine(objectLocation, CGPointMake(miningLocation.x + randX, miningLocation.y + randY), scroll);
             glLineWidth(1.0f);

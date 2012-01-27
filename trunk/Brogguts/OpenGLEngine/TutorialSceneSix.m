@@ -49,7 +49,7 @@
 }
 
 - (BOOL)checkObjective {
-    return (enemyBlock.destroyNow);
+    return (enemyBlock.destroyNow && !doesExplosionExist);
 }
 
 @end

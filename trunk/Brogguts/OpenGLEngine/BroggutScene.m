@@ -76,7 +76,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
-@synthesize sceneSpawners, sceneDialogues, upgradeManager;
+@synthesize sceneSpawners, sceneDialogues, upgradeManager, numberOfCurrentShips, numberOfCurrentStructures, doesExplosionExist;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -202,6 +202,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     messageTimer = 0.0f;
     isShowingMessageTimer = NO;
     isScreenShaking = NO;
+    doesExplosionExist = NO;
     screenShakingAmount = 0.0f;
     playingMiningSoundTimer = 0.0f;
     
@@ -1542,12 +1543,21 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         }
     }
     
+    if (frameCounter % (FOG_LOWER_UPDATE_FREQUENCY + 1) == kFrameOffsetFogUpdate) {
+        // Regenerate lower fog
+        [fogManager resetLowerFog];
+    }
+    
+    doesExplosionExist = NO;
     // Loop through all collidable objects and update them
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
+        if ([tempObj isKindOfClass:[ExplosionObject class]] && !tempObj.destroyNow) {
+            doesExplosionExist = YES;
+        }
         int objRadius = [tempObj boundingCircle].radius;
         [tempObj updateObjectLogicWithDelta:aDelta];
-        if (frameCounter % (FOG_UPDATE_FREQUENCY + 1) == kFrameOffsetFogUpdate) {
+        if (frameCounter % (FOG_UPPER_UPDATE_FREQUENCY + 1) == kFrameOffsetFogUpdate) {
             if (tempObj.objectAlliance != kAllianceEnemy) {
                 if ([tempObj isKindOfClass:[TouchableObject class]]) {
                     TouchableObject* tobj = (TouchableObject*)tempObj;
@@ -1770,8 +1780,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Render all objects (excluding text objects)
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
-        if ([tempObj isOnScreen])
-            [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
+        if ([tempObj isOnScreen]) {
+            if ([fogManager lowerFogValueAtPoint:tempObj.objectLocation] == 0.0f) { // Only render if no lower fog
+                [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
+            } else if ([tempObj isKindOfClass:[StructureObject class]] ||
+                       ![tempObj isKindOfClass:[TouchableObject class]]) { // unless its a structure or not a touchable object
+                [tempObj renderCenteredAtPoint:tempObj.objectLocation withScrollVector:scroll];
+            }
+        }
     }
     
     // Render particles underneath everything
@@ -1783,9 +1799,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Render all primitives under
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
-        if ([tempObj isOnScreen])
-            [tempObj renderUnderObjectWithScroll:scroll];
-        else if ([tempObj isKindOfClass:[TouchableObject class]]) {
+        if ([tempObj isOnScreen]) {
+            if ([fogManager lowerFogValueAtPoint:tempObj.objectLocation] == 0.0f) { // Only render if no lower fog
+                [tempObj renderUnderObjectWithScroll:scroll]; 
+            } else if ([tempObj isKindOfClass:[StructureObject class]] ||
+                       ![tempObj isKindOfClass:[TouchableObject class]]) {
+                [tempObj renderUnderObjectWithScroll:scroll];
+            }
+        } else if ([tempObj isKindOfClass:[TouchableObject class]]) {
             TouchableObject* touchObj = (TouchableObject*)tempObj;
             if ([touchObj isDrawingEffectRadius]) {
                 [tempObj renderUnderObjectWithScroll:scroll];
@@ -1802,9 +1823,14 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Render all primitives over
     for (int i = 0; i < [renderableObjects count]; i++) {
         CollidableObject* tempObj = [renderableObjects objectAtIndex:i];
-        if ([tempObj isOnScreen])
-            [tempObj renderOverObjectWithScroll:scroll];
-        else if ([tempObj isKindOfClass:[TouchableObject class]]) {
+        if ([tempObj isOnScreen]) {
+            if ([fogManager lowerFogValueAtPoint:tempObj.objectLocation] == 0.0f) { // Only render if no lower fog
+                [tempObj renderOverObjectWithScroll:scroll]; 
+            } else if ([tempObj isKindOfClass:[StructureObject class]] ||
+                       ![tempObj isKindOfClass:[TouchableObject class]]) {
+                [tempObj renderOverObjectWithScroll:scroll];
+            }
+        } else if ([tempObj isKindOfClass:[TouchableObject class]]) {
             TouchableObject* touchObj = (TouchableObject*)tempObj;
             if ([touchObj isDrawingEffectRadius]) {
                 [tempObj renderOverObjectWithScroll:scroll];
@@ -1896,7 +1922,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     if ([obj isKindOfClass:[CraftObject class]] && obj.objectType != kObjectCraftSpiderDroneID) {
         if (obj.objectAlliance == kAllianceFriendly) {
             numberOfCurrentShips++;
-            [sharedGameCenterSingleton updateCraftBuiltAchievements:numberOfCurrentShips];
         } else if (obj.objectAlliance == kAllianceEnemy) {
             didLoseAnyCraftOrStructure = NO;
             numberOfEnemyShips++;
@@ -1950,6 +1975,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     [obj setCurrentScene:self];
     if (obj.isCheckedForCollisions) {
         [collisionManager addCollidableObject:obj];
+    }
+    if ([obj isKindOfClass:[ExplosionObject class]]) {
+        doesExplosionExist = YES;
     }
     [renderableObjects addObject:obj];
 }
@@ -2099,7 +2127,10 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         if (!obj.isRenderedInOverview) {
             continue;
         }
-        if ([fogManager fogValueAtPoint:obj.objectLocation] > 0.5f) {
+        if ([fogManager upperFogValueAtPoint:obj.objectLocation] > 0.5f) {
+            continue;
+        }
+        if (![obj isKindOfClass:[StructureObject class]] && [fogManager lowerFogValueAtPoint:obj.objectLocation] > 0.0f) {
             continue;
         }
         objPoint[0] = xOffset + obj.objectLocation.x * xRatio;
@@ -2148,7 +2179,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                                          yOffset + 1 + j * COLLISION_CELL_HEIGHT * yRatio,
                                          COLLISION_CELL_WIDTH * xRatio, 
                                          COLLISION_CELL_HEIGHT * yRatio);
-            if ([fogManager fogValueAtPoint:CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT)] > 0.5f) {
+            if ([fogManager upperFogValueAtPoint:CGPointMake(i * COLLISION_CELL_WIDTH, j * COLLISION_CELL_HEIGHT)] > 0.5f) {
                 continue;
             }
             if (broggut->broggutValue != -1) {
@@ -2516,7 +2547,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
-    if ([fogManager fogValueAtPoint:location] != 0.0f) {
+    if ([fogManager upperFogValueAtPoint:location] != 0.0f) {
         // Need to explore first
         [self showHelpMessageWithMessageID:kHelpMessageMustExplore];
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
@@ -2703,7 +2734,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];
         return;
     }
-    if ([fogManager fogValueAtPoint:location] != 0.0f) {
+    if ([fogManager lowerFogValueAtPoint:location] != 0.0f) {
         // Need to explore first
         [self showHelpMessageWithMessageID:kHelpMessageMustExplore];
         [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileButtonCancel]];

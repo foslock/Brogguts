@@ -26,6 +26,7 @@
 #import "DialogueObject.h"
 #import "MainMenuController.h"
 #import "UnlockPresentView.h"
+#import "GameCenterSingleton.h"
 
 NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
@@ -53,7 +54,7 @@ static GameController* sharedGameController = nil;
 @synthesize currentProfile;
 @synthesize currentScene, justMadeScene, transitionName;
 @synthesize gameScenes;
-@synthesize containerView, eaglView;
+@synthesize eaglView;
 @synthesize interfaceOrientation;
 @synthesize isFadingSceneIn, isFadingSceneOut, isAlreadyInScene, isReturningToMenu, isShowingUnlockView;
 
@@ -327,6 +328,9 @@ static GameController* sharedGameController = nil;
     // Has played tutorial should be reset
     [defaults setBool:NO forKey:@"hasStartedTutorial"];
     [defaults setInteger:0 forKey:kTutorialExperienceKey];
+    
+    // Clear all achievements
+    [[GameCenterSingleton sharedGCSingleton] resetAllAchievements];
     
     [defaults synchronize];
 }
@@ -826,6 +830,8 @@ static GameController* sharedGameController = nil;
         [[delegate window] addSubview:unlockView];
         [UIView animateWithDuration:0.5f animations:^{
             [unlockView setAlpha:1.0f];
+        } completion:^(BOOL finished) {
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileUnlockSound]];
         }];
     }
 }
@@ -882,6 +888,8 @@ static GameController* sharedGameController = nil;
                 if (!isShowingUnlockView) {
                     [self transitionToSceneWithFileName:transitionName sceneType:currentSceneType withIndex:currentSceneIndex isNew:isNewSceneNew isLoading:isLoadingSavedScene];
                 }
+                // Update achievements etc.
+                [[GameCenterSingleton sharedGCSingleton] updateAllAchievementsAndLeaderboard];
             } else {
                 [currentScene sceneDidDisappear];
                 if (isSavingFadingScene) {
@@ -889,6 +897,8 @@ static GameController* sharedGameController = nil;
                     isSavingFadingScene = NO;
                 }
                 [(OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate] stopGLAnimation];
+                // Update achievements etc.
+                [[GameCenterSingleton sharedGCSingleton] updateAllAchievementsAndLeaderboard];
                 currentScene = nil;
             }
             isReturningToMenu = NO;

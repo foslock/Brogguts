@@ -141,6 +141,7 @@
 		hasCurrentPathFinished = YES;
 		creationEndLocation = location;
         calloutTimer = 0.0f;
+        randomAlphaValue = 0.0f;
         
         lightBlinkTimer = (arc4random() % LIGHT_BLINK_FREQUENCY) + 1;
 		lightBlinkAlpha = 0.0f;
@@ -218,6 +219,20 @@
             TouchableObject* tobj = [nearbyObjects objectAtIndex:i];
             if ([tobj isKindOfClass:[CraftObject class]]) {
                 CraftObject* craft = (CraftObject*)tobj;
+                if ([craft isKindOfClass:[AntCraftObject class]]) {
+                    // Ant
+                    AntCraftObject* ant = (AntCraftObject*)craft;
+                    if (ant.miningState != kMiningStateNone) {
+                        continue;
+                    }
+                }
+                if ([craft isKindOfClass:[CamelCraftObject class]]) {
+                    // Camel
+                    CamelCraftObject* camel = (CamelCraftObject*)craft;
+                    if (camel.miningState != kMiningStateNone) {
+                        continue;
+                    }
+                }
                 if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) < POW2(circle.radius)) {
                     if (craft.objectAlliance == objectAlliance) {
                         if (craft.movingAIState != kMovingAIStateMining && !craft.isTraveling &&
@@ -242,6 +257,8 @@
 		destroyNow = YES;
 		return;
 	}
+    
+    randomAlphaValue = RANDOM_0_TO_1();
     
     if (objectAlliance == kAllianceFriendly) {
         [objectImage setColor:[GameController getShadeColorFriendly:1.0f]];
@@ -399,13 +416,13 @@
         [buildingDroneImage renderCenteredAtPoint:point3 withScrollVector:scroll];
         [buildingDroneImage renderCenteredAtPoint:point4 withScrollVector:scroll];
         enablePrimitiveDraw();
-        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(randomAlphaValue, 0.25f, 0.75f));
         drawLine(point1, point2, scroll);
-        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(randomAlphaValue, 0.25f, 0.75f));
         drawLine(point2, point4, scroll);
-        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(randomAlphaValue, 0.25f, 0.75f));
         drawLine(point4, point3, scroll);
-        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(RANDOM_0_TO_1(), 0.25f, 0.75f));
+        glColor4f(1.0f, 1.0f, 1.0f, CLAMP(randomAlphaValue, 0.25f, 0.75f));
         drawLine(point3, point1, scroll);
         disablePrimitiveDraw();
     }

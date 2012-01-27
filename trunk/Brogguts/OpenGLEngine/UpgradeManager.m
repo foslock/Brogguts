@@ -25,7 +25,7 @@ NSString* kObjectUnlockDetailText[TOTAL_OBJECT_TYPES_COUNT] = {
     @"If purchased, all Craft Upgrade structures will research upgrades at a faster rate.", // Craft upgrades (Faster upgrades)
     @"If purchased, all Structure Upgrade structures will research upgrades at a faster rate.", // Structure upgrades (Faster upgrades)
     @"If purchased, all Turrets will attack at a much faster rate than normal.", // Turret (Double attack speed)
-    @"If purchased, all Fixers will repair two nearby friendly craft at once instead of just one.", // Fixer (Fixes two craft instead of one)
+    @"If purchased, all Fixers will repair three nearby friendly craft at once instead of two.", // Fixer (Fixes two craft instead of one)
     @"If purchased, all Radar structures will have their range and view distance increased greatly.", // Radar (Expanded range/view distance)
     @"", @"", // Nothing
 };

@@ -18,6 +18,7 @@
 #import "CraftAndStructures.h"
 #import "SkirmishMatchController.h"
 #import "AchievementIdentifiers.h"
+#import "PlayerProfile.h"
 
 static GameCenterSingleton* sharedGCSingleton = nil;
 
@@ -189,6 +190,11 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			NSLog(@"Authentication was successful!");
             NSLog(@"I am Player: %@", localPlayerID);
 			// Insert code here to handle a successful authentication.
+            
+            /*
+            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:GAME_CENTER_ACHIEVEMENT_UPDATE_FREQUENCY target:self selector:@selector(updateAllAchievementsAndLeaderboard) userInfo:nil repeats:YES];
+            (void)timer;
+             */
 		}
 		else
 		{
@@ -551,6 +557,22 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     }
 }
 
+- (void)updateAllAchievementsAndLeaderboard {
+    if (localPlayerAlias) { // If logged in, submit data
+        BroggutScene* scene = [self currentScene];
+        PlayerProfile* profile = [[GameController sharedGameController] currentProfile];
+        if (scene && profile) {
+            // Update acheivements
+            [self updateBroggutCountAchievements:[profile totalBroggutCount]];
+            [self updateCraftBuiltAchievements:scene.numberOfCurrentShips];
+            // Others are updated async which is OK
+            
+            // Update leaderboard
+            [self reportScore:[profile totalBroggutCount] forCategory:@"brogguts_leaderboard"];
+        }
+    }
+}
+
 - (void)loadAchievements {
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements, NSError *error)
      {
@@ -576,7 +598,13 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     GKAchievement *achievement = [self getAchievementForIdentifier:identifier];
     if (achievement)
     {
+        if (percent > achievement.percentComplete && percent >= 100.0f) {
+            achievement.showsCompletionBanner = YES;
+        } else {
+            achievement.showsCompletionBanner = NO;
+        }
         achievement.percentComplete = percent;
+        
         [achievement reportAchievementWithCompletionHandler:^(NSError *error)
          {
              if (error != nil)
@@ -597,6 +625,18 @@ static GameCenterSingleton* sharedGCSingleton = nil;
              // handle errors
          }
      }];
+}
+
+- (void)reportScore:(int64_t)score forCategory:(NSString*)category {
+    GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
+    scoreReporter.value = score;
+    
+    [scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
+        if (error != nil)
+        {
+            // handle the reporting error
+        }
+    }];
 }
 
 - (void)processQueuedPackets {

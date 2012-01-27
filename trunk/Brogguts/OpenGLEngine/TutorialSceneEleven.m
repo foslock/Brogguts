@@ -26,7 +26,10 @@
         isAllowingCraft = YES;
         isAllowingStructures = NO;
         
-        [helpText setObjectText:@"Tap the button in the top left to open the auxilury menu, select 'Craft', and drag the craft you want onto the screen, then it will travel to that location. Create three new Ants."];
+        [helpText setObjectText:@"Tap the button in the top left to open the auxilury menu, select 'Build Craft', and drag the craft you want onto the screen, then it will travel to that location. Create three new Ants."];
+        
+        [fogManager setIsDrawingFogOnScene:YES];
+        [fogManager setIsDrawingFogOnOverview:YES];
     }
     return self;
 }

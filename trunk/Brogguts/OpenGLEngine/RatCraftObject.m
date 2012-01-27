@@ -19,6 +19,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftRatID withLocation:location isTraveling:traveling];
 	if (self) {
+        [self createTurretLocationsWithCount:1];
 		isCloaked = YES;
         cloakAlpha = 0.0f;
         nearbyEnemyRadar = nil;

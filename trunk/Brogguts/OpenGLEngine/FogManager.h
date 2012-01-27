@@ -13,13 +13,17 @@
 
 #import <Foundation/Foundation.h>
 
-#define FOG_UPDATE_FREQUENCY 4
-#define FOG_SHADE_OF_GRAY_SCENE 0.0f
-#define FOG_SHADE_OF_GRAY_OVERVIEW 0.2f
+#define FOG_UPPER_UPDATE_FREQUENCY 4
+#define FOG_LOWER_UPDATE_FREQUENCY 120
+#define FOG_SHADE_OF_GRAY_SCENE 0.01f
+#define FOG_SHADE_OF_GRAY_OVERVIEW 0.15f
+#define FOG_UPPER_MAX_ALPHA 1.0f
+#define FOG_LOWER_MAX_ALPHA 0.75f
 
 @interface FogManager : NSObject {
     int gridResolution; // How many units wide a grid cell will be
-    float* gridData; // 2D representation on a 1D array
+    float* upperFogData; // 2D representation on a 1D array, does not regenerate
+    float* lowerFogData; // 2D representation on a 1D array, does regenerate
     int cellsWide;
     int cellsHigh;
     BOOL isDrawingFogOnScene;
@@ -33,8 +37,11 @@
 
 - (void)clearAllFog;
 - (void)resetAllFog;
+- (void)resetLowerFog;
 
-- (float)fogValueAtPoint:(CGPoint)point;
+- (float)upperFogValueAtPoint:(CGPoint)point;
+- (float)lowerFogValueAtPoint:(CGPoint)point;
+
 - (void)removeFogAtPoint:(CGPoint)point withRadius:(int)radius withIntensity:(float)intensity;
 
 - (void)renderFogInSceneRect:(CGRect)rect withScroll:(Vector2f)scroll;

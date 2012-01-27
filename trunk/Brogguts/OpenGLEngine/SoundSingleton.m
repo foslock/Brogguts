@@ -12,7 +12,7 @@
 #import "BroggutScene.h"
 
 NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
-    @"testsound.wav", // Explosion
+    @"explosionsound.wav", // Explosion
     @"lightsound.wav", // Light switch
     @"doorclose.wav", // Door close
     @"menubuttonpressed.wav", // Menu pressed
@@ -25,10 +25,11 @@ NSString* kSoundFileNames[TOTAL_SOUND_FILE_COUNT] = {
     @"laser1.wav", // Laser Attack 1
     @"laser2.wav", // Laser Attack 2
     @"laser3.wav", // Laser Attack 3
-    @"", // Missile fire
+    @"missilelaunch.wav", // Missile fire
     @"overviewfadein.wav", // OverviewFadeIn
     @"overviewfadeout.wav", // OverviewFadeOut
     @"miningsound.wav", // Mining sound
+    @"unlock.wav", // Unlock sound
 };
 
 NSString* kMusicFileNames[TOTAL_MUSIC_FILE_COUNT] = {

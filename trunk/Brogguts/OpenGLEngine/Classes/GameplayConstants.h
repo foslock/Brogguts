@@ -117,6 +117,7 @@ enum ObjectIDs { // How objects are indentified
     kObjectStartMissionObjectID,
     kObjectHealthDropObjectID,
     kObjectMissileObjectID,
+    kObjectRefinerySmokeObjectID,
 };
 
 // Max values
@@ -392,8 +393,8 @@ enum TheTurretValues {
 	// Special Values
 	kStructureTurretWeapons = 4,
 	kStructureTurretAttackRange = 512,
-    kStructureTurretAttackCooldown = 20,
-	kStructureTurretAttackCooldownUpgrade = 10,
+    kStructureTurretAttackCooldown = 40,
+	kStructureTurretAttackCooldownUpgrade = 20,
 };
 
 enum TheRadarValues {
@@ -433,6 +434,13 @@ enum TheFixerValues {
 //
 // Gameplay Specific Information
 //
+
+enum MiningStates {
+	kMiningStateMining,
+	kMiningStateApproaching,
+	kMiningStateReturning,
+	kMiningStateNone,
+};
 
 enum MovingAIStates {
 	kMovingAIStateStill,

@@ -16,11 +16,11 @@
 	NSMutableArray* droneArray;		// Array of spider drones for this ship
 	int droneCount;					// Current number of drone owned by this ship
 	int droneCountLimit;			// Limit to the number of drones this ship can hold
-    int droneBuildTimer;            // Timer that lets the spider build more drones
+    float droneBuildTimer;            // Timer that lets the spider build more drones
     BOOL droneBayContainment[SPIDER_NUMBER_OF_DRONES];  // containing bools for each drone bay stating whether or not a drone is held in it
     
     int droneBroggutCost;               // Brogguts
-    int droneBuildTime;                 // Seconds
+    float droneBuildTime;                 // Seconds
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

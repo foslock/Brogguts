@@ -27,6 +27,9 @@
         isAllowingStructures = YES;
         
         [helpText setObjectText:@"Structures are built the same way, although only one can be travelling at a time. The farther from your Base Station, the longer the wait. Build three new Blocks. Check the Broggupedia for a detailed description."];
+        
+        [fogManager setIsDrawingFogOnScene:YES];
+        [fogManager setIsDrawingFogOnOverview:YES];
     }
     return self;
 }

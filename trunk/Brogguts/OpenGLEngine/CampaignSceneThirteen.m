@@ -42,7 +42,7 @@
             [sceneDialogues addObject:dia2];
             [dia2 release];
             
-            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:3.0f withCount:-1];
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:5.0f withCount:-1];
             [spawner pauseSpawnerForDuration:(CAMPAIGN_THIRTEEN_TIME_LIMIT * 60.0f) + 1.0f];
             [spawner setSendingLocation:homeBaseLocation];
             [spawner setSendingLocationVariance:100.0f];
@@ -74,12 +74,16 @@
     } else {
         [countdownTimer setObjectText:@""];
     }
+    
+    if (numberOfEnemyStructures == 0) {
+        [[self spawnerWithID:0] stopSpawnerAndClearCounts];
+    }
     [self updateSpawnersWithDelta:aDelta];
 }
 
 - (BOOL)checkObjective {
     if (numberOfEnemyStructures == 0 &&
-        numberOfEnemyShips == 0) {
+        numberOfEnemyShips == 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;
@@ -89,7 +93,7 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

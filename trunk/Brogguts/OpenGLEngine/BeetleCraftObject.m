@@ -18,6 +18,7 @@
 	self = [super initWithTypeID:kObjectCraftBeetleID withLocation:location isTraveling:traveling];
 	if (self) {
 		[self createTurretLocationsWithCount:1];
+        hasUpgraded = NO;
 	}
 	return self;
 }
@@ -38,6 +39,10 @@
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
         attributeAttackRange = kCraftBeetleMissileRange;
+        if (!hasUpgraded) {
+            hasUpgraded = YES;
+            [self createTurretLocationsWithCount:0];
+        }
     }
     [super updateObjectLogicWithDelta:aDelta];
 }
