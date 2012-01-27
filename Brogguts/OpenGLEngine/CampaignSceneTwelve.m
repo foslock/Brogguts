@@ -13,7 +13,7 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
-#define CAMPAIGN_TWELVE_TIME_LIMIT 10.0f
+#define CAMPAIGN_TWELVE_TIME_LIMIT 20.0f
 
 @implementation CampaignSceneTwelve
 
@@ -73,7 +73,7 @@
 }
 
 - (BOOL)checkObjective {
-    if (!isEnemyBaseStationAlive) {
+    if (!isEnemyBaseStationAlive && !doesExplosionExist) {
         return YES;
     }
     return NO;
@@ -83,7 +83,7 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     if ([[self spawnerWithID:0] isDoneSpawning]) {

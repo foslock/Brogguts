@@ -225,4 +225,11 @@
     return (currentTimer - spawnerDuration);
 }
 
+- (void)stopSpawnerAndClearCounts {
+    for (int i = 0; i < TOTAL_OBJECT_TYPES_COUNT; i++) {
+        idCount[i] = 0;
+    }
+    isDoneSpawning = YES;
+}
+
 @end

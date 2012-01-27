@@ -74,7 +74,7 @@
 
 - (BOOL)checkObjective {
     int enemyShipCount = [self numberOfEnemyShips];
-    if ([[self spawnerWithID:0] isDoneSpawning] && enemyShipCount == 0) {
+    if ([[self spawnerWithID:0] isDoneSpawning] && enemyShipCount == 0 && !doesExplosionExist) {
         return YES;
     }
     return NO; // NO
@@ -84,7 +84,7 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

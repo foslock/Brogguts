@@ -20,9 +20,13 @@
 	int miningBroggutID;			// The ID of the medium broggut that is currently being mined
 	CGPoint miningLocation;			// The center of the broggut currently being mined
     float miningAIValue;            // Value that the AI values this miner
+    
+    float randomMiningValueX;        // Generated for mining animation
+    float randomMiningValueY;        // Generated for mining animation
 }
 
 @property (readonly) CGPoint miningLocation;
+@property (readonly) int miningState;
 @property (nonatomic, assign) float miningAIValue;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;

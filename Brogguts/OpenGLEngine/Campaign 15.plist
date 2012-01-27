@@ -3087,16 +3087,16 @@
 			<integer>2</integer>
 			<integer>16</integer>
 			<array/>
-			<integer>1</integer>
+			<integer>0</integer>
 			<real>0.0</real>
 			<false/>
 			<array>
-				<real>4032</real>
-				<real>3008</real>
+				<real>64</real>
+				<real>64</real>
 			</array>
 			<array>
-				<real>4032</real>
-				<real>3008</real>
+				<real>64</real>
+				<real>64</real>
 			</array>
 			<integer>-1</integer>
 			<false/>
@@ -3111,16 +3111,16 @@
 			<integer>2</integer>
 			<integer>16</integer>
 			<array/>
-			<integer>0</integer>
+			<integer>1</integer>
 			<real>0.0</real>
 			<false/>
 			<array>
-				<real>64</real>
-				<real>64</real>
+				<real>4032</real>
+				<real>3008</real>
 			</array>
 			<array>
-				<real>64</real>
-				<real>64</real>
+				<real>4032</real>
+				<real>3008</real>
 			</array>
 			<integer>-1</integer>
 			<false/>
@@ -4273,6 +4273,78 @@
 			<array>
 				<real>2368</real>
 				<real>192</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
+		<array>
+			<integer>2</integer>
+			<integer>23</integer>
+			<array/>
+			<integer>1</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>1984</real>
+				<real>2240</real>
+			</array>
+			<array>
+				<real>1984</real>
+				<real>2240</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
+		<array>
+			<integer>2</integer>
+			<integer>23</integer>
+			<array/>
+			<integer>1</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>2752</real>
+				<real>1088</real>
+			</array>
+			<array>
+				<real>2752</real>
+				<real>1088</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
+		<array>
+			<integer>2</integer>
+			<integer>23</integer>
+			<array/>
+			<integer>1</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>3264</real>
+				<real>2240</real>
+			</array>
+			<array>
+				<real>3264</real>
+				<real>2240</real>
 			</array>
 			<integer>-1</integer>
 			<false/>

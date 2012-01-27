@@ -39,21 +39,21 @@ const int kNPCAntPathData[CAMPAIGN_FOURTEEN_PATH_POINTS*2] = {
 - (id)initWithLoaded:(BOOL)loaded {
     self = [super initWithCampaignIndex:13 wasLoaded:loaded];
     if (self) {
-        [startObject setMissionTextTwo:@"- Escort the neutral Ant to its destination"];
+        [startObject setMissionTextTwo:@"- Escort the damaged Ant to its destination"];
         [startObject setMissionTextThree:@"- Protect the Ant at all costs"];
         
         if (!loaded) {
             DialogueObject* dia1 = [[DialogueObject alloc] init];
             [dia1 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE];
             [dia1 setDialogueImageIndex:kDialoguePortraitAnon];
-            [dia1 setDialogueText:@"I've got a special job for you this time around. We've given you command of a sizeable force in order to escort a very important Ant craft through this section of space. Unfortunately it is protected and patrolled by company forces."];
+            [dia1 setDialogueText:@"I've got a special job for you this time around. We need you to escort an important Ant craft through this section of company guarded space. Unfortunately the Ant's control systems were damaged and it can only follow a predetermined path. Make sure it gets through safely."];
             [sceneDialogues addObject:dia1];
             [dia1 release];
             
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
             [dia2 setDialogueImageIndex:kDialoguePortraitAnon];
-            [dia2 setDialogueText:@"This Ant contains some serious cargo, the details of which are a closely guarded secret. Do not let it get destroyed or worse, captured. We have big plans for it in the near future. And try to keep up with it, it may seem slow, but its path is hardwired and cannot be changed."];
+            [dia2 setDialogueText:@"This Ant contains some serious cargo, the details of which are a closely guarded secret. Do not let it get destroyed or captured; we have big plans for it in the near future. And try to keep up with it, it may seem slow, but its path is hardwired and it won't stop for anything."];
             [sceneDialogues addObject:dia2];
             [dia2 release];
             
@@ -84,7 +84,7 @@ const int kNPCAntPathData[CAMPAIGN_FOURTEEN_PATH_POINTS*2] = {
                 }
             }
         }
-        [npcAnt setCraftSpeedLimit:kCraftAntEngines - 1];
+        [npcAnt setCraftSpeedLimit:CLAMP(kCraftAntEngines - 2, 1, kMaximumEnginesValue)];
         [enemyAIController setIsPirateScene:NO];
     }
     return self;
@@ -104,7 +104,7 @@ const int kNPCAntPathData[CAMPAIGN_FOURTEEN_PATH_POINTS*2] = {
 }
 
 - (BOOL)checkFailure {
-    if (npcAnt.destroyNow) {
+    if (npcAnt.destroyNow && !doesExplosionExist) {
         return YES;
     }
     return NO;

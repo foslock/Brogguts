@@ -33,11 +33,11 @@
                     [button setIsDisabled:YES];
 					break;
 				case 1:
-					[button setButtonText:@"Craft"];
+					[button setButtonText:@"Build\nCraft"];
                     [button setIsDisabled:YES];
 					break;
 				case 2:
-					[button setButtonText:@"Structures"];
+					[button setButtonText:@"Build\nStructures"];
                     [button setIsDisabled:YES];
 					break;
                 case 3:

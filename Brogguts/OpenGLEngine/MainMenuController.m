@@ -286,8 +286,6 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     int brogguts = [[[GameController sharedGameController] currentProfile] totalBroggutCount];
     [broggutCount setText:[NSString stringWithFormat:@"Collected Brogguts: %i", brogguts]];
     [spaceYearCount setText:[NSString stringWithFormat:@"Space Year: %i P.P.", spaceYear]];
-    [self reportScore:brogguts forCategory:@"brogguts_leaderboard"];
-    [[GameCenterSingleton sharedGCSingleton] updateBroggutCountAchievements:brogguts];
 }
 
 - (void)makeSpinnerAppear {
@@ -345,18 +343,6 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     [spinnerView release];
-}
-
-- (void)reportScore:(int64_t)score forCategory:(NSString*)category {
-    GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
-    scoreReporter.value = score;
-    
-    [scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
-        if (error != nil)
-        {
-            // handle the reporting error
-        }
-    }];
 }
 
 - (UIImage*)imageWithRandomStars {
@@ -454,6 +440,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
         //    [self animateLetters];
     }];
     [self updateCountLabels];
+    [[GameCenterSingleton sharedGCSingleton] updateAllAchievementsAndLeaderboard];
     
     // Play menu background music
     if (![[GameController sharedGameController] currentScene]) {

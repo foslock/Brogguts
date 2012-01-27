@@ -60,7 +60,7 @@
 }
 
 - (BOOL)checkObjective {
-    return (myCraft.destroyNow);
+    return (myCraft.destroyNow && !doesExplosionExist);
 }
 
 @end

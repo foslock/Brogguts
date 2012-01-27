@@ -41,7 +41,7 @@
             DialogueObject* dia2 = [[DialogueObject alloc] init];
             [dia2 setDialogueActivateTime:CAMPAIGN_DEFAULT_WAIT_TIME_MESSAGE + 0.1f];
             [dia2 setDialogueImageIndex:kDialoguePortraitAnon];
-            [dia2 setDialogueText:@"The Ant you escorted through the last area of space has something very... powerful in its cargo space. I want you to end your pirate career with a bang, so just lead it to the enemy base station and it will automatically detonate. Get it all the way there safely! It will follow your closest Ant within its range."];
+            [dia2 setDialogueText:@"The Ant you escorted through the last area of space has something very... powerful in its cargo space. I want you to end your pirate career with a bang, so just lead it to the enemy base station and it will automatically detonate. Get it all the way there safely! It will follow the closest friendly Ant within its range."];
             [sceneDialogues addObject:dia2];
             [dia2 release];
             
@@ -130,7 +130,7 @@
 }
 
 - (BOOL)checkObjective {
-    if (!isEnemyBaseStationAlive && boomGoesTheDynamite) {
+    if (!isEnemyBaseStationAlive && boomGoesTheDynamite && !doesExplosionExist) {
         return YES;
     }
     return NO;
@@ -140,10 +140,10 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (npcAnt.destroyNow && !boomGoesTheDynamite) {
+    if (npcAnt.destroyNow && !boomGoesTheDynamite && !doesExplosionExist) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

@@ -12,7 +12,7 @@
 
 #define HEARABLE_RECT_WIDTH_PADDING 128.0f
 #define HEARABLE_RECT_HEIGHT_PADDING 128.0f
-#define TOTAL_SOUND_FILE_COUNT 17
+#define TOTAL_SOUND_FILE_COUNT 18
 #define TOTAL_MUSIC_FILE_COUNT 2
 
 #define SOUND_MINING_SOUND_LENGTH 2.0f // seconds
@@ -38,6 +38,7 @@ enum kSoundFileIndecies {
     kSoundFileOverviewFadeIn,
     kSoundFileOverviewFadeOut,
     kSoundFileMiningSound,
+    kSoundFileUnlockSound,
 };
 
 enum kMusicFileIndecies {

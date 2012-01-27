@@ -199,6 +199,7 @@ enum kProcessFrameOffset {
     // Explosion's shaking the screen
     BOOL isScreenShaking;
     float screenShakingAmount;
+    BOOL doesExplosionExist;
     
     // These are shown when about to build a new structure or craft
     TextObject* buildBroggutValue;
@@ -309,8 +310,11 @@ enum kProcessFrameOffset {
 @property (nonatomic, readonly) NotificationObject* notification;
 @property (readonly) BOOL isAllowingCraft;
 @property (readonly) BOOL isAllowingStructures;
-@property (nonatomic, assign) int numberOfEnemyShips;
-@property (nonatomic, assign) int numberOfEnemyStructures;
+@property (readonly) BOOL doesExplosionExist;
+@property (readonly) int numberOfCurrentShips;
+@property (readonly) int numberOfCurrentStructures;
+@property (readonly) int numberOfEnemyShips;
+@property (readonly) int numberOfEnemyStructures;
 @property (readonly) NSMutableArray* sceneSpawners;
 @property (readonly) NSMutableArray* sceneDialogues;
 @property (nonatomic, retain) UpgradeManager* upgradeManager;

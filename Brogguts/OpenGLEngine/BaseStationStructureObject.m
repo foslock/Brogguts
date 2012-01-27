@@ -16,6 +16,8 @@
 #import "CollisionManager.h"
 #import "UpgradeManager.h"
 
+#define BASE_STATION_ROTATION_SPEED 0.01f
+
 @implementation BaseStationStructureObject
 
 - (void)dealloc {
@@ -43,6 +45,9 @@
                 [manager setPathNodeIsOpen:NO atLocation:point];
             }
         }
+        
+        // Slowly spin!
+        rotationSpeed = BASE_STATION_ROTATION_SPEED;
 	}
 	return self;
 }
@@ -68,6 +73,14 @@
 			[otherCraft cashInBrogguts];
 		}
 	}
+    
+    // Uncloak rats!
+    if (other.objectType == kObjectCraftRatID) {
+        RatCraftObject* rat = (RatCraftObject*)other;
+        if (rat.objectAlliance != objectAlliance) {
+            [rat setIsCloaked:NO withRadar:self];
+        }
+    }
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {

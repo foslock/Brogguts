@@ -14,6 +14,7 @@
 #import "UpgradeManager.h"
 #import "SoundSingleton.h"
 #import "GameController.h"
+#import "RatCraftObject.h"
 
 @implementation TurretStructureObject
 
@@ -72,7 +73,14 @@
 	if (attackCooldownTimer > 0) {
 		attackCooldownTimer--;
 	} else {
-		[self attackTarget];
+		if (closestEnemyObject.objectType == kObjectCraftRatID) {
+            RatCraftObject* rat = (RatCraftObject*)closestEnemyObject;
+            if (![rat isCloaked]) {
+                [self attackTarget];
+            }
+        } else {
+            [self attackTarget];
+        }
 	}
 	
 	[super updateObjectLogicWithDelta:aDelta];

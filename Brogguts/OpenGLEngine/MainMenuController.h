@@ -77,8 +77,6 @@ extern NSString* const kTutorialExperienceKey;
 
 - (void)updateCountLabels;
 
-- (void)reportScore:(int64_t)score forCategory:(NSString*)category;
-
 - (IBAction)playButtonSound:(id)sender;
 - (IBAction)loadOptionsViewController;
 - (IBAction)loadInfoViewController;

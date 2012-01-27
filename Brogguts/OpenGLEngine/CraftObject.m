@@ -256,11 +256,13 @@
             free(lightPointsArray->locations);
         }
         free(lightPointsArray);
+        lightPointsArray = NULL;
     }
-    
-    lightPointsArray = (PointArray*)malloc( sizeof(*lightPointsArray) );
-    lightPointsArray->pointCount = lightCount;
-    lightPointsArray->locations = (PointLocation*)malloc(lightCount * sizeof(PointLocation) );
+    if (lightCount > 0) {
+        lightPointsArray = (PointArray*)malloc( sizeof(*lightPointsArray) );
+        lightPointsArray->pointCount = lightCount;
+        lightPointsArray->locations = (PointLocation*)malloc(lightCount * sizeof(PointLocation) );
+    }
 }
 
 - (void)createTurretLocationsWithCount:(int)turretCount {
@@ -269,11 +271,13 @@
             free(turretPointsArray->locations);
         }
         free(turretPointsArray);
+        turretPointsArray = NULL;
     }
-    
-    turretPointsArray = (PointArray*)malloc( sizeof(*turretPointsArray) );
-    turretPointsArray->pointCount = turretCount;
-    turretPointsArray->locations = (PointLocation*)malloc(turretCount * sizeof(PointLocation) );
+    if (turretCount > 0) {
+        turretPointsArray = (PointArray*)malloc( sizeof(*turretPointsArray) );
+        turretPointsArray->pointCount = turretCount;
+        turretPointsArray->locations = (PointLocation*)malloc(turretCount * sizeof(PointLocation) );
+    }
 }
 
 - (void)calculateCraftAIInfo {
@@ -433,9 +437,23 @@
                     CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
                     if ([obj isKindOfClass:[CraftObject class]]) {
                         CraftObject* craft = (CraftObject*)obj;
+                        if ([craft isKindOfClass:[AntCraftObject class]]) {
+                            AntCraftObject* ant = (AntCraftObject*)craft;
+                            if (ant.miningState != kMiningStateNone) {
+                                continue;
+                            }
+                        }
+                        if ([craft isKindOfClass:[CamelCraftObject class]]) {
+                            CamelCraftObject* camel = (CamelCraftObject*)craft;
+                            if (camel.miningState != kMiningStateNone) {
+                                continue;
+                            }
+                        }
                         if (craft.objectAlliance == objectAlliance) {
-                            [craft calculateCraftAIInfo];
-                            totalCraftPower += craft.craftAIInfo.averageCraftValue;
+                            if (craft.movingAIState != kMovingAIStateMining && !craft.isTraveling && !craft.isBeingControlled) {
+                                [craft calculateCraftAIInfo];
+                                totalCraftPower += craft.craftAIInfo.averageCraftValue;
+                            }
                         }
                     }
                 }
@@ -445,8 +463,22 @@
                         CollidableObject* obj = [nearbyCraftArray objectAtIndex:i];
                         if ([obj isKindOfClass:[CraftObject class]]) {
                             CraftObject* craft = (CraftObject*)obj;
+                            if ([craft isKindOfClass:[AntCraftObject class]]) {
+                                AntCraftObject* ant = (AntCraftObject*)craft;
+                                if (ant.miningState != kMiningStateNone) {
+                                    continue;
+                                }
+                            }
+                            if ([craft isKindOfClass:[CamelCraftObject class]]) {
+                                CamelCraftObject* camel = (CamelCraftObject*)craft;
+                                if (camel.miningState != kMiningStateNone) {
+                                    continue;
+                                }
+                            }
                             if (craft.objectAlliance == objectAlliance) {
-                                [craft setPriorityEnemyTarget:enemy];
+                                if (craft.movingAIState != kMovingAIStateMining && !craft.isTraveling && !craft.isBeingControlled) {
+                                    [craft setPriorityEnemyTarget:enemy];
+                                }
                             }
                         }
                     }
@@ -485,7 +517,7 @@
     sheildTimer = 1.0f;
 }
 
-- (void)attackTarget {
+- (void)attackTarget {    
     CGPoint enemyPoint = closestEnemyObject.objectLocation;
     attackLaserTargetPosition = CGPointMake(enemyPoint.x + (RANDOM_MINUS_1_TO_1() * 20.0f),
                                             enemyPoint.y + (RANDOM_MINUS_1_TO_1() * 20.0f));
@@ -644,12 +676,6 @@
         }
     }
     
-    // Update the light blinking positions
-    [self updateCraftLightLocations];
-    
-    // Update turret position
-    [self updateCraftTurretLocations];
-    
     if (objectAlliance != kAllianceNeutral) {
         // Attack if able!
         if (attackCooldownTimer > 0) {
@@ -711,6 +737,12 @@
     }
     
     [super updateObjectLogicWithDelta:aDelta];
+    
+    // Update the light blinking positions
+    [self updateCraftLightLocations];
+    
+    // Update turret position
+    [self updateCraftTurretLocations];
 }
 
 - (void)drawHoverSelectionWithScroll:(Vector2f)scroll withAlpha:(float)alpha {

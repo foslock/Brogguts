@@ -54,6 +54,8 @@ extern NSString* const kAchievementIDBarrelRoll;
 
 #define GAME_CENTER_OBJECT_UPDATE_FRAME_PAUSE 10 // The number of frames between each update for synchronized objects
 
+#define GAME_CENTER_ACHIEVEMENT_UPDATE_FREQUENCY 10.0f // Seconds
+
 @class GameController;
 @class BroggutScene;
 @class SkirmishMatchController;
@@ -69,7 +71,7 @@ extern NSString* const kAchievementIDBarrelRoll;
     NSString* localPlayerAlias;
 	NSString* otherPlayerAlias;
     NSArray* otherPlayerArrayID;
-    NSString* hostedFileName; 
+    NSString* hostedFileName;
 	GKMatch* currentMatch;
     
     // Queues for received packets
@@ -121,7 +123,6 @@ extern NSString* const kAchievementIDBarrelRoll;
 - (void)moveMatchToScene;
 - (void)disconnectFromGame;
 
-
 // Specific achievement updaters
 - (void)updateBroggutCountAchievements:(int)brogguts;
 - (void)updateCraftBuiltAchievements:(int)craft;
@@ -131,10 +132,14 @@ extern NSString* const kAchievementIDBarrelRoll;
 - (void)updateStructuresUnlockAchievement:(int)unlockedStructures;
 
 // Achievement Utility functions
+- (void)updateAllAchievementsAndLeaderboard;
 - (void)loadAchievements;
 - (GKAchievement*)getAchievementForIdentifier:(NSString*)identifier;
 - (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent;
 - (void)resetAllAchievements;
+
+// Reporting leaderboard score
+- (void)reportScore:(int64_t)score forCategory:(NSString*)category;
 
 - (void)processQueuedPackets;
 

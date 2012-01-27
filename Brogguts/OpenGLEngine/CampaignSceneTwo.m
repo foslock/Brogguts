@@ -36,12 +36,8 @@
     return self;  
 }
 
-- (void)updateSceneWithDelta:(float)aDelta {
-    [super updateSceneWithDelta:aDelta];
-}
-
 - (BOOL)checkObjective {
-    if (numberOfEnemyShips == 0 && numberOfEnemyStructures == 0) {
+    if (numberOfEnemyShips == 0 && numberOfEnemyStructures == 0 && !doesExplosionExist) {
         return YES;
     }
     return NO; // NO

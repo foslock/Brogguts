@@ -37,7 +37,7 @@
 }
 
 - (BOOL)checkObjective {
-    if (!isEnemyBaseStationAlive) {
+    if (!isEnemyBaseStationAlive && !doesExplosionExist) {
         return YES;
     }
     return NO;
@@ -47,7 +47,7 @@
     if ([self checkDefaultFailure]) {
         return YES;
     }
-    if (numberOfCurrentStructures <= 0) {
+    if (numberOfCurrentStructures <= 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

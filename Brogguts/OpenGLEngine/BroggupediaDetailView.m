@@ -172,7 +172,7 @@ const NSString* upgradeDefaultInfo = @"Locked";
             [unitImageView setCenter:center];
             [unitBroggutsCostLabel setText:[NSString stringWithFormat:@"Brogguts Cost: %i",kCraftRatCostBrogguts]];
             [unitMetalCostLabel setText:[NSString stringWithFormat:@"Metal Cost: %i",kCraftRatCostMetal]];
-            NSString* description = [NSString stringWithFormat:@"\tThe Rat is another brand new company invention. While seemingly harmless, this craft has the passive ability to remain cloaked and hidden from its enemies. It is extremely useful to scout out enemy colonies without being noticed. Only an enemy radar structure will be able to detect it."];
+            NSString* description = [NSString stringWithFormat:@"\tThe Rat is another brand new company invention. While seemingly harmless, this craft has the passive ability to remain cloaked and hidden from its enemies. It is extremely useful to scout out enemy colonies without being noticed. Only an enemy radar structure or a nearby Base Station will be able to detect it."];
             NSString* upgradeInfo = (NSString*)upgradeDefaultInfo;
             if (upgradeUnlocked) {
                 upgradeInfo = kObjectUnlockDetailText[objectID];

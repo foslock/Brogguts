@@ -14,8 +14,8 @@
 #import "BroggutScene.h"
 #import "SoundSingleton.h"
 
-#define EXPLOSION_RING_GROWTH_RATE 1.1f
-#define EXPLOSION_RING_FADE_RATE 0.1f
+#define EXPLOSION_RING_GROWTH_RATE 1.05f
+#define EXPLOSION_RING_FADE_RATE 0.05f
 
 @implementation ExplosionObject
 

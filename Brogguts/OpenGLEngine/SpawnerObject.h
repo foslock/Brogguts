@@ -39,4 +39,6 @@
 - (void)pauseSpawnerForDuration:(float)duration;
 - (float)pauseTimeLeft;
 
+- (void)stopSpawnerAndClearCounts;
+
 @end

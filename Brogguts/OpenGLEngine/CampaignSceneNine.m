@@ -85,7 +85,7 @@
 
 - (BOOL)checkObjective {
     // On destruction of the base station, "win"
-    if (isFriendlyBaseStationAlive) {
+    if (isFriendlyBaseStationAlive && !doesExplosionExist) {
         return NO;
     } else {
         return YES;
@@ -94,7 +94,7 @@
 
 - (BOOL)checkFailure {
     // Can't lose this mission, unless there are no enemies and spawner is done
-    if ([[self spawnerWithID:0] isDoneSpawning] && numberOfEnemyShips == 0) {
+    if ([[self spawnerWithID:0] isDoneSpawning] && numberOfEnemyShips == 0 && !doesExplosionExist) {
         return YES;
     }
     return NO;

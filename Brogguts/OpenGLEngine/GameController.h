@@ -132,7 +132,6 @@ enum SceneTypes {
 @property (retain) PlayerProfile* currentProfile;
 @property (nonatomic, retain) BroggutScene *currentScene;
 @property (nonatomic, retain) BroggutScene *justMadeScene;
-@property (nonatomic, retain) UIView* containerView;
 @property (nonatomic, retain) EAGLView *eaglView;
 @property (nonatomic, retain) NSMutableDictionary *gameScenes;
 @property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;

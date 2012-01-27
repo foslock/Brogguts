@@ -9,19 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "CraftObject.h"
 
-@class RadarStructureObject;
+@class StructureObject;
 
 @interface RatCraftObject : CraftObject {
     BOOL isCloaked;
     float cloakAlpha;
-    RadarStructureObject* nearbyEnemyRadar;
+    StructureObject* nearbyEnemyRadar;
 }
 
 @property (readonly) BOOL isCloaked;
 @property (nonatomic, assign) float cloakAlpha;
-@property (nonatomic, assign) RadarStructureObject* nearbyEnemyRadar;
+@property (nonatomic, assign) StructureObject* nearbyEnemyRadar;
 
-- (void)setIsCloaked:(BOOL)isCloaked withRadar:(RadarStructureObject*)radar;
+- (void)setIsCloaked:(BOOL)isCloaked withRadar:(StructureObject*)radar;
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
 

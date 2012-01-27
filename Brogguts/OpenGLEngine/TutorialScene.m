@@ -75,6 +75,8 @@ NSString* kTutorialSceneFileNames[TUTORIAL_SCENES_COUNT] = {
         isAllowingOverview = NO;
         isAllowingCraft = NO;
         isAllowingStructures = NO;
+        [fogManager setIsDrawingFogOnScene:NO];
+        [fogManager setIsDrawingFogOnOverview:NO];
         
         hasAddedTutorialDialogue = NO;
     }

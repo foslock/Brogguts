@@ -15,7 +15,7 @@
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling {
 	self = [super initWithTypeID:kObjectCraftMothID withLocation:location isTraveling:traveling];
 	if (self) {
-		//
+		[self createTurretLocationsWithCount:1];
 	}
 	return self;
 }

@@ -10,7 +10,7 @@
 #import "CraftObject.h"
 
 @interface BeetleCraftObject : CraftObject {
-
+    BOOL hasUpgraded;
 }
 
 - (id)initWithLocation:(CGPoint)location isTraveling:(BOOL)traveling;
