@@ -13,7 +13,7 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
-#define CAMPAIGN_NINE_WAVE_TIME 0.1f
+#define CAMPAIGN_NINE_WAVE_TIME 8.0f
 
 @implementation CampaignSceneNine
 
@@ -85,7 +85,7 @@
 
 - (BOOL)checkObjective {
     // On destruction of the base station, "win"
-    if (isFriendlyBaseStationAlive && !doesExplosionExist) {
+    if (isFriendlyBaseStationAlive && doesExplosionExist) {
         return NO;
     } else {
         return YES;

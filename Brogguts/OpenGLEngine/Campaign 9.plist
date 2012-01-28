@@ -1187,6 +1187,54 @@
 			</array>
 			<integer>0</integer>
 		</array>
+		<array>
+			<integer>1</integer>
+			<integer>7</integer>
+			<array/>
+			<integer>0</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>320</real>
+				<real>448</real>
+			</array>
+			<array>
+				<real>320</real>
+				<real>448</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
+		<array>
+			<integer>1</integer>
+			<integer>7</integer>
+			<array/>
+			<integer>0</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>448</real>
+				<real>320</real>
+			</array>
+			<array>
+				<real>448</real>
+				<real>320</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
 	</array>
 </array>
 </plist>

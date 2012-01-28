@@ -188,7 +188,6 @@
 		6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118201370F1720039DB7C /* Campaign 6.plist */; };
 		6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118211370F1720039DB7C /* Campaign 7.plist */; };
 		6F6118291370F1720039DB7C /* Campaign 8.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118221370F1720039DB7C /* Campaign 8.plist */; };
-		6F61182A1370F1720039DB7C /* Campaign 9.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F6118231370F1720039DB7C /* Campaign 9.plist */; };
 		6F61182E1370F1EB0039DB7C /* CampaignSceneFour.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F61182D1370F1EA0039DB7C /* CampaignSceneFour.m */; };
 		6F6118311370F2400039DB7C /* CampaignSceneFive.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118301370F2400039DB7C /* CampaignSceneFive.m */; };
 		6F6118341370F27D0039DB7C /* CampaignSceneSix.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6118331370F27D0039DB7C /* CampaignSceneSix.m */; };
@@ -286,6 +285,7 @@
 		6F91F98C14D3655000D77E51 /* buttonconfirm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F98A14D3654F00D77E51 /* buttonconfirm.wav */; };
 		6F91F98D14D3655000D77E51 /* shipselection.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F98B14D3654F00D77E51 /* shipselection.wav */; };
 		6F91F98F14D3660B00D77E51 /* explosionsound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F98E14D3660B00D77E51 /* explosionsound.wav */; };
+		6F91F99114D3873700D77E51 /* Campaign 9.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F99014D3873700D77E51 /* Campaign 9.plist */; };
 		6FA748C5146316BC00701F98 /* comingsoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748C4146316BC00701F98 /* comingsoon.png */; };
 		6FA748D51464683B00701F98 /* recommendation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748D41464683B00701F98 /* recommendation.png */; };
 		6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA299F13E61D57000D560A /* gamecenter-icon.png */; };
@@ -615,7 +615,6 @@
 		6F6118201370F1720039DB7C /* Campaign 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 6.plist"; sourceTree = "<group>"; };
 		6F6118211370F1720039DB7C /* Campaign 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 7.plist"; sourceTree = "<group>"; };
 		6F6118221370F1720039DB7C /* Campaign 8.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 8.plist"; sourceTree = "<group>"; };
-		6F6118231370F1720039DB7C /* Campaign 9.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 9.plist"; sourceTree = "<group>"; };
 		6F61182C1370F1EA0039DB7C /* CampaignSceneFour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFour.h; sourceTree = "<group>"; };
 		6F61182D1370F1EA0039DB7C /* CampaignSceneFour.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampaignSceneFour.m; sourceTree = "<group>"; };
 		6F61182F1370F23F0039DB7C /* CampaignSceneFive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampaignSceneFive.h; sourceTree = "<group>"; };
@@ -755,6 +754,7 @@
 		6F91F98A14D3654F00D77E51 /* buttonconfirm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buttonconfirm.wav; sourceTree = "<group>"; };
 		6F91F98B14D3654F00D77E51 /* shipselection.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shipselection.wav; sourceTree = "<group>"; };
 		6F91F98E14D3660B00D77E51 /* explosionsound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = explosionsound.wav; sourceTree = "<group>"; };
+		6F91F99014D3873700D77E51 /* Campaign 9.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Campaign 9.plist"; sourceTree = "<group>"; };
 		6FA748C4146316BC00701F98 /* comingsoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comingsoon.png; sourceTree = "<group>"; };
 		6FA748D41464683B00701F98 /* recommendation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = recommendation.png; sourceTree = "<group>"; };
 		6FAA299F13E61D57000D560A /* gamecenter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter-icon.png"; sourceTree = "<group>"; };
@@ -1267,7 +1267,7 @@
 				6F6118201370F1720039DB7C /* Campaign 6.plist */,
 				6F6118211370F1720039DB7C /* Campaign 7.plist */,
 				6F6118221370F1720039DB7C /* Campaign 8.plist */,
-				6F6118231370F1720039DB7C /* Campaign 9.plist */,
+				6F91F99014D3873700D77E51 /* Campaign 9.plist */,
 				6F3E7A4714C22175005E6B66 /* Campaign 10.plist */,
 				6F91F97F14D33A1A00D77E51 /* Campaign 11.plist */,
 				6F91F98014D33A1A00D77E51 /* Campaign 12.plist */,
@@ -2027,7 +2027,6 @@
 				6F6118271370F1720039DB7C /* Campaign 6.plist in Resources */,
 				6F6118281370F1720039DB7C /* Campaign 7.plist in Resources */,
 				6F6118291370F1720039DB7C /* Campaign 8.plist in Resources */,
-				6F61182A1370F1720039DB7C /* Campaign 9.plist in Resources */,
 				6F6118541371007C0039DB7C /* SavedGameChoiceController.xib in Resources */,
 				6F61186E1371E9260039DB7C /* buttonbotleft.png in Resources */,
 				6F61186F1371E9260039DB7C /* buttonbotmiddle.png in Resources */,
@@ -2187,6 +2186,7 @@
 				6F91F98C14D3655000D77E51 /* buttonconfirm.wav in Resources */,
 				6F91F98D14D3655000D77E51 /* shipselection.wav in Resources */,
 				6F91F98F14D3660B00D77E51 /* explosionsound.wav in Resources */,
+				6F91F99114D3873700D77E51 /* Campaign 9.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
