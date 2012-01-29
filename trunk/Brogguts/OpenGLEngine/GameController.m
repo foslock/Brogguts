@@ -27,6 +27,7 @@
 #import "MainMenuController.h"
 #import "UnlockPresentView.h"
 #import "GameCenterSingleton.h"
+#import "CloudSingleton.h"
 
 NSString* kBaseCampFileName = @"BaseCamp.plist";
 NSString* kSavedCampaignFileName = @"SavedCampaignList.plist";
@@ -327,6 +328,7 @@ static GameController* sharedGameController = nil;
     
     // Has played tutorial should be reset
     [defaults setBool:NO forKey:@"hasStartedTutorial"];
+    [defaults setBool:NO forKey:@"hasStartedBaseCamp"];
     [defaults setInteger:0 forKey:kTutorialExperienceKey];
     
     // Clear all achievements

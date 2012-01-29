@@ -46,15 +46,10 @@ typedef struct {
 + (StarSingleton*)sharedStarSingleton;
 
 - (id)initWithStarCount:(int)capacity;
-
 - (void)randomizeStars;
-
 - (void)addStarAtLocation:(CGPoint)location;
-
 - (void)scrollStarsWithVector:(Vector2f)moveVector;
-
 - (void)updateStars;
-
 - (void)renderStars;
 
 @end

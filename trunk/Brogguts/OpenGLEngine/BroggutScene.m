@@ -41,6 +41,7 @@
 #import "EndMissionObject.h"
 #import "FogManager.h"
 #import "SoundSingleton.h"
+#import "CloudSingleton.h"
 
 #define TOUCH_SCROLLING_INSET 128.0f
 #define TOUCH_SCROLLING_SPEED 5.0f
@@ -210,6 +211,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     if (!isMultiplayerMatch) {
         enemyAIController = [[AIController alloc] initWithScene:self withPirate:YES];
     }
+    
+    // Set up cloud singleton for this scene
+    [[CloudSingleton sharedCloudSingleton] setWidthCells:widthCells withHeight:heightCells];
     
     fogManager = [[FogManager alloc] initWithWidthCells:widthCells withHeightCells:heightCells withResolution:1];
     [fogManager resetAllFog];
@@ -1444,6 +1448,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Update the particle manager's particles
     [sharedParticleSingleton updateParticlesWithDelta:aDelta];
     
+    // Update clouds
+    [[CloudSingleton sharedCloudSingleton] updateCloudData];
+    
     // Update alpha of the overview map
     if (isFadingOverviewIn) {
         overviewAlpha += OVERVIEW_FADE_IN_RATE;
@@ -1745,6 +1752,9 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     // Rendering stars
     [sharedStarSingleton renderStars];
+    
+    // Render clouds
+    [[CloudSingleton sharedCloudSingleton] renderCloudInRect:[self visibleScreenBounds] WithScroll:scroll];
     
     if (doesSceneShowGrid) {
         enablePrimitiveDraw();
