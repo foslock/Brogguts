@@ -13,6 +13,7 @@
 #import "SplashScreenViewController.h"
 #import "GameCenterSingleton.h"
 #import "SoundSingleton.h"
+#import "CloudSingleton.h"
 
 @implementation OpenGLEngineAppDelegate
 
@@ -99,6 +100,8 @@
     sharedSoundSingleton = [SoundSingleton sharedSoundSingleton];
     // Start the game center
     sharedGCSingleton = [GameCenterSingleton sharedGCSingleton];
+    // Get the clouds ready!
+    sharedCloudSingleton = [CloudSingleton sharedCloudSingleton];
     
     mainMenuController = [[MainMenuController alloc] initWithNibName:@"MainMenuController" bundle:nil];
     SplashScreenViewController* splash = [[SplashScreenViewController alloc] initWithNibName:@"SplashScreenViewController" bundle:nil];

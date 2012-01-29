@@ -13,6 +13,7 @@
 @class GameCenterSingleton;
 @class SoundSingleton;
 @class MainMenuController;
+@class CloudSingleton;
 
 @interface OpenGLEngineAppDelegate : NSObject <UIApplicationDelegate> {
     BOOL applicationSaved;
@@ -24,6 +25,7 @@
     BOOL viewInserted;
 	GameCenterSingleton* sharedGCSingleton;
     SoundSingleton* sharedSoundSingleton;
+    CloudSingleton* sharedCloudSingleton;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

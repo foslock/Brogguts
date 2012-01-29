@@ -97,6 +97,7 @@ extern NSString* const kObjectExplosionRingSprite;
     CGSize textureRatio;			    // Height and width ratio of the image to the texture.  This allows us to take a pixel
 										// location within the image and convert that to texture coordinates
     BOOL alwaysRender;                  // Render always even if "off screen"
+    BOOL renderSolidColor;              // Render using Color4f var, else use what is in imagedetails
 	
 	//////////////////// Render information
 	ImageDetails *imageDetails;		    // Structure to store both the original and transformed geometry, texture and color information
@@ -127,6 +128,7 @@ extern NSString* const kObjectExplosionRingSprite;
 @property (nonatomic, assign) CGPoint rotationPoint;
 @property (nonatomic, assign) CGRect subImageRectangle;
 @property (nonatomic, assign) BOOL alwaysRender;
+@property (nonatomic, assign) BOOL renderSolidColor;
 
 // Works for craft and structures at least
 + (NSString*)fileNameForObjectWithID:(int)objectID;
@@ -144,7 +146,7 @@ extern NSString* const kObjectExplosionRingSprite;
 // Returns an Image which represents the specified sub region of this image
 - (Image*)subImageInRect:(CGRect)aRect;
 
-// Returns a new Image instance that is a copy of the current image.  The caller is respponsible for
+// Returns a new Image instance that is a copy of the current image.  The caller is responsible for
 // retaining the copy.
 // "Duplicate" was used in this method name to stop the static analyzer in Xcode from reporting an issue
 // namely "Object with +0 retain count returned to caller where a +1 (owning) retain count is expected"

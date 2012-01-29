@@ -293,6 +293,9 @@
 		6F91F9A914D470B100D77E51 /* newcellbot.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F99F14D470B100D77E51 /* newcellbot.png */; };
 		6F91F9AA14D470B100D77E51 /* newcelltop.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F9A014D470B100D77E51 /* newcelltop.png */; };
 		6F91F9AB14D470B100D77E51 /* oldcell0.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F9A114D470B100D77E51 /* oldcell0.png */; };
+		6F91F9AF14D511AD00D77E51 /* CloudSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F91F9AE14D511AD00D77E51 /* CloudSingleton.m */; };
+		6F91F9B214D514AB00D77E51 /* tilecloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F9B014D514A900D77E51 /* tilecloud.png */; };
+		6F91F9B514D5157100D77E51 /* tilecloudsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F91F9B414D5157100D77E51 /* tilecloudsmall.png */; };
 		6FA748C5146316BC00701F98 /* comingsoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748C4146316BC00701F98 /* comingsoon.png */; };
 		6FA748D51464683B00701F98 /* recommendation.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FA748D41464683B00701F98 /* recommendation.png */; };
 		6FAA29A013E61D57000D560A /* gamecenter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FAA299F13E61D57000D560A /* gamecenter-icon.png */; };
@@ -769,6 +772,10 @@
 		6F91F99F14D470B100D77E51 /* newcellbot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newcellbot.png; sourceTree = "<group>"; };
 		6F91F9A014D470B100D77E51 /* newcelltop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newcelltop.png; sourceTree = "<group>"; };
 		6F91F9A114D470B100D77E51 /* oldcell0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oldcell0.png; sourceTree = "<group>"; };
+		6F91F9AD14D511AD00D77E51 /* CloudSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudSingleton.h; sourceTree = "<group>"; };
+		6F91F9AE14D511AD00D77E51 /* CloudSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudSingleton.m; sourceTree = "<group>"; };
+		6F91F9B014D514A900D77E51 /* tilecloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tilecloud.png; sourceTree = "<group>"; };
+		6F91F9B414D5157100D77E51 /* tilecloudsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tilecloudsmall.png; sourceTree = "<group>"; };
 		6FA748C4146316BC00701F98 /* comingsoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comingsoon.png; sourceTree = "<group>"; };
 		6FA748D41464683B00701F98 /* recommendation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = recommendation.png; sourceTree = "<group>"; };
 		6FAA299F13E61D57000D560A /* gamecenter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter-icon.png"; sourceTree = "<group>"; };
@@ -1503,6 +1510,8 @@
 		6F8B878B13078E57009CD1BF /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6F91F9B014D514A900D77E51 /* tilecloud.png */,
+				6F91F9B414D5157100D77E51 /* tilecloudsmall.png */,
 				6FF4FA4814D1375E00D8FD2E /* spinningsun.png */,
 				6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */,
 				6FFFEE2714C9BFE300BF404B /* throphyicon.png */,
@@ -1789,6 +1798,8 @@
 				6F8B8E27130C8885009CD1BF /* ParticleSingleton.m */,
 				6F6A2F6E13019BE8002A4201 /* StarSingleton.h */,
 				6F6A2F6F13019BE8002A4201 /* StarSingleton.m */,
+				6F91F9AD14D511AD00D77E51 /* CloudSingleton.h */,
+				6F91F9AE14D511AD00D77E51 /* CloudSingleton.m */,
 				6FCACA0D12F870DA00662BDA /* ParticleEmitter.h */,
 				6FCACA0E12F870DA00662BDA /* ParticleEmitter.m */,
 				6F8B8E3F130C8F43009CD1BF /* Particle Types */,
@@ -2223,6 +2234,8 @@
 				6F91F9A914D470B100D77E51 /* newcellbot.png in Resources */,
 				6F91F9AA14D470B100D77E51 /* newcelltop.png in Resources */,
 				6F91F9AB14D470B100D77E51 /* oldcell0.png in Resources */,
+				6F91F9B214D514AB00D77E51 /* tilecloud.png in Resources */,
+				6F91F9B514D5157100D77E51 /* tilecloudsmall.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2355,6 +2368,7 @@
 				6F18722114C90EF4008A7C23 /* UnitPowerView.m in Sources */,
 				6F28A5B214D0FF85004E7CEA /* UnlockPresentView.m in Sources */,
 				6F91F98714D33C8500D77E51 /* RefinerySmokeObject.m in Sources */,
+				6F91F9AF14D511AD00D77E51 /* CloudSingleton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

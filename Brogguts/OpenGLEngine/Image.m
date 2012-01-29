@@ -93,6 +93,7 @@ NSString* const kObjectExplosionRingSprite = @"explosionring.png";
 @synthesize imageDetails;
 @synthesize subImageRectangle;
 @synthesize alwaysRender;
+@synthesize renderSolidColor;
 
 + (NSString*)fileNameForObjectWithID:(int)objectID {
     NSString* filename = nil;
@@ -342,10 +343,13 @@ NSString* const kObjectExplosionRingSprite = @"explosionring.png";
 - (void)render {
 	
 	// Update the color of the image before it gets copied to the render manager
-	imageDetails->texturedColoredQuad->vertex1.vertexColor = 
-	imageDetails->texturedColoredQuad->vertex2.vertexColor =
-	imageDetails->texturedColoredQuad->vertex3.vertexColor =
-	imageDetails->texturedColoredQuad->vertex4.vertexColor = color;
+    if (renderSolidColor) {
+        imageDetails->texturedColoredQuad->vertex1.vertexColor = 
+        imageDetails->texturedColoredQuad->vertex2.vertexColor =
+        imageDetails->texturedColoredQuad->vertex3.vertexColor =
+        imageDetails->texturedColoredQuad->vertex4.vertexColor = color;
+    }
+    
     imageDetails->imageLayer = renderLayer;
 	
 	// Add this image to the render queue.  This will cause this image to be rendered the next time
@@ -415,6 +419,7 @@ NSString* const kObjectExplosionRingSprite = @"explosionring.png";
     // the key within the texture manager for grabbing a texture from the cache.
     self.imageFileName = aImageName;
     renderLayer = kLayerBottomLayer;
+    renderSolidColor = YES;
 	
 	// Create a Texture2D instance using the image file with the specified name.  Retain a
 	// copy as the Texture2D class autoreleases the instance returned.

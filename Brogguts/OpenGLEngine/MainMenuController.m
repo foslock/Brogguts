@@ -206,14 +206,15 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
     [self makeSpinnerAppear];
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:YES forKey:@"hasStartedBaseCamp"];
-    [defaults synchronize];
+    hasStartedBaseCamp = [defaults boolForKey:@"hasStartedBaseCamp"];
     if (!hasStartedBaseCamp) {
         hasStartedBaseCamp = YES;
         [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:NO];
     } else {
         [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
     }
+    [defaults setBool:YES forKey:@"hasStartedBaseCamp"];
+    [defaults synchronize];
 }
 
 - (IBAction)loadSkirmishViewController {
