@@ -150,33 +150,36 @@ NSString* const kCraftUpgradeButtonText[8] = {
     if ([upgradesStructure destroyNow]) {
         return;
     }
-    switch (buttonID) {
-        case kCraftButtonAntID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftAntID];
-            break;
-        case kCraftButtonMothID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftMothID];
-            break;
-        case kCraftButtonBeetleID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftBeetleID];
-            break;
-        case kCraftButtonMonarchID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftMonarchID];
-            break;
-        case kCraftButtonCamelID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftCamelID];
-            break;
-        case kCraftButtonRatID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftRatID];
-            break;
-        case kCraftButtonSpiderID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftSpiderID];
-            break;
-        case kCraftButtonEagleID:
-            [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftEagleID];
-            break;
-        default:
-            break;
+    GameController* controller = [GameController sharedGameController];
+    if (![controller currentScene].isShowingDialogue) {
+        switch (buttonID) {
+            case kCraftButtonAntID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftAntID];
+                break;
+            case kCraftButtonMothID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftMothID];
+                break;
+            case kCraftButtonBeetleID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftBeetleID];
+                break;
+            case kCraftButtonMonarchID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftMonarchID];
+                break;
+            case kCraftButtonCamelID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftCamelID];
+                break;
+            case kCraftButtonRatID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftRatID];
+                break;
+            case kCraftButtonSpiderID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftSpiderID];
+                break;
+            case kCraftButtonEagleID:
+                [upgradesStructure presentCraftUpgradeDialogueWithObjectID:kObjectCraftEagleID];
+                break;
+            default:
+                break;
+        }
     }
 }
 

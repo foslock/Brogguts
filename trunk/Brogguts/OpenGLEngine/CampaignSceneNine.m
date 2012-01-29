@@ -44,10 +44,12 @@
             [sceneDialogues addObject:dia3];
             [dia3 release];
             
-            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.05f withCount:5];
-            [spawner addObjectWithID:kObjectCraftBeetleID withCount:6];
-            [spawner addObjectWithID:kObjectCraftMothID withCount:6];
-            [spawner addObjectWithID:kObjectCraftSpiderID withCount:5];
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:0.05f withCount:4];
+            [spawner addObjectWithID:kObjectCraftBeetleID withCount:8];
+            [spawner addObjectWithID:kObjectCraftMothID withCount:8];
+            [spawner addObjectWithID:kObjectCraftSpiderID withCount:6];
+            [spawner addObjectWithID:kObjectCraftRatID withCount:4];
+            [spawner addObjectWithID:kObjectCraftEagleID withCount:2];
             [spawner pauseSpawnerForDuration:(CAMPAIGN_NINE_WAVE_TIME * 60.0f) + 1.0f];
             [spawner setSendingLocation:homeBaseLocation];
             [spawner setSendingLocationVariance:100.0f];
@@ -85,7 +87,7 @@
 
 - (BOOL)checkObjective {
     // On destruction of the base station, "win"
-    if (isFriendlyBaseStationAlive && doesExplosionExist) {
+    if (isFriendlyBaseStationAlive || doesExplosionExist) {
         return NO;
     } else {
         return YES;

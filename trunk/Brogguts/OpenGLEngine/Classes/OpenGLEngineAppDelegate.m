@@ -112,25 +112,22 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	// [self applicationEnded];
     if ([glView isAnimating]) {
         [glView stopAnimation];
-        // [self saveSceneAndPlayer];
+        [self saveSceneAndPlayer];
         resignStoppedAnimation = YES;
     }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // [self applicationEnded];
     if ([glView isAnimating]) {
         [glView stopAnimation];
-        // [self saveSceneAndPlayer];
+        [self saveSceneAndPlayer];
         resignStoppedAnimation = YES;
     }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // [self startGLAnimation];
     if (resignStoppedAnimation) {
         [glView startAnimation];
         resignStoppedAnimation = NO;
@@ -138,7 +135,6 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // [self startGLAnimation];
     if (resignStoppedAnimation) {
         [glView startAnimation];
         resignStoppedAnimation = NO;

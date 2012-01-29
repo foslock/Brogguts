@@ -46,7 +46,7 @@
     
     if (isCurrentlyProcessingUpgrade && !destroyNow) {
         if (currentUpgradeProgress < upgradeTotalGoal) {
-            if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+            if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
                 currentUpgradeProgress += aDelta / ((float)kStructureStructureUpgradesTimePercentageUpgrade / 100.0f);
             } else {
                 currentUpgradeProgress += aDelta;

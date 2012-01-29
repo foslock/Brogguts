@@ -44,7 +44,7 @@
     [super updateObjectLogicWithDelta:aDelta];
     
     // Check for upgrade
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         craftLimit = kCraftMonarchAuraNumberLimitUpgraded;
     }
     

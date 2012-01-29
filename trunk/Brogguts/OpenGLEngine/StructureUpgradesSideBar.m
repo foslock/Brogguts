@@ -161,33 +161,36 @@ NSString* const kStructureUpgradeButtonText[8] = {
     if ([upgradesStructure destroyNow]) {
         return;
     }
-    switch (buttonID) {
-        case kStructureUpgradeButtonBaseStationID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureBaseStationID];
-            break;
-        case kStructureUpgradeButtonBlockID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureBlockID];
-            break;
-        case kStructureUpgradeButtonRefineryID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureRefineryID];
-            break;
-        case kStructureUpgradeButtonCraftUpgradesID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureCraftUpgradesID];
-            break;
-        case kStructureUpgradeButtonStructureUpgradesID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureStructureUpgradesID];
-            break;
-        case kStructureUpgradeButtonTurretID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureTurretID];
-            break;
-        case kStructureUpgradeButtonRadarID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureFixerID];
-            break;
-        case kStructureUpgradeButtonFixerID:
-            [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureRadarID];
-            break;
-        default:
-            break;
+    GameController* controller = [GameController sharedGameController];
+    if (![controller currentScene].isShowingDialogue) {
+        switch (buttonID) {
+            case kStructureUpgradeButtonBaseStationID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureBaseStationID];
+                break;
+            case kStructureUpgradeButtonBlockID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureBlockID];
+                break;
+            case kStructureUpgradeButtonRefineryID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureRefineryID];
+                break;
+            case kStructureUpgradeButtonCraftUpgradesID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureCraftUpgradesID];
+                break;
+            case kStructureUpgradeButtonStructureUpgradesID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureStructureUpgradesID];
+                break;
+            case kStructureUpgradeButtonTurretID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureTurretID];
+                break;
+            case kStructureUpgradeButtonRadarID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureFixerID];
+                break;
+            case kStructureUpgradeButtonFixerID:
+                [upgradesStructure presentStructureUpgradeDialogueWithObjectID:kObjectStructureRadarID];
+                break;
+            default:
+                break;
+        }
     }
 }
 

@@ -24,6 +24,8 @@ enum SectionNames {
 
 @implementation SavedGameChoiceController
 
+@synthesize chosenLoadingMission;
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -33,6 +35,7 @@ enum SectionNames {
         NSArray* savedPlistArray = [NSArray arrayWithContentsOfFile:savedScenePath];
         savedGamesNames = [[NSMutableArray alloc] initWithArray:savedPlistArray];
         numberOfSavedGames = [savedGamesNames count];
+        self.chosenLoadingMission = nil;
         
         unlockedMissionNames = [[NSMutableArray alloc] init];
         // Add each name with index under the current player experience
@@ -125,6 +128,10 @@ enum SectionNames {
     return 64.0f;
 }
 
+- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 16.0f;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
@@ -191,19 +198,23 @@ enum SectionNames {
 
 - (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSString* text;
+    NSString* cellName;
     switch (section) {
         case kSectionSavedScenes:
             text = @"Load a Saved Mission";
+            cellName = @"oldcell";
             break;
         case kSectionUnlockedMissions:
             text = @"Start a New Mission";
+            cellName = @"newcell";
             break;
         default:
             text = @"";
+            cellName = @"oldcell";
             break;
     }
-    
-    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 478, 96)];
+    UIView* view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 64)];
+    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 64)];
     [label setText:text];
     [label setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [label setShadowColor:[UIColor blackColor]];
@@ -211,14 +222,49 @@ enum SectionNames {
     [label setTextAlignment:UITextAlignmentCenter];
     [label setTextColor:[UIColor whiteColor]];
     [label setBackgroundColor:[UIColor clearColor]];
-    return label;
+    [view addSubview:label];
+    
+    UIImageView* image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@top", cellName]]];
+    [view addSubview:image];
+    [image setCenter:CGPointMake(tableView.frame.size.width / 2, 64-8)];
+    [image release];
+    
+    return [view autorelease];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    NSString* cellName;
+    switch (section) {
+        case kSectionSavedScenes:
+            cellName = @"oldcell";
+            break;
+        case kSectionUnlockedMissions:
+            cellName = @"newcell";
+            break;
+        default:
+            cellName = @"oldcell";
+            break;
+    }
+    UIView* view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 16)];
+    
+    UIImageView* image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@bot", cellName]]];
+    [view addSubview:image];
+    [image setCenter:CGPointMake(tableView.frame.size.width / 2, 8)];
+    [image release];
+    
+    return [view autorelease];
 }
 
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     // Change appearance of cells here
     int imageIndex = indexPath.row % TABLEVIEW_CELL_BACKGROUND_COUNT;
-    NSString* bgPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"cellbackground%d", imageIndex] ofType:@"png"];
+    NSString* bgPath;
+    if (indexPath.section == kSectionSavedScenes || indexPath.section == kSectionExitButton) {
+        bgPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"oldcell%d", imageIndex] ofType:@"png"];
+    } else {
+        bgPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"newcell%d", imageIndex] ofType:@"png"];
+    }
     UIImage* trashImage = [[UIImage alloc] initWithContentsOfFile:bgPath];
     UIImageView* bgView = [[UIImageView alloc] initWithImage:trashImage];
     [cell setBackgroundView:bgView];
@@ -226,41 +272,66 @@ enum SectionNames {
     [bgView release];
 }
 
+- (void)loadSavedSceneWithName:(NSString*)savedSceneName {
+    NSLog(@"Load the saved scene with name %@", savedSceneName);
+    NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
+    int removeIndex = 0;
+    for (int i = 0; i < [savedGamesNames count]; i++) {
+        NSString* string = [savedGamesNames objectAtIndex:i];
+        if ([string caseInsensitiveCompare:savedSceneName] == NSOrderedSame) {
+            removeIndex = i;
+        }
+    }
+    [savedGamesNames removeObjectAtIndex:removeIndex];
+    if (![savedGamesNames writeToFile:savedScenePath atomically:YES]) {
+        NSLog(@"Error overwriting previously saved scene: %@", savedSceneName);
+    }
+    int index = 0;
+    NSString* savedFileName;
+    for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+        NSString* otherName = kCampaignSceneSaveTitles[i];
+        if ([otherName caseInsensitiveCompare:savedSceneName] == NSOrderedSame) {
+            index = i;
+            savedFileName = otherName;
+            break;
+        }
+    }
+    [sharedGameController fadeOutToSceneWithFilename:savedFileName sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:YES];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.section) {
         case kSectionSavedScenes: {
             NSString* savedTitleName = [savedGamesNames objectAtIndex:indexPath.row];
-            NSLog(@"Load the saved scene with name %@", savedTitleName);
-            NSString* savedScenePath = [sharedGameController documentsPathWithFilename:kSavedCampaignFileName];
-            [savedGamesNames removeObjectAtIndex:indexPath.row];
-            if (![savedGamesNames writeToFile:savedScenePath atomically:YES]) {
-                NSLog(@"Error overwriting previously saved scene: %@", savedTitleName);
-            }
-            int index = 0;
-            NSString* savedFileName;
-            for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
-                NSString* otherName = kCampaignSceneSaveTitles[i];
-                if ([otherName caseInsensitiveCompare:savedTitleName] == NSOrderedSame) {
-                    index = i;
-                    savedFileName = otherName;
-                    break;
-                }
-            }
-            [sharedGameController fadeOutToSceneWithFilename:savedFileName sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:YES];
+            [self loadSavedSceneWithName:savedTitleName];
         }
             break;
         case kSectionUnlockedMissions: {
             NSString* savedSceneName = [unlockedMissionNames objectAtIndex:indexPath.row];
-            int index = 0;
-            for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
-                NSString* otherName = kCampaignSceneSaveTitles[i];
-                if ([otherName caseInsensitiveCompare:savedSceneName] == NSOrderedSame) {
-                    index = i;
-                    break;
+            BOOL hasSavedThisMission = NO;
+            for (NSString* string in savedGamesNames) {
+                if ([savedSceneName caseInsensitiveCompare:string] == NSOrderedSame) {
+                    hasSavedThisMission = YES;
                 }
             }
-            [[GameController sharedGameController] fadeOutToSceneWithFilename:kCampaignSceneFileNames[index] sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:NO];
+            if (!hasSavedThisMission) {
+                int index = 0;
+                for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+                    NSString* otherName = kCampaignSceneSaveTitles[i];
+                    if ([otherName caseInsensitiveCompare:savedSceneName] == NSOrderedSame) {
+                        index = i;
+                        break;
+                    }
+                }
+                [sharedGameController fadeOutToSceneWithFilename:kCampaignSceneFileNames[index] sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:NO];
+            } else {
+                // Give the option to load old or start
+                self.chosenLoadingMission = savedSceneName;
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Mission In Progress" message:@"You have already started this mission, would you like to restart it or continue?" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Restart Mission", @"Continue Mission", nil];
+                [alert show];
+                [alert release];
+            }
         }
             break;
         case kSectionExitButton: {
@@ -273,6 +344,24 @@ enum SectionNames {
     UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setHighlighted:NO animated:YES];
     [cell setSelected:NO];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) { // Restart
+        int index = 0;
+        for (int i = 0; i < CAMPAIGN_SCENES_COUNT; i++) {
+            NSString* otherName = kCampaignSceneSaveTitles[i];
+            if ([otherName caseInsensitiveCompare:self.chosenLoadingMission] == NSOrderedSame) {
+                index = i;
+                break;
+            }
+        }
+        [sharedGameController fadeOutToSceneWithFilename:kCampaignSceneFileNames[index] sceneType:kSceneTypeCampaign withIndex:index isNew:YES isLoading:NO];
+    } else if (buttonIndex == 1) { // Continue
+        if (self.chosenLoadingMission) {
+            [self loadSavedSceneWithName:self.chosenLoadingMission];
+        }
+    }
 }
 
 @end

@@ -185,7 +185,7 @@ enum TheBeetleValues {
 	kCraftBeetleHull = 200,
     kCraftBeetleViewDistance = 512,
 	// Special Values
-    kCraftBeetleMissileDamage = 45,
+    kCraftBeetleMissileDamage = 30,
     kCraftBeetleMissileRange = 400,
 };
 
@@ -308,7 +308,7 @@ enum TheEagleValues {
 
 enum kObjectStructureBaseStation {
 	kStructureBaseStationUnlockYears = 0,
-	kStructureBaseStationUpgradeUnlockYears = 0, // No upgrade
+	kStructureBaseStationUpgradeUnlockYears = 1,
 	kStructureBaseStationUpgradeCost = 500, // brogguts
 	kStructureBaseStationUpgradeTime = 60, // seconds
 	kStructureBaseStationCostBrogguts = 0,
@@ -354,7 +354,7 @@ enum TheRefineryValues {
 
 enum TheCraftUpgradesValues {
 	kStructureCraftUpgradesUnlockYears = 2,
-	kStructureCraftUpgradesUpgradeUnlockYears = 0, // No upgrade
+	kStructureCraftUpgradesUpgradeUnlockYears = 3,
 	kStructureCraftUpgradesUpgradeCost = 500, // brogguts
 	kStructureCraftUpgradesUpgradeTime = 30, // seconds
 	kStructureCraftUpgradesCostBrogguts = 400,
@@ -368,7 +368,7 @@ enum TheCraftUpgradesValues {
 
 enum TheStructureUpgradesValues {
 	kStructureStructureUpgradesUnlockYears = 1,
-	kStructureStructureUpgradesUpgradeUnlockYears = 0, // No upgrade
+	kStructureStructureUpgradesUpgradeUnlockYears = 3,
 	kStructureStructureUpgradesUpgradeCost = 500, // brogguts
 	kStructureStructureUpgradesUpgradeTime = 30, // seconds
 	kStructureStructureUpgradesCostBrogguts = 400,

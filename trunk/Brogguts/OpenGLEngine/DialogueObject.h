@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define DIALOGUE_SKIP_TIMER 1.5f
+#define DIALOGUE_SKIP_TIMER 1.0f
 
 enum kDialogueDimensionValues {
     kDialogueDimensionTotalWidth = 600,

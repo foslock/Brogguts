@@ -13,7 +13,7 @@
 #import "StartMissionObject.h"
 #import "TextObject.h"
 
-#define CAMPAIGN_THIRTEEN_TIME_LIMIT 3.0f
+#define CAMPAIGN_THIRTEEN_TIME_LIMIT 4.0f
 
 @implementation CampaignSceneThirteen
 
@@ -42,7 +42,7 @@
             [sceneDialogues addObject:dia2];
             [dia2 release];
             
-            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:5.0f withCount:-1];
+            SpawnerObject* spawner = [[SpawnerObject alloc] initWithLocation:CGPointMake(fullMapBounds.size.width / 2, fullMapBounds.size.height) objectID:kObjectCraftAntID withDuration:4.0f withCount:-1];
             [spawner pauseSpawnerForDuration:(CAMPAIGN_THIRTEEN_TIME_LIMIT * 60.0f) + 1.0f];
             [spawner setSendingLocation:homeBaseLocation];
             [spawner setSendingLocationVariance:100.0f];

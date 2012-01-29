@@ -86,7 +86,7 @@
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     [super updateObjectLogicWithDelta:aDelta];
     
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         attributeHullCapacity = kStructureBaseStationHullCapacityUpgrade;
         if (!hasBeenUpgraded) {
             attributeHullCurrent += (kStructureBaseStationHullCapacityUpgrade - kStructureBaseStationHull);

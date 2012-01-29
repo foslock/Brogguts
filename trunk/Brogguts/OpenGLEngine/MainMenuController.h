@@ -39,6 +39,7 @@ extern NSString* const kTutorialExperienceKey;
     UILabel* spaceYearCount;
     
     BOOL hasStartedTutorial;
+    BOOL hasStartedBaseCamp;
     BOOL isShowingRecommendation;
     int tutorialExperience;
     UIView* fadeCoverView;

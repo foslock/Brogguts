@@ -24,6 +24,7 @@
     self = [super initWithImage:nil withLocation:object.objectLocation withObjectType:kObjectHealthDropObjectID];
     if (self) {
         isCheckedForCollisions = NO;
+        isRenderedInOverview = NO;
         if ([object isKindOfClass:[CraftObject class]]) {
             unfilledSegments = [(CraftObject*)object attributeHullCapacity] / CRAFT_HEALTH_PER_NOTCH;
             filledSegments = [(CraftObject*)object attributeHullCurrent] / CRAFT_HEALTH_PER_NOTCH;

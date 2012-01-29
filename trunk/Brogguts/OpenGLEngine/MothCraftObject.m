@@ -21,7 +21,7 @@
 }
 
 - (BOOL)attackedByEnemy:(TouchableObject *)enemy withDamage:(int)damage {
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         // Evade a percent of the time!
         int rand = arc4random() % 100;
         if (rand < kCraftMothEvadePercentage) {

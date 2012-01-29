@@ -37,7 +37,7 @@
 }
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         attributeAttackRange = kCraftBeetleMissileRange;
         if (!hasUpgraded) {
             hasUpgraded = YES;
@@ -45,14 +45,6 @@
         }
     }
     [super updateObjectLogicWithDelta:aDelta];
-}
-
-- (void)updateCraftTurretLocations {
-    for (int i = 0; i < turretPointsArray->pointCount; i++) {
-        PointLocation* curPoint = &turretPointsArray->locations[i];
-        curPoint->x = objectLocation.x;
-        curPoint->y = objectLocation.y;
-    }
 }
 
 @end

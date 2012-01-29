@@ -44,6 +44,7 @@
 
 #define TOUCH_SCROLLING_INSET 128.0f
 #define TOUCH_SCROLLING_SPEED 5.0f
+#define CRAFT_BUILD_LOCATION_MIN_INSET 64.0f
 
 NSString* const kHelpMessagesTextArray[HELP_MESSAGE_COUNT] = {
     @"You must mine more Brogguts",
@@ -76,7 +77,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 @synthesize numberOfRefineries, isAllowingCraft, isAllowingStructures;
 @synthesize isShowingNotification, notification, numberOfEnemyShips, numberOfEnemyStructures;
 @synthesize numberOfBlocks, isLoadedScene, isFriendlyBaseStationAlive, isEnemyBaseStationAlive;
-@synthesize sceneSpawners, sceneDialogues, upgradeManager, numberOfCurrentShips, numberOfCurrentStructures, doesExplosionExist;
+@synthesize sceneSpawners, sceneDialogues, upgradeManager, numberOfCurrentShips, numberOfCurrentStructures, doesExplosionExist, isShowingDialogue;
 
 - (void)dealloc {
 	if (cameraImage) {
@@ -1562,12 +1563,18 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
                 if ([tempObj isKindOfClass:[TouchableObject class]]) {
                     TouchableObject* tobj = (TouchableObject*)tempObj;
                     if (tobj.attributeViewDistance > 0) {
-                        [fogManager removeFogAtPoint:tobj.objectLocation withRadius:(float)tobj.attributeViewDistance withIntensity:0.75f];
+                        float dist;
+                        if (!tobj.isTraveling) {
+                            dist = (float)tobj.attributeViewDistance;
+                        } else {
+                            dist = COLLISION_CELL_WIDTH * 2;
+                        }
+                        [fogManager removeFogAtPoint:tobj.objectLocation withRadius:dist withIntensity:0.75f];
                     }
                 }
             }
         }
-        if (tempObj.objectType == kObjectBroggutSmallID) {
+        if (tempObj.objectType == kObjectBroggutSmallID) { // Floating brogguts wrap around the screen
             if (tempObj.objectLocation.x < fullMapBounds.origin.x)
                 tempObj.objectLocation = CGPointMake(fullMapBounds.size.width, tempObj.objectLocation.y);
             if (tempObj.objectLocation.x > fullMapBounds.size.width)
@@ -1577,12 +1584,12 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
             if (tempObj.objectLocation.y > fullMapBounds.size.height)
                 tempObj.objectLocation = CGPointMake(tempObj.objectLocation.x, fullMapBounds.origin.y);
         } else {
-            tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, 0.0f, fullMapBounds.size.width),
-                                                 CLAMP(tempObj.objectLocation.y, 0.0f, fullMapBounds.size.height));
+            tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, fullMapBounds.origin.x, fullMapBounds.size.width),
+                                                 CLAMP(tempObj.objectLocation.y, fullMapBounds.origin.y, fullMapBounds.size.height));
             if ([tempObj isKindOfClass:[CraftObject class]]) {
                 // Limit crafts to their radii
-                tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, objRadius, fullMapBounds.size.width - objRadius),
-                                                     CLAMP(tempObj.objectLocation.y, objRadius, fullMapBounds.size.height - objRadius));
+                tempObj.objectLocation = CGPointMake(CLAMP(tempObj.objectLocation.x, fullMapBounds.origin.x + objRadius, fullMapBounds.size.width - objRadius),
+                                                     CLAMP(tempObj.objectLocation.y, fullMapBounds.origin.y + objRadius, fullMapBounds.size.height - objRadius));
             }
         }
         if (tempObj.destroyNow) {

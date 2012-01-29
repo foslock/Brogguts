@@ -10,12 +10,14 @@
 
 @class GameController;
 
-@interface SavedGameChoiceController : UITableViewController {
+@interface SavedGameChoiceController : UITableViewController <UIAlertViewDelegate> {
     GameController* sharedGameController;
     int numberOfSavedGames;
     int numberOfUnlockedMissions;
     NSMutableArray* savedGamesNames;
     NSMutableArray* unlockedMissionNames;
 }
+
+@property (retain) NSString* chosenLoadingMission;
 
 @end
