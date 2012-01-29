@@ -84,8 +84,8 @@
 
 - (void)renderCurrentSubImageAtPoint:(CGPoint)aPoint withScale:(Scale2f)aScale withRotation:(float)aRot {
     if (subImageCount > 0) {
-    Image* curImage = [subImageArray objectAtIndex:currentSubImage];
-    [curImage renderCenteredAtPoint:aPoint scale:aScale rotation:aRot];
+        Image* curImage = [subImageArray objectAtIndex:currentSubImage];
+        [curImage renderCenteredAtPoint:aPoint scale:aScale rotation:aRot];
     }
 }
 

@@ -12,7 +12,7 @@ NSString* kObjectUnlockDetailText[TOTAL_OBJECT_TYPES_COUNT] = {
     @"", @"", @"", @"", @"", @"", @"", // Nothing
     @"If purchased, all Ants in your fleet will be upgraded with the newest mining technology allowing them to collect brogguts 50 percent faster.", // Ant (faster mining)
     @"If purchased, all Moth craft will have in addition to their incredible speed, the chance to evade enemy attacks.", // Moth (Evades attack sometimes)
-    @"If purchased, all Beetle craft will have their lasers replaced with a powerful missile launcher that has a longer range than the basic laser.", // Beetle (fires missles instead of laser)
+    @"If purchased, all Beetle craft will have their lasers replaced with a powerful missile launcher that does more damage and has a longer range than its laser.", // Beetle (fires missles instead of laser)
     @"If purchased, all Monarch craft will have equipment installed to support the protection of more ships from more damage.", // Monarch (provides better protection, different color, to more ships)
     @"If purchased, all Camel craft will have their insides gutted to hold a lot more brogguts when its mining.", // Camel (Increased cargo space)
     @"If purchased, all Rat craft will have their view distance increased greatly to increase their scouting potential.", // Rat (Increased view distance)

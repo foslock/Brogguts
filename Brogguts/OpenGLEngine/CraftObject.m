@@ -239,6 +239,10 @@
 		attackCooldownTimer = 0;
 		creationEndLocation = location;
 		if (traveling) {
+            // Keep location in the fullMapBounds
+            float radius = [self boundingCircle].radius;
+            location.x = CLAMP(location.x, [self currentScene].fullMapBounds.origin.x + radius + 1.0f, [self currentScene].fullMapBounds.origin.x + [self currentScene].fullMapBounds.size.width - radius - 1.0f);
+            location.y = CLAMP(location.y, [self currentScene].fullMapBounds.origin.y + radius + 1.0f, [self currentScene].fullMapBounds.origin.y + [self currentScene].fullMapBounds.size.height - radius - 1.0f);
             BuildingObject* tempObject = [[BuildingObject alloc] initWithObject:self withLocation:location];
             [[self currentScene] addCollidableObject:tempObject];
             [tempObject release];

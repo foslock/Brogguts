@@ -311,6 +311,7 @@ enum kProcessFrameOffset {
 @property (readonly) BOOL isAllowingCraft;
 @property (readonly) BOOL isAllowingStructures;
 @property (readonly) BOOL doesExplosionExist;
+@property (readonly) BOOL isShowingDialogue;
 @property (readonly) int numberOfCurrentShips;
 @property (readonly) int numberOfCurrentStructures;
 @property (readonly) int numberOfEnemyShips;

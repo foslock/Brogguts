@@ -181,7 +181,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 - (id)init {
     self = [super init];
 	if(self != nil) {
-               
+        
         // Initialize the array and dictionaries we are going to use
 		soundSources = [[NSMutableArray alloc] init];
 		soundLibrary = [[NSMutableDictionary alloc] init];
@@ -644,8 +644,10 @@ static SoundSingleton* sharedSoundSingleton = nil;
 		return;
 	}
 	
-	if(musicPlayer)
+	if(musicPlayer) {
+        [self stopMusic];
 		[musicPlayer release];
+    }
 	
 	// Initialize the AVAudioPlayer using the path that we have retrieved from the music library dictionary
 	musicPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:&error];
@@ -686,9 +688,11 @@ static SoundSingleton* sharedSoundSingleton = nil;
 }
 
 - (void)stopMusic {
-	[musicPlayer stop];
-	isMusicPlaying = NO;
-	usePlaylist = NO;
+    if (isMusicPlaying) {
+        [musicPlayer stop];
+        isMusicPlaying = NO;
+        usePlaylist = NO;
+    }
 }
 
 - (void)pauseMusic {

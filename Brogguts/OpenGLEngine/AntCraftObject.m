@@ -82,6 +82,8 @@
             }
         }
         [copy release];
+        // If no succesful mining anywhere, stop mining
+        miningState = kMiningStateNone;
 	}
     [pointArray release];
 }
@@ -162,7 +164,7 @@
     randomMiningValueY = RANDOM_MINUS_1_TO_1();
     
     // Check for upgrade
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         attributeMiningCooldown = kCraftAntMiningCooldownUpgrade;
     }
     

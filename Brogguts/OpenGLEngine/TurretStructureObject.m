@@ -65,7 +65,7 @@
 
 - (void)updateObjectLogicWithDelta:(float)aDelta {
     
-    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType]) {
+    if ([[[self currentScene] upgradeManager] isUpgradeCompleteWithID:objectType] && objectAlliance == kAllianceFriendly) {
         attributeAttackCooldown = kStructureTurretAttackCooldownUpgrade;
     }
     

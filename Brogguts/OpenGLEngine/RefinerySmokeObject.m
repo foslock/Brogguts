@@ -24,6 +24,7 @@
     if (self) {
         isCheckedForCollisions = NO;
         isCheckedForMultipleCollisions = NO;
+        isRenderedInOverview = NO;
         lifeTimer = REFINERY_SMOKE_LIFE_MIN_TIME + RANDOM_0_TO_1();
         rotationSpeed = RANDOM_MINUS_1_TO_1() * 0.02f;
         objectVelocity = Vector2fMake(RANDOM_MINUS_1_TO_1() * REFINERY_SMOKE_MAX_SPEED,

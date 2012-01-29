@@ -22,6 +22,7 @@
     if (self) {
         isCheckedForCollisions = NO;
         isCheckedForMultipleCollisions = NO;
+        isRenderedInOverview = NO;
         self.objectScale = object.objectScale;
         if ([object isKindOfClass:[CraftObject class]]) {
             [self setObjectRotation:GetAngleInDegreesFromPoints(object.objectLocation, location)];

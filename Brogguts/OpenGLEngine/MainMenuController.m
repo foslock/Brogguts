@@ -59,9 +59,8 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
         hasStartedTutorial = NO;
         isShowingRecommendation = NO;
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults boolForKey:@"hasStartedTutorial"]) {
-            hasStartedTutorial = YES;
-        }
+        hasStartedTutorial = [defaults boolForKey:@"hasStartedTutorial"];
+        hasStartedBaseCamp = [defaults boolForKey:@"hasStartedBaseCamp"];
         tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
     }
     return self;
@@ -69,7 +68,6 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
 
 - (void)dealloc
 {
-    [[SoundSingleton sharedSoundSingleton] removeSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
     [starsArray release];
     [lettersArray release];
     [fadeCoverView release];
@@ -207,7 +205,15 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
 - (IBAction)loadProfileViewController {
     NSString* fileNameAlone = [kBaseCampFileName stringByDeletingPathExtension];
     [self makeSpinnerAppear];
-    [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:YES forKey:@"hasStartedBaseCamp"];
+    [defaults synchronize];
+    if (!hasStartedBaseCamp) {
+        hasStartedBaseCamp = YES;
+        [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:NO];
+    } else {
+        [[GameController sharedGameController] fadeOutToSceneWithFilename:fileNameAlone sceneType:kSceneTypeBaseCamp withIndex:0 isNew:YES isLoading:YES];
+    }
 }
 
 - (IBAction)loadSkirmishViewController {
@@ -298,11 +304,39 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
      */
 }
 
+- (UIImage*)imageWithRandomStars {
+    CGSize size = CGSizeMake(kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor blackColor] set];
+    CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
+    // Draw stars on image
+    
+    UIImage* starImage = [UIImage imageNamed:@"starTexture.png"];
+    
+    int starCount = MAIN_MENU_STATIC_STAR_COUNT;
+    for (int i = 0; i < starCount; i++) {
+        int rSize = (arc4random() % 8) + 1;
+        float rAlpha = (float)(arc4random() % 100) / 100.0f;
+        int rX = (arc4random() % (int)size.width) + 1;
+        int rY = (arc4random() % (int)size.height) + 1;
+        CGRect rect = CGRectMake(rX, rY, rSize, rSize);
+        CGContextSetAlpha(context, rAlpha);
+        CGContextDrawImage(context, rect, [starImage CGImage]);
+    }
+    
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [backgroundImage setImage:[self imageWithRandomStars]];
     
     [self.view addSubview:fadeCoverView];
     for (int i = 0; i < MAIN_MENU_ANIMATED_STAR_COUNT; i++) {
@@ -345,36 +379,8 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [spinnerView release];
 }
 
-- (UIImage*)imageWithRandomStars {
-    CGSize size = CGSizeMake(kPadScreenLandscapeWidth, kPadScreenLandscapeHeight);
-    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor blackColor] set];
-    CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
-    // Draw stars on image
-    
-    UIImage* starImage = [UIImage imageNamed:@"starTexture.png"];
-    
-    int starCount = MAIN_MENU_STATIC_STAR_COUNT;
-    for (int i = 0; i < starCount; i++) {
-        int rSize = (arc4random() % 8) + 1;
-        float rAlpha = (float)(arc4random() % 100) / 100.0f;
-        int rX = (arc4random() % (int)size.width) + 1;
-        int rY = (arc4random() % (int)size.height) + 1;
-        CGRect rect = CGRectMake(rX, rY, rSize, rSize);
-        CGContextSetAlpha(context, rAlpha);
-        CGContextDrawImage(context, rect, [starImage CGImage]);
-    }
-    
-    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    [backgroundImage setImage:[self imageWithRandomStars]];
+    [super viewWillAppear:animated];
     
     [self.view bringSubviewToFront:fadeCoverView];
     [self.view bringSubviewToFront:recommendationView];
@@ -388,6 +394,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     hasStartedTutorial = [defaults boolForKey:@"hasStartedTutorial"];
+    hasStartedBaseCamp = [defaults boolForKey:@"hasStartedBaseCamp"];
     tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
     
     CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);

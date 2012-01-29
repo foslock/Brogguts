@@ -30,6 +30,7 @@
     if (self) {
         isCheckedForCollisions = NO;
         isCheckedForMultipleCollisions = NO;
+        isRenderedInOverview = NO;
         float distance = 128.0f;
         switch (size) {
             case kExplosionSizeSmall: {

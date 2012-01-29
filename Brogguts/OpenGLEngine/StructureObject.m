@@ -235,8 +235,7 @@
                 }
                 if (GetDistanceBetweenPointsSquared(objectLocation, craft.objectLocation) < POW2(circle.radius)) {
                     if (craft.objectAlliance == objectAlliance) {
-                        if (craft.movingAIState != kMovingAIStateMining && !craft.isTraveling &&
-                            !craft.isBeingControlled && craft.attackingAIState == kAttackingAIStateNeutral) {
+                        if (!craft.isTraveling && !craft.isBeingControlled && craft.attackingAIState == kAttackingAIStateNeutral) {
                             [craft setPriorityEnemyTarget:enemy];
                         }
                     }
