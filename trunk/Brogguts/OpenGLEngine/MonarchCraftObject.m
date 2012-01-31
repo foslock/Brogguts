@@ -59,7 +59,8 @@
             CraftObject* craft = (CraftObject*)tobj;
             if (craft.objectType != kObjectCraftMonarchID && 
                 craft.objectType != kObjectCraftSpiderDroneID &&
-                craft.objectAlliance == objectAlliance) {
+                (craft.objectAlliance == objectAlliance ||
+                 (craft.objectAlliance == kAllianceNeutral && objectAlliance == kAllianceFriendly))) {
                 if ([craftUnderAura count] < craftLimit) {
                     if (![craftUnderAura containsObject:craft] && ![craft isUnderAura]) {
                         [craft setIsUnderAura:YES];

@@ -35,7 +35,7 @@ NSString* kSavedSkirmishFileName = @"SavedSkirmishList.plist";
 NSString* kNewMapScenesFileName = @"NewMapScenesList.plist";
 
 // Options menu booleans
-BOOL doesSceneShowGrid = YES;
+BOOL doesSceneHideGrid = NO;
 int sideBarButtonLocation = 0;
 BOOL isColorBlindFriendlyOn = NO;
 
@@ -902,6 +902,8 @@ static GameController* sharedGameController = nil;
                 // Update achievements etc.
                 [[GameCenterSingleton sharedGCSingleton] updateAllAchievementsAndLeaderboard];
                 currentScene = nil;
+                [[SoundSingleton sharedSoundSingleton] stopMusic];
+                [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
             }
             isReturningToMenu = NO;
 		}
@@ -996,6 +998,11 @@ static GameController* sharedGameController = nil;
     isUpdatingCurrentScene = NO;
     unlockView = nil;
     isShowingUnlockView = NO;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    doesSceneHideGrid = [defaults boolForKey:@"doesSceneHideGrid"];
+    sideBarButtonLocation = [defaults integerForKey:@"sideBarButtonLocation"];
+    isColorBlindFriendlyOn = [defaults boolForKey:@"isColorBlindFriendlyOn"];
+    
     
 	[self loadPlayerProfile];
     [self placeInitialFilesInDocumentsFolder];

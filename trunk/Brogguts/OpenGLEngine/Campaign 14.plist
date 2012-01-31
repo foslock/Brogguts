@@ -12304,7 +12304,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -12318,8 +12318,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12328,7 +12328,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12342,8 +12342,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12352,7 +12352,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12366,8 +12366,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12376,7 +12376,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -12390,8 +12390,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12400,7 +12400,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12414,8 +12414,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12424,7 +12424,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12438,8 +12438,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12448,7 +12448,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12462,8 +12462,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12472,7 +12472,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12486,8 +12486,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12496,7 +12496,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -12510,8 +12510,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12520,7 +12520,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -12534,8 +12534,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12544,7 +12544,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12558,8 +12558,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12568,7 +12568,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12582,8 +12582,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12592,7 +12592,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -12606,8 +12606,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12616,7 +12616,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12630,8 +12630,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12640,7 +12640,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -12654,8 +12654,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12664,7 +12664,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12678,8 +12678,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12688,7 +12688,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -12702,8 +12702,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12712,7 +12712,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12726,8 +12726,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12736,7 +12736,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -12750,8 +12750,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12760,7 +12760,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -12774,8 +12774,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12784,7 +12784,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -12798,8 +12798,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12808,7 +12808,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -12822,8 +12822,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12832,7 +12832,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -12846,8 +12846,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12856,7 +12856,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -12870,8 +12870,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12880,7 +12880,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -12894,8 +12894,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12904,7 +12904,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -12918,8 +12918,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12928,7 +12928,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -12942,8 +12942,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12952,7 +12952,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -12966,8 +12966,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -12976,7 +12976,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -12990,8 +12990,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13000,7 +13000,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -13014,8 +13014,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13024,7 +13024,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -13038,8 +13038,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13048,7 +13048,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -13062,8 +13062,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13072,7 +13072,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -13086,8 +13086,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13096,7 +13096,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -13110,8 +13110,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13120,7 +13120,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -13134,8 +13134,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13144,7 +13144,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -13158,8 +13158,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13168,7 +13168,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -13182,8 +13182,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13192,7 +13192,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -13206,8 +13206,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13216,7 +13216,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -13230,8 +13230,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13240,7 +13240,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -13254,8 +13254,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13264,7 +13264,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -13278,8 +13278,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13288,7 +13288,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -13302,8 +13302,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13312,7 +13312,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1344</real>
@@ -13326,8 +13326,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13336,7 +13336,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -13350,8 +13350,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13360,7 +13360,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1856</real>
@@ -13374,8 +13374,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13384,7 +13384,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1216</real>
@@ -13398,8 +13398,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13408,7 +13408,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1344</real>
@@ -13422,8 +13422,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13432,7 +13432,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -13446,8 +13446,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13456,7 +13456,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -13470,8 +13470,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13480,7 +13480,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6848</real>
@@ -13494,8 +13494,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13504,7 +13504,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -13518,8 +13518,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13528,7 +13528,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6336</real>
@@ -13542,8 +13542,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13552,7 +13552,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6976</real>
@@ -13566,8 +13566,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13576,7 +13576,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6848</real>
@@ -13590,8 +13590,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13600,7 +13600,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -13614,8 +13614,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13624,7 +13624,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -13638,8 +13638,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13648,7 +13648,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -13662,8 +13662,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13672,7 +13672,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -13686,8 +13686,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13696,7 +13696,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -13710,8 +13710,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13720,7 +13720,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -13734,8 +13734,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13744,7 +13744,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -13758,8 +13758,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13768,7 +13768,7 @@
 			<integer>21</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -13782,8 +13782,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13792,7 +13792,7 @@
 			<integer>18</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -13806,8 +13806,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13816,7 +13816,7 @@
 			<integer>18</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -13830,8 +13830,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13840,7 +13840,7 @@
 			<integer>18</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -13854,8 +13854,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13864,7 +13864,7 @@
 			<integer>18</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -13878,8 +13878,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13888,7 +13888,7 @@
 			<integer>18</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -13902,8 +13902,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13912,7 +13912,7 @@
 			<integer>17</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -13926,8 +13926,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13936,7 +13936,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -13950,8 +13950,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13960,7 +13960,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -13974,8 +13974,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -13984,7 +13984,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6976</real>
@@ -13998,8 +13998,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14008,7 +14008,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6976</real>
@@ -14022,8 +14022,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14032,7 +14032,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6336</real>
@@ -14046,8 +14046,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14056,7 +14056,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -14070,8 +14070,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14080,7 +14080,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6848</real>
@@ -14094,8 +14094,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14104,7 +14104,7 @@
 			<integer>10</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -14118,8 +14118,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14128,7 +14128,7 @@
 			<integer>10</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6848</real>
@@ -14142,56 +14142,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>1</integer>
-			<integer>13</integer>
-			<array/>
-			<integer>0</integer>
-			<real>0</real>
-			<false/>
-			<array>
-				<real>6592</real>
-				<real>5824</real>
-			</array>
-			<array>
-				<real>6592</real>
-				<real>5824</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
-			<false/>
-			<array>
-				<real>0</real>
-				<real>0</real>
-			</array>
-			<integer>0</integer>
-		</array>
-		<array>
-			<integer>1</integer>
-			<integer>13</integer>
-			<array/>
-			<integer>0</integer>
-			<real>0</real>
-			<false/>
-			<array>
-				<real>6720</real>
-				<real>5824</real>
-			</array>
-			<array>
-				<real>6720</real>
-				<real>5824</real>
-			</array>
-			<integer>-1</integer>
-			<false/>
-			<false/>
-			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14200,7 +14152,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6336</real>
@@ -14214,8 +14166,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14224,7 +14176,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6976</real>
@@ -14238,8 +14190,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14248,7 +14200,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6848</real>
@@ -14262,8 +14214,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14272,7 +14224,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6336</real>
@@ -14286,8 +14238,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14296,7 +14248,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -14310,8 +14262,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14320,7 +14272,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6592</real>
@@ -14334,8 +14286,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14344,7 +14296,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>0</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6720</real>
@@ -14358,8 +14310,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14368,7 +14320,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -14382,8 +14334,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14392,7 +14344,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>6464</real>
@@ -14406,8 +14358,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14416,7 +14368,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4544</real>
@@ -14430,8 +14382,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14440,7 +14392,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>4672</real>
@@ -14454,8 +14406,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14464,7 +14416,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -14478,8 +14430,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14488,7 +14440,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -14502,8 +14454,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14512,7 +14464,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3392</real>
@@ -14526,8 +14478,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14536,7 +14488,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3392</real>
@@ -14550,8 +14502,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14560,7 +14512,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3520</real>
@@ -14574,8 +14526,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14584,7 +14536,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>3648</real>
@@ -14598,8 +14550,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14608,7 +14560,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -14622,8 +14574,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14632,7 +14584,7 @@
 			<integer>7</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -14646,8 +14598,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14656,7 +14608,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -14670,8 +14622,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14680,7 +14632,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -14694,8 +14646,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14704,7 +14656,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -14718,8 +14670,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14728,7 +14680,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -14742,8 +14694,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14752,7 +14704,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -14766,8 +14718,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14776,7 +14728,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -14790,8 +14742,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14800,7 +14752,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -14814,8 +14766,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14824,7 +14776,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -14838,8 +14790,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14848,7 +14800,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2368</real>
@@ -14862,8 +14814,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14872,7 +14824,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2368</real>
@@ -14886,8 +14838,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14896,7 +14848,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2496</real>
@@ -14910,8 +14862,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14920,7 +14872,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2624</real>
@@ -14934,8 +14886,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14944,7 +14896,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2368</real>
@@ -14958,8 +14910,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14968,7 +14920,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>2368</real>
@@ -14982,8 +14934,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -14992,7 +14944,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -15006,8 +14958,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -15016,7 +14968,7 @@
 			<integer>8</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1472</real>
@@ -15030,8 +14982,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -15040,7 +14992,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1728</real>
@@ -15054,8 +15006,8 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>
@@ -15064,7 +15016,7 @@
 			<integer>9</integer>
 			<array/>
 			<integer>1</integer>
-			<real>0</real>
+			<real>0.0</real>
 			<false/>
 			<array>
 				<real>1600</real>
@@ -15078,8 +15030,32 @@
 			<false/>
 			<false/>
 			<array>
-				<real>0</real>
-				<real>0</real>
+				<real>0.0</real>
+				<real>0.0</real>
+			</array>
+			<integer>0</integer>
+		</array>
+		<array>
+			<integer>1</integer>
+			<integer>15</integer>
+			<array/>
+			<integer>0</integer>
+			<real>0.0</real>
+			<false/>
+			<array>
+				<real>6655.265625</real>
+				<real>5824.40234375</real>
+			</array>
+			<array>
+				<real>6655.265625</real>
+				<real>5824.40234375</real>
+			</array>
+			<integer>-1</integer>
+			<false/>
+			<false/>
+			<array>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<integer>0</integer>
 		</array>

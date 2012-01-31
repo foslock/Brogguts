@@ -283,6 +283,20 @@ NSString* const kObjectExplosionRingSprite = @"explosionring.png";
     [self renderAtPoint:aPoint scale:scale rotation:rotation];
 }
 
+- (void)renderAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector {
+    if (alwaysRender) {
+        CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
+		[self renderAtPoint:newPoint scale:scale rotation:rotation];
+    } else {
+        float maxDelta = MAX(imageSize.width, imageSize.height);
+        CGRect viewbounds = CGRectInset([[sharedGameController currentScene] visibleScreenBounds], -maxDelta, -maxDelta);
+        if (CGRectContainsPoint(viewbounds, aPoint)) { // ONLY RENDER OBJECTS ON SCREEN
+            CGPoint newPoint = CGPointMake(aPoint.x - vector.x, aPoint.y - vector.y);
+            [self renderAtPoint:newPoint scale:scale rotation:rotation];
+        }
+    }
+}
+
 - (void)renderAtPoint:(CGPoint)aPoint scale:(Scale2f)aScale rotation:(float)aRotation {
     renderPoint = aPoint;
     scale = aScale;

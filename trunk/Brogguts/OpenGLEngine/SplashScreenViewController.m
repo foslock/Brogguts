@@ -87,6 +87,8 @@
     OpenGLEngineAppDelegate* delegate = (OpenGLEngineAppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([delegate mainMenuController]) {
         [[delegate window] addSubview:[delegate mainMenuController].view];
+        [[SoundSingleton sharedSoundSingleton] stopMusic];
+        [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
     }
     [self.view removeFromSuperview];
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];

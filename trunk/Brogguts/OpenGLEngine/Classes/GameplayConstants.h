@@ -82,7 +82,7 @@ enum ObjectTypeIDs { // When loading a scene, used for parsing
 	kObjectTypeStructure,	
 };
 
-#define TOTAL_OBJECT_TYPES_COUNT 32
+#define TOTAL_OBJECT_TYPES_COUNT 34
 
 enum ObjectIDs { // How objects are indentified
 	kObjectTextID,
@@ -118,6 +118,7 @@ enum ObjectIDs { // How objects are indentified
     kObjectHealthDropObjectID,
     kObjectMissileObjectID,
     kObjectRefinerySmokeObjectID,
+    kObjectFireworkObjectID,
 };
 
 // Max values

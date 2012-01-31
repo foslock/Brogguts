@@ -16,6 +16,8 @@
 #import "TiledButtonObject.h"
 #import "StarSingleton.h"
 #import "FogManager.h"
+#import "ImageRenderSingleton.h"
+#import "Image.h"
 
 NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
     @"Long ago, when humans only lived on one planet.",
@@ -63,10 +65,12 @@ NSString* kIntroSceneText[TUTORIAL_INTRO_LINE_COUNT] = {
                                                                   Text:kIntroSceneText[i]
                                                           withLocation:CGPointMake(xLoc, -32 - (TUTORIAL_INTRO_SPACE_BETWEEN_LINES * i))
                                                           withDuration:-1.0f];
+            [introText setRenderLayer:kLayerTopLayer];
             [self addTextObject:introText];
             [textObjects addObject:introText];
         }
         [fogManager clearAllFog];
+        [blackBar setColor:Color4fMake(0.0f, 0.0f, 0.0f, 0.0f)];
     }
     return self;
 }
