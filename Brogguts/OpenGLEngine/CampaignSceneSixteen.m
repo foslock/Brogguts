@@ -10,6 +10,7 @@
 #import "PlayerProfile.h"
 #import "GameController.h"
 #import "StartMissionObject.h"
+#import "FireworkObject.h"
 
 @implementation CampaignSceneSixteen
 
@@ -17,10 +18,29 @@
     self = [super initWithCampaignIndex:15 wasLoaded:loaded];
     if (self) {
         [startObject setMissionHeader:@""];
-        [startObject setMissionTextTwo:@"Congrats, you have beaten the Campaign!"];
+        [startObject setMissionTextTwo:@"Congratulations, you have beaten the Campaign."];
+        [startObject setMissionTextThree:@"Enjoy the fireworks!"];
+        fireworkTimer = 1.0f;
         // Congrats WINNING LEVEL!
     }
     return self;  
+}
+
+- (void)updateSceneWithDelta:(float)aDelta {
+    [super updateSceneWithDelta:aDelta];
+    
+    if (fireworkTimer > 0) {
+        fireworkTimer -= aDelta;
+    } else {
+        int subCount = 1 + (int)(RANDOM_0_TO_1() * 8);
+        float time = 0.5f + (RANDOM_0_TO_1() * 1.0f);
+        float speed = 2.0f + (RANDOM_0_TO_1() * 2.0f);
+        FireworkObject* firework = [[FireworkObject alloc] initWithLocation:homeBaseLocation withSubCount:subCount withDuration:time withSpeed:speed];
+        [firework setMovingDirection:(RANDOM_0_TO_1() * M_PI_2)];
+        [self addCollidableObject:firework];
+        [firework release];
+        fireworkTimer = 4.0f + RANDOM_0_TO_1() * 2.0f;
+    }
 }
 
 - (BOOL)checkObjective {

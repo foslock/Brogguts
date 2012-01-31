@@ -270,7 +270,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     NSString* supplyCount = [NSString stringWithFormat:@"0/%i",kStructureBaseStationSupplyBonus];
     supplyCounter = [[TextObject alloc]
-                     initWithFontID:kFontBlairID Text:supplyCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 72, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
+                     initWithFontID:kFontBlairID Text:supplyCount withLocation:CGPointMake(kPadScreenLandscapeWidth - 78, visibleScreenBounds.size.height - 32) withDuration:-1.0f];
     [supplyCounter setScrollWithBounds:NO];
     [textObjectArray addObject:supplyCounter];
     
@@ -1090,8 +1090,6 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
 
 - (void)sceneDidDisappear {
     [sharedGameCenterSingleton disconnectFromGame];
-    [[SoundSingleton sharedSoundSingleton] stopMusic];
-    [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
 }
 
 - (void)playMiningSoundAtLocation:(CGPoint)location {
@@ -1756,7 +1754,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     // Render clouds
     [[CloudSingleton sharedCloudSingleton] renderCloudInRect:[self visibleScreenBounds] WithScroll:scroll];
     
-    if (doesSceneShowGrid) {
+    if (!doesSceneHideGrid) {
         enablePrimitiveDraw();
         // Draw the grid that collisions are based in
         glLineWidth(1.0f);
@@ -2133,7 +2131,7 @@ NSString* const kBaseCampIntroHelpText = @"This is your BaseCamp. It is located 
     
     CGPoint relativeMiddle = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
     glLineWidth(1.0f);
-    if (doesSceneShowGrid) {
+    if (!doesSceneHideGrid) {
         [collisionManager drawCellGridAtPoint:relativeMiddle withScale:Scale2fMake(xRatio, yRatio) withScroll:Vector2fZero withAlpha:CLAMP(alpha - 0.5f, 0.0f, 0.1f)];
     }
     

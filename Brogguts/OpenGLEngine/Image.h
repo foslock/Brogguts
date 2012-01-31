@@ -173,8 +173,8 @@ extern NSString* const kObjectExplosionRingSprite;
 // next asked to render.
 - (void)renderAtPoint:(CGPoint)aPoint;
 
-// Same as above but it translates the location based on the scroll vector
-- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector;
+// Same as above but translates by scroll
+- (void)renderAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector;
 
 // Renders the image at |aPoint| with the |aScale|, |aRotation|
 - (void)renderAtPoint:(CGPoint)aPoint scale:(Scale2f)aScale rotation:(float)aRotation;
@@ -184,6 +184,9 @@ extern NSString* const kObjectExplosionRingSprite;
 
 // Renders the image centered at the point provided
 - (void)renderCenteredAtPoint:(CGPoint)aPoint;
+
+// Same as above but it translates the location based on the scroll vector
+- (void)renderCenteredAtPoint:(CGPoint)aPoint withScrollVector:(Vector2f)vector;
 
 // Renders the imaged centered at |aPoint| with |aScale| and |aRotation|
 - (void)renderCenteredAtPoint:(CGPoint)aPoint scale:(Scale2f)aScale rotation:(float)aRotation;

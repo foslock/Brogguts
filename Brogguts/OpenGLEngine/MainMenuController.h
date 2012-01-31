@@ -26,6 +26,7 @@ extern NSString* const kTutorialExperienceKey;
     UIImageView* letterU;
     UIImageView* letterT;
     UIImageView* letterS;
+    BOOL hasFlownInLetters;
     UIButton* broggupediaButton;
     UIButton* campaignButton;
     UIButton* skirmishButton;

@@ -59,7 +59,7 @@ const int kNPCAntPathData[CAMPAIGN_FOURTEEN_PATH_POINTS*2] = {
             
             AntCraftObject* newAnt = [[AntCraftObject alloc] initWithLocation:CGPointMake(52 * COLLISION_CELL_WIDTH, fullMapBounds.size.height)
                                                                   isTraveling:NO];
-            [newAnt setCraftSpeedLimit:kCraftSpiderEngines];
+            [newAnt setCraftSpeedLimit:CLAMP(kCraftAntEngines - 2, 1, kMaximumEnginesValue)];
             npcAnt = newAnt;
             [newAnt setObjectAlliance:kAllianceNeutral];
             [self addTouchableObject:newAnt withColliding:CRAFT_COLLISION_YESNO];

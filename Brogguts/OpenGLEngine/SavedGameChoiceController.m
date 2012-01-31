@@ -40,7 +40,7 @@ enum SectionNames {
         unlockedMissionNames = [[NSMutableArray alloc] init];
         // Add each name with index under the current player experience
         int playerExperience = [[[GameController sharedGameController] currentProfile] playerExperience];
-        playerExperience = OVERRIDE_PLAYER_EXPERIENCE_LIMIT; // CHEATING
+        // playerExperience = OVERRIDE_PLAYER_EXPERIENCE_LIMIT; // CHEATING
         playerExperience = CLAMP(playerExperience, 0, CAMPAIGN_SCENES_COUNT - 1);
         for (int i = 0 ; i <= playerExperience; i++) {
             NSString* mission = [NSString stringWithString:kCampaignSceneSaveTitles[i]];

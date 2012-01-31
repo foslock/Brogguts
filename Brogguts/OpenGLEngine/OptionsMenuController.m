@@ -52,17 +52,26 @@
 
 - (IBAction)switchGrid:(id)sender {
     UISwitch* gSwitch = (UISwitch*)sender;
-    doesSceneShowGrid = [gSwitch isOn];
+    doesSceneHideGrid = [gSwitch isOn];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:doesSceneHideGrid forKey:@"doesSceneHideGrid"];
+    [defaults synchronize];
 }
 
 - (IBAction)switchColorBlind:(id)sender {
     UISwitch* cSwitch = (UISwitch*)sender;
     isColorBlindFriendlyOn = [cSwitch isOn];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:isColorBlindFriendlyOn forKey:@"isColorBlindFriendlyOn"];
+    [defaults synchronize];
 }
 
 - (IBAction)setSideBarButtonLocation:(id)sender {
     UISegmentedControl* segControl = (UISegmentedControl*)sender;
     sideBarButtonLocation = [segControl selectedSegmentIndex]; // 0 - Top, 1 - Bottom
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:sideBarButtonLocation forKey:@"sideBarButtonLocation"];
+    [defaults synchronize];
 }
 
 - (IBAction)resetProgress:(id)sender {
@@ -103,7 +112,7 @@
     [super viewWillAppear:animated];
     [fxVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] fxVolume]];
     [musicVolumeSlider setValue:[[SoundSingleton sharedSoundSingleton] musicVolume]];
-    [gridSwitch setOn:doesSceneShowGrid];
+    [gridSwitch setOn:doesSceneHideGrid];
     [colorBlindSwitch setOn:isColorBlindFriendlyOn];
     [sideBarControl setSelectedSegmentIndex:sideBarButtonLocation];
 }

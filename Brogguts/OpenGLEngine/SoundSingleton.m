@@ -644,7 +644,7 @@ static SoundSingleton* sharedSoundSingleton = nil;
 		return;
 	}
 	
-	if(musicPlayer) {
+	if (musicPlayer) {
         [self stopMusic];
 		[musicPlayer release];
     }

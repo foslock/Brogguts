@@ -101,7 +101,6 @@
 	// OVERRIDE
 	SideBarButton* button = [buttonArray objectAtIndex:buttonID];
 	[button setIsPressed:YES];
-    [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
 }
 
 - (void)buttonReleasedWithID:(int)buttonID atLocation:(CGPoint)location {
@@ -126,6 +125,7 @@
 		SideBarButton* button = [buttonArray objectAtIndex:i];
 		if (CGRectContainsPoint([button buttonRect], location) && ![button isDisabled]) {
 			[self buttonPressedWithID:i];
+            [[SoundSingleton sharedSoundSingleton] playSoundWithKey:kSoundFileNames[kSoundFileMenuButtonPress]];
 			isTouchDraggingButton = YES;
 		}
 	}

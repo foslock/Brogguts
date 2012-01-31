@@ -58,6 +58,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
         lettersArray = [[NSMutableArray alloc] init];
         hasStartedTutorial = NO;
         isShowingRecommendation = NO;
+        hasFlownInLetters = NO;
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         hasStartedTutorial = [defaults boolForKey:@"hasStartedTutorial"];
         hasStartedBaseCamp = [defaults boolForKey:@"hasStartedBaseCamp"];
@@ -338,25 +339,18 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [super viewDidLoad];
     
     [backgroundImage setImage:[self imageWithRandomStars]];
-    
+    spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [spinnerView setAlpha:0.0f];
+    [self.view addSubview:spinnerView];
     [self.view addSubview:fadeCoverView];
-    for (int i = 0; i < MAIN_MENU_ANIMATED_STAR_COUNT; i++) {
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"starTexture" ofType:@"png"];
-        UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
-        UIImageView* tempStar = [[UIImageView alloc] initWithImage:image];
-        float randomX = RANDOM_0_TO_1() * kPadScreenLandscapeWidth;
-        float randomY = RANDOM_0_TO_1() * kPadScreenLandscapeHeight;
-        float randomAlpha = (float)(arc4random() % 100) / 100.0f;
-        float randomScale = 0.05f + (RANDOM_0_TO_1() * 0.15f);
-        [tempStar setTransform:CGAffineTransformMakeScale(randomScale, randomScale)];
-        [tempStar setCenter:CGPointMake(randomX, randomY)];
-        [tempStar setAlpha:randomAlpha];
-        [tempStar setUserInteractionEnabled:NO];
-        [backgroundImage addSubview:tempStar];
-        [starsArray addObject:tempStar];
-        [image release];
-        [tempStar release];
-    }
+    
+    [self.view bringSubviewToFront:recommendationView];
+    [self.view bringSubviewToFront:tutorialButton];
+    
+    isShowingRecommendation = NO;
+    [recommendationView setAlpha:0.0f];
+    [fadeCoverView setAlpha:0.0f];
+    [spinnerView setAlpha:0.0f];
     
     [lettersArray addObject:letterB];
     [lettersArray addObject:letterR];
@@ -365,11 +359,7 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [lettersArray addObject:letterG2];
     [lettersArray addObject:letterU];
     [lettersArray addObject:letterT];
-    [lettersArray addObject:letterS];
-    
-    spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [spinnerView setAlpha:0.0f];
-    [self.view addSubview:spinnerView];
+    [lettersArray addObject:letterS];    
 }
 
 - (void)viewDidUnload
@@ -380,16 +370,64 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     [spinnerView release];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (!hasFlownInLetters) {
+        hasFlownInLetters = YES;
+        CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
+        float distance = kPadScreenLandscapeWidth;
+        float randDir = arc4random() % 360;
+        CGPoint randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                        center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterB setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterR setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterO setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterG1 setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterG2 setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterU setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterT setCenter:randPoint];
+        randDir = arc4random() % 360;
+        randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
+                                center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
+        [letterS setCenter:randPoint];
+        float width = [letterB image].size.width;
+        
+        [UIView animateWithDuration:LETTER_MOVE_TIME delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [letterB setCenter:CGPointMake( center.x - (3.5 * width), center.y)];
+            [letterR setCenter:CGPointMake( center.x - (2.5 * width), center.y)];
+            [letterO setCenter:CGPointMake( center.x - (1.5 * width), center.y)];
+            [letterG1 setCenter:CGPointMake(center.x - (0.5 * width), center.y)];
+            [letterG2 setCenter:CGPointMake(center.x + (0.5 * width), center.y)];
+            [letterU setCenter:CGPointMake( center.x + (1.5 * width), center.y)];
+            [letterT setCenter:CGPointMake( center.x + (2.5 * width), center.y)];
+            [letterS setCenter:CGPointMake( center.x + (3.5 * width), center.y)];
+        } completion:^(BOOL finished){
+            // Do nothing!
+        }];
+    }   
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self.view bringSubviewToFront:fadeCoverView];
-    [self.view bringSubviewToFront:recommendationView];
-    [self.view bringSubviewToFront:tutorialButton];
-    isShowingRecommendation = NO;
-    [recommendationView setAlpha:0.0f];
-    [fadeCoverView setAlpha:0.0f];
-    [spinnerView setAlpha:0.0f];
     
     [[GameController sharedGameController] savePlayerProfile];
     
@@ -398,63 +436,8 @@ NSString* const kTutorialExperienceKey = @"tutorialExperienceKey";
     hasStartedBaseCamp = [defaults boolForKey:@"hasStartedBaseCamp"];
     tutorialExperience = [defaults integerForKey:kTutorialExperienceKey];
     
-    CGPoint center = CGPointMake(kPadScreenLandscapeWidth / 2, kPadScreenLandscapeHeight / 2);
-    
-    float distance = kPadScreenLandscapeWidth;
-    float randDir = arc4random() % 360;
-    CGPoint randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                                    center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterB setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterR setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterO setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterG1 setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterG2 setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterU setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterT setCenter:randPoint];
-    randDir = arc4random() % 360;
-    randPoint = CGPointMake(center.x + (distance * cosf(DEGREES_TO_RADIANS(randDir))), 
-                            center.y + (distance * sinf(DEGREES_TO_RADIANS(randDir))));
-    [letterS setCenter:randPoint];
-    float width = [letterB image].size.width;
-    [UIView animateWithDuration:LETTER_MOVE_TIME delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        [letterB setCenter:CGPointMake( center.x - (3.5 * width), center.y)];
-        [letterR setCenter:CGPointMake( center.x - (2.5 * width), center.y)];
-        [letterO setCenter:CGPointMake( center.x - (1.5 * width), center.y)];
-        [letterG1 setCenter:CGPointMake(center.x - (0.5 * width), center.y)];
-        [letterG2 setCenter:CGPointMake(center.x + (0.5 * width), center.y)];
-        [letterU setCenter:CGPointMake( center.x + (1.5 * width), center.y)];
-        [letterT setCenter:CGPointMake( center.x + (2.5 * width), center.y)];
-        [letterS setCenter:CGPointMake( center.x + (3.5 * width), center.y)];
-    } completion:^(BOOL finished){
-        // if (finished)
-        //    [self animateLetters];
-    }];
     [self updateCountLabels];
     [[GameCenterSingleton sharedGCSingleton] updateAllAchievementsAndLeaderboard];
-    
-    // Play menu background music
-    if (![[GameController sharedGameController] currentScene]) {
-        [[SoundSingleton sharedSoundSingleton] stopMusic];
-        [[SoundSingleton sharedSoundSingleton] playMusicWithKey:kMusicFileNames[kMusicFileMenuLoop] timesToRepeat:-1];
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

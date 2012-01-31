@@ -74,7 +74,7 @@ extern NSString* kSavedCampaignFileName;
 extern NSString* kSavedSkirmishFileName;
 extern NSString* kNewMapScenesFileName;
 
-extern BOOL doesSceneShowGrid;
+extern BOOL doesSceneHideGrid;
 extern int sideBarButtonLocation;
 extern BOOL isColorBlindFriendlyOn;
 

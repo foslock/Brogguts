@@ -8,6 +8,8 @@
 
 #import "CampaignScene.h"
 
-@interface CampaignSceneSixteen : CampaignScene
+@interface CampaignSceneSixteen : CampaignScene {
+    float fireworkTimer;
+}
 
 @end
