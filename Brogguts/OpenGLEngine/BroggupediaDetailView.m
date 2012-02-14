@@ -546,7 +546,11 @@ const NSString* upgradeDefaultInfo = @"Locked";
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
-    [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    if ([self respondsToSelector:@selector(presentingViewController)]) {
+        [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    } else {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (void)dealloc

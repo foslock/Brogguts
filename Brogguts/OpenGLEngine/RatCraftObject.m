@@ -12,6 +12,7 @@
 #import "UpgradeManager.h"
 #import "BroggutScene.h"
 #import "RadarStructureObject.h"
+#import "GameController.h"
 
 @implementation RatCraftObject
 @synthesize isCloaked, cloakAlpha, nearbyEnemyRadar;
@@ -59,9 +60,11 @@
         cloakAlpha += aDelta;
     }
     if (objectAlliance == kAllianceEnemy) {
-        [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, CLAMP(cloakAlpha, 0.1f, 1.0f))];
+        [objectImage setColor:[GameController getColorEnemy:CLAMP(cloakAlpha, 0.1f, 1.0f)]];
+        [turretImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, CLAMP(cloakAlpha, 0.1f, 1.0f))];
     } else if (objectAlliance == kAllianceFriendly) {
-        [objectImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, CLAMP(cloakAlpha, 0.5f, 1.0f))];
+        [objectImage setColor:[GameController getColorFriendly:CLAMP(cloakAlpha, 0.5f, 1.0f)]];
+        [turretImage setColor:Color4fMake(1.0f, 1.0f, 1.0f, CLAMP(cloakAlpha, 0.5f, 1.0f))];
     }
 }
 

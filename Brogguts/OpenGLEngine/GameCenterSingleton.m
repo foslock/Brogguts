@@ -192,8 +192,8 @@ static GameCenterSingleton* sharedGCSingleton = nil;
 			// Insert code here to handle a successful authentication.
             
             /*
-            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:GAME_CENTER_ACHIEVEMENT_UPDATE_FREQUENCY target:self selector:@selector(updateAllAchievementsAndLeaderboard) userInfo:nil repeats:YES];
-            (void)timer;
+             NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:GAME_CENTER_ACHIEVEMENT_UPDATE_FREQUENCY target:self selector:@selector(updateAllAchievementsAndLeaderboard) userInfo:nil repeats:YES];
+             (void)timer;
              */
 		}
 		else
@@ -598,11 +598,14 @@ static GameCenterSingleton* sharedGCSingleton = nil;
     GKAchievement *achievement = [self getAchievementForIdentifier:identifier];
     if (achievement)
     {
-        if (percent > achievement.percentComplete && percent >= 100.0f) {
-            achievement.showsCompletionBanner = YES;
-        } else {
-            achievement.showsCompletionBanner = NO;
+        if ([achievement respondsToSelector:@selector(showsCompletionBanner)]) {
+            if (percent > achievement.percentComplete && percent >= 100.0f) {
+                achievement.showsCompletionBanner = YES;
+            } else {
+                achievement.showsCompletionBanner = NO;
+            }
         }
+        
         achievement.percentComplete = percent;
         
         [achievement reportAchievementWithCompletionHandler:^(NSError *error)

@@ -159,6 +159,9 @@
         case kObjectCraftSpiderID: {
             SpiderCraftObject* newCraft = [[SpiderCraftObject alloc] initWithLocation:startingPoint isTraveling:NO];
             NSArray* path = [[scene collisionManager] pathFrom:startingPoint to:endLocation allowPartial:YES isStraight:YES];
+            for (int i = 0; i < SPIDER_NUMBER_OF_DRONES; i++) {
+                [newCraft addNewDroneToBay];
+            }
             [newCraft followPath:path isLooped:NO];
             [newCraft setObjectAlliance:kAllianceEnemy];
             [scene createLocalTouchableObject:newCraft withColliding:CRAFT_COLLISION_YESNO];

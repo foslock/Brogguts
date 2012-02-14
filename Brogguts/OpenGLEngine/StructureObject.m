@@ -508,6 +508,9 @@
 - (void)objectWasDestroyed {
     if (isTraveling) {
         [[self currentScene] setIsBuildingStructure:NO];
+        [[[self currentScene] collisionManager] setPathNodeIsOpen:YES atLocation:creationEndLocation];
+    } else {
+        [[[self currentScene] collisionManager] setPathNodeIsOpen:YES atLocation:objectLocation];
     }
     ExplosionObject* explosion = [[ExplosionObject alloc] initWithLocation:objectLocation withSize:kExplosionSizeLarge];
     [self.currentScene addCollidableObject:explosion];
