@@ -88,7 +88,7 @@
     [self.view addSubview:sunView];
     [self.view sendSubviewToBack:sunView];
     [sunView setCenter:iView.center];
-    [UIView animateWithDuration:(RANDOM_0_TO_1() + 1.5f) delay:0.0f options:(UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveLinear) animations:^{
+    [UIView animateWithDuration:(RANDOM_0_TO_1() + 1.5f) delay:0.0f options:(UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction) animations:^{
         [sunView setTransform:CGAffineTransformRotate(sunView.transform, DEGREES_TO_RADIANS(180))];
     } completion:^(BOOL finished) {
         //

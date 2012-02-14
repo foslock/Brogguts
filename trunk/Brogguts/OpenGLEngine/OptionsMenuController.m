@@ -47,7 +47,11 @@
 }
 
 - (IBAction)popOptionsController {
-    [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    if ([self respondsToSelector:@selector(presentingViewController)]) {
+        [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    } else {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (IBAction)switchGrid:(id)sender {
