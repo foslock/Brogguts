@@ -390,7 +390,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* OpenGLEngineAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenGLEngineAppDelegate.h; path = Classes/OpenGLEngineAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* OpenGLEngineAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OpenGLEngineAppDelegate.m; path = Classes/OpenGLEngineAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* OpenGLEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGLEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Brogguts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Brogguts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2514C26D10084DB100A42282 /* ES1Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES1Renderer.h; sourceTree = "<group>"; };
 		2514C26E10084DB100A42282 /* ES1Renderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES1Renderer.m; sourceTree = "<group>"; };
@@ -405,7 +405,7 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLEngine_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* Brogguts_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brogguts_Prefix.pch; sourceTree = "<group>"; };
 		6F006A5D1379BC89000C13C6 /* letterb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = letterb.png; sourceTree = "<group>"; };
 		6F006A5E1379BC89000C13C6 /* letterg1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = letterg1.png; sourceTree = "<group>"; };
 		6F006A5F1379BC89000C13C6 /* letterg2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = letterg2.png; sourceTree = "<group>"; };
@@ -898,7 +898,7 @@
 		6FF666911305FBAC00EB76A8 /* ControllableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllableObject.m; sourceTree = "<group>"; };
 		6FFFEE2614C9BFE300BF404B /* leaderboardicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leaderboardicon.png; sourceTree = "<group>"; };
 		6FFFEE2714C9BFE300BF404B /* throphyicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = throphyicon.png; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* OpenGLEngine-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OpenGLEngine-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Brogguts-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Brogguts-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -942,7 +942,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* OpenGLEngine.app */,
+				1D6058910D05DD3D006BFB54 /* Brogguts.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -984,8 +984,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107310486CEB800E47090 /* OpenGLEngine-Info.plist */,
-				32CA4F630368D1EE00C91783 /* OpenGLEngine_Prefix.pch */,
+				8D1107310486CEB800E47090 /* Brogguts-Info.plist */,
+				32CA4F630368D1EE00C91783 /* Brogguts_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				6F609F6B134D0B7F006C1E0C /* Entitlements.plist */,
 			);
@@ -1942,9 +1942,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* OpenGLEngine */ = {
+		1D6058900D05DD3D006BFB54 /* Brogguts */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "OpenGLEngine" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Brogguts" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -1954,9 +1954,9 @@
 			);
 			dependencies = (
 			);
-			name = OpenGLEngine;
+			name = Brogguts;
 			productName = OpenGLEngine;
-			productReference = 1D6058910D05DD3D006BFB54 /* OpenGLEngine.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Brogguts.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1967,7 +1967,7 @@
 			attributes = {
 				LastUpgradeCheck = 0420;
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OpenGLEngine" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Brogguts" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1981,7 +1981,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* OpenGLEngine */,
+				1D6058900D05DD3D006BFB54 /* Brogguts */,
 			);
 		};
 /* End PBXProject section */
@@ -2381,12 +2381,12 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
+				GCC_PREFIX_HEADER = Brogguts_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
+				INFOPLIST_FILE = "Brogguts-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				PRODUCT_NAME = OpenGLEngine;
+				PRODUCT_NAME = Brogguts;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 			};
 			name = Debug;
@@ -2397,12 +2397,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
+				GCC_PREFIX_HEADER = Brogguts_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
+				INFOPLIST_FILE = "Brogguts-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				PRODUCT_NAME = OpenGLEngine;
+				PRODUCT_NAME = Brogguts;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2417,7 +2417,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "66FEA139-21A0-4BF0-928C-CA808C90D683";
 				SDKROOT = iphoneos;
@@ -2432,12 +2432,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OpenGLEngine_Prefix.pch;
+				GCC_PREFIX_HEADER = Brogguts_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OpenGLEngine-Info.plist";
+				INFOPLIST_FILE = "Brogguts-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				PRODUCT_NAME = OpenGLEngine;
+				PRODUCT_NAME = Brogguts;
 				SYMROOT = /Users/foslock/Documents/School/Development/COMP194/Brogguts/Xcode_Building;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2454,7 +2454,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81C8502F-1BAF-4B32-9BCC-F45552B1A99D";
 				SDKROOT = iphoneos;
 				SYMROOT = "/Users/foslock/Documents/School Work/Spring 2011/COMP 194/Brogguts/Xcode Building";
@@ -2471,7 +2471,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "0554B24F-C6A6-4263-80CE-0EDE86EB2832";
 				SDKROOT = iphoneos;
@@ -2483,7 +2483,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "OpenGLEngine" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Brogguts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -2493,7 +2493,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OpenGLEngine" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Brogguts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
